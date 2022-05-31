@@ -1,13 +1,13 @@
 import React from "react";
 
-import { Container, Header, Main, Footer, Cards } from "@components";
+import { Container, TextboxContainer, Main, Footer } from "@components";
 
 const Home: React.FC = () => {
     return (
         <Container>
             {/* <Header /> */}
             <Main />
-            <Cards />
+            <TextboxContainer />
             <Footer />
         </Container>
     );
