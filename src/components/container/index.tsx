@@ -1,3 +1,7 @@
-export const Container: React.FC = ({ children }) => {
-    return <div className="min-h-screen flex flex-col">{children}</div>;
+export type ContainerProps = {
+    children: React.ReactNode;
+};
+
+export const Container: React.FC<ContainerProps> = (props: ContainerProps) => {
+    return <div className="min-h-screen flex flex-col">{props.children}</div>;
 };

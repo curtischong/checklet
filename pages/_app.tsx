@@ -4,7 +4,10 @@ import "tailwindcss/tailwind.css";
 import "@styles/global.css";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-    return <Component {...pageProps} />;
+    if (typeof window !== "undefined" && Component) {
+        return <Component {...pageProps} />;
+    }
+    return <></>;
 }
 
 export default MyApp;
