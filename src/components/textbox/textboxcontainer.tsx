@@ -5,6 +5,7 @@ export const TextboxContainer: React.FC = () => {
     const [suggestedText, setSuggestedText] = useState("");
     const analyzeText = async () => {
         // TODO: Change to Axios
+        // TODO: add an API class
         const response = await fetch("/api/text", {
             method: "POST",
             body: JSON.stringify({ text: originalText }),

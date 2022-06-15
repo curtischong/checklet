@@ -1,11 +1,13 @@
+import datetime
 import json
 from flask import Flask, request
 from flask_cors import CORS
+
 from config import Config
 from parse import Parser
-import datetime
 
-print("Server started on " + datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"), flush=True)
+print("Server started on " +
+      datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"), flush=True)
 app = Flask(__name__)
 
 config = Config("config.yaml")
@@ -16,6 +18,16 @@ parser = Parser(config)
 def tokenize():
     document = request.args.get('document')
     return str(parser.parse(document))
+
+
+@app.route('/structure/suggestions', methods=['POST'])
+def structure_suggestions():
+    # TODO: ideal structure defined by heuristic
+    # data = request.json
+    # sections = data["structure"]
+    return {
+        "structure": ["Skills", "Work Experience", "Volunteering", "Awards", "Education"]
+    }
 
 
 # Please keep the following lines at the very bottom of the script

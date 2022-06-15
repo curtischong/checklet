@@ -1,5 +1,4 @@
-import { Textbox } from "../textbox/textbox";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdDragIndicator } from "react-icons/md";
 import {
     DragDropContext,
@@ -9,6 +8,7 @@ import {
     Draggable,
     DropResult,
 } from "react-beautiful-dnd";
+import css from "./structure.module.scss";
 
 export enum SectionTypes {
     WORK = "Work Experience",
@@ -48,6 +48,7 @@ const defaultSections: SectionMetadata[] = [
 
 export const Structure: React.FC = () => {
     const [sections, setSections] = useState(defaultSections);
+    const [suggestedOrder, setSuggestedOrder] = useState([]);
 
     const handleDrop = (droppedItem: DropResult) => {
         if (!droppedItem.destination) return;
@@ -55,6 +56,26 @@ export const Structure: React.FC = () => {
         const [reorderedItem] = updatedList.splice(droppedItem.source.index, 1);
         updatedList.splice(droppedItem.destination.index, 0, reorderedItem);
         setSections(updatedList);
+    };
+
+    useEffect(() => {
+        analyzeOrder();
+    }, [sections]);
+
+    const analyzeOrder = async () => {
+        // TODO: change to Axios
+        const response = await fetch(
+            "http://localhost:5000/structure/suggestions",
+            {
+                method: "POST",
+                body: JSON.stringify({ structure: sections }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        const data = await response.json();
+        setSuggestedOrder(data.structure);
     };
 
     const handleCheckboxChange = (index: number) => {
@@ -121,7 +142,27 @@ export const Structure: React.FC = () => {
                     </DragDropContext>
                 </div>
                 <div className="grid">
-                    <Textbox header="Suggestions" text="" boxSize={200} />
+                    <>
+                        <div className="font-bold pb-5"> Suggested Order </div>
+                        <div>
+                            {suggestedOrder.map((item: string, idx: number) => (
+                                <div key={idx} className="flex pb-1">
+                                    <div
+                                        style={{
+                                            backgroundColor:
+                                                item ===
+                                                sections[idx].sectionType
+                                                    ? "white"
+                                                    : "#DCBAB9",
+                                        }}
+                                        className={css.suggestedOrder}
+                                    >
+                                        {item}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 </div>
             </div>
         </div>
