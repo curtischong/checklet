@@ -65,7 +65,7 @@ export const Structure: React.FC = () => {
     const analyzeOrder = async () => {
         // TODO: change to Axios
         const response = await fetch(
-            "http://localhost:5000/structure/suggestions",
+            "http://localhost:5000/resumes/structure/suggestions",
             {
                 method: "POST",
                 body: JSON.stringify({ structure: sections }),

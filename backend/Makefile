@@ -1,3 +1,4 @@
 SHELL := /bin/bash
+
 run:
-	python app.py
+	python src/manage.py runserver 5000

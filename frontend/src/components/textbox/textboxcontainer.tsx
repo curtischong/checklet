@@ -6,7 +6,7 @@ export const TextboxContainer: React.FC = () => {
     const analyzeText = async () => {
         // TODO: Change to Axios
         // TODO: add an API class
-        const response = await fetch("/api/text", {
+        const response = await fetch("http://localhost:5000/resumes/feedback", {
             method: "POST",
             body: JSON.stringify({ text: originalText }),
             headers: {
