@@ -21,10 +21,8 @@ class NautDoc:
 
     def tokens(self) -> List[NautToken]:
         tokens = []
-        i = 0
         for token in self.doc.__iter__():
             tokens.append(NautToken(token))
-            i += 1
         return tokens
 
 
