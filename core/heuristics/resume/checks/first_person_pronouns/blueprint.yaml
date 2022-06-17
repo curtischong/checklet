@@ -1,0 +1,9 @@
+dag:
+  - find_fp_pronouns:
+      deps: ~
+  - replace_fp_pronouns:
+      deps:
+        # the task it depends on
+        # and also a map of the output names -> our input name
+        - { find_fp_pronouns }:
+            -
