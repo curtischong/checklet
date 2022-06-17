@@ -13,6 +13,8 @@ class InvalidTaskImplementationError(Exception):
 
 
 class Task:
+    UNI_RETURN_VAR_NAME = "uni_return"
+
     def __init__(self, name: str, func_def: Callable):
 
         self.is_lambda_task = False
@@ -34,13 +36,20 @@ class Task:
 
         # parse output vars
         return_types = self._get_return_types(str(type_hints["return"]))
+        self._init_outputs(return_types, func_def)
+
+        self.is_feedback_task = False
+        if return_types == ["Feedback"]:
+            self.is_feedback_task = True
+
+    def _init_outputs(self, return_types: List[str], func_def: Callable):
+        if len(return_types) == 1:
+            # this function only returns one variable. This variable has a default name
+            self.outputs[self.UNI_RETURN_VAR_NAME] = return_types[0]
+            return
         return_names = self._get_return_names(func_def, len(return_types))
         for i in range(len(return_types)):
             self.outputs[return_names[i]] = return_types[i]
-
-        self.is_feedback_task = False
-        if return_types == "Feedback":
-            self.is_feedback_task = True
 
     # since return types are always tuples, we need to extract
     # the individual return types in each idx of the tuple.
@@ -79,7 +88,7 @@ class Task:
     assert _get_return_types(None, "typing.Tuple[typing.List[int], int]") == ["List[int]", "int"]
     assert _get_return_types(None, "Tuple[Tuple[int, str], int]") == ["Tuple[int,str]", "int"]
 
-    def _get_return_names(self, func_def: Callable, num_return_vals: int) -> List[List[str]]:
+    def _get_return_names(self, func_def: Callable, num_return_vals: int) -> List[str]:
         (tree,) = ast.parse(inspect.getsource(func_def)).body
 
         return_statements = [
