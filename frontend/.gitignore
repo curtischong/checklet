@@ -6,7 +6,3 @@ node_modules
 .env
 .env.*
 !.env.example
-.idea
-.vscode
-.DS_Store
-__pycache__
