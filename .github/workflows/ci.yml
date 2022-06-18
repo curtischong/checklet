@@ -10,6 +10,10 @@ on:
             - main
             - master
 
+defaults:
+  run:
+    working-directory: frontend
+
 jobs:
     ci:
         runs-on: ${{ matrix.os }}
