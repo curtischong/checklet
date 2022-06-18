@@ -2,9 +2,9 @@ import ast
 import glob
 import importlib
 import inspect
-from inspect import getmembers, isfunction
+from inspect import getmembers, isfunction, isclass
 from os.path import dirname, basename, isfile, join
-from typing import List, Mapping, Callable, get_type_hints
+from typing import List, Mapping, Callable, ClassVar, get_type_hints, Tuple
 
 
 class InvalidTaskImplementationError(Exception):
@@ -29,10 +29,10 @@ class Task:
 
         # parse input vars
         type_hints = get_type_hints(func_def)
-        for key, val in type_hints.items():
-            if key == "return":
+        for var, var_type in type_hints.items():
+            if var == "return":
                 continue
-            self.inputs[key] = str(val)
+            self.inputs[var] = str(var_type)
 
         # parse output vars
         return_types = self._get_return_types(str(type_hints["return"]))
@@ -118,9 +118,22 @@ class Task:
             "GOOD: return trimmed_string, old_str_len BAD: return str.trim(), len(str)".format(self.name))
 
 
-# returns map: task_name -> Task
-def parse_tasks() -> Mapping[str, Task]:
-    task_directory = join(dirname(__file__), "../tasks", "*.py")
+class PersistentTask(Task):
+    def __init__(self, name: str, class_def: ClassVar):
+        process_func = getattr(class_def, "process")
+        super().__init__(name, process_func)
+        init_func = getattr(class_def, "__init__")
+        init_func_type_hints = get_type_hints(init_func)
+        self.load = {}
+        for var, var_type in init_func_type_hints.items():
+            if var == "return":
+                continue
+            self.load[var] = str(var_type)
+
+
+# returns two maps: (task_name -> Task) and (task_name -> PersistentTask)
+def parse_tasks() -> Tuple[Mapping[str, Task], Mapping[str, PersistentTask]]:
+    task_directory = join(dirname(__file__), "library", "*.py")
     task_modules = []
 
     # auto-import all checks so they're in the namespace
@@ -128,13 +141,17 @@ def parse_tasks() -> Mapping[str, Task]:
     for f in glob.glob(task_directory):
         if not isfile(f):
             continue
-        task_modules.append("core.tasks." + basename(f)[:-3])
+        task_modules.append("core.task.library." + basename(f)[:-3])
     tasks = {}
+    persistent_tasks = {}
     for task_module in task_modules:
         module = importlib.import_module(task_module)
-        for func_name, func_def in getmembers(module, isfunction):
+        for func_name, member in getmembers(module):
             if func_name[-4:].lower() != "task":
                 continue
             task_name = func_name[:-4]
-            tasks[task_name] = Task(task_name, func_def)
-    return tasks
+            if isfunction(member):
+                tasks[task_name] = Task(task_name, member)
+            elif isclass(member):
+                persistent_tasks[task_name] = PersistentTask(task_name, member)
+    return tasks, persistent_tasks

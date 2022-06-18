@@ -19,7 +19,7 @@
 # class TaskOutput:
 #    def __init__(self, ):
 
-from tasks import parse_tasks
+from task import parse_tasks
 
-tasks = parse_tasks()
-print(tasks)
+tasks, persistent_tasks = parse_tasks()
+print(tasks, persistent_tasks)
