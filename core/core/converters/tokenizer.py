@@ -3,7 +3,7 @@ from typing import List
 import spacy
 from spacy.tokens import Doc, Token
 
-from lib import config
+from core.lib import config
 
 
 class NautToken:

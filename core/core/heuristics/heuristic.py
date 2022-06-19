@@ -3,7 +3,7 @@ from abc import ABC
 from typing import List
 
 import yaml
-
+from core.task.task import Task
 
 class Check:
     def __init__(self, check_path: str):

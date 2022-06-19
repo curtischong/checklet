@@ -3,14 +3,22 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from django.http import JsonResponse
+from .engine_gateway import handle_request
 
 class ContentView(APIView):
 
     def post(self, request, *args, **kwargs):
-        feedback = {
-            "text": request.data.get('text')
+        feedback = []
+        try:
+            feedback = handle_request(request.data.get('text'))
+        except Exception as e:
+            print("Error while calling engine")
+            print(e)
+        response = {
+            "text": request.data.get('text'),
+            "tokens": feedback
         }
-        return JsonResponse(feedback)
+        return JsonResponse(response)
 
 class StructureSuggestionView(APIView):
 
