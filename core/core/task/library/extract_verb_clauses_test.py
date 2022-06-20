@@ -11,7 +11,11 @@ sent = "Automated inserting and categorizing 20k+ emails from over 200 clients i
 # sent = "Established a cron testing service in Spring Boot with integrations to databases and multiple platform services to support overall system validation scenarios"
 # sent = "Designed and built a new React web application to amalgamate three core client workflows into one tool, with emphasis on ease of use, and improved functionality"
 
-doc = NautParser().parse(sent)
-clauses = extract_verb_clauses_task(doc.sentences[0])
-for clause in clauses:
-    print(clause)
+def run_test():
+    doc = NautParser().parse(sent)
+    clauses = extract_verb_clauses_task(doc.sentences[0])
+    for clause in clauses:
+        print(clause)
+
+if __name__ == "__main__":
+    run_test()

@@ -1,9 +1,6 @@
 import stanza
 from stanza.models.common.doc import Document, Sentence, Token, Word
 
-stanza.install_corenlp()
-
-
 class NautWord():
     verbs = {"VB", "VBD", "VBG", "VBN", "VBP", "VBZ"}
     nouns = {"NN", "NNS", "NNP", "NNPS"}
@@ -56,6 +53,7 @@ class NautDoc:
 
 class NautParser:
     def __init__(self):
+        stanza.install_corenlp()
         # Stanza's default tokenizer uses a neural network and although it's generally
         # more accurate, it fails to properly segemnt this sentence:
         # Built a Go server that... (The word Go makes it think that it's the start of a second sentence)
