@@ -1,7 +1,7 @@
 from typing import List
 
 from core.converters.tokenizer import Tokenizer
-from core.heuristics.heuristic import Heuristic
+from core.heuristics.heuristic import Resume
 
 
 class EngineRequest:
@@ -13,12 +13,8 @@ class EngineRequest:
 class Engine:
     def __init__(self, config):
         self.tokenizer = Tokenizer(config["tokenizer"])
-        self.heuristics = Heuristic("resume")
+        self.heuristics = Resume()
 
     def handle_request(self, request: EngineRequest) -> List[str]:
-        document = self.tokenizer.tokenize(request.document)
-        # send to dag
-        token_strs = []
-        for token in document.tokens():
-            token_strs.append(repr(token))
-        return token_strs
+        naut_doc = self.tokenizer.tokenize(request.document)
+        return self.heuristics.run(naut_doc)

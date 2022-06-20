@@ -1,9 +1,8 @@
-dag:
-  - find_fp_pronouns:
-      deps: ~
-  - replace_fp_pronouns:
-      deps:
-        # the task it depends on
-        # and also a map of the output names -> our input name
-        - { find_fp_pronouns }:
-            -
+Pipeline:
+  - name: find_fp_pronouns
+    task: find_first_person_pronoun_indexes_
+  - name: token_index_to_token
+    task: token_index_to_token_
+    dependencies:
+      - find_fp_pronouns: { "uni_return": "token_indexes" }
+

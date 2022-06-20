@@ -6,16 +6,20 @@ from inspect import getmembers, isfunction, isclass
 from os.path import dirname, basename, isfile, join
 from typing import List, Mapping, Callable, ClassVar, get_type_hints, Tuple
 
+# parsing constants
+DEPENDENCIES = "dependencies"
 
 class InvalidTaskImplementationError(Exception):
     """invoked when the task implementation was implemented incorrectly"""
     pass
 
 
+# TODO: add a method to return the semantic type of a type (ie. not typing.List[int], but just List[int])
 class Task:
     UNI_RETURN_VAR_NAME = "uni_return"
 
     def __init__(self, name: str, func_def: Callable):
+        self.func_def = func_def
 
         self.is_lambda_task = False
         if name[-1] == "_":
@@ -24,32 +28,34 @@ class Task:
             name = name[:-1]
         self.name = name
 
-        self.inputs: Mapping[str, str] = {}  # map of input_name -> input_type)
-        self.outputs: Mapping[str, str] = {}  # map of output_name -> output_type)
+        self.inputs: Mapping[str, str] = {}  # map of input_name -> input_type
+        self.outputs: Mapping[str, str] = {}  # map of output_name -> output_type
+        self.output_names: List[str] = []  # ordered list of output_names from function
 
         # parse input vars
         type_hints = get_type_hints(func_def)
         for var, var_type in type_hints.items():
             if var == "return":
                 continue
-            self.inputs[var] = str(var_type)
+            var_type_str = str(var_type)
+            self.inputs[var] = var_type_str.replace("typing.", "")
 
         # parse output vars
         return_types = self._get_return_types(str(type_hints["return"]))
         self._init_outputs(return_types, func_def)
 
-        self.is_feedback_task = False
-        if return_types == ["Feedback"]:
-            self.is_feedback_task = True
+        self.is_feedback_task = True if return_types == ["Feedback"] else False
 
     def _init_outputs(self, return_types: List[str], func_def: Callable):
         if len(return_types) == 1:
             # this function only returns one variable. This variable has a default name
             self.outputs[self.UNI_RETURN_VAR_NAME] = return_types[0]
+            self.output_names.append(self.UNI_RETURN_VAR_NAME)
             return
         return_names = self._get_return_names(func_def, len(return_types))
         for i in range(len(return_types)):
             self.outputs[return_names[i]] = return_types[i]
+            self.output_names.append(return_names[i])
 
     # since return types are always tuples, we need to extract
     # the individual return types in each idx of the tuple.
@@ -136,8 +142,7 @@ def parse_tasks() -> Tuple[Mapping[str, Task], Mapping[str, PersistentTask]]:
     task_directory = join(dirname(__file__), "library", "*.py")
     task_modules = []
 
-    # auto-import all checks so they're in the namespace
-    # we need to do this so
+    # auto-import all checks, so they're in the namespace
     for f in glob.glob(task_directory):
         if not isfile(f):
             continue

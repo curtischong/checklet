@@ -1,4 +1,4 @@
-from lib.config import Tokenizer
+from core.lib.config import Tokenizer
 
 
 class PersistentTaskTestTask:
