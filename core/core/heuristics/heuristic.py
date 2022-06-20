@@ -1,10 +1,10 @@
 import glob
 import os
 from abc import ABC
-from typing import List, Mapping
+from typing import Any, List, Mapping
 
 import yaml
-from core.converters.tokenizer import NautDoc
+from core.converters.input.naut_parser import NautDoc
 from core.dag.node import Node
 from core.dag.dag import DAG
 
@@ -18,7 +18,7 @@ class Check:
         pipeline = config["Pipeline"]
         self.dag = DAG(self.name, pipeline)
 
-    def run(self, data: Mapping[str, any]) -> List[Node]:
+    def run(self, data: Mapping[str, Any]) -> List[Node]:
         return self.dag.run(**data)
 
 
@@ -40,7 +40,7 @@ class Resume(Heuristic):
     def __init__(self):
         super().__init__("resume")
 
-    def run(self, doc: NautDoc) -> List[str]:
+    def run(self, doc: NautDoc) -> List[Any]:
         suggestions = []
         # TODO: execute concurrently, stream results eagerly to client
         for check in self.checks:

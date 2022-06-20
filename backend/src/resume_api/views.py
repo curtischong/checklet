@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework import permissions
 from django.http import JsonResponse
 from .engine_gateway import handle_request
+from core.converters.output.json import get_json_friendly
 
 class ContentView(APIView):
 
@@ -11,12 +12,13 @@ class ContentView(APIView):
         feedback = []
         try:
             feedback = handle_request(request.data.get('text'))
+            feedback = get_json_friendly(feedback)
         except Exception as e:
             print("Error while calling engine")
             print(e)
         response = {
             "text": request.data.get('text'),
-            "tokens": feedback
+            "feedback": feedback
         }
         return JsonResponse(response)
 

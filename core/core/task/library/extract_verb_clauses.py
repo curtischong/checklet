@@ -1,6 +1,6 @@
 from typing import List
 
-from core.converters.naut_parser import NautSentence, NautWord
+from core.converters.input.naut_parser import NautSentence, NautWord
 
 words_to_trim = {"CC", ",", "."}  # helps us trim excess words
 

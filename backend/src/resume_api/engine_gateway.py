@@ -9,10 +9,7 @@ def create_engine():
     if engine == None:
         __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         config = Config(os.path.join(__location__, "engine_config.yaml"))
-        tokenizer = config.tokenizer()
-        engine_config = {
-            "tokenizer": tokenizer
-        }
+        engine_config = {}
         engine = Engine(engine_config)
 
 def handle_request(user_input: str):

@@ -1,6 +1,6 @@
 from typing import List
 
-from core.converters.naut_parser import NautDoc
+from core.converters.input.naut_parser import NautDoc
 
 
 def find_first_person_pronoun_indexes_task(naut_doc: NautDoc) -> List[int]:

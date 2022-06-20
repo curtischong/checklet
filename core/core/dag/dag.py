@@ -3,6 +3,7 @@ from collections import defaultdict, deque
 from typing import Mapping, List
 
 import networkx as nx
+from typing import Any
 
 from core.dag.node import Node, TaskError
 from core.task.index import lambda_tasks, persistent_tasks
@@ -20,7 +21,7 @@ class GraphExecutionError(Exception):
 
 
 class DAG:
-    def __init__(self, check: str, pipeline: Mapping[any, any]):
+    def __init__(self, check: str, pipeline: Mapping[Any, Any]):
         self.check = check
         self.name_to_node: Mapping[str, Node] = {}  # map from node name -> node
         self.edges: Mapping[Node, set[Node]] = defaultdict(set)  # map node -> edges (set of nodes)
@@ -39,7 +40,7 @@ class DAG:
             if node not in self.parents:
                 self.roots.append(node)
 
-    def _create_nodes(self, pipeline: Mapping[any, any]):
+    def _create_nodes(self, pipeline: Mapping[Any, Any]):
         # create nodes
         for entry in pipeline:
             name = entry["name"]
@@ -53,7 +54,7 @@ class DAG:
             else:
                 raise TaskError(f"task {name} is not defined")
 
-    def _create_edges(self, pipeline: Mapping[any, any]):
+    def _create_edges(self, pipeline: Mapping[Any, Any]):
         for entry in pipeline:
             node = self.name_to_node[entry["name"]]
             if DEPENDENCIES not in entry:
@@ -66,7 +67,7 @@ class DAG:
                     self.edges[parent].add(node)
                     self.parents[node].add(parent)
 
-    def _parse_and_check_deps(self, pipeline: Mapping[any, any]):
+    def _parse_and_check_deps(self, pipeline: Mapping[Any, Any]):
         for entry in pipeline:
             node = self.name_to_node[entry["name"]]
             if DEPENDENCIES not in entry:
