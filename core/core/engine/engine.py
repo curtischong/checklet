@@ -1,6 +1,6 @@
 from typing import List
 
-from core.converters.tokenizer import Tokenizer
+from core.converters.naut_parser import NautParser
 from core.heuristics.heuristic import Resume
 
 
@@ -12,9 +12,9 @@ class EngineRequest:
 
 class Engine:
     def __init__(self, config):
-        self.tokenizer = Tokenizer(config["tokenizer"])
+        self.naut_parser = NautParser()
         self.heuristics = Resume()
 
     def handle_request(self, request: EngineRequest) -> List[str]:
-        naut_doc = self.tokenizer.tokenize(request.document)
+        naut_doc = self.naut_parser.parse(request.document)
         return self.heuristics.run(naut_doc)

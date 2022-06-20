@@ -1,8 +1,5 @@
-from core.lib.config import Tokenizer
-
-
 class PersistentTaskTestTask:
-    def __init__(self, config: Tokenizer):
+    def __init__(self):
         self.num = 3
 
     def process(self, a: int) -> int:
