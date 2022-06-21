@@ -1,13 +1,28 @@
 import stanza
-from stanza.models.common.doc import Document, Sentence, Token, Word
+from stanza.models.common.doc import Document, Sentence, Token
 
-class NautWord():
+
+# tokens are contiguous pieces of characters that are separated by whitespace/punctuation
+# note that hyphens are their own tokens, so hand-made is considered as 3 tokens.
+class NautToken:
     verbs = {"VB", "VBD", "VBG", "VBN", "VBP", "VBZ"}
     nouns = {"NN", "NNS", "NNP", "NNPS"}
 
-    def __init__(self, word: Word):
-        self.text = word.text
-        self.pos_tag = word.xpos
+    def __init__(self, token: Token):
+        token.naut_token = self
+        self.token = token
+        self.text = token.text
+        self.ner = token.ner  # named entity recognition tag
+
+        # In Stanza, there is a further abstraction called a word. This is for
+        # languages whose tokens can be comprised of multiple words. In english,
+        # there is a one-to-one mapping from tokens to words.
+        # But in French, the word "du" comprises 2 words: de, le
+        # we don't care about words for now, so here, we
+        # save the word's POS tag to our token.
+        self.word = tokens.words[0]
+        self.pos_tag = self.word.xpos
+        self.pos = self.word.pos  # the position of the first character in the token (relative to the start of the doc)
 
         self.is_verb = self.pos_tag in self.verbs
         self.is_noun = self.pos_tag in self.nouns
@@ -16,23 +31,13 @@ class NautWord():
         return str(self.text)
 
 
-# NautTokens are composed of related words. e.g. Eiffel Tower
-class NautToken():
-    def __init__(self, token: Token):
-        self.words = [NautWord(word) for word in token.words]
-
-    def __repr__(self):
-        return str(self.words)
-
-
 # TODO: consider storing the tokens as a constituent tree
-class NautSentence():
+class NautSentence:
     def __init__(self, sentence: Sentence):
+        sentence.naut_sentence = self
         self.sentence = sentence
         self.tokens = [NautToken(token) for token in sentence.tokens]
-        self.words = []
-        for token in self.tokens:
-            self.words.extend(token.words)
+        self.entities = sentence.entities
         # TODO: have an array of named entities. I think we extract them from the tokens
 
     def __repr__(self):
@@ -41,11 +46,12 @@ class NautSentence():
 
 class NautDoc:
     def __init__(self, doc: Document):
+        doc.naut_doc = self
         self.doc = doc
         self.sentences = [NautSentence(sent) for sent in doc.sentences]
-        self.words = []
+        self.tokens = []
         for sentence in self.sentences:
-            self.words.extend(sentence.words)
+            self.tokens.extend(sentence.tokens)
 
     def __repr__(self):
         return str(self.sentences)
