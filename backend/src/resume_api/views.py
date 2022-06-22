@@ -17,7 +17,7 @@ class ContentView(APIView):
             print("Error while calling engine")
             print(e)
         response = {
-            "text": request.data.get('text'),
+            "inputText": request.data.get('text'),
             "feedback": feedback
         }
         return JsonResponse(response)

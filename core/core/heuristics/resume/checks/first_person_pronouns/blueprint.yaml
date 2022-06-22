@@ -1,8 +1,0 @@
-Pipeline:
-  - name: find_fp_pronouns
-    task: find_first_person_pronoun_indexes_
-  - name: word_index_to_word
-    task: word_index_to_word_
-    dependencies:
-      - find_fp_pronouns: { "uni_return": "word_indexes" }
-

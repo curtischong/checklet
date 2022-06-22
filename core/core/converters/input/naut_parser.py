@@ -20,7 +20,7 @@ class NautToken:
         # But in French, the word "du" comprises 2 words: de, le
         # we don't care about words for now, so here, we
         # save the word's POS tag to our token.
-        self.word = tokens.words[0]
+        self.word = self.token.words[0]
         self.pos_tag = self.word.xpos
         self.pos = self.word.pos  # the position of the first character in the token (relative to the start of the doc)
 

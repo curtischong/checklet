@@ -17,12 +17,13 @@ class TaskError(Exception):
 
 # DAG node that wraps a Task object
 class Node:
-    def __init__(self, name: str, task: Task):
-        self.input_param_mapping = {}  # maps parent output var -> input param
+    def __init__(self, name: str, task: Task, outputs: List[str]):
+        self.input_param_mapping = {}  # maps parent, output var -> input param
         self.name = name
         self.task = task
-        self.output: Any = None
         self.input_args = {}  # maps input arg name -> input arg
+        self.output_names = outputs
+        self.named_outputs = {}
 
     def set_input_param_mapping(self, param_mapping: Mapping[Tuple[str, str], str]):
         self.input_param_mapping = param_mapping
@@ -68,12 +69,11 @@ class Node:
         if len(self.task.output_names) != len(output_args):
             raise TaskError(
                 f"length of node: {self.name} return values, does not match length of output values")
-        named_outputs = {}
         for i in range(len(output_args)):
-            named_outputs[self.task.output_names[i]] = output_args[i]
-        return named_outputs
+            self.named_outputs[self.output_names[i]] = output_args[i]
+        return self.named_outputs
 
     def run(self) -> Any:
+        assert(self._is_schedulable())
         outputs = self.task.func_def(**self.input_args)
-        self.output = outputs
         return self._name_outputs([outputs])

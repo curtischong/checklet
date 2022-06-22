@@ -3,7 +3,10 @@
 ### Setup
 
 ```
-./init.sh
+virtualenv venv -p python3.9
+source venv/bin/activate
+pip install -r requirements.txt
+brew install postgresql
 ```
 
 Ask Dhvani for a .env file with DB config info.

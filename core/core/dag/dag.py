@@ -47,10 +47,11 @@ class DAG:
             if name in self.name_to_node:
                 raise GraphStructureError(f"node {name} is defined more than once")
             task = entry["task"]
+            outputs = entry["outputs"]
             if task in lambda_tasks:
-                self.name_to_node[name] = Node(name, lambda_tasks[task])
+                self.name_to_node[name] = Node(name, lambda_tasks[task], outputs)
             elif task in persistent_tasks:
-                self.name_to_node[name] = Node(name, persistent_tasks[task])
+                self.name_to_node[name] = Node(name, persistent_tasks[task], outputs)
             else:
                 raise TaskError(f"task {name} is not defined")
 
@@ -61,9 +62,11 @@ class DAG:
                 continue
             deps = entry[DEPENDENCIES]
 
-            for dep in deps:
-                for p_name in dep.keys():
-                    parent = self.name_to_node[p_name]
+            for parent in deps:
+                for parent_name in parent.keys():
+                    if parent_name not in self.name_to_node:
+                        raise GraphStructureError(f"node {parent_name} is not defined")
+                    parent = self.name_to_node[parent_name]
                     self.edges[parent].add(node)
                     self.parents[node].add(parent)
 
@@ -74,10 +77,10 @@ class DAG:
                 continue
             deps = entry[DEPENDENCIES]
 
-            node_inputs = copy.deepcopy(node.task.inputs)  # input arg -> type
+            node_inputs = node.task.inputs  # input arg -> type
             node_input_param_mappings = {}  # (parent, parent arg output name) -> node arg input name
-            for dep in deps:
-                for parent_name, param_name_mapping in dep.items():
+            for parent in deps:
+                for parent_name, param_name_mapping in parent.items():
                     parent = self.name_to_node[parent_name]
                     for parent_out_param, node_in_param in param_name_mapping.items():
                         if node_in_param not in node_inputs:

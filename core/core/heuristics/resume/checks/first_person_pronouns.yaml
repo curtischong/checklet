@@ -1,0 +1,17 @@
+# ideas: keep the mapping of output to inputs as a map. don't do the "->" stuff
+# remove uni returns. you have to always name return values, even if it's returning one value
+# support underscores for function returns you don't care about
+Pipeline:
+  - name: find_fp_pronouns
+    task: find_first_person_pronoun_indexes_
+    outputs: ["pronouns"]
+
+Feedback:
+  shortDesc: "Consider changing {pronouns[i]} to the"
+  longDesc: "This will make your resume be in third person."
+  srcNautTokens: "pronouns" # must be a List[NautTokens].. these are the words you're highlighting
+
+TruePositives:
+  - { old: "I made our server 10% faster", new: "I made the server 10% faster" }
+TrueNegatives:
+  - "I made the server 10% faster"

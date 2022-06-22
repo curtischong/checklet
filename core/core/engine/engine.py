@@ -2,7 +2,7 @@ from typing import List, Any
 
 from core.converters.input.naut_parser import NautParser
 from core.heuristics.heuristic import Resume
-
+from core.heuristics.feedback import Feedback
 
 class EngineRequest:
     def __init__(self, document: str, heuristic="resume"):
@@ -10,8 +10,8 @@ class EngineRequest:
         self.heuristic = heuristic
 
 class EngineResponse:
-    def __init__(self, output: List[Any]):
-        self.response = output
+    def __init__(self, feedback: List[Feedback]):
+        self.response = feedback
 
 class Engine:
     def __init__(self, config):
