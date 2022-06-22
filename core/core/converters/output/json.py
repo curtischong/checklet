@@ -6,10 +6,16 @@ def get_json_friendly(output: EngineResponse):
     json_output = []
 
     for feedback in output.response:
-         json_output.append({
+        srcNautWord = feedback.srcNautToken.word
+        json_output.append({
             "shortDesc": feedback.shortDesc,
             "longDesc": feedback.longDesc,
-            "srcToken": feedback.srcNautToken.word,
+            "srcWord": {
+                "id": srcNautWord.id,
+                "text": srcNautWord.text,
+                "startChar": srcNautWord.start_char,
+                "endChar": srcNautWord.end_char,
+            },
         })
 
     return json_output

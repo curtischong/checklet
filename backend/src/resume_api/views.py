@@ -20,7 +20,12 @@ class ContentView(APIView):
             "inputText": request.data.get('text'),
             "feedback": feedback
         }
-        return JsonResponse(response)
+        try:
+            json_response = JsonResponse(response)
+        except Exception as e:
+            print("Could not convert to JSON")
+            print(e)
+        return json_response
 
 class StructureSuggestionView(APIView):
 
