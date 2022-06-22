@@ -1,12 +1,12 @@
 from typing import List
 
-from core.converters.input.naut_parser import NautSentence, NautToken
+from core.converters.input.naut_parser import NautSent, NautToken
 
 tokens_to_trim = {"CC", ",", "."}  # helps us trim excess tokens
 
 
 # We define clauses as
-def extract_verb_clauses_task(sentence: NautSentence) -> List[NautToken]:
+def extract_verb_clauses_task(sentence: NautSent) -> List[NautToken]:
     clauses = []
     cur_clause = []
     cur_clause_has_noun = False

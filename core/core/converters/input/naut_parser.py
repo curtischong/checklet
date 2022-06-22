@@ -32,9 +32,9 @@ class NautToken:
 
 
 # TODO: consider storing the tokens as a constituent tree
-class NautSentence:
+class NautSent:
     def __init__(self, sentence: Sentence):
-        sentence.naut_sentence = self
+        sentence.naut_sent = self
         self.sentence = sentence
         self.tokens = [NautToken(token) for token in sentence.tokens]
         self.entities = sentence.entities
@@ -48,7 +48,7 @@ class NautDoc:
     def __init__(self, doc: Document):
         doc.naut_doc = self
         self.doc = doc
-        self.sentences = [NautSentence(sent) for sent in doc.sentences]
+        self.sentences = [NautSent(sent) for sent in doc.sentences]
         self.tokens = []
         for sentence in self.sentences:
             self.tokens.extend(sentence.tokens)
