@@ -1,4 +1,4 @@
-const baseUrl = "http://localhost:5000/";
+const baseUrl = "https://nautilus-backend-354213.nn.r.appspot.com/";
 export class Api {
     // can refactor if need to do deletes, etc to have extended by each requestType
     // need to see how cors will work in prod
@@ -22,7 +22,7 @@ export class Api {
 
     static structureSuggestions = async (payload) => {
         const data = await Api.createRequest(
-            "resumes/structure/suggestions",
+            "structure/suggestions",
             "POST",
             payload,
         );

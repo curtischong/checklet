@@ -5,11 +5,9 @@
 ```
 virtualenv venv -p python3.9
 source venv/bin/activate
-pip install -r requirements.txt
-brew install postgresql
+pip install --upgrade pip
+pip install -r requirements-dev.txt
 ```
-
-Ask Dhvani for a .env file with DB config info.
 
 ### Run
 
@@ -17,5 +15,8 @@ Ask Dhvani for a .env file with DB config info.
 make run
 ```
 
-- Admin details
-  - U: fydp-admin, P: pass
+### Deploy
+
+```
+./deploy.sh`
+```

@@ -1,2 +1,2 @@
 run:
-	python src/manage.py runserver 5000 --noreload
+	PORT=5000 python main.py
