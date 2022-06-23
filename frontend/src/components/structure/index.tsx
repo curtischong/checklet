@@ -8,6 +8,8 @@ import {
     Draggable,
     DropResult,
 } from "react-beautiful-dnd";
+import { Api } from "../../api/Api";
+
 import css from "./structure.module.scss";
 
 export enum SectionTypes {
@@ -64,17 +66,23 @@ export const Structure: React.FC = () => {
 
     const analyzeOrder = async () => {
         // TODO: change to Axios
-        const response = await fetch(
-            "http://localhost:5000/resumes/structure/suggestions",
-            {
-                method: "POST",
-                body: JSON.stringify({ structure: sections }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            },
-        );
+        // const response = await fetch(
+        //     "http://localhost:5000/resumes/structure/suggestions",
+        //     {
+        //         method: "POST",
+        //         body: JSON.stringify({ structure: sections }),
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //     },
+        // );
+        const response = await Api.structureSuggestions({
+            structure: sections,
+        });
+        console.log(response);
         const data = await response.json();
+        console.log(data);
+        // const data = await response.json();
         setSuggestedOrder(data.structure);
     };
 
