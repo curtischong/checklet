@@ -56,17 +56,18 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
     };
 
     const analyzeText = async () => {
-        if (quillRef === null) {
+        if (quillRef === null || quillRef.current === null) {
             return;
         }
-        const text = quillRef.current.getEditor().getText();
+        const currQuill: any = quillRef.current;
+        const text = currQuill.getEditor().getText();
         const response = await Api.analyzeResume({ text });
 
         const feedback = response.feedback;
 
         let idx = 0;
         // group feedback by category
-        const categories = feedback.reduce((r, a) => {
+        const categories = feedback.reduce((r: any, a: any) => {
             if (a.shortDesc in r) {
                 r[a.shortDesc].suggestions.push(a);
             } else {
@@ -81,7 +82,7 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
 
         Object.keys(categories).forEach((key: any) => {
             categories[key].suggestions.forEach((sugg: any) => {
-                quillRef.current
+                currQuill
                     .getEditor()
                     .formatText(
                         sugg.srcWord.startChar,
