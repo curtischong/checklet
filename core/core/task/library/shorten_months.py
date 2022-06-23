@@ -1,10 +1,10 @@
 from typing import List
 
-from core.converters.input.naut_parser import NautSentence, NautToken
+from core.converters.input.naut_parser import NautSent, NautToken
 
 MONTHS = {"JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"}
 
-def shorten_months(sentence: NautSentence) -> List[NautToken]:
+def shorten_months(sentence: NautSent) -> List[NautToken]:
     shortened_month_sentence = []
     for token in sentence.tokens:
         if token.text.upper() in MONTHS:

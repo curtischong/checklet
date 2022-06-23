@@ -2,7 +2,11 @@ import { Divider } from "antd";
 import React from "react";
 
 import { SuggestionMetric } from "./suggestionmetric";
-import { LengthMetric, SuggestionCategory } from "./suggestionsTypes";
+import {
+    LengthMetric,
+    Suggestion,
+    SuggestionCategory,
+} from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
 import { SuggestionCard } from "./suggestioncard";
 
@@ -34,35 +38,15 @@ const metrics: LengthMetric[] = [
     },
 ];
 
-const suggestions: SuggestionCategory[] = [
-    {
-        categoryName: "Brevity",
-        color: "#CAE2F1",
-        suggestions: [
-            {
-                suggestionText: "bullet points should be shorter",
-            },
-            {
-                suggestionText: "you should have less bullet points",
-            },
-        ],
-    },
-    {
-        categoryName: "Another category",
-        color: "#DCBAE5",
-        suggestions: [{ suggestionText: "hi" }],
-    },
-    {
-        categoryName: "hehehefhsoifhsof",
-        color: "#CCEAA5",
-        suggestions: [
-            { suggestionText: "dfiojgdfg" },
-            { suggestionText: "soifiosjfi" },
-        ],
-    },
-];
+export type SuggestionsContainerProps = {
+    suggestions: SuggestionCategory[];
+};
 
-export const SuggestionsContainer: React.FC = () => {
+export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
+    props: SuggestionsContainerProps,
+) => {
+    const { suggestions } = props;
+
     return (
         <div className="col-span-2">
             <div className="font-bold pb-4 pt-1">Suggestions</div>
@@ -71,10 +55,11 @@ export const SuggestionsContainer: React.FC = () => {
                     <SuggestionMetric {...metric} key={index} />
                 ))}
                 <Divider className={css.divider} />
-
-                {suggestions.map((suggestion, index) => (
-                    <SuggestionCard {...suggestion} key={index} />
-                ))}
+                {/* TODO: Add zero state */}
+                {suggestions != null &&
+                    suggestions.map((cat: any, index) => (
+                        <SuggestionCard {...cat} key={index} />
+                    ))}
             </div>
         </div>
     );

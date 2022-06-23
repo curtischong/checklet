@@ -5,11 +5,18 @@ export type LengthMetric = {
 };
 
 export type SuggestionCategory = {
-    categoryName: string;
+    categoryName?: string; // don't have categories in backend yet
     suggestions: Suggestion[];
     color: string; // could use Color library instead
 };
 
 export type Suggestion = {
-    suggestionText: string;
+    shortDesc: string;
+    longDesc: string;
+    srcWord: {
+        id: number;
+        text: string;
+        startChar: number;
+        endChar: number;
+    };
 };

@@ -65,25 +65,10 @@ export const Structure: React.FC = () => {
     }, [sections]);
 
     const analyzeOrder = async () => {
-        // TODO: change to Axios
-        // const response = await fetch(
-        //     "http://localhost:5000/resumes/structure/suggestions",
-        //     {
-        //         method: "POST",
-        //         body: JSON.stringify({ structure: sections }),
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //     },
-        // );
         const response = await Api.structureSuggestions({
             structure: sections,
         });
-        console.log(response);
-        const data = await response.json();
-        console.log(data);
-        // const data = await response.json();
-        setSuggestedOrder(data.structure);
+        setSuggestedOrder(response.structure);
     };
 
     const handleCheckboxChange = (index: number) => {

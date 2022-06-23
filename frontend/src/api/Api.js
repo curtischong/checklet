@@ -1,32 +1,24 @@
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-
-// const router = useRouter();
-
-// const baseUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ?
-// "https://nautilus-fydp.herokuapp.com/" : "https://nautilus-fydp.herokuapp.com/";
-const baseUrl = "https://localhost:5000";
+const baseUrl = "http://localhost:5000/";
 export class Api {
-    static createRequest = (endpoint, requestType, payload) =>
-        new Promise((resolve, reject) => {
-            console.log(baseUrl);
-            try {
-                const response = fetch(`${baseUrl}${endpoint}`, {
-                    method: requestType,
-                    mode: "no-cors",
-                    headers: {
-                        "Content-Type": `application/json`,
-                    },
-                    body: payload,
-                });
-                resolve(response.data);
-            } catch (e) {
-                const {
-                    response: { data },
-                } = e;
-                reject(data);
-            }
+    // can refactor if need to do deletes, etc to have extended by each requestType
+    // need to see how cors will work in prod
+    static createRequest = async (endpoint, requestType, payload) => {
+        const response = await fetch(`${baseUrl}${endpoint}`, {
+            method: requestType,
+            headers: {
+                "Content-Type": `application/json`,
+            },
+            body: JSON.stringify(payload),
         });
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+
+        if (response.status !== 204) {
+            return response.json();
+        }
+        return undefined;
+    };
 
     static structureSuggestions = async (payload) => {
         const data = await Api.createRequest(
