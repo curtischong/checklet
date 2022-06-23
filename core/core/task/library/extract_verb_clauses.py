@@ -1,41 +1,54 @@
 from typing import List
 
-from core.converters.input.naut_parser import NautSent, NautToken
-
-tokens_to_trim = {"CC", ",", "."}  # helps us trim excess tokens
+from core.converters.input.naut_parser import NautDoc, NautSent, NautToken
 
 
-# We define clauses as
-def extract_verb_clauses_task(sentence: NautSent) -> List[NautToken]:
+# This task extracts the verb clauses for each Task
+# Verb clauses are "the things that are going on in this sentence"
+# they are called verb clauses because they always start with a verb.
+
+def is_valid_clause(cur_clause: List[NautToken], cur_clause_has_noun: bool):
+    return len(cur_clause) > 1 and cur_clause_has_noun
+
+
+tokens_to_rtrim = {"CC", ",", "."}  # helps us trim excess tokens
+
+
+# rtrim the clauses to remove conjunctions (such as "and") and unwanted punctuation (like commas)
+def rtrim_excess_tokens(cur_clause: List[NautToken]):
+    while cur_clause and cur_clause[-1].pos_tag in tokens_to_rtrim:
+        cur_clause.pop()
+
+
+# This method works by looking at the sentence, then splitting the
+# tokens by verbs. The verb clauses are the tokens in between these splits.
+# Note: A valid verb clause must also contain a noun
+def extract_verb_clauses_for_sentence(sentence: NautSent) -> List[List[NautToken]]:
     clauses = []
     cur_clause = []
     cur_clause_has_noun = False
-
-    def is_valid_clause():
-        return len(cur_clause) > 1 and cur_clause_has_noun
-
-    def rtrim_excess_tokens():
-        while cur_clause and cur_clause[-1].pos_tag in tokens_to_trim:
-            cur_clause.pop()
 
     # TODO: consider splitting on conjunctions
     # TODO: Try to find false positives with the comma
     for token in sentence.tokens:
         if token.is_noun:
             cur_clause_has_noun = True
-        elif token.is_verb or token.text == ",":
+        elif token.is_verb:
             # start a new clause
-            rtrim_excess_tokens()
-            if is_valid_clause():
+            rtrim_excess_tokens(cur_clause)
+            if is_valid_clause(cur_clause, cur_clause_has_noun):
                 clauses.append(cur_clause)
             cur_clause = []
             cur_clause_has_noun = False
-            if token.text == ",":
-                # since we are splitting on ',' we don't want it
-                # to be the first token in the clause
-                continue
         cur_clause.append(token)
-    rtrim_excess_tokens()
-    if is_valid_clause():
+    rtrim_excess_tokens(cur_clause)
+    if is_valid_clause(cur_clause, cur_clause_has_noun):
         clauses.append(cur_clause)
     return clauses
+
+
+def extract_verb_clauses_task(naut_doc: NautDoc) -> List[List[List[NautToken]]]:
+    verb_clauses_in_sentences = []
+    for sentence in naut_doc.sentences:
+        verb_clauses_in_sentences.append(extract_verb_clauses_for_sentence(sentence))
+    return verb_clauses_in_sentences

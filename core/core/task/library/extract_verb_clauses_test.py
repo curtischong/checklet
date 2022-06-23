@@ -3,6 +3,8 @@ from core.task.library.extract_verb_clauses import extract_verb_clauses_task
 
 # sent = "he plays cricket but does not play hockey."
 sent = "Automated inserting and categorizing 20k+ emails from over 200 clients in a CRM by creating an email monitoring REST API using Express, and deployed the service on Azure Cloud with Docker"
+
+
 # sent = "Developed a CI/CD system with Jenkins to automatically test, build, and publish a Scikit-Learn based ML service, reducing test failures by 80% and decreasing deployment time by 50%"
 # sent = "Implemented a host-device communications system in Rust and Node.js to increase data transfer speed by 7x compared to previous methods, enabling the addition of new types of sensors"
 
@@ -13,9 +15,10 @@ sent = "Automated inserting and categorizing 20k+ emails from over 200 clients i
 
 def run_test():
     doc = NautParser().parse(sent)
-    clauses = extract_verb_clauses_task(doc.sentences[0])
+    clauses = extract_verb_clauses_task(doc)
     for clause in clauses:
         print(clause)
+
 
 if __name__ == "__main__":
     run_test()

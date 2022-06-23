@@ -69,12 +69,15 @@ class Node:
         return len(self.task.inputs) == len(self.input_args)
 
     def _name_outputs(self, output_args: List[Any]) -> Mapping[str, Any]:
-        assert (len(self.task.output_names) == len(output_args))
+        assert (len(self.task.output_names) == len(output_args)), \
+            "Task {} has an incorrect number of output_names for its output_args".format(self.name)
         for i in range(len(output_args)):
             self.named_outputs[self.output_names[i]] = output_args[i]
         return self.named_outputs
 
     def run(self) -> Any:
-        assert (self._is_schedulable())
+        assert (self._is_schedulable()), "Task {} is not schedulable".format(self.name)
         outputs = self.task.func_def(**self.input_args)
-        return self._name_outputs([outputs])
+        if not isinstance(outputs, Tuple):
+            outputs = [outputs]
+        return self._name_outputs(outputs)

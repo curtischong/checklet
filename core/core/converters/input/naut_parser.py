@@ -15,6 +15,7 @@ class NautToken:
 
     def __init__(self, token: Token):
         token.naut_token = self
+        self.naut_sent = token.sent.naut_sent if token.sent else None  # reference to the sentence this token is in
         self.token = token
         self.text = token.text
         self.ner = token.ner  # named entity recognition tag
@@ -25,15 +26,24 @@ class NautToken:
         # But in French, the word "du" comprises 2 words: de, le
         # we don't care about words for now, so here, we
         # save the word's POS tag to our token.
-        self.word = self.token.words[0]
-        self.pos_tag = self.word.xpos
-        self.pos = self.word.pos  # the position of the first character in the token (relative to the start of the doc)
+        self._word = self.token.words[0]
+        self.pos_tag = self._word.xpos
+        self.pos = self._word.pos  # the position of the first character in the token (relative to the start of the doc)
 
         self.is_verb = self.pos_tag in self.verbs
         self.is_noun = self.pos_tag in self.nouns
 
     def __repr__(self):
         return str(self.text)
+
+    def __len__(self):
+        return self._word.end_char - self._word.start_char
+
+    def start_pos(self):
+        return self._word.start_char
+
+    def end_pos(self):
+        return self._word.end_char
 
 
 class NautTree:
@@ -88,6 +98,7 @@ class NautSent:
     def __init__(self, sentence: Sentence):
         sentence.naut_sent = self
         self.sentence = sentence
+        self.index = sentence.index
         self.tokens = [NautToken(token) for token in sentence.tokens]
         self.entities = sentence.entities
         self.constituency_tree = self._parse_naut_tree(sentence, self.tokens)
@@ -128,7 +139,10 @@ class NautSent:
         return naut_root
 
     def __repr__(self):
-        return str(self.tokens)
+        return " ".join([str(token) for token in self.tokens])
+
+    def num_chars(self):
+        return len(str(self))
 
 
 class NautDoc:

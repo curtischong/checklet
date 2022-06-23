@@ -2,7 +2,9 @@ from typing import List
 
 from core.converters.input.naut_parser import NautSent, NautToken
 
-MONTHS = {"JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"}
+MONTHS = {"JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER",
+          "DECEMBER"}
+
 
 def shorten_months(sentence: NautSent) -> List[NautToken]:
     shortened_month_sentence = []
