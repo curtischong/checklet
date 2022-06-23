@@ -2,7 +2,7 @@ from typing import List
 
 from core.converters.input.naut_parser import NautDoc, NautToken
 
-MONTHS = {"JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER",
+MONTHS = {"JANUARY", "FEBRUARY", "MARCH", "APRIL", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER",
           "DECEMBER"}
 
 
