@@ -77,6 +77,14 @@ export const Structure: React.FC = () => {
         setSections(items);
     };
 
+    const getOrderStyling = (item: string, section: SectionMetadata) => {
+        if (item !== section.sectionType) {
+            return {
+                backgroundColor: "#DCBAB9",
+            };
+        }
+    };
+
     return (
         <div className="flex-1 container my-8 max-w-screen-lg mx-auto p-5">
             <div className="grid grid-cols-2 gap-4 p-5">
@@ -141,13 +149,10 @@ export const Structure: React.FC = () => {
                             {suggestedOrder.map((item: string, idx: number) => (
                                 <div key={idx} className="flex pb-1">
                                     <div
-                                        style={{
-                                            backgroundColor:
-                                                item ===
-                                                sections[idx].sectionType
-                                                    ? "white"
-                                                    : "#DCBAB9",
-                                        }}
+                                        style={getOrderStyling(
+                                            item,
+                                            sections[idx],
+                                        )}
                                         className={css.suggestedOrder}
                                     >
                                         {item}
