@@ -1,13 +1,15 @@
-
 from typing import Mapping, Any, List
+
 from core.converters.input.naut_parser import NautToken
 from core.dag.node import Node
+
 
 class Feedback:
     def __init__(self, shortDesc: str, longDesc: str, srcNautToken: NautToken):
         self.shortDesc = shortDesc
         self.longDesc = longDesc
         self.srcNautToken = srcNautToken
+
 
 class FeedbackGenerator:
     def __init__(self, check_id: str, feedback_template: Mapping[Any, Any]):

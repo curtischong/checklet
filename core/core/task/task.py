@@ -9,6 +9,7 @@ from typing import List, Mapping, Callable, ClassVar, get_type_hints, Tuple
 # parsing constants
 DEPENDENCIES = "dependencies"
 
+
 class InvalidTaskImplementationError(Exception):
     """invoked when the task implementation was implemented incorrectly"""
     pass
@@ -30,7 +31,7 @@ class Task:
 
         self.inputs: Mapping[str, str] = {}  # map of input_name -> input_type
         self.outputs: Mapping[str, str] = {}  # map of output_name -> output_type
-        self.output_names: List[str] = []  # ordered list of output_names from function
+        self.output_names: List[str] = []  # ordered list of output names from function definition
 
         # parse input vars
         type_hints = get_type_hints(func_def)

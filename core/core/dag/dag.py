@@ -1,9 +1,7 @@
-import copy
 from collections import defaultdict, deque
-from typing import Mapping, List
+from typing import Any, Mapping, List
 
 import networkx as nx
-from typing import Any
 
 from core.dag.node import Node, TaskError
 from core.task.index import lambda_tasks, persistent_tasks
@@ -21,24 +19,27 @@ class GraphExecutionError(Exception):
 
 
 class DAG:
-    def __init__(self, check: str, pipeline: Mapping[Any, Any]):
-        self.check = check
-        self.name_to_node: Mapping[str, Node] = {}  # map from node name -> node
+    def __init__(self, name: str, pipeline: Mapping[Any, Any]):
+        self.name = name
+        self.name_to_node: Mapping[str, Node] = {}  # map node name -> node
         self.edges: Mapping[Node, set[Node]] = defaultdict(set)  # map node -> edges (set of nodes)
         self.parents = defaultdict(set)  # map node -> parents (set of nodes)
         self.roots: List[Node] = []
+        self.leaves: List[Node] = []
 
         self._create_nodes(pipeline)
         self._create_edges(pipeline)
         self._parse_and_check_deps(pipeline)
-        self._find_roots()
+        self._find_roots_and_leaves()
         if not self._is_acyclic():
-            raise GraphStructureError(f"check {self.check} contains a cycle")
+            raise GraphStructureError(f"check {self.name} contains a cycle")
 
-    def _find_roots(self):
+    def _find_roots_and_leaves(self):
         for node in self.name_to_node.values():
             if node not in self.parents:
                 self.roots.append(node)
+            if not self.edges[node]:
+                self.leaves.append(node)
 
     def _create_nodes(self, pipeline: Mapping[Any, Any]):
         # create nodes
@@ -47,13 +48,13 @@ class DAG:
             if name in self.name_to_node:
                 raise GraphStructureError(f"node {name} is defined more than once")
             task = entry["task"]
-            outputs = entry["outputs"]
+            output_names = entry["outputs"]
             if task in lambda_tasks:
-                self.name_to_node[name] = Node(name, lambda_tasks[task], outputs)
+                self.name_to_node[name] = Node(name, lambda_tasks[task], output_names)
             elif task in persistent_tasks:
-                self.name_to_node[name] = Node(name, persistent_tasks[task], outputs)
+                self.name_to_node[name] = Node(name, persistent_tasks[task], output_names)
             else:
-                raise TaskError(f"task {name} is not defined")
+                raise TaskError(f"node: {name} uses undefined task: {task}")
 
     def _create_edges(self, pipeline: Mapping[Any, Any]):
         for entry in pipeline:
@@ -77,21 +78,28 @@ class DAG:
                 continue
             deps = entry[DEPENDENCIES]
 
-            node_inputs = node.task.inputs  # input arg -> type
-            node_input_param_mappings = {}  # (parent, parent arg output name) -> node arg input name
+            node_inputs = node.task.inputs  # maps input arg -> type
+            node_input_param_mappings = {}  # maps (parent, parent arg output name) -> node arg input name
             for parent in deps:
                 for parent_name, param_name_mapping in parent.items():
+                    if parent_name not in self.name_to_node:
+                        raise TaskError(f"node: {node.name} refers to parent: {parent_name} that does not exist")
                     parent = self.name_to_node[parent_name]
+
                     for parent_out_param, node_in_param in param_name_mapping.items():
                         if node_in_param not in node_inputs:
                             raise TaskError(f"task: {node.name} does not accept input arg: {node_in_param}")
-
-                        in_param_type = node_inputs[node_in_param]
-                        out_param_type = parent.task.outputs[parent_out_param]
-                        if in_param_type != out_param_type:
+                        # TODO: list lookup is linear
+                        if parent_out_param not in parent.output_names:
                             raise TaskError(
-                                f"node: {node.name} expects input parameter: {node_in_param} of type: {in_param_type}, got: {out_param_type}")
-                        node_inputs.pop(node_in_param)
+                                f"task: {node.name} refers to non-existent output arg: {parent_out_param} of parent: {parent_name}")
+
+                        # TODO: type check with standard typing model
+                        # in_param_type = node_inputs[node_in_param]
+                        # out_param_type = parent.output_names[parent_out_param]
+                        # if in_param_type != out_param_type:
+                        #     raise TaskError(
+                        #         f"node: {node.name} expects input parameter: {node_in_param} of type: {in_param_type}, got: {out_param_type}")
                         node_input_param_mappings[(parent.name, parent_out_param)] = node_in_param
             node.set_input_param_mapping(node_input_param_mappings)
 
@@ -104,29 +112,19 @@ class DAG:
                 graph.add_edge(node, adj)
         return nx.is_directed_acyclic_graph(graph)
 
-    def _is_leaf(self, n: Node) -> bool:
-        return not self.edges[n]
-
     def run(self, **kwargs) -> List[Node]:
         queue: deque[Node] = deque()
 
         # dependency inject data to all nodes
         for node in self.name_to_node.values():
             node.set_user_inputs(kwargs, queue)
+            if not node.all_inputs_defined():
+                raise GraphStructureError(f"node {node.name} has unaccounted inputs")
+        assert (len(queue) == len(self.roots))
 
-        # all roots should have dependencies satisfied
-        if len(queue) != len(self.roots):
-            roots = set(self.roots)
-            roots.difference([n for n in queue])
-            raise GraphStructureError(f"roots: {str(roots)} missing values")
-
-        # TODO: leaves can be precomputed
-        leaves = []
         while queue:
             node = queue.popleft()
             named_outputs = node.run()
-            if self._is_leaf(node):
-                leaves.append(node)
             for child in self.edges[node]:
                 child.set_inputs(node.name, named_outputs, queue)
-        return leaves
+        return self.leaves

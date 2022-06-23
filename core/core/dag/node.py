@@ -17,13 +17,17 @@ class TaskError(Exception):
 
 # DAG node that wraps a Task object
 class Node:
-    def __init__(self, name: str, task: Task, outputs: List[str]):
-        self.input_param_mapping = {}  # maps parent, output var -> input param
+    def __init__(self, name: str, task: Task, output_names: List[str]):
         self.name = name
         self.task = task
+        self.input_param_mapping = {}  # maps (parent, output param) -> input param
         self.input_args = {}  # maps input arg name -> input arg
-        self.output_names = outputs
-        self.named_outputs = {}
+        self.output_names = output_names  # the names to give the output args
+        self.named_outputs = {}  # maps output name -> output arg
+
+        if len(output_names) != len(self.task.output_names):
+            raise TaskError(
+                f"length of node: {self.name} return values, does not match length of output values")
 
     def set_input_param_mapping(self, param_mapping: Mapping[Tuple[str, str], str]):
         self.input_param_mapping = param_mapping
@@ -57,8 +61,7 @@ class Node:
         if self._is_schedulable():
             queue.append(self)
 
-    # a node is input_defined if the combination of user inputs and input param mappings of parent node outputs
-    # capture all input arguments of self.task
+    # a node is input_defined if input param mappings + injected user inputs = all input args for the task
     def all_inputs_defined(self):
         return len(self.input_args) + len(self.input_param_mapping) == len(self.task.inputs)
 
@@ -66,14 +69,12 @@ class Node:
         return len(self.task.inputs) == len(self.input_args)
 
     def _name_outputs(self, output_args: List[Any]) -> Mapping[str, Any]:
-        if len(self.task.output_names) != len(output_args):
-            raise TaskError(
-                f"length of node: {self.name} return values, does not match length of output values")
+        assert (len(self.task.output_names) == len(output_args))
         for i in range(len(output_args)):
             self.named_outputs[self.output_names[i]] = output_args[i]
         return self.named_outputs
 
     def run(self) -> Any:
-        assert(self._is_schedulable())
+        assert (self._is_schedulable())
         outputs = self.task.func_def(**self.input_args)
         return self._name_outputs([outputs])

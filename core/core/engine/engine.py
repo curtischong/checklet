@@ -1,17 +1,20 @@
-from typing import List, Any
+from typing import List
 
 from core.converters.input.naut_parser import NautParser
-from core.heuristics.heuristic import Resume
 from core.heuristics.feedback import Feedback
+from core.heuristics.heuristic import Resume
+
 
 class EngineRequest:
     def __init__(self, document: str, heuristic="resume"):
         self.document = document
         self.heuristic = heuristic
 
+
 class EngineResponse:
     def __init__(self, feedback: List[Feedback]):
         self.response = feedback
+
 
 class Engine:
     def __init__(self, config):

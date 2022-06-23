@@ -1,6 +1,5 @@
-from typing import List
-
 from core.engine.engine import EngineResponse
+
 
 def get_json_friendly(output: EngineResponse):
     json_output = []
