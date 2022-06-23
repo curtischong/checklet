@@ -16,11 +16,16 @@ class Check:
         with open(check_path, 'r') as stream:
             config = yaml.safe_load(stream)
 
-        pipeline = config["Pipeline"]
-        feedback_template = config["Feedback"]
+        self.config = config
+        self.init_states()
+
+    def init_states(self):
+        pipeline = self.config["Pipeline"]
+        feedback_template = self.config["Feedback"]
         self.dag = DAG(self.name, pipeline)
         self.feedback_generator = FeedbackGenerator(self.name, feedback_template)
         self.feedback = []
+
 
     def gen_feedback(self, computed_leaves: List[Node]) -> List[Feedback]:
         self.feedback = self.feedback_generator.run(computed_leaves)
@@ -53,6 +58,7 @@ class Resume(Heuristic):
         all_feedback = []
         # TODO: execute concurrently, stream results eagerly to client
         for check in self.checks:
+            check.init_states()
             check_feedback = check.run({
                 "naut_doc": doc
             })

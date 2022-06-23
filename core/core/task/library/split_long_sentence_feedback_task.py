@@ -29,7 +29,7 @@ def split_long_sentence_feedback_task(clauses_in_long_sentences: List[List[List[
         first_half_str = format_clauses_into_feedback(first_half)
         second_half_str = format_clauses_into_feedback(second_half)
         long_desc.append(
-            "Consider splitting:<br><br>{} into a first sentence and <br><br>{} into a second sentence".format(
+            "Consider splitting these clauses: \n\n{} into a first sentence and \n\n{} into a second sentence".format(
                 first_half_str, second_half_str))
 
     tokens_to_highlight = []

@@ -4,7 +4,7 @@ Pipeline:
     outputs: ["shortened_month_sentence"]
 
 Feedback:
-  shortDesc: "Consider abbreviating the month"
+  shortDesc: "Consider abbreviating the month to {shortened_month_sentence[i]}"
   longDesc: "Abbreviating the month to 3 letters will help save space."
   srcNautTokens: "shortened_month_sentence" # must be a List[NautTokens].. these are the words you're highlighting
 
