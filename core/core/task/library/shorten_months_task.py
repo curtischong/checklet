@@ -6,7 +6,7 @@ MONTHS = {"JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUS
           "DECEMBER"}
 
 
-def shorten_months(sentence: NautSent) -> List[NautToken]:
+def shorten_months_task(sentence: NautSent) -> List[NautToken]:
     shortened_month_sentence = []
     for token in sentence.tokens:
         if token.text.upper() in MONTHS:

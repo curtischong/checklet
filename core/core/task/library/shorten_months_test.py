@@ -1,5 +1,5 @@
 from core.converters.input.naut_parser import NautParser
-from core.task.library.shorten_months import shorten_months
+from core.task.library.shorten_months_task import shorten_months_task
 
 inputs = [
     "Bob went to the farm in January",
@@ -10,7 +10,7 @@ inputs = [
 def run_test():
     for input in inputs:
         doc = NautParser().parse(input)
-        res = shorten_months(doc.sentences[0])
+        res = shorten_months_task(doc.sentences[0])
         print(res)
 
 if __name__ == "__main__":
