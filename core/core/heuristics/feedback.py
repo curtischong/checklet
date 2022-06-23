@@ -14,28 +14,29 @@ class Feedback:
 class FeedbackGenerator:
     def __init__(self, check_id: str, feedback_template: Mapping[Any, Any]):
         self.check_id = check_id
-        self.shortDescTemplate = feedback_template["shortDesc"]
+        self.short_desc_template = feedback_template["shortDesc"]
         # TODO: We are assuming long desc is currently static, change this
-        self.longDescTemplate = feedback_template["longDesc"]
-        self.srcNautTokensVarName = feedback_template["srcNautTokens"]
+        self.long_desc_template = feedback_template["longDesc"]
+        self.src_naut_tokens_var_name = feedback_template["srcNautTokens"]
 
     def run(self, computed_leaves: List[Node]) -> List[Feedback]:
         check_feedback = []
         src_naut_tokens = []
-        nautTokensVarName = self.srcNautTokensVarName
+        naut_tokens_var_name = self.src_naut_tokens_var_name
 
         for leaf in computed_leaves:
-            if nautTokensVarName in leaf.named_outputs:
-                src_naut_tokens += leaf.named_outputs[nautTokensVarName]
+            if naut_tokens_var_name in leaf.named_outputs:
+                src_naut_tokens += leaf.named_outputs[naut_tokens_var_name]
 
         for idx, token in enumerate(src_naut_tokens):
-            srcNautTokensVar = f"{nautTokensVarName}[{idx}]"
-            shortDesc = self.shortDescTemplate.replace(f"{nautTokensVarName}[i]", srcNautTokensVar)
-            shortDescMap = {
-                nautTokensVarName: src_naut_tokens,
+            src_naut_tokens_var = f"{naut_tokens_var_name}[{idx}]"
+            short_desc = self.short_desc_template.replace(f"{naut_tokens_var_name}[i]", src_naut_tokens_var)
+            long_desc = self.long_desc_template.replace(f"{naut_tokens_var_name}[i]", src_naut_tokens_var)
+            param_map = {
+                naut_tokens_var_name: src_naut_tokens,
             }
-            shortDesc = shortDesc.format(**shortDescMap)
-            longDesc = self.longDescTemplate
-            check_feedback.append(Feedback(shortDesc, longDesc, token))
+            short_desc = short_desc.format(**param_map)
+            long_desc = long_desc.format(**param_map)
+            check_feedback.append(Feedback(short_desc, long_desc, token))
 
         return check_feedback
