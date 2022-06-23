@@ -33,7 +33,8 @@ def split_long_sentence_feedback_task(clauses_in_long_sentences: List[List[List[
                 first_half_str, second_half_str))
 
     tokens_to_highlight = []
-    for sent in clauses_in_long_sentences:
-        for clause in sent:
-            tokens_to_highlight.append(clause)
+    for sentence_clauses in clauses_in_long_sentences:
+        parent_sentence = sentence_clauses[0][0].naut_sent
+        sentence_tokens = parent_sentence.tokens
+        tokens_to_highlight.append(sentence_tokens)
     return long_desc, tokens_to_highlight

@@ -15,7 +15,7 @@ class NautToken:
 
     def __init__(self, token: Token):
         token.naut_token = self
-        self.naut_sent = token.sent.naut_sent if token.sent else None  # reference to the sentence this token is in
+        self.naut_sent: NautSent = token.sent.naut_sent if token.sent else None  # reference to the sentence this token is in
         self.token = token
         self.text = token.text
         self.ner = token.ner  # named entity recognition tag
