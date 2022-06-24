@@ -10,7 +10,7 @@ inputs = [
 def run_test():
     for input in inputs:
         doc = NautParser().parse(input)
-        res = shorten_months_task(doc.sentences[0])
+        res = shorten_months_task(doc)
         print(res)
 
 if __name__ == "__main__":

@@ -1,0 +1,14 @@
+Pipeline:
+  - name: remove_honourifics
+    task: detect_honourifics_
+    outputs: ["honourifics"]
+
+Feedback:
+  shortDesc: "Consider removing {honourifics[i]}"
+  longDesc: "Removing honourifics will help save space."
+  srcNautTokens: "honourifics" # must be a List[NautTokens].. these are the words you're highlighting
+
+TruePositives:
+  - { old: "Bachelor of Software Engineering Honours", new: "Bachelor of Software Engineering" }
+TrueNegatives:
+  - "Bachelor of Computer Science"
