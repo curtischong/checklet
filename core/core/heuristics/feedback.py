@@ -96,7 +96,7 @@ class FeedbackGenerator:
 
         return all_feedback
 
-    def _extract_output_from_computed_leaves(self, computed_leaves: List[Node]) -> dict[str, List[Any]]:
+    def _extract_output_from_computed_leaves(self, computed_leaves: List[Node]) -> dict[str, Any]:
         var_to_output = {}
         for leaf in computed_leaves:
             for key, val in leaf.named_outputs.items():
@@ -116,7 +116,7 @@ class FeedbackGenerator:
                 names.append(src[var_name_start:i - 3])
         return names
 
-    def _num_feedback(self, var_to_output: dict[str, List[Any]]) -> int:
+    def _num_feedback(self, var_to_output: dict[str, Any]) -> int:
         if self.src_naut_tokens_var_name:
             return len(var_to_output[self.src_naut_tokens_var_name])
         elif self.src_naut_sentences_var_name:
@@ -124,7 +124,7 @@ class FeedbackGenerator:
         else:
             raise ValueError(f"unknown number of feedback for Check {self.check_id}")
 
-    def _validate_vars_length(self, num_feedback: int, var_to_output: dict[str, List[Any]],
+    def _validate_vars_length(self, num_feedback: int, var_to_output: dict[str, Any],
                               desc_vars: List[str]) -> None:
         # ensure that all of the variables used by the descriptions have the same length as the number of feedback
 
@@ -144,13 +144,13 @@ class FeedbackGenerator:
 
     # This method replaces the variables in the description template with the actual value for the ith feedback.
     def _inject_desc_vars(self, desc_vars: List[str], desc_template: str, feedback_idx: int,
-                          var_to_output: dict[str, List[Any]]) -> str:
+                          var_to_output: dict[str, Any]) -> str:
         desc = desc_template
         for desc_var in desc_vars:
             desc = desc.replace(f"{{{desc_var}[i]}}", str(var_to_output[desc_var][feedback_idx]))
         return desc
 
-    def _calculate_highlight_ranges(self, feedback_idx: int, var_to_output: dict[str, List[Any]]) -> \
+    def _calculate_highlight_ranges(self, feedback_idx: int, var_to_output: dict[str, Any]) -> \
             Tuple[List[HighlightRange], List[HighlightRange]]:
         highlight_ranges = []
         if self.src_naut_tokens_var_name:
@@ -169,7 +169,7 @@ class FeedbackGenerator:
         return highlight_ranges, highlight_ranges_on_select
 
     def _calculate_highlight_ranges_for_output(
-            self, output_var_name: str, feedback_idx: int, var_to_output: dict[str, List[Any]]
+            self, output_var_name: str, feedback_idx: int, var_to_output: dict[str, Any]
     ) -> List[HighlightRange]:
         highlight_ranges = []
 
