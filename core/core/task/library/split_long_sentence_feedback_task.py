@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from core.converters.input.naut_parser import NautToken
+from core.converters.input.naut_parser import NautToken, NautSent
 
 
 # TODO: remove this task once the yaml feedback becomes more versitile
@@ -11,7 +11,7 @@ def format_clauses_into_feedback(clauses: List[str]):
 
 
 def split_long_sentence_feedback_task(clauses_in_long_sentences: List[List[List[NautToken]]]) -> Tuple[
-    List[str], List[List[NautToken]]]:
+    List[str], List[NautSent], List[List[List[NautToken]]]]:
     long_desc = []
     for sentence_clauses in clauses_in_long_sentences:
         clauses = []
@@ -32,9 +32,9 @@ def split_long_sentence_feedback_task(clauses_in_long_sentences: List[List[List[
             "Consider splitting these clauses: \n\n{} into a first sentence and \n\n{} into a second sentence".format(
                 first_half_str, second_half_str))
 
-    tokens_to_highlight = []
+    sentences_to_highlight = []
     for sentence_clauses in clauses_in_long_sentences:
-        parent_sentence = sentence_clauses[0][0].naut_sent
-        sentence_tokens = parent_sentence.tokens
-        tokens_to_highlight.append(sentence_tokens)
-    return long_desc, tokens_to_highlight
+        sentences_to_highlight.append(sentence_clauses[0][0].naut_sent)
+
+    tokens_to_highlight_on_select = clauses_in_long_sentences
+    return long_desc, sentences_to_highlight, tokens_to_highlight_on_select

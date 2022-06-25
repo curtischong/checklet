@@ -1,4 +1,4 @@
-from core.converters.output.json import get_json_friendly
+from core.converters.output.resume_converter import get_json_friendly
 from core.engine.engine import Engine, EngineRequest
 
 text = "Selected our storage engine by creating our benchmark testing suite tracking latency and memory per operation, as well as total disk usage for various key value stores."

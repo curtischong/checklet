@@ -21,12 +21,13 @@ Pipeline:
       - verb_clauses_in_long_sentences: {
         "clauses_in_long_sentences": "clauses_in_long_sentences"
       }
-    outputs: [ "long_desc", "tokens_to_highlight" ]
+    outputs: [ "long_desc", "sentences_to_highlight", "tokens_to_highlight_on_select" ]
 
 Feedback:
   shortDesc: "Consider splitting this lengthy point into two"
   longDesc: "{long_desc[i]}"
-  srcNautTokens: "tokens_to_highlight"
+  srcNautSentences: "sentences_to_highlight"
+  srcNautTokensOnSelect: "tokens_to_highlight_on_select"
 
 TruePositives:
   - "Selected a storage engine by creating a benchmark testing suite tracking latency and memory per operation, as well as total disk usage for various key value stores."
