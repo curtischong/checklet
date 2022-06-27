@@ -9,6 +9,7 @@ type TextboxProps = {
     updateText: (s: string) => void;
 };
 
+// DEPRECATED, using quill instead
 export const Textbox: React.FC<TextboxProps> = (props: TextboxProps) => {
     const { text, updateText } = props;
 

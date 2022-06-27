@@ -24,7 +24,7 @@ export const SuggestionCard: React.FC<SuggestionCategory> = (
                     <ol>
                         {suggestions.map((suggestion, index) => {
                             return (
-                                <li>
+                                <li key={index}>
                                     Position: {suggestion.srcWord.startChar}{" "}
                                     Word: {suggestion.srcWord.text}{" "}
                                 </li>

@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react";
 import { Api } from "../../../api/Api";
+import { Spin, Button } from "antd";
 import { SuggestionCategory } from "../suggestions/suggestionsTypes";
 import "react-quill/dist/quill.snow.css";
+import classNames from "classnames";
 
 export type TextboxContainerProps = {
     suggestions: SuggestionCategory[];
@@ -14,8 +16,8 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
     props: TextboxContainerProps,
 ) => {
     const { suggestions, updateSuggestions } = props;
+    const [loading, setLoading] = useState(false);
     const [originalText, setOriginalText] = useState("replace me");
-    const quillRef = useRef(null);
 
     // issue with rendering when document not yet defined
     const quill = () => {
@@ -29,6 +31,19 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
         return null;
     }
     const Quill = quill();
+    const quillRef = useRef(Quill);
+
+    const getButtonClasses = () => {
+        let shared =
+            "ml-auto mr-0 bg-transparent text-blue-700 h-[120px] py-1 border border-blue-500 rounded";
+        if (loading) {
+            shared += " disabled";
+        } else {
+            shared +=
+                " hover:bg-blue-500 hover:text-white hover:border-transparent";
+        }
+        return shared;
+    };
 
     const mergeIntervals = (intervals: number[][]) => {
         if (intervals.length < 2) return intervals;
@@ -56,43 +71,46 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
     };
 
     const analyzeText = async () => {
-        if (quillRef === null || quillRef.current === null) {
-            return;
-        }
-        const currQuill: any = quillRef.current;
-        const text = currQuill.getEditor().getText();
-        const response = await Api.analyzeResume({ text });
+        setLoading(true);
+        quillRef.current.editor.enable(false); // disable texting
+        const text = quillRef.current.getEditor().getText().replace(/\n$/, "");
+        try {
+            const response = await Api.analyzeResume({ text });
 
-        const feedback = response.feedback;
+            const feedback = response.feedback;
 
-        let idx = 0;
-        // group feedback by category
-        const categories = feedback.reduce((r: any, a: any) => {
-            if (a.shortDesc in r) {
-                r[a.shortDesc].suggestions.push(a);
-            } else {
-                r[a.shortDesc] = {};
-                r[a.shortDesc].suggestions = [a];
-                // quick hack for colour
-                r[a.shortDesc].color = highlightColors[idx++ % 5];
-            }
+            let idx = 0;
+            // group feedback by category
+            const categories = feedback.reduce((r: any, a: any) => {
+                if (a.shortDesc in r) {
+                    r[a.shortDesc].suggestions.push(a);
+                } else {
+                    r[a.shortDesc] = {};
+                    r[a.shortDesc].suggestions = [a];
+                    // quick hack for colour
+                    r[a.shortDesc].color = highlightColors[idx++ % 5];
+                }
 
-            return r;
-        }, Object.create(null));
+                return r;
+            }, Object.create(null));
 
-        Object.keys(categories).forEach((key: any) => {
-            categories[key].suggestions.forEach((sugg: any) => {
-                currQuill
-                    .getEditor()
-                    .formatText(
-                        sugg.srcWord.startChar,
-                        sugg.srcWord.endChar - sugg.srcWord.startChar,
-                        { "background-color": categories[key].color },
-                    );
+            Object.keys(categories).forEach((key: any) => {
+                categories[key].suggestions.forEach((sugg: any) => {
+                    quillRef.current
+                        .getEditor()
+                        .formatText(
+                            sugg.srcWord.startChar,
+                            sugg.srcWord.endChar - sugg.srcWord.startChar,
+                            { "background-color": categories[key].color },
+                        );
+                });
             });
-        });
 
-        updateSuggestions(Object.values(categories));
+            updateSuggestions(Object.values(categories));
+        } finally {
+            setLoading(false);
+            quillRef.current.editor.enable(true);
+        }
     };
     return (
         <div className="textbox col-span-3">
@@ -100,12 +118,14 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
                 <div className="font-bold my-auto">
                     Paste Your Resume Points
                 </div>
-                <button
-                    className="ml-auto mr-0 bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-1 px-8 border border-blue-500 hover:border-transparent rounded"
+                <Button
+                    style={{ width: "117px", height: "36px" }}
+                    className={getButtonClasses()}
                     onClick={analyzeText}
+                    loading={loading}
                 >
                     Analyze
-                </button>
+                </Button>
             </div>
             <Quill
                 style={{ minHeight: "400px" }}
@@ -114,6 +134,7 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
                 theme="snow"
                 value={originalText}
                 onChange={setOriginalText}
+                disabled={loading}
             />
         </div>
     );
