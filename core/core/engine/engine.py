@@ -1,6 +1,7 @@
 from core.converters.input.naut_parser import NautParser
 from core.heuristics.feedback import Feedback
 from core.heuristics.heuristic import Resume
+from core.task.test.task_parsing_helper import TaskParsingHelper
 
 
 class EngineRequest:
@@ -15,8 +16,12 @@ class EngineResponse:
 
 
 class Engine:
-    def __init__(self, config):
-        self.naut_parser = NautParser()
+    def __init__(self, config, use_task_parsing_helper=False):
+        if use_task_parsing_helper:
+            tph = TaskParsingHelper()
+            self.naut_parser = tph.naut_parser
+        else:
+            self.naut_parser = NautParser()
         self.heuristics = Resume()
 
     def handle_request(self, request: EngineRequest) -> EngineResponse:

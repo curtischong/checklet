@@ -39,6 +39,8 @@ class Task:
             self.inputs[var] = Type(str(type_hint))
 
         # parse output vars
+        if "return" not in type_hints:
+            raise InvalidTaskImplementationError(f"Task {self.name} does not have a return type annotation")
         return_types = get_types(str(type_hints["return"]))
         self._init_outputs(return_types, func_def)
 

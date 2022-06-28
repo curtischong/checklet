@@ -14,10 +14,12 @@
 
 import datetime
 import os
+
 from flask import Flask, request
 from flask_cors import CORS
+
+from core.converters.output.resume_converter import get_json_friendly
 from core.engine.engine import Engine, EngineRequest
-from core.converters.output.json import get_json_friendly
 
 print("Server started on " +
       datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y"), flush=True)
@@ -28,6 +30,7 @@ CORS(app)
 engine_config = {}
 
 engine = Engine(engine_config)
+
 
 def handle_request(user_input: str):
     global engine
@@ -41,6 +44,7 @@ def handle_request(user_input: str):
 def hello():
     """Return a friendly HTTP greeting."""
     return 'Nautilus.'
+
 
 @app.route('/resumes/feedback', methods=['POST'])
 def resume_feedback():
@@ -57,11 +61,12 @@ def resume_feedback():
         }
 
     response = {
-        "inputText":  data["text"],
+        "inputText": data["text"],
         "feedback": feedback
     }
 
     return response
+
 
 @app.route('/structure/suggestions', methods=['POST'])
 def structure_suggestions():
@@ -71,6 +76,7 @@ def structure_suggestions():
     return {
         "structure": ["Skills", "Work Experience", "Volunteering", "Awards", "Education"]
     }
+
 
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
