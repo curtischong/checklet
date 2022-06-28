@@ -1,5 +1,4 @@
 from collections import defaultdict, deque
-from typing import Any, Mapping, List
 
 import networkx as nx
 
@@ -19,13 +18,13 @@ class GraphExecutionError(Exception):
 
 
 class DAG:
-    def __init__(self, name: str, pipeline: Mapping[Any, Any]):
+    def __init__(self, name: str, pipeline: dict[any, any]):
         self.name = name
-        self.name_to_node: Mapping[str, Node] = {}  # map node name -> node
-        self.edges: Mapping[Node, set[Node]] = defaultdict(set)  # map node -> edges (set of nodes)
+        self.name_to_node: dict[str, Node] = {}  # map node name -> node
+        self.edges: dict[Node, set[Node]] = defaultdict(set)  # map node -> edges (set of nodes)
         self.parents = defaultdict(set)  # map node -> parents (set of nodes)
-        self.roots: List[Node] = []
-        self.leaves: List[Node] = []
+        self.roots: list[Node] = []
+        self.leaves: list[Node] = []
 
         self._create_nodes(pipeline)
         self._create_edges(pipeline)
@@ -41,7 +40,7 @@ class DAG:
             if not self.edges[node]:
                 self.leaves.append(node)
 
-    def _create_nodes(self, pipeline: Mapping[Any, Any]):
+    def _create_nodes(self, pipeline: dict[any, any]):
         # create nodes
         for entry in pipeline:
             name = entry["name"]
@@ -56,7 +55,7 @@ class DAG:
             else:
                 raise TaskError(f"node: {name} uses undefined task: {task}")
 
-    def _create_edges(self, pipeline: Mapping[Any, Any]):
+    def _create_edges(self, pipeline: dict[any, any]):
         for entry in pipeline:
             node = self.name_to_node[entry["name"]]
             if DEPENDENCIES not in entry:
@@ -71,7 +70,7 @@ class DAG:
                     self.edges[parent].add(node)
                     self.parents[node].add(parent)
 
-    def _parse_and_check_deps(self, pipeline: Mapping[Any, Any]):
+    def _parse_and_check_deps(self, pipeline: dict[any, any]):
         for entry in pipeline:
             node = self.name_to_node[entry["name"]]
             if DEPENDENCIES not in entry:
@@ -112,7 +111,7 @@ class DAG:
                 graph.add_edge(node, adj)
         return nx.is_directed_acyclic_graph(graph)
 
-    def run(self, **kwargs) -> List[Node]:
+    def run(self, **kwargs: dict) -> list[Node]:
         queue: deque[Node] = deque()
 
         # dependency inject data to all nodes

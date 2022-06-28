@@ -1,14 +1,12 @@
-from typing import List
-
 from core.engine.engine import EngineResponse
 from core.heuristics.feedback import HighlightRange
 
 
-def _get_json_for_ranges(ranges: List[HighlightRange]) -> List[dict[str, int]]:
+def _get_json_for_ranges(ranges: list[HighlightRange]) -> list[dict[str, int]]:
     return [hrange.json() for hrange in ranges]
 
 
-def get_json_friendly(output: EngineResponse) -> List[dict[str, any]]:
+def get_json_friendly(output: EngineResponse) -> list[dict[str, any]]:
     json_output = []
 
     for feedback in output.response:

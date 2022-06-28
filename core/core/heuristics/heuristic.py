@@ -1,14 +1,14 @@
 import glob
 import os
 from abc import ABC
-from typing import Any, List, Mapping
 
 import yaml
-from core.converters.input.naut_parser import NautDoc
-from core.dag.node import Node
-from core.dag.dag import DAG
 
+from core.converters.input.naut_parser import NautDoc
+from core.dag.dag import DAG
+from core.dag.node import Node
 from core.heuristics.feedback import FeedbackGenerator, Feedback
+
 
 class Check:
     def __init__(self, check_path: str):
@@ -26,12 +26,11 @@ class Check:
         self.feedback_generator = FeedbackGenerator(self.name, feedback_template)
         self.feedback = []
 
-
-    def gen_feedback(self, computed_leaves: List[Node]) -> List[Feedback]:
+    def gen_feedback(self, computed_leaves: list[Node]) -> list[Feedback]:
         self.feedback = self.feedback_generator.run(computed_leaves)
         return self.feedback
 
-    def run(self, data: Mapping[str, Any]) -> List[Feedback]:
+    def run(self, data: dict[str, any]) -> list[Feedback]:
         leaves = self.dag.run(**data)
         return self.gen_feedback(leaves)
 
@@ -42,7 +41,7 @@ class Heuristic(ABC):
         self.config_root = os.path.dirname(__file__)
         self.checks = self.parse_checks()
 
-    def parse_checks(self) -> List[Check]:
+    def parse_checks(self) -> list[Check]:
         checks = []
         for check_path in glob.glob(f"{self.config_root}/{self.name}/checks/*.yaml", recursive=True):
             checks.append(Check(check_path))
@@ -54,9 +53,9 @@ class Resume(Heuristic):
     def __init__(self):
         super().__init__("resume")
 
-    def run(self, doc: NautDoc) -> List[Feedback]:
+    def run(self, doc: NautDoc) -> list[Feedback]:
         all_feedback = []
-        # TODO: execute concurrently, stream results eagerly to client
+        # TODO: add concurrency, and stream results eagerly
         for check in self.checks:
             check.init_states()
             check_feedback = check.run({

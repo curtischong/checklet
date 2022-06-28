@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Generator
+from typing import Generator
 
 import stanza
 from stanza.models.common.doc import Document, Sentence, Token
@@ -66,7 +66,7 @@ class NautTree:
         self.children.append(child_tree)
 
     # the NautTokens that are the leaf nodes of this subtree
-    def leaves(self) -> List[NautTree]:
+    def leaves(self) -> list[NautTree]:
         if self.is_leaf():
             return [self]
         leaves = []
@@ -75,7 +75,7 @@ class NautTree:
         return leaves
 
     # returns all tokens under this subtree
-    def tokens(self) -> List[NautToken]:
+    def tokens(self) -> list[NautToken]:
         leaves = self.leaves()
         return [leaf.token for leaf in leaves]
 

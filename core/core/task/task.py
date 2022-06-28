@@ -4,9 +4,11 @@ import importlib
 import inspect
 from inspect import getmembers, isfunction, isclass
 from os.path import dirname, basename, isfile, join
-from typing import List, Mapping, Callable, ClassVar, get_type_hints, Tuple
+from typing import ClassVar, get_type_hints
 
 # parsing constants
+from type.Type import get_types, Type
+
 DEPENDENCIES = "dependencies"
 
 
@@ -15,87 +17,45 @@ class InvalidTaskImplementationError(Exception):
     pass
 
 
-# TODO: add a method to return the semantic type of a type (ie. not typing.List[int], but just List[int])
 class Task:
     UNI_RETURN_VAR_NAME = "uni_return"
 
-    def __init__(self, name: str, func_def: Callable):
+    def __init__(self, name: str, func_def: callable):
         self.func_def = func_def
 
-        self.is_lambda_task = False
         if name[-1] == "_":
-            # this task can be run as a function
-            self.is_lambda_task = True
             name = name[:-1]
         self.name = name
 
-        self.inputs: Mapping[str, str] = {}  # map of input_name -> input_type
-        self.outputs: Mapping[str, str] = {}  # map of output_name -> output_type
-        self.output_names: List[str] = []  # ordered list of output names from function definition
+        self.inputs: dict[str, Type] = {}  # map of input_name -> input_type
+        self.outputs: dict[str, Type] = {}  # map of output_name -> output_type
+        self.ordered_output_names: list[str] = []  # ordered list of output names from function definition
 
         # parse input vars
         type_hints = get_type_hints(func_def)
-        for var, var_type in type_hints.items():
+        for var, type_hint in type_hints.items():
             if var == "return":
                 continue
-            var_type_str = str(var_type)
-            self.inputs[var] = var_type_str.replace("typing.", "")
+            self.inputs[var] = Type(str(type_hint))
 
         # parse output vars
-        return_types = self._get_return_types(str(type_hints["return"]))
+        return_types = get_types(str(type_hints["return"]))
         self._init_outputs(return_types, func_def)
 
-        self.is_feedback_task = True if return_types == ["Feedback"] else False
+        self.is_feedback_task = True if return_types == [Type("Feedback")] else False
 
-    def _init_outputs(self, return_types: List[str], func_def: Callable):
+    def _init_outputs(self, return_types: list[Type], func_def: callable):
         if len(return_types) == 1:
-            # this function only returns one variable. This variable has a default name
+            # functions with only one return value have a special name
             self.outputs[self.UNI_RETURN_VAR_NAME] = return_types[0]
-            self.output_names.append(self.UNI_RETURN_VAR_NAME)
+            self.ordered_output_names.append(self.UNI_RETURN_VAR_NAME)
             return
         return_names = self._get_return_names(func_def, len(return_types))
         for i in range(len(return_types)):
             self.outputs[return_names[i]] = return_types[i]
-            self.output_names.append(return_names[i])
+            self.ordered_output_names.append(return_names[i])
 
-    # since return types are always tuples, we need to extract
-    # the individual return types in each idx of the tuple.
-    # since there is no built-in function to do this, I wrote
-    # this function that parses the string of the tuple to accomplish this
-    def _get_return_types(self, s: str) -> List[str]:
-        s = s.replace("typing.", "")
-        s = s.replace(" ", "")
-        if not s.startswith("Tuple"):
-            return [s]
-        n = len(s)
-        # if there are nested tuples, we use this variable
-        # to know if we are in the outermost tuple
-        rbrackets_remaining = 0
-        ans = []
-        last_var_start = 0
-        for i in range(n):
-            cur = s[i]
-            if cur == "[":
-                if rbrackets_remaining == 0:
-                    last_var_start = i + 1
-                rbrackets_remaining += 1
-            elif cur == "]":
-                rbrackets_remaining -= 1
-                if rbrackets_remaining == 0:
-                    # we are finished parsing
-                    ans.append(s[last_var_start: i])
-                    return ans
-            elif cur == ",":
-                if rbrackets_remaining == 1:
-                    ans.append(s[last_var_start:i])
-                    last_var_start = i + 1
-        raise RuntimeError("this code should never be reached. we are improperly parsing the function return types")
-
-    assert _get_return_types(None, "int") == ["int"]
-    assert _get_return_types(None, "typing.Tuple[typing.List[int], int]") == ["List[int]", "int"]
-    assert _get_return_types(None, "Tuple[Tuple[int, str], int]") == ["Tuple[int,str]", "int"]
-
-    def _get_return_names(self, func_def: Callable, num_return_vals: int) -> List[str]:
+    def _get_return_names(self, func_def: callable, num_return_vals: int) -> list[str]:
         (tree,) = ast.parse(inspect.getsource(func_def)).body
 
         return_statements = [
@@ -107,8 +67,8 @@ class Task:
             """Extract identifiers if present. If not return None"""
             if isinstance(elt, (ast.Tuple,)):
                 # For tuple get id of each item if item is a Name
-                return [x.id for x in elt.elts if isinstance(x, (ast.Name,))]
-            if isinstance(elt, (ast.Name,)):
+                return [x.id for x in elt.elts if isinstance(x, ast.Name)]
+            if isinstance(elt, ast.Name):
                 return [elt.id]
 
         return_names = [get_ids(r.value) for r in return_statements]
@@ -139,7 +99,7 @@ class PersistentTask(Task):
 
 
 # returns two maps: (task_name -> Task) and (task_name -> PersistentTask)
-def parse_tasks() -> Tuple[Mapping[str, Task], Mapping[str, PersistentTask]]:
+def parse_tasks() -> tuple[dict[str, Task], dict[str, PersistentTask]]:
     task_directory = join(dirname(__file__), "library", "*.py")
     task_modules = []
 
@@ -161,3 +121,7 @@ def parse_tasks() -> Tuple[Mapping[str, Task], Mapping[str, PersistentTask]]:
             elif isclass(member):
                 persistent_tasks[task_name] = PersistentTask(task_name, member)
     return tasks, persistent_tasks
+
+
+if __name__ == "__main__":
+    parse_tasks()

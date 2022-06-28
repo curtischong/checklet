@@ -25,7 +25,7 @@ class Node:
         self.output_names = output_names  # the names to give the output args
         self.named_outputs = {}  # maps output name -> output arg
 
-        if len(output_names) != len(self.task.output_names):
+        if len(output_names) != len(self.task.ordered_output_names):
             raise TaskError(
                 f"length of node: {self.name} return values, does not match length of output values")
 
