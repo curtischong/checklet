@@ -1,5 +1,5 @@
-from core.converters.input.naut_parser import NautParser
 from core.task.library.extract_verb_clauses import extract_verb_clauses_task
+from core.task.test.task_parsing_helper import TaskParsingHelper
 
 # sent = "he plays cricket but does not play hockey."
 sent = "Automated inserting and categorizing 20k+ emails from over 200 clients in a CRM by creating an email monitoring REST API using Express, and deployed the service on Azure Cloud with Docker"
@@ -14,7 +14,8 @@ sent = "Automated inserting and categorizing 20k+ emails from over 200 clients i
 # sent = "Designed and built a new React web application to amalgamate three core client workflows into one tool, with emphasis on ease of use, and improved functionality"
 
 def run_test():
-    doc = NautParser().parse(sent)
+    tph = TaskParsingHelper()
+    doc = tph.parse_document(sent)
     clauses = extract_verb_clauses_task(doc)
     for clause in clauses:
         print(clause)

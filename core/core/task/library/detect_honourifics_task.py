@@ -4,6 +4,7 @@ from core.converters.input.naut_parser import NautDoc, NautToken
 
 HONOURIFICS = {"HONOURS", "HONORS"}
 
+
 def detect_honourifics_task(naut_doc: NautDoc) -> List[NautToken]:
     honourifics = []
     for sentence in naut_doc.sentences:

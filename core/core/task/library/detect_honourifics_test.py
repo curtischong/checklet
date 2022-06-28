@@ -1,5 +1,5 @@
-from core.converters.input.naut_parser import NautParser
 from core.task.library.detect_honourifics_task import detect_honourifics_task
+from core.task.test.task_parsing_helper import TaskParsingHelper
 
 inputs = [
     "Honours Bachelor of Software Engineering",
@@ -8,11 +8,14 @@ inputs = [
     "Bachelor of Nautilus"
 ]
 
+
 def run_test():
+    tph = TaskParsingHelper()
     for input in inputs:
-        doc = NautParser().parse(input)
+        doc = tph.parse_document(input)
         res = detect_honourifics_task(doc)
         print(res)
+
 
 if __name__ == "__main__":
     run_test()
