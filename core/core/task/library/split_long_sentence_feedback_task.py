@@ -1,17 +1,15 @@
-from typing import List, Tuple
-
 from core.converters.input.naut_parser import NautToken, NautSent
 
 
 # TODO: remove this task once the yaml feedback becomes more versitile
 # this task helps the split_long_sentences check by outputting the results
 # in a format that is easy for the current FeedbackGenerator to understand
-def format_clauses_into_feedback(clauses: List[str]):
+def format_clauses_into_feedback(clauses: list[str]):
     return "\"" + "\", \"".join(clauses) + "\""
 
 
-def split_long_sentence_feedback_task(clauses_in_long_sentences: List[List[List[NautToken]]]) -> Tuple[
-    List[str], List[NautSent], List[List[List[NautToken]]]]:
+def split_long_sentence_feedback_task(clauses_in_long_sentences: list[list[list[NautToken]]]) -> tuple[
+    list[str], list[NautSent], list[list[list[NautToken]]]]:
     long_desc = []
     for sentence_clauses in clauses_in_long_sentences:
         clauses = []

@@ -105,7 +105,7 @@ class NautSent:
         # TODO: have an array of named entities. I think we extract them from the tokens
 
     # this deep-copies the stanza constituency tree and converts it to naut trees
-    def _parse_naut_tree(self, sentence: Sentence, tokens: List[NautToken]) -> NautTree:
+    def _parse_naut_tree(self, sentence: Sentence, tokens: list[NautToken]) -> NautTree:
         root: Tree = sentence.constituency
         token_idx = 0
         # the idea is to perform DFS to deep copy the Stanza nodes into NautTree Nodes

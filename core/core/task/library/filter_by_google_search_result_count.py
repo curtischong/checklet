@@ -1,6 +1,5 @@
 import locale
 import re
-from typing import List
 
 from bs4 import BeautifulSoup
 from requests import get
@@ -39,7 +38,7 @@ num_results_regex = re.compile('(\S+) results')
 # TODO: consider breaking this up into 2 tasks:
 #  - 1 for doing the google search
 #  - 1 for filtering by the number of results
-def filter_by_google_search_result_count_task(phrases: List[List[NautToken]]) -> List[List[List[NautToken]]]:
+def filter_by_google_search_result_count_task(phrases: list[list[NautToken]]) -> list[list[list[NautToken]]]:
     queries = []
     for phrase in phrases:
         phrase_text = " ".join([str(token) for token in phrase])

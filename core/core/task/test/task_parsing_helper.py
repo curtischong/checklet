@@ -5,7 +5,6 @@
 
 # How to use: run python task_parsing_helper OR (from the root) make serve-naut-parser to start the server!
 from multiprocessing.managers import BaseManager
-from typing import List
 
 from core.converters.input.naut_parser import NautParser, NautDoc, NautSent, NautToken
 
@@ -50,6 +49,6 @@ class TaskParsingHelper:
             print(f"[TaskParsingHelper] WARNING: found {num_sentences} sentences when parsing {text}")
         return doc.sentences[0]
 
-    def to_naut_tokens(self, text: str) -> List[NautToken]:
+    def to_naut_tokens(self, text: str) -> list[NautToken]:
         doc = self.parse_document(text)
         return doc.tokens
