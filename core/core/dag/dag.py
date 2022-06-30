@@ -21,7 +21,7 @@ class DAG:
     def __init__(self, name: str, pipeline: dict[any, any]):
         self.name = name
         self.name_to_node: dict[str, Node] = {}  # map node name -> node
-        self.edges: dict[Node, set[Node]] = defaultdict(set)  # map node -> edges (set of nodes)
+        self.edges: dict[Node, set[Node]] = defaultdict(set)  # map node -> children (set of nodes)
         self.parents = defaultdict(set)  # map node -> parents (set of nodes)
         self.roots: list[Node] = []
         self.leaves: list[Node] = []
@@ -88,17 +88,21 @@ class DAG:
                     for parent_out_param, node_in_param in param_name_mapping.items():
                         if node_in_param not in node_inputs:
                             raise TaskError(f"task: {node.name} does not accept input arg: {node_in_param}")
+
                         # TODO: list lookup is linear
-                        if parent_out_param not in parent.output_names:
+                        index = 0
+                        try:
+                            index = parent.output_names.index(parent_out_param)
+                        except ValueError as _:
                             raise TaskError(
                                 f"task: {node.name} refers to non-existent output arg: {parent_out_param} of parent: {parent_name}")
 
-                        # TODO: type check with standard typing model
-                        # in_param_type = node_inputs[node_in_param]
-                        # out_param_type = parent.output_names[parent_out_param]
-                        # if in_param_type != out_param_type:
-                        #     raise TaskError(
-                        #         f"node: {node.name} expects input parameter: {node_in_param} of type: {in_param_type}, got: {out_param_type}")
+                        # match types
+                        in_param_type = node_inputs[node_in_param]
+                        out_param_type = parent.task.outputs[parent.task.ordered_output_names[index]]
+                        if in_param_type != out_param_type:
+                            raise TaskError(
+                                f"node: {node.name} has type mismatch in dependency: {parent_out_param} for parent: {parent_name}")
                         node_input_param_mappings[(parent.name, parent_out_param)] = node_in_param
             node.set_input_param_mapping(node_input_param_mappings)
 
@@ -121,9 +125,14 @@ class DAG:
                 raise GraphStructureError(f"node {node.name} has unaccounted inputs")
         assert (len(queue) == len(self.roots))
 
+        nodes_to_run = len(self.name_to_node)
         while queue:
             node = queue.popleft()
+            nodes_to_run -= 1
             named_outputs = node.run()
             for child in self.edges[node]:
                 child.set_inputs(node.name, named_outputs, queue)
+
+        # assert that all graph nodes have been run
+        assert (nodes_to_run == 0)
         return self.leaves

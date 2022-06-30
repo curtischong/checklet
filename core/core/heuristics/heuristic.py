@@ -17,12 +17,14 @@ class Check:
             config = yaml.safe_load(stream)
 
         self.config = config
-        self.init_states()
+        self.DAG = None
+        self.feedback_generator = None
+        self.feedback = []
 
-    def init_states(self):
+    def init_state(self):
         pipeline = self.config["Pipeline"]
         feedback_template = self.config["Feedback"]
-        self.dag = DAG(self.name, pipeline)
+        self.DAG = DAG(self.name, pipeline)
         self.feedback_generator = FeedbackGenerator(self.name, feedback_template)
         self.feedback = []
 
@@ -31,7 +33,7 @@ class Check:
         return self.feedback
 
     def run(self, data: dict[str, any]) -> list[Feedback]:
-        leaves = self.dag.run(**data)
+        leaves = self.DAG.run(**data)
         return self.gen_feedback(leaves)
 
 
@@ -57,10 +59,13 @@ class Resume(Heuristic):
         all_feedback = []
         # TODO: add concurrency, and stream results eagerly
         for check in self.checks:
-            check.init_states()
-            check_feedback = check.run({
-                "naut_doc": doc
-            })
-            for feedback in check_feedback:
-                all_feedback.append(feedback)
+            check.init_state()
+            try:
+                check_feedback = check.run({
+                    "naut_doc": doc
+                })
+                for feedback in check_feedback:
+                    all_feedback.append(feedback)
+            except Exception as e:
+                print(e)
         return all_feedback

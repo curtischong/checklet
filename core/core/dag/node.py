@@ -3,14 +3,14 @@ from __future__ import annotations
 from collections import deque
 
 from core.task.task import Task
-
-# TODO: put this static mapping in a typing class
-user_input_mapping = {
-    "naut_doc": "<class \'core.converters.naut_parser.NautDoc\'>",
-}
+from type.Type import Type
 
 
 class TaskError(Exception):
+    pass
+
+
+class TaskExecutionError(Exception):
     pass
 
 
@@ -36,13 +36,7 @@ class Node:
             key = (parent, param)
             if key not in self.input_param_mapping:
                 continue
-
             input_param_name = self.input_param_mapping[key]
-            # TODO: need to standardize the type strings
-            # expected_param_type = self.task.inputs[input_param_name]
-            # if expected_param_type != type(arg):
-            #     raise GraphExecutionError(
-            #         f"expected param: {param} of node {self.name} to be of type: {expected_param_type}, received: {type(input)}")
             self.input_args[input_param_name] = arg
 
         # schedule this node if all dependencies satisfied
@@ -51,10 +45,10 @@ class Node:
 
     def set_user_inputs(self, user_inputs: dict[str, any], queue: deque[Node]):
         for input_arg_name, input_arg in user_inputs.items():
-            input_arg_type = str(type(input_arg))
+            input_arg_type = Type(str(type(input_arg)))
 
-            # this node uses this user input arg
-            # TODO: type name needs to be standardized
+            # this node uses this input arg, so populate it
+            # an assumption made is that user_input is not a nested list
             if input_arg_name in self.task.inputs and self.task.inputs[input_arg_name] == input_arg_type:
                 self.input_args[input_arg_name] = input_arg
         if self._is_schedulable():

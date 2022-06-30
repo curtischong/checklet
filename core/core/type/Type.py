@@ -21,7 +21,7 @@ class Type:
 
 
 def _get_type(type_str: str) -> str:
-    result = type_str \
+    stripped = type_str \
         .replace("typing.", "") \
         .replace(" ", "") \
         .replace("<", "") \
@@ -29,18 +29,23 @@ def _get_type(type_str: str) -> str:
         .replace("class", "") \
         .replace("'", "")
 
-    # remove module information
-    dot_index = result.rfind(".")
-    if dot_index != -1:
-        result = result[dot_index + 1:]
-
-    return result
+    # remove dots in a potentially nested structure
+    chars = []
+    for c in stripped:
+        if c == ".":
+            while chars:
+                if chars[-1] in ("[", "]"):
+                    break
+                chars.pop()
+            continue
+        chars.append(c)
+    return "".join(chars)
 
 
 def get_types(type_str: str) -> list[Type]:
     type_str = type_str.replace("typing.", "")
     type_str = type_str.replace(" ", "")
-    if not type_str.startswith("Tuple"):
+    if not type_str.lower().startswith("tuple"):
         return [Type(type_str)]
 
     # if there are nested tuples, we use this variable
@@ -69,13 +74,15 @@ def get_types(type_str: str) -> list[Type]:
 
 
 if __name__ == "__main__":
-    def equal(actual: list[Type], expected: list[str]):
+    def assert_equal(actual: list[Type], expected: list[str]):
         assert [x.type for x in actual] == expected
 
 
-    equal(get_types("int"), ["int"])
-    equal(get_types("typing.Tuple[typing.List[int], int]"), ["List[int]", "int"])
-    equal(get_types("Tuple[Tuple[int, str], int]"), ["Tuple[int,str]", "int"])
-    equal(get_types("Tuple[Tuple[Tuple[int, str], str], str]"), ["Tuple[Tuple[int,str],str]", "str"])
-    equal(get_types("<class 'naut_parser.NautDoc'>"), ["NautDoc"])
-    equal(get_types("<class \'naut_parser.NautDoc\'>"), ["NautDoc"])
+    assert_equal(get_types("int"), ["int"])
+    assert_equal(get_types("typing.Tuple[typing.List[int], int]"), ["List[int]", "int"])
+    assert_equal(get_types("Tuple[Tuple[int, str], int]"), ["Tuple[int,str]", "int"])
+    assert_equal(get_types("Tuple[Tuple[Tuple[int, str], str], str]"), ["Tuple[Tuple[int,str],str]", "str"])
+    assert_equal(get_types("<class 'naut_parser.NautDoc'>"), ["NautDoc"])
+    assert_equal(get_types("<class \'naut_parser.NautDoc\'>"), ["NautDoc"])
+    assert_equal(get_types("moda.modb.list[moda.modb.list[list[core.converters.input.naut_parser.NautToken]]]"),
+                 ["list[list[list[NautToken]]]"])
