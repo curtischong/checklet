@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import deque
 
 from core.task.task import Task
-from type.Type import Type
+from core.type.Type import Type
 
 
 class TaskError(Exception):

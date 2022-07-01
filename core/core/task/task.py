@@ -7,7 +7,7 @@ from os.path import dirname, basename, isfile, join
 from typing import ClassVar, get_type_hints
 
 # parsing constants
-from type.Type import get_types, Type
+from core.type.Type import get_types, Type
 
 DEPENDENCIES = "dependencies"
 
