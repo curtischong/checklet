@@ -1,0 +1,14 @@
+Pipeline:
+  - name: use_specific_numbers
+    task: use_specific_numbers_
+    outputs: ["many_word"]
+
+Feedback:
+  shortDesc: "Consider using specific numbers instead of {many_word[i]}"
+  longDesc: "Specific numbers are better than using the word many."
+  srcNautTokens: "many_word" # must be a List[NautTokens].. these are the words you're highlighting
+
+TruePositives:
+  - { old: "Created many test suites", new: "Created 10 test suites" }
+TrueNegatives:
+  - "Created 10 test suites"
