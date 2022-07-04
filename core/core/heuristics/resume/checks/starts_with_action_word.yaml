@@ -1,0 +1,17 @@
+Pipeline:
+  - name: starts_with_action_word
+    task: starts_with_action_word_
+    outputs: [first_word]
+
+Feedback:
+  shortDesc: "Consider starting this sentence with an action word instead of {first_word[i]}"
+  longDesc: "It's good to start resume points with action words"
+  srcNautTokens: "first_word" # must be a List[NautTokens].. these are the words you're highlighting
+
+TruePositives:
+  - {
+      old: "Storage engine implemented for the team",
+      new: "Built storage engine",
+    }
+TrueNegatives:
+  - "Built storage engine"
