@@ -8,6 +8,7 @@ install_requires = [
     "stanza==1.4.0",
     "PyYAML==6.0",
     "networkx==2.8.4"
+    "beautifulsoup4==4.11.1",
 ]
 
 setup(

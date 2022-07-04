@@ -1,0 +1,14 @@
+Pipeline:
+  - name: remove_obscure_acronyms
+    task: detect_obscure_acronyms_
+    outputs: ["obscure_acronyms"]
+
+Feedback:
+  shortDesc: "Consider removing {obscure_acronyms[i]}"
+  longDesc: "Acronyms like these may not be understood by the recruiter"
+  srcNautTokens: "obscure_acronyms" # must be a List[NautTokens].. these are the words you're highlighting
+
+TruePositives:
+  - { old: "Sped up HSTS server", new: "Sped up secure HTTP server" }
+TrueNegatives:
+  - "Developed generic ML pipeline interface"
