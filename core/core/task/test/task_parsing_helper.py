@@ -7,6 +7,7 @@
 from multiprocessing.managers import BaseManager
 
 from core.converters.input.naut_parser import NautParser, NautDoc, NautSent, NautToken
+from core.models.NautEmbeddings import NautEmbeddings
 
 
 class NautParserManager(BaseManager):
@@ -19,10 +20,12 @@ AUTHKEY = b'buhr'
 
 def _start_server() -> None:
     naut_parser = NautParser()
+    naut_embeddings = NautEmbeddings()
     NautParserManager.register('get_naut_parser', callable=lambda: naut_parser)
+    NautParserManager.register('get_naut_embeddings', callable=lambda: naut_embeddings)
     m = NautParserManager(address=SERVER_ADDRESS, authkey=AUTHKEY)
     s = m.get_server()
-    print("[TaskParsingHelperServer] serving naut_parser!")
+    print("[TaskParsingHelperServer] serving dependencies!")
     s.serve_forever()
 
 
@@ -32,12 +35,17 @@ if __name__ == "__main__":
 
 
 # This is a class that abstracts away the connection logic to the server
+# NOTE: This only exposes functions not attributes. You should NOT query for a Class' attributes
+# since it is typically a large dataset (we don't want to serve large datasets over a connection!)
+# So please just call the public methods of these served Classes and offload computation to the classes.
 class TaskParsingHelper:
     def __init__(self):
         NautParserManager.register('get_naut_parser')
+        NautParserManager.register('get_naut_embeddings')
         manager = NautParserManager(address=SERVER_ADDRESS, authkey=AUTHKEY)
         manager.connect()
         self.naut_parser: NautParser = manager.get_naut_parser()
+        self.naut_embeddings: NautEmbeddings = manager.get_naut_embeddings()
 
     def parse_document(self, text: str) -> NautDoc:
         return self.naut_parser.parse(text)

@@ -1,6 +1,7 @@
 from core.converters.input.naut_parser import NautParser
 from core.heuristics.feedback import Feedback
 from core.heuristics.heuristic import Resume
+from core.models.NautEmbeddings import NautEmbeddings
 from core.task.test.task_parsing_helper import TaskParsingHelper
 
 
@@ -20,9 +21,11 @@ class Engine:
         if use_task_parsing_helper:
             tph = TaskParsingHelper()
             self.naut_parser = tph.naut_parser
+            self.naut_embeddings = tph.naut_embeddings
         else:
             self.naut_parser = NautParser()
-        self.heuristics = Resume()
+            self.naut_embeddings = NautEmbeddings()
+        self.heuristics = Resume(self.naut_embeddings)
 
     def handle_request(self, request: EngineRequest) -> EngineResponse:
         naut_doc = self.naut_parser.parse(request.document)

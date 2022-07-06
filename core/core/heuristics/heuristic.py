@@ -8,6 +8,7 @@ from core.converters.input.naut_parser import NautDoc
 from core.dag.dag import DAG
 from core.dag.node import Node
 from core.heuristics.feedback import FeedbackGenerator, Feedback
+from core.models.NautEmbeddings import NautEmbeddings
 
 
 class Check:
@@ -52,7 +53,8 @@ class Heuristic(ABC):
 
 
 class Resume(Heuristic):
-    def __init__(self):
+    def __init__(self, naut_embeddings: NautEmbeddings):
+        self.naut_embeddings = naut_embeddings
         super().__init__("resume")
 
     def run(self, doc: NautDoc) -> list[Feedback]:
@@ -62,7 +64,8 @@ class Resume(Heuristic):
             check.init_state()
             try:
                 check_feedback = check.run({
-                    "naut_doc": doc
+                    "naut_doc": doc,
+                    "naut_embeddings": self.naut_embeddings
                 })
                 for feedback in check_feedback:
                     all_feedback.append(feedback)

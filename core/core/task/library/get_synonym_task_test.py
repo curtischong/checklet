@@ -3,5 +3,6 @@ from core.task.test.task_parsing_helper import TaskParsingHelper
 
 tph = TaskParsingHelper()
 doc = tph.parse_document("designed and implemented")
-synonyms = get_synonym_task([doc.tokens])
-print(synonyms)
+naut_embeddings = tph.naut_embeddings
+synonyms = get_synonym_task([doc.tokens], naut_embeddings)
+# print(synonyms)
