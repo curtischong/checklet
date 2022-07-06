@@ -31,7 +31,18 @@ class Node:
     def set_input_param_mapping(self, param_mapping: dict[tuple[str, str], str]):
         self.input_param_mapping = param_mapping
 
-    def set_inputs(self, parent: str, args: dict[str, any], queue: deque[Node]):
+    # sets parameters for parameterized tasks
+    def set_params(self, args: dict[str, any]):
+        for param, arg in args.items():
+            if param not in self.task.inputs:
+                raise TaskError(f"task {self.name} does not accept parameter {param}")
+            # TODO: this requires nested type checking
+            # if Type(arg) != self.task.inputs[param]:
+            #     raise TaskError(f"task {self.name} received invalid argument type for {param}")
+            self.input_args[param] = arg
+
+    # sets raw user input to analyze
+    def set_analysis_inputs(self, parent: str, args: dict[str, any], queue: deque[Node]):
         for param, arg in args.items():
             key = (parent, param)
             if key not in self.input_param_mapping:

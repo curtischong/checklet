@@ -73,6 +73,10 @@ def get_types(type_str: str) -> list[Type]:
     raise InternalTypeError(f"type parsing of {type_str} failed")
 
 
+# typing constants for generic use
+TYPE_DICT = Type(str(type({})))
+TYPE_LIST = Type(str(type([])))
+
 if __name__ == "__main__":
     def assert_equal(actual: list[Type], expected: list[str]):
         assert [x.type for x in actual] == expected

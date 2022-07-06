@@ -4,9 +4,11 @@ import networkx as nx
 
 from core.dag.node import Node, TaskError
 from core.task.index import lambda_tasks, persistent_tasks
+from core.type.Type import TYPE_LIST, Type, TYPE_DICT
 
-# parsing constants
 DEPENDENCIES = "dependencies"
+PARAMS = "params"
+NAME = "name"
 
 
 class GraphStructureError(Exception):
@@ -30,8 +32,24 @@ class DAG:
         self._create_edges(pipeline)
         self._parse_and_check_deps(pipeline)
         self._find_roots_and_leaves()
+        self._inject_params(pipeline)
         if not self._is_acyclic():
             raise GraphStructureError(f"check {self.name} contains a cycle")
+
+    def _inject_params(self, pipeline: dict[any, any]):
+        for entry in pipeline:
+            if PARAMS not in entry:
+                continue
+
+            params = entry["params"]
+            name = entry["name"]
+            if Type(str(type(params))) != TYPE_LIST:
+                raise TaskError(f"params for task {name} is defined incorrectly, expecting a list")
+            for param in params:
+                if Type(str(type(param))) != TYPE_DICT:
+                    raise TaskError(f"param {param} for task {name} is defined incorrectly, expecting a dict")
+                self.name_to_node[name].set_params(param)
+        return
 
     def _find_roots_and_leaves(self):
         for node in self.name_to_node.values():
@@ -43,7 +61,9 @@ class DAG:
     def _create_nodes(self, pipeline: dict[any, any]):
         # create nodes
         for entry in pipeline:
-            name = entry["name"]
+            if NAME not in entry:
+                raise TaskError("tasks must be given a name!")
+            name = entry[NAME]
             if name in self.name_to_node:
                 raise GraphStructureError(f"node {name} is defined more than once")
             task = entry["task"]
@@ -131,7 +151,7 @@ class DAG:
             nodes_to_run -= 1
             named_outputs = node.run()
             for child in self.edges[node]:
-                child.set_inputs(node.name, named_outputs, queue)
+                child.set_analysis_inputs(node.name, named_outputs, queue)
 
         # assert that all graph nodes have been run
         assert (nodes_to_run == 0)

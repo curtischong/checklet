@@ -123,7 +123,3 @@ def parse_tasks() -> tuple[dict[str, Task], dict[str, PersistentTask]]:
             elif isclass(member):
                 persistent_tasks[task_name] = PersistentTask(task_name, member)
     return tasks, persistent_tasks
-
-
-if __name__ == "__main__":
-    parse_tasks()
