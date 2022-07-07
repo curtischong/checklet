@@ -1,2 +1,0 @@
-all_embeddings.npy filter=lfs diff=lfs merge=lfs -text
-all_words.npy filter=lfs diff=lfs merge=lfs -text
