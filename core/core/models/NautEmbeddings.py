@@ -12,8 +12,9 @@ class NautEmbeddings:
         path = pathlib.Path(__file__).parent.joinpath("../../../backend/datasets/embeddings")
         # this is a 2D matrix of embeddings for each word
         # y axis: words. x axis: the embedding for that word
-        self.embeddings: ndarray = np.load(os.path.join(path, 'all_embeddings.npy'))
-        self.words: ndarray = np.load(os.path.join(path, 'all_words.npy'))
+        word_embeddings = np.load(os.path.join(path, 'word_embeddings.npz'))
+        self.words: ndarray = word_embeddings['words']
+        self.embeddings: ndarray = word_embeddings['embeddings']
 
         self.word_to_vec = dict(zip(self.words, self.embeddings))
 
