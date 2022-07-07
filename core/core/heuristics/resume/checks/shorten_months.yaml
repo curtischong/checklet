@@ -1,12 +1,27 @@
 Pipeline:
   - name: shorten_months
-    task: shorten_months_
-    outputs: ["shortened_month_sentence"]
+    task: find_and_replace_
+    params: {
+      "src_match_rule": "loose match",
+      "find_and_replace_pairs": [ [ [ "January" ], "Jan" ],
+                                  [ [ "February" ], "Feb" ],
+                                  [ [ "March" ], "Mar" ],
+                                  [ [ "April" ], "Apr" ],
+                                  [ [ "June" ], "Jun" ],
+                                  [ [ "July" ], "Jul" ],
+                                  [ [ "August" ], "Aug" ],
+                                  [ [ "September" ], "Sep" ],
+                                  [ [ "October" ], "Oct" ],
+                                  [ [ "November" ], "Nov" ],
+                                  [ [ "December" ], "Dec" ] ]
+    }
+
+    outputs: [ "src_month", "dst_month" ]
 
 Feedback:
-  shortDesc: "Consider abbreviating the month to {shortened_month_sentence[i]}"
+  shortDesc: "Consider abbreviating {src_month[i]} to {dst_month[i]}"
   longDesc: "Abbreviating the month to 3 letters will help save space."
-  srcNautTokens: "shortened_month_sentence" # must be a List[NautTokens].. these are the words you're highlighting
+  srcNautTokens: "src_month"
 
 TruePositives:
   - { old: "Built in December 2021", new: "Built in Dec 2021" }

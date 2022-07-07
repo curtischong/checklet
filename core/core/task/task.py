@@ -102,7 +102,7 @@ class PersistentTask(Task):
 
 # returns two maps: (task_name -> Task) and (task_name -> PersistentTask)
 def parse_tasks() -> tuple[dict[str, Task], dict[str, PersistentTask]]:
-    task_directory = join(dirname(__file__), "library", "*.py")
+    task_directory = join(dirname(__file__), "library", "*task.py")
     task_modules = []
 
     # auto-import all checks, so they're in the namespace

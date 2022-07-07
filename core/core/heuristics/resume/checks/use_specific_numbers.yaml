@@ -1,12 +1,16 @@
 Pipeline:
   - name: use_specific_numbers
-    task: use_specific_numbers_
-    outputs: ["many_word"]
+    task: find_
+    params: {
+      "src_match_rule": "loose match",
+      "find_text": [ [ "many" ] ]
+    }
+    outputs: [ "src_many" ]
 
 Feedback:
-  shortDesc: "Consider using specific numbers instead of {many_word[i]}"
+  shortDesc: "Consider using specific numbers instead of {src_many[i]}"
   longDesc: "Specific numbers are better than using the word many."
-  srcNautTokens: "many_word" # must be a List[NautTokens].. these are the words you're highlighting
+  srcNautTokens: "src_many"
 
 TruePositives:
   - { old: "Created many test suites", new: "Created 10 test suites" }

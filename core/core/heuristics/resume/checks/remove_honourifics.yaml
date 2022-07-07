@@ -1,12 +1,16 @@
 Pipeline:
   - name: remove_honourifics
-    task: detect_honourifics_
-    outputs: ["honourifics"]
+    task: find_
+    params: {
+      "src_match_rule": "loose match",
+      "find_text": [ [ "honours", "honors" ] ]
+    }
+    outputs: [ "honourifics" ]
 
 Feedback:
   shortDesc: "Consider removing {honourifics[i]}"
   longDesc: "Removing honourifics will help save space."
-  srcNautTokens: "honourifics" # must be a List[NautTokens].. these are the words you're highlighting
+  srcNautTokens: "honourifics"
 
 TruePositives:
   - { old: "Bachelor of Software Engineering Honours", new: "Bachelor of Software Engineering" }

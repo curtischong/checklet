@@ -17,7 +17,7 @@ class NautToken:
         token.naut_token = self
         self.naut_sent: NautSent = token.sent.naut_sent if token.sent else None  # reference to the sentence this token is in
         self.token = token
-        self.text = token.text
+        self.text: str = token.text
         self.ner = token.ner  # named entity recognition tag
 
         # In Stanza, there is a further abstraction called a word. This is for

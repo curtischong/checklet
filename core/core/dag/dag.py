@@ -4,7 +4,7 @@ import networkx as nx
 
 from core.dag.node import Node, TaskError
 from core.task.index import lambda_tasks, persistent_tasks
-from core.type.Type import TYPE_LIST, Type, TYPE_DICT
+from core.type.Type import Type, TYPE_DICT
 
 DEPENDENCIES = "dependencies"
 PARAMS = "params"
@@ -37,18 +37,17 @@ class DAG:
             raise GraphStructureError(f"check {self.name} contains a cycle")
 
     def _inject_params(self, pipeline: dict[any, any]):
+        # TODO: move pipeline to a separate class
+        # so we can do: for task in pipeline.parameterized_tasks()
         for entry in pipeline:
             if PARAMS not in entry:
                 continue
 
             params = entry["params"]
             name = entry["name"]
-            if Type(str(type(params))) != TYPE_LIST:
-                raise TaskError(f"params for task {name} is defined incorrectly, expecting a list")
-            for param in params:
-                if Type(str(type(param))) != TYPE_DICT:
-                    raise TaskError(f"param {param} for task {name} is defined incorrectly, expecting a dict")
-                self.name_to_node[name].set_params(param)
+            if Type(str(type(params))) != TYPE_DICT:
+                raise TaskError(f"params for task {name} is defined incorrectly, expecting a dict")
+            self.name_to_node[name].set_params(params)
         return
 
     def _find_roots_and_leaves(self):

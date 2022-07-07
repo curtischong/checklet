@@ -3,13 +3,18 @@
 # support underscores for function returns you don't care about
 Pipeline:
   - name: find_fp_pronouns
-    task: find_first_person_pronoun_indexes_
-    outputs: ["pronouns"]
+    task: find_and_replace_
+    params: {
+      "src_match_rule": "loose match",
+      "find_and_replace_pairs": [ [ [ "our" ], "the" ] ]
+    }
+    outputs: [ "src_pronoun", "dst_the" ]
 
 Feedback:
-  shortDesc: "Consider changing {pronouns[i]} to the"
+  shortDesc: "Consider changing {src_pronoun[i]} to the"
   longDesc: "This will make your resume be in third person."
-  srcNautTokens: "pronouns" # must be a List[NautTokens].. these are the words you're highlighting
+  srcNautTokens: "src_pronoun"
+  dstText: "dst_the"
 
 TruePositives:
   - { old: "I made our server 10% faster", new: "I made the server 10% faster" }
