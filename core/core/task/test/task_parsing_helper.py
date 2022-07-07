@@ -43,7 +43,12 @@ class TaskParsingHelper:
         NautParserManager.register('get_naut_parser')
         NautParserManager.register('get_naut_embeddings')
         manager = NautParserManager(address=SERVER_ADDRESS, authkey=AUTHKEY)
-        manager.connect()
+        try:
+            manager.connect()
+        except:
+            raise ConnectionRefusedError(
+                "[TaskParsingHelper] Cannot connect to TaskParsingHelper server. Try running make serve-naut-parser"
+                " in a new terminal to serve it!")
         self.naut_parser: NautParser = manager.get_naut_parser()
         self.naut_embeddings: NautEmbeddings = manager.get_naut_embeddings()
 
