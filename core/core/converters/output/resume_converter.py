@@ -17,6 +17,7 @@ def get_json_friendly(output: EngineResponse) -> list[dict[str, any]]:
 
             # These are the ranges to highlight when the user clicks on the longDesc
             "highlightRangesOnSelect": _get_json_for_ranges(feedback.highlight_ranges_on_select),
+            "replacementText": feedback.replacement_text,
 
             # deprecated
             "srcWord": {

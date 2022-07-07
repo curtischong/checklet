@@ -47,11 +47,12 @@ class HighlightRange:
 
 class Feedback:
     def __init__(self, short_desc: str, long_desc: str, highlight_ranges: list[HighlightRange],
-                 highlight_ranges_on_select: list[HighlightRange]):
+                 highlight_ranges_on_select: list[HighlightRange], replacement_text: str):
         self.short_desc = short_desc
         self.long_desc = long_desc
         self.highlight_ranges = highlight_ranges
         self.highlight_ranges_on_select = highlight_ranges_on_select
+        self.replacement_text = replacement_text
 
 
 class FeedbackGenerator:
@@ -66,6 +67,7 @@ class FeedbackGenerator:
         # But which array goes first when we concatenate them together?
         # I guess one assumption we can make is to concat all the lists in the same order as they appear in the yaml
         self.src_naut_tokens_var_name = feedback_template.get("srcNautTokens")
+        self.dst_text_var_name = feedback_template.get("dstText")
         self.src_naut_sentences_var_name = feedback_template.get("srcNautSentences")
         assert only_one(self.src_naut_tokens_var_name, self.src_naut_sentences_var_name), \
             f"The Feedback for {check_id} can only contain one of srcNautTokens or srcNautSentences in the .yaml"
@@ -84,6 +86,7 @@ class FeedbackGenerator:
 
         num_feedback = self._num_feedback(var_to_output)
         self._validate_vars_length(num_feedback, var_to_output, desc_vars)
+        self._validate_replacement_length(num_feedback, var_to_output)
 
         # now generate each feedback
         for feedback_idx in range(num_feedback):
@@ -91,8 +94,9 @@ class FeedbackGenerator:
             long_desc = self._inject_desc_vars(long_desc_vars, self.long_desc_template, feedback_idx, var_to_output)
 
             highlight_ranges, highlight_ranges_on_select = self._calculate_highlight_ranges(feedback_idx, var_to_output)
+            dst_text = self._calculate_dst_text(feedback_idx, var_to_output)
 
-            all_feedback.append(Feedback(short_desc, long_desc, highlight_ranges, highlight_ranges_on_select))
+            all_feedback.append(Feedback(short_desc, long_desc, highlight_ranges, highlight_ranges_on_select, dst_text))
 
         return all_feedback
 
@@ -142,6 +146,16 @@ class FeedbackGenerator:
                     f"WARNING: {self.src_naut_tokens_on_select_var_name} is a list of length {on_select_len},"
                     f"but there are {num_feedback} feedback generated")
 
+    def _validate_replacement_length(self, num_feedback: int, var_to_output: dict[str, any]):
+        if self.dst_text_var_name == "":
+            # We are replacing the nautTokens with nothing, no need to verify!
+            return
+        if self.dst_text_var_name:
+            replacement_len = len(var_to_output[self.dst_text_var_name])
+            if replacement_len != num_feedback:
+                print(f"WARNING: {self.dst_text_var_name} is a list of length {replacement_len}, but there are "
+                      f"{num_feedback} feedback")
+
     # This method replaces the variables in the description template with the actual value for the ith feedback.
     def _inject_desc_vars(self, desc_vars: list[str], desc_template: str, feedback_idx: int,
                           var_to_output: dict[str, any]) -> str:
@@ -167,6 +181,15 @@ class FeedbackGenerator:
                 self.src_naut_tokens_on_select_var_name, feedback_idx, var_to_output)
 
         return highlight_ranges, highlight_ranges_on_select
+
+    def _calculate_dst_text(self, feedback_idx: int, var_to_output: dict[str, any]) -> str | None:
+        if not self.dst_text_var_name or self.dst_text_var_name == "":
+            # we are handling edge cases here:
+            # - return None if there's no dst_text specified (no text transformation in Feedback)
+            # - return the empty string if we want to delete the srcNautTokens
+            return self.dst_text_var_name
+
+        return var_to_output[self.dst_text_var_name][feedback_idx]
 
     def _calculate_highlight_ranges_for_output(
             self, output_var_name: str, feedback_idx: int, var_to_output: dict[str, any]

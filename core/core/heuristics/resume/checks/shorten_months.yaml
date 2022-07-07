@@ -22,6 +22,7 @@ Feedback:
   shortDesc: "Consider abbreviating {src_month[i]} to {dst_month[i]}"
   longDesc: "Abbreviating the month to 3 letters will help save space."
   srcNautTokens: "src_month"
+  dstText: "dst_month"
 
 TruePositives:
   - { old: "Built in December 2021", new: "Built in Dec 2021" }

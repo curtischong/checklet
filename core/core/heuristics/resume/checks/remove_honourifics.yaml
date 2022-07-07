@@ -11,6 +11,7 @@ Feedback:
   shortDesc: "Consider removing {honourifics[i]}"
   longDesc: "Removing honourifics will help save space."
   srcNautTokens: "honourifics"
+  dstText: ""
 
 TruePositives:
   - { old: "Bachelor of Software Engineering Honours", new: "Bachelor of Software Engineering" }
