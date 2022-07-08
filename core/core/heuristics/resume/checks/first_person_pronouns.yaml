@@ -11,8 +11,8 @@ Pipeline:
     outputs: [ "src_pronoun", "dst_the" ]
 
 Feedback:
-  shortDesc: "Consider changing {src_pronoun[i]} to the"
-  longDesc: "This will make your resume be in third person."
+  shortDesc: "Remove first person pronoun"
+  longDesc: "Consider changing *{src_pronoun[i]}* to ensure the resume is in **third person**."
   srcNautTokens: "src_pronoun"
   dstText: "dst_the"
 

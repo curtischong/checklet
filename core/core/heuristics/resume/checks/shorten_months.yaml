@@ -21,6 +21,8 @@ Pipeline:
 Feedback:
   shortDesc: "Consider abbreviating {src_month[i]} to {dst_month[i]}"
   longDesc: "Abbreviating the month to 3 letters will help save space."
+  shortDesc: "Abbreviate month"
+  longDesc: "Consider changing ~~{src_month[i]}~~ to **{dst_month[i]}** to save space."
   srcNautTokens: "src_month"
   dstText: "dst_month"
 

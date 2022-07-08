@@ -8,8 +8,8 @@ Pipeline:
     outputs: [ "src_many" ]
 
 Feedback:
-  shortDesc: "Consider using specific numbers instead of {src_many[i]}"
-  longDesc: "Specific numbers are better than using the word many."
+  shortDesc: "Use specific numbers"
+  longDesc: "Consider using **specific numbers** instead of *{src_many[i]}*."
   srcNautTokens: "src_many"
 
 TruePositives:

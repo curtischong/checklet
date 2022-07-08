@@ -14,8 +14,8 @@ Pipeline:
 
 
 Feedback:
-  shortDesc: "Consider rewording '{obscure_phrases[i]}'"
-  longDesc: "This is obscure and may be confusing to recruiters"
+  shortDec: "Remove confusing phrases"
+  longDesc: "Consider rewording **{obscure_phrases[i]}** as it may be confusing to recruiters"
   srcNautTokens: "obscure_phrases"
 
 TruePositives:

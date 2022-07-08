@@ -4,8 +4,8 @@ Pipeline:
     outputs: [first_word]
 
 Feedback:
-  shortDesc: "Consider starting this sentence with an action word instead of {first_word[i]}"
-  longDesc: "It's good to start resume points with action words"
+  shortDesc: "Start with action word"
+  longDesc: "Start this point with an **action** word instead of *{first_word[i]}*"
   srcNautTokens: "first_word" # must be a List[NautTokens].. these are the words you're highlighting
 
 TruePositives:

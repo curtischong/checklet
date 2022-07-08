@@ -1,5 +1,7 @@
 import { Collapse } from "antd";
 import React from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import css from "./suggestioncard.module.scss";
 import { Suggestion, SuggestionCategory } from "./suggestionsTypes";
 const { Panel } = Collapse;
@@ -20,7 +22,10 @@ export const SuggestionCard: React.FC<SuggestionCategory> = (
         <Collapse expandIconPosition="end" className="my-2">
             <Panel header={Header} style={{ backgroundColor: color }} key={1}>
                 <div>
-                    <p>{suggestions[0].longDesc}</p>
+                    <ReactMarkdown
+                        children={suggestions[0].longDesc}
+                        remarkPlugins={[remarkGfm]}
+                    />
                     <ol>
                         {suggestions.map((suggestion, index) => {
                             return (
