@@ -13,7 +13,7 @@ from core.models.NautEmbeddings import NautEmbeddings
 class NautParserManager(BaseManager):
     pass
 
-
+# If you move or rename SERVER_ADDRESS, please update `run_core.sh`
 SERVER_ADDRESS = ('', 42952)
 AUTHKEY = b'buhr'
 
