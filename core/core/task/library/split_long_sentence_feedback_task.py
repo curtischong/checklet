@@ -37,4 +37,4 @@ def split_long_sentence_feedback_task(clauses_in_long_sentences: list[list[list[
         sentences_to_highlight.append(sentence_clauses[0][0].naut_sent)
 
     tokens_to_highlight_on_select = clauses_in_long_sentences
-    return long_desc, sentences_to_highlight, tokens_to_highlight_on_selects
+    return long_desc, sentences_to_highlight, tokens_to_highlight_on_select
