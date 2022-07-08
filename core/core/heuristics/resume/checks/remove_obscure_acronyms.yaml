@@ -5,7 +5,7 @@ Pipeline:
 
 Feedback:
   shortDesc: "Reconsider acronym"
-  longDesc: "Acronyms such as **{obscure_acronyms[i]}** may not be understood by the recruiter"
+  longDesc: "Acronyms such as **{obscure_acronyms[i]}** may not be understood by recruiters"
   srcNautTokens: "obscure_acronyms" # must be a List[NautTokens].. these are the words you're highlighting
 
 TruePositives:
