@@ -23,7 +23,7 @@ export const SuggestionCard: React.FC<SuggestionCategory> = (
             <Panel header={Header} style={{ backgroundColor: color }} key={1}>
                 <div>
                     <ReactMarkdown
-                        children={suggestions[0].longDesc}
+                        children={`${suggestions[0].longDesc}`}
                         remarkPlugins={[remarkGfm]}
                     />
                     <ol>

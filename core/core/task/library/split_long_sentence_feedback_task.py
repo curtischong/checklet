@@ -26,13 +26,15 @@ def split_long_sentence_feedback_task(clauses_in_long_sentences: list[list[list[
         second_half = clauses[mid:]
         first_half_str = format_clauses_into_feedback(first_half)
         second_half_str = format_clauses_into_feedback(second_half)
-        long_desc.append(
-            "Consider splitting these clauses: \n\n{} into a first sentence and \n\n{} into a second sentence".format(
-                first_half_str, second_half_str))
+        long_desc.append("""Consider splitting the clauses to the following:
+
+    - {}
+    - {}
+        """.format(first_half_str, second_half_str))
 
     sentences_to_highlight = []
     for sentence_clauses in clauses_in_long_sentences:
         sentences_to_highlight.append(sentence_clauses[0][0].naut_sent)
 
     tokens_to_highlight_on_select = clauses_in_long_sentences
-    return long_desc, sentences_to_highlight, tokens_to_highlight_on_select
+    return long_desc, sentences_to_highlight, tokens_to_highlight_on_selects

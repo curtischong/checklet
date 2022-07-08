@@ -25,7 +25,7 @@ Pipeline:
 
 Feedback:
   shortDesc: "Long bullet point"
-  longDesc: "Consider splitting *{long_desc[i]}* into two"
+  longDesc: "{long_desc[i]}"
   srcNautSentences: "sentences_to_highlight"
   srcNautTokensOnSelect: "tokens_to_highlight_on_select"
 
