@@ -45,7 +45,7 @@ class TaskParsingHelper:
         manager = NautParserManager(address=SERVER_ADDRESS, authkey=AUTHKEY)
         try:
             manager.connect()
-        except:
+        except ConnectionRefusedError:
             raise ConnectionRefusedError(
                 "[TaskParsingHelper] Cannot connect to TaskParsingHelper server. Try running make serve-naut-parser"
                 " in a new terminal to serve it!")
