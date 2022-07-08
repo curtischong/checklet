@@ -1,4 +1,4 @@
-const baseUrl = "https://nautilus-backend-354213.nn.r.appspot.com/";
+const baseUrl = "http://34.130.127.124:5000/";
 export class Api {
     // can refactor if need to do deletes, etc to have extended by each requestType
     // need to see how cors will work in prod

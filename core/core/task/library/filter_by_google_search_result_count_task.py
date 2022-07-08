@@ -1,12 +1,9 @@
-import locale
 import re
 
 from bs4 import BeautifulSoup
 from requests import get
 
 from core.converters.input.naut_parser import NautToken
-
-locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 usr_agent = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
@@ -55,7 +52,12 @@ def filter_by_google_search_result_count_task(phrases: list[list[NautToken]]) ->
             soup = BeautifulSoup(resp.text, 'html.parser')
             stats = soup.find("div", {"id": "result-stats"}).get_text()
             num_results_str = num_results_regex.search(stats).group(1)
-            num_results = locale.atoi(num_results_str)
-            if num_results <= 500:
-                obscure_phrases.append([phrases[i]])  # wrap in a list so the tokens are considered as a clause
+            num_results = ''.join(filter(str.isdigit, num_results_str))
+            try:
+                num_results = int(num_results)
+                if num_results <= 500:
+                    obscure_phrases.append([phrases[i]])  # wrap in a list so the tokens are considered as a clause
+            except:
+                print("Could not convert Google search results number to integer")
+                pass
     return obscure_phrases

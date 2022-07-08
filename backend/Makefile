@@ -1,2 +1,2 @@
 run:
-	PORT=5000 python main.py
+	waitress-serve --port=5000 --call main:create_app
