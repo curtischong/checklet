@@ -6,3 +6,10 @@
     padding: 5px 9px;
     margin-right: 10px;
 }
+
+[data-theme='compact'] .site-collapse-custom-collapse .site-collapse-custom-panel,
+.site-collapse-custom-collapse .site-collapse-custom-panel { 
+    border: 0; 
+    margin-bottom: 24px;
+    background-color: aqua;
+}

@@ -10,7 +10,15 @@ export type SuggestionCategory = {
     color: string; // could use Color library instead
 };
 
+type Range = {
+    endPos: number;
+    startPos: number;
+};
+
 export type Suggestion = {
+    replacementText: string;
+    highlightRanges: Range[];
+    highlightRangesOnSelect: Range[];
     shortDesc: string;
     longDesc: string;
     srcWord: {
@@ -19,4 +27,5 @@ export type Suggestion = {
         startChar: number;
         endChar: number;
     };
+    category: string;
 };

@@ -1,0 +1,79 @@
+.container { 
+    display: flex;
+    width: 100%; 
+    border-radius: 5px; 
+    box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.08);
+    padding: 10px 10px;
+    margin-bottom: 20px;
+}
+
+.header { 
+    display: flex;
+    overflow: hidden;
+    font-size: 12px;
+
+    .smallDot { 
+        background-color: #6E758B;
+        border-radius: 50%;
+        height: 2px;
+        width: 2px;
+        vertical-align: auto;
+        margin: auto 10px;
+    }
+    
+    .bigDot { 
+        display: flex;
+        background-color: #D7343F;
+        border-radius: 50%;
+        height: 5px;
+        width: 5px;
+        vertical-align: auto;
+        margin: auto 5px;
+    }
+
+    .shortDesc { 
+        overflow: hidden;
+        color: #6E758B;
+        font-weight: 400;
+    }
+}
+
+
+
+.containerActive { 
+    width: 100%; 
+    border-radius: 8px; 
+    box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.16);
+    padding: 10px 15px;
+    margin-bottom: 30px;
+}
+
+.cardBody { 
+    padding: 15px 10px;
+
+    .longDesc { 
+        font-size: 13px;
+    }
+
+    .suggestion { 
+        font-size: 16px;
+        padding-bottom: 10px;
+        display: flex;
+
+        .arrow { 
+            margin: auto 10px;
+        }
+        
+        .remove { 
+            text-decoration: line-through #DC5262;
+        }
+        
+        .replace { 
+            color: white;
+            background-color: #4F71D9;
+            border-radius: 5px;
+            padding: 0 10px;
+        }
+    }
+}
+

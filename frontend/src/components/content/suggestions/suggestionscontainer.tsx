@@ -1,5 +1,5 @@
-import { Divider } from "antd";
-import React from "react";
+import { Collapse, Divider } from "antd";
+import React, { useState } from "react";
 
 import { SuggestionMetric } from "./suggestionmetric";
 import {
@@ -9,6 +9,7 @@ import {
 } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
 import { SuggestionCard } from "./suggestioncard";
+import { SuggestionCollapse } from "./suggestionCollapse";
 
 const metrics: LengthMetric[] = [
     {
@@ -46,20 +47,26 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     props: SuggestionsContainerProps,
 ) => {
     const { suggestions } = props;
+    const [activeKey, setActiveKey] = useState<number>(0);
 
     return (
         <div className="col-span-2">
             <div className="font-bold pb-4 pt-1">Suggestions</div>
             <div className="px-4">
-                {metrics.map((metric, index) => (
-                    <SuggestionMetric {...metric} key={index} />
-                ))}
-                <Divider className={css.divider} />
-                {/* TODO: Add zero state */}
-                {suggestions != null &&
-                    suggestions.map((cat: any, index) => (
-                        <SuggestionCard {...cat} key={index} />
-                    ))}
+                {suggestions &&
+                    suggestions.map(
+                        (cat: SuggestionCategory, index: number) => {
+                            return (
+                                <SuggestionCollapse
+                                    suggestion={cat.suggestions[0]}
+                                    index={index}
+                                    activeKey={activeKey}
+                                    onClick={() => setActiveKey(index)}
+                                />
+                            );
+                        },
+                    )}
+                {/* </Collapse> */}
             </div>
         </div>
     );

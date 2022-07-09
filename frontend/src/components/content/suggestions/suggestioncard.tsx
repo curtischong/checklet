@@ -3,9 +3,11 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import css from "./suggestioncard.module.scss";
-import { Suggestion, SuggestionCategory } from "./suggestionsTypes";
+import { SuggestionCategory } from "./suggestionsTypes";
+
 const { Panel } = Collapse;
 
+// DEPRECATED
 export const SuggestionCard: React.FC<SuggestionCategory> = (
     suggestionCategory: SuggestionCategory,
 ) => {
