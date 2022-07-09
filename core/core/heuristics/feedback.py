@@ -47,11 +47,12 @@ class HighlightRange:
 
 class Feedback:
     def __init__(self, short_desc: str, long_desc: str, highlight_ranges: list[HighlightRange],
-                 highlight_ranges_on_select: list[HighlightRange], replacement_text: str):
+                 highlight_ranges_on_select: list[HighlightRange], src_naut_obj: any, replacement_text: str):
         self.short_desc = short_desc
         self.long_desc = long_desc
         self.highlight_ranges = highlight_ranges
         self.highlight_ranges_on_select = highlight_ranges_on_select
+        self.src_naut_obj = src_naut_obj
         self.replacement_text = replacement_text
 
 
@@ -93,10 +94,10 @@ class FeedbackGenerator:
             short_desc = self._inject_desc_vars(short_desc_vars, self.short_desc_template, feedback_idx, var_to_output)
             long_desc = self._inject_desc_vars(long_desc_vars, self.long_desc_template, feedback_idx, var_to_output)
 
-            highlight_ranges, highlight_ranges_on_select = self._calculate_highlight_ranges(feedback_idx, var_to_output)
+            src_naut_obj, highlight_ranges, highlight_ranges_on_select = self._calculate_highlight_ranges(feedback_idx, var_to_output)
             dst_text = self._calculate_dst_text(feedback_idx, var_to_output)
 
-            all_feedback.append(Feedback(short_desc, long_desc, highlight_ranges, highlight_ranges_on_select, dst_text))
+            all_feedback.append(Feedback(short_desc, long_desc, highlight_ranges, highlight_ranges_on_select, src_naut_obj, dst_text))
 
         return all_feedback
 
@@ -165,22 +166,21 @@ class FeedbackGenerator:
         return desc
 
     def _calculate_highlight_ranges(self, feedback_idx: int, var_to_output: dict[str, any]) -> \
-            tuple[list[HighlightRange], list[HighlightRange]]:
+            tuple[any, list[HighlightRange], list[HighlightRange]]:
         highlight_ranges = []
+
         if self.src_naut_tokens_var_name:
-            highlight_ranges.extend(
-                self._calculate_highlight_ranges_for_output(self.src_naut_tokens_var_name, feedback_idx, var_to_output))
-        if self.src_naut_sentences_var_name:
-            highlight_ranges.extend(
-                self._calculate_highlight_ranges_for_output(self.src_naut_sentences_var_name, feedback_idx,
-                                                            var_to_output))
+            src_naut_obj = var_to_output[self.src_naut_tokens_var_name][feedback_idx]
+        elif self.src_naut_sentences_var_name:
+            src_naut_obj = var_to_output[self.src_naut_sentences_var_name][feedback_idx]
+        highlight_ranges.extend(self._calculate_highlight_ranges_for_output(src_naut_obj))
 
         highlight_ranges_on_select = []
         if self.src_naut_tokens_on_select_var_name:
             highlight_ranges_on_select = self._calculate_highlight_ranges_for_output(
                 self.src_naut_tokens_on_select_var_name, feedback_idx, var_to_output)
 
-        return highlight_ranges, highlight_ranges_on_select
+        return src_naut_obj, highlight_ranges, highlight_ranges_on_select
 
     def _calculate_dst_text(self, feedback_idx: int, var_to_output: dict[str, any]) -> str | None:
         if not self.dst_text_var_name or self.dst_text_var_name == "":
@@ -191,18 +191,15 @@ class FeedbackGenerator:
 
         return var_to_output[self.dst_text_var_name][feedback_idx]
 
-    def _calculate_highlight_ranges_for_output(
-            self, output_var_name: str, feedback_idx: int, var_to_output: dict[str, any]
-    ) -> list[HighlightRange]:
+    def _calculate_highlight_ranges_for_output(self, src_naut_obj: any) -> list[HighlightRange]:
         highlight_ranges = []
 
-        to_highlight_for_cur_feedback = var_to_output[output_var_name][feedback_idx]
-        if not isinstance(to_highlight_for_cur_feedback, list):
+        if not isinstance(src_naut_obj, list):
             # This feedback only needs to highlight one token/sentence since
             # the object in the list is NOT a list of tokens/sentences
-            return [HighlightRange.from_naut_obj(to_highlight_for_cur_feedback)]
+            return [HighlightRange.from_naut_obj(src_naut_obj)]
 
-        for obj_chunk in to_highlight_for_cur_feedback:
+        for obj_chunk in src_naut_obj:
             if not isinstance(obj_chunk, list):
                 # This feedback needs to highlight a list of tokens/sentences
                 # that are NOT grouped together by chunks.
