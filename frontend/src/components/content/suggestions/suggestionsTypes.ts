@@ -28,4 +28,5 @@ export type Suggestion = {
         endChar: number;
     };
     category: string;
+    color: string;
 };

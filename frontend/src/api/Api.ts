@@ -1,8 +1,13 @@
+import { FeedbackRequest, FeedbackResponse } from "./ApiTypes";
 const baseUrl = "https://nautilus.pateldhvani.com/";
 export class Api {
     // can refactor if need to do deletes, etc to have extended by each requestType
     // need to see how cors will work in prod
-    static createRequest = async (endpoint, requestType, payload) => {
+    static createRequest = async (
+        endpoint: string,
+        requestType: string,
+        payload: any,
+    ) => {
         const response = await fetch(`${baseUrl}${endpoint}`, {
             method: requestType,
             headers: {
@@ -20,7 +25,7 @@ export class Api {
         return undefined;
     };
 
-    static structureSuggestions = async (payload) => {
+    static structureSuggestions = async (payload: any) => {
         const data = await Api.createRequest(
             "structure/suggestions",
             "POST",
@@ -29,7 +34,9 @@ export class Api {
         return data;
     };
 
-    static analyzeResume = async (payload) => {
+    static analyzeResume = async (
+        payload: FeedbackRequest,
+    ): Promise<FeedbackResponse> => {
         const data = await Api.createRequest(
             "resumes/feedback",
             "POST",

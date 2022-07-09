@@ -1,46 +1,12 @@
-import { Collapse, Divider } from "antd";
 import React, { useState } from "react";
-
-import { SuggestionMetric } from "./suggestionmetric";
-import {
-    LengthMetric,
-    Suggestion,
-    SuggestionCategory,
-} from "./suggestionsTypes";
+import classnames from "classnames";
+import { LengthMetric, Suggestion } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
-import { SuggestionCard } from "./suggestioncard";
 import { SuggestionCollapse } from "./suggestionCollapse";
-
-const metrics: LengthMetric[] = [
-    {
-        name: "Reading time",
-        value: 92,
-        isTime: true,
-    },
-    {
-        name: "Letters",
-        value: 701,
-    },
-    {
-        name: "Characters",
-        value: 87,
-    },
-    {
-        name: "Words",
-        value: 159,
-    },
-    {
-        name: "Sentences",
-        value: 12,
-    },
-    {
-        name: "Paragraphs",
-        value: 8,
-    },
-];
+import ZeroImage from "./ZeroState.png";
 
 export type SuggestionsContainerProps = {
-    suggestions: SuggestionCategory[];
+    suggestions: Suggestion[];
 };
 
 export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
@@ -51,22 +17,39 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
 
     return (
         <div className="col-span-2">
-            <div className="font-bold pb-4 pt-1">Suggestions</div>
+            <div className="font-bold text-16 pb-4 pt-1 flex">
+                {suggestions.length > 0 && (
+                    <div className={classnames(css.number)}>
+                        {suggestions.length}
+                    </div>
+                )}
+                All Suggestions
+            </div>
+
             <div className="px-4">
-                {suggestions &&
-                    suggestions.map(
-                        (cat: SuggestionCategory, index: number) => {
-                            return (
-                                <SuggestionCollapse
-                                    suggestion={cat.suggestions[0]}
-                                    index={index}
-                                    activeKey={activeKey}
-                                    onClick={() => setActiveKey(index)}
-                                />
-                            );
-                        },
-                    )}
-                {/* </Collapse> */}
+                {suggestions.length > 0 ? (
+                    suggestions.map((cat: Suggestion, index: number) => {
+                        return (
+                            <SuggestionCollapse
+                                key={index}
+                                suggestion={cat}
+                                index={index}
+                                activeKey={activeKey}
+                                onClick={() => setActiveKey(index)}
+                            />
+                        );
+                    })
+                ) : (
+                    <div className={css.zeroState}>
+                        <img src={ZeroImage.src} />
+                        <div className={css.header}> Nothing to check yet </div>
+                        <div>
+                            {" "}
+                            Start writing or paste your resume to see Nautilus's
+                            feedback.{" "}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

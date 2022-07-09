@@ -1,13 +1,16 @@
 import React, { useState, useRef } from "react";
 import { Api } from "../../../api/Api";
 import { Spin, Button } from "antd";
-import { SuggestionCategory } from "../suggestions/suggestionsTypes";
+import {
+    Suggestion,
+    SuggestionCategory,
+} from "../suggestions/suggestionsTypes";
 import "react-quill/dist/quill.snow.css";
 import classNames from "classnames";
 
 export type TextboxContainerProps = {
-    suggestions: SuggestionCategory[];
-    updateSuggestions: (s: SuggestionCategory[]) => void;
+    suggestions: Suggestion[];
+    updateSuggestions: (s: Suggestion[]) => void;
 };
 
 const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
@@ -73,40 +76,44 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
     const analyzeText = async () => {
         setLoading(true);
         quillRef.current.editor.enable(false); // disable texting
-        const text = quillRef.current.getEditor().getText().replace(/\n$/, "");
+        const text: string = quillRef.current
+            .getEditor()
+            .getText()
+            .replace(/\n$/, "");
         try {
             const response = await Api.analyzeResume({ text });
 
             const feedback = response.feedback;
-
             let idx = 0;
-            // group feedback by category
-            const categories = feedback.reduce((r: any, a: any) => {
-                if (a.shortDesc in r) {
-                    r[a.shortDesc].suggestions.push(a);
-                } else {
-                    r[a.shortDesc] = {};
-                    r[a.shortDesc].suggestions = [a];
-                    // quick hack for colour
-                    r[a.shortDesc].color = highlightColors[idx++ % 5];
-                }
-
-                return r;
-            }, Object.create(null));
-
-            Object.keys(categories).forEach((key: any) => {
-                categories[key].suggestions.forEach((sugg: any) => {
+            feedback.forEach((f) => {
+                f.color = highlightColors[idx++ % 5];
+                f.highlightRanges.forEach((range) => {
+                    console.log(range);
                     quillRef.current
                         .getEditor()
                         .formatText(
-                            sugg.srcWord.startChar,
-                            sugg.srcWord.endChar - sugg.srcWord.startChar,
-                            { "background-color": categories[key].color },
+                            range.startPos,
+                            range.endPos - range.startPos,
+                            { underline: `underline ${f.color}` },
                         );
                 });
             });
 
-            updateSuggestions(Object.values(categories));
+            updateSuggestions(feedback);
+
+            // DEPRECATED: group feedback by category
+            // const categories = feedback.reduce((r: any, a: any) => {
+            //     if (a.shortDesc in r) {
+            //         r[a.shortDesc].suggestions.push(a);
+            //     } else {
+            //         r[a.shortDesc] = {};
+            //         r[a.shortDesc].suggestions = [a];
+            //         // quick hack for colour
+            //         r[a.shortDesc].color = highlightColors[idx++ % 5];
+            //     }
+
+            //     return r;
+            // }, Object.create(null));
         } finally {
             setLoading(false);
             quillRef.current.editor.enable(true);
