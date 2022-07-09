@@ -1,4 +1,4 @@
-const baseUrl = "http://34.130.127.124:5000/";
+const baseUrl = "https://nautilus.pateldhvani.com/";
 export class Api {
     // can refactor if need to do deletes, etc to have extended by each requestType
     // need to see how cors will work in prod

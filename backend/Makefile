@@ -1,2 +1,2 @@
 run:
-	waitress-serve --port=5000 --call main:create_app
+	waitress-serve --port=5000 --url-scheme=https --call main:create_app
