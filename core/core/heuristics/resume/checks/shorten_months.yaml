@@ -23,6 +23,7 @@ Feedback:
   longDesc: "Consider changing ~~{src_month[i]}~~ to **{dst_month[i]}** to save space."
   srcNautTokens: "src_month"
   dstText: "dst_month"
+  type: "WHITESPACE"
 
 TruePositives:
   - { old: "Built in December 2021", new: "Built in Dec 2021" }

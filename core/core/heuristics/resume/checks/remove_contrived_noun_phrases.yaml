@@ -17,6 +17,7 @@ Feedback:
   shortDesc: "Remove confusing phrases"
   longDesc: "Consider rewording **{obscure_phrases[i]}** as it may be confusing to recruiters"
   srcNautTokens: "obscure_phrases"
+  type: "SIMPLICITY"
 
 TruePositives:
   - # user creation generation

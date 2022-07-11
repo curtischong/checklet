@@ -47,13 +47,14 @@ class HighlightRange:
 
 class Feedback:
     def __init__(self, short_desc: str, long_desc: str, highlight_ranges: list[HighlightRange],
-                 highlight_ranges_on_select: list[HighlightRange], src_naut_obj: any, replacement_text: str):
+                 highlight_ranges_on_select: list[HighlightRange], src_naut_obj: any, replacement_text: str, type: str):
         self.short_desc = short_desc
         self.long_desc = long_desc
         self.highlight_ranges = highlight_ranges
         self.highlight_ranges_on_select = highlight_ranges_on_select
         self.src_naut_obj = src_naut_obj
         self.replacement_text = replacement_text
+        self.type = type
 
 
 class FeedbackGenerator:
@@ -61,6 +62,7 @@ class FeedbackGenerator:
         self.check_id = check_id
         self.short_desc_template = feedback_template["shortDesc"]
         self.long_desc_template = feedback_template["longDesc"]
+        self.feedback_type = feedback_template["type"]
 
         # We currently assume that there is only one variable in "srcNautTokens" or "srcNautSentences"
         # Otherwise, we'll need to check if their types are the same. It also introduces
@@ -94,10 +96,13 @@ class FeedbackGenerator:
             short_desc = self._inject_desc_vars(short_desc_vars, self.short_desc_template, feedback_idx, var_to_output)
             long_desc = self._inject_desc_vars(long_desc_vars, self.long_desc_template, feedback_idx, var_to_output)
 
-            src_naut_obj, highlight_ranges, highlight_ranges_on_select = self._calculate_highlight_ranges(feedback_idx, var_to_output)
+            src_naut_obj, highlight_ranges, highlight_ranges_on_select = self._calculate_highlight_ranges(feedback_idx,
+                                                                                                          var_to_output)
             dst_text = self._calculate_dst_text(feedback_idx, var_to_output)
 
-            all_feedback.append(Feedback(short_desc, long_desc, highlight_ranges, highlight_ranges_on_select, src_naut_obj, dst_text))
+            all_feedback.append(
+                Feedback(short_desc, long_desc, highlight_ranges, highlight_ranges_on_select, src_naut_obj, dst_text,
+                         self.feedback_type))
 
         return all_feedback
 

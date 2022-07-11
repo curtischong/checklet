@@ -15,6 +15,7 @@ Feedback:
   longDesc: "Consider changing *{src_pronoun[i]}* to ensure the resume is in **third person**."
   srcNautTokens: "src_pronoun"
   dstText: "dst_the"
+  type: "TONE"
 
 TruePositives:
   - { old: "I made our server 10% faster", new: "I made the server 10% faster" }
