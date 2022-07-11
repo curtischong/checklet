@@ -16,6 +16,7 @@ type Range = {
 };
 
 export type Suggestion = {
+    srcNautObj: string;
     replacementText: string;
     highlightRanges: Range[];
     highlightRangesOnSelect: Range[];

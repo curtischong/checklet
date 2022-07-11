@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { Suggestion, SuggestionCategory } from "./suggestionsTypes";
 import classnames from "classnames";
+import { capitalizeFirstLetter } from "util/capitalizeFirstLetter";
 
 import css from "./suggestioncollapse.module.scss";
 
@@ -13,6 +14,7 @@ type SuggestionCollapseProps = {
     activeKey: number;
     onClick: () => void;
 };
+
 export const SuggestionCollapse: React.FC<SuggestionCollapseProps> = (
     props: SuggestionCollapseProps,
 ) => {
@@ -21,6 +23,15 @@ export const SuggestionCollapse: React.FC<SuggestionCollapseProps> = (
     const isActive = React.useMemo(() => {
         return index === activeKey;
     }, [index, activeKey]);
+
+    const srcNaut = React.useMemo(() => {
+        return capitalizeFirstLetter(suggestion.srcNautObj);
+    }, [suggestion.srcNautObj]);
+
+    const replacementText = React.useMemo(() => {
+        return capitalizeFirstLetter(suggestion.replacementText);
+    }, [suggestion.replacementText]);
+
     return (
         <div
             className={classnames(
@@ -29,21 +40,19 @@ export const SuggestionCollapse: React.FC<SuggestionCollapseProps> = (
         >
             <div className={css.header} onClick={onClick}>
                 <span className={css.bigDot} />
-                {suggestion.srcWord.text}
+                {srcNaut}
                 <span className={css.smallDot} />
                 <div className={css.shortDesc}> {suggestion.shortDesc} </div>
             </div>
             {isActive && (
                 <div className={css.cardBody}>
                     <div className={css.suggestion}>
-                        <div className={css.remove}>
-                            {suggestion.srcWord.text}
-                        </div>
+                        {srcNaut && <div className={css.remove}>{srcNaut}</div>}
                         {suggestion.replacementText && (
                             <>
                                 <AiOutlineArrowRight className={css.arrow} />
                                 <div className={css.replace}>
-                                    {suggestion.replacementText}
+                                    {replacementText}
                                 </div>
                             </>
                         )}
