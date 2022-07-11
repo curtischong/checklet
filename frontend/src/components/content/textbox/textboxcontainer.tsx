@@ -122,9 +122,7 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
     return (
         <div className="textbox col-span-3">
             <div className="flex pb-6">
-                <div className="font-bold my-auto">
-                    Paste Your Resume Points
-                </div>
+                <div className="font-bold my-auto">Resume Feedback</div>
                 <Button
                     style={{ width: "117px", height: "36px" }}
                     className={getButtonClasses()}

@@ -1,13 +1,14 @@
 import React from "react";
 
-import { Container, AppNav, Main } from "@components";
+import { Content } from "@components/content/content";
 
 const Home: React.FC = () => {
     return (
-        <Container>
-            <Main />
-            <AppNav />
-        </Container>
+        <Content />
+        // <Container>
+        //     <Main />
+        //     <AppNav />
+        // </Container>
     );
 };
 

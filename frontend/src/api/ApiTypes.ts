@@ -1,4 +1,4 @@
-import { Suggestion } from "@components/content/suggestions/suggestionsTypes";
+import { Suggestion } from "@components";
 
 export type FeedbackRequest = {
     text: string;
