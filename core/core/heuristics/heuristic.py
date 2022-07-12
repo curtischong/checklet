@@ -1,5 +1,6 @@
 import glob
 import os
+import traceback
 from abc import ABC
 
 import yaml
@@ -71,4 +72,5 @@ class Resume(Heuristic):
                     all_feedback.append(feedback)
             except Exception as e:
                 print(e)
+                traceback.print_exc()
         return all_feedback

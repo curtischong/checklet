@@ -47,7 +47,7 @@ def filter_by_google_search_result_count_task(phrases: list[list[NautToken]]) ->
         resp = search(query)
         if resp.status_code != 200:
             print(
-                f"WARNING: google_search_yields_geq_n_results_task had status code={res.status_code} for url={res.url}")
+                f"WARNING: google_search_yields_geq_n_results_task had status code={resp.status_code} for url={resp.url}")
         else:
             soup = BeautifulSoup(resp.text, 'html.parser')
             stats = soup.find("div", {"id": "result-stats"}).get_text()

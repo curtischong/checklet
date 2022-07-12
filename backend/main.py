@@ -14,6 +14,7 @@
 
 import datetime
 import os
+import traceback
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -56,6 +57,7 @@ def resume_feedback():
     except Exception as e:
         print("Error while calling engine")
         print(e)
+        traceback.print_exc()
         feedback = {
             "error": "Could not compute"
         }
@@ -77,8 +79,10 @@ def structure_suggestions():
         "structure": ["Skills", "Work Experience", "Volunteering", "Awards", "Education"]
     }
 
+
 def create_app():
-   return app
+    return app
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
