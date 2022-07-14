@@ -183,7 +183,7 @@ class FeedbackGenerator:
         highlight_ranges_on_select = []
         if self.src_naut_tokens_on_select_var_name:
             highlight_ranges_on_select = self._calculate_highlight_ranges_for_output(
-                self.src_naut_tokens_on_select_var_name, feedback_idx, var_to_output)
+                var_to_output[self.src_naut_tokens_on_select_var_name][feedback_idx])
 
         return src_naut_obj, highlight_ranges, highlight_ranges_on_select
 
