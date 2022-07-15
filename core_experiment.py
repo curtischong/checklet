@@ -7,7 +7,8 @@ from core.engine.engine import Engine, EngineRequest
 def run_test():
     # text = "Selected our storage engine by creating our benchmark testing suite tracking latency and memory per operation, as well as total disk usage for various key value stores."
     # text = "Optimized user creation generation using ASP.Net and React, reducing wait time by 80%"
-    text = "made our many engines faster on honours january 23"
+    # text = "made our many engines faster on honours january 23"
+    text = "Developed generic ML pipeline interface, enabling major codebase refactor to 5+ different pipelines, allowing for easier readability and maintainability of current pipeline architectures"
     # text = "Bachelor of Applied Science Honours"
 
     engine_config = {}

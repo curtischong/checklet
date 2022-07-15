@@ -1,0 +1,18 @@
+Pipeline:
+  - name: detect_multiple_nouns
+    task: detect_multiple_nouns_
+    outputs: ["repeated_nouns"]
+
+Feedback:
+  shortDesc: "Repeated word"
+  longDesc: "You may not need to repeat **{repeated_nouns[i]}** in the sentence."
+  srcNautTokens: "repeated_nouns" # must be a List[NautTokens].. these are the words you're highlighting
+  type: "WARNING"
+
+TruePositives:
+  - {
+      old: "Developed generic ML pipeline interfac allowing for easier readability and maintainability of current pipeline architectures",
+      new: "Developed generic ML pipeline interfac allowing for easier readability and maintainability",
+    }
+TrueNegatives:
+  - "Developed generic ML pipeline interface"
