@@ -1,12 +1,10 @@
 import React, { useState, useRef } from "react";
-import { Api } from "../../../api/Api";
-import { Spin, Button } from "antd";
-import {
-    Suggestion,
-    SuggestionCategory,
-} from "../suggestions/suggestionsTypes";
+import { Api } from "@api";
+import { Button } from "antd";
+import { Suggestion } from "../suggestions/suggestionsTypes";
 import "react-quill/dist/quill.snow.css";
-import classNames from "classnames";
+import { AccessCodeModal } from "./accessCodeModal";
+import { mixpanelTrack } from "@utils";
 
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
@@ -18,9 +16,11 @@ const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
 export const TextboxContainer: React.FC<TextboxContainerProps> = (
     props: TextboxContainerProps,
 ) => {
-    const { suggestions, updateSuggestions } = props;
+    const { updateSuggestions } = props;
     const [loading, setLoading] = useState(false);
     const [originalText, setOriginalText] = useState("replace me");
+    const [isAccessCodeModalVisible, setIsAccessCodeModalVisible] =
+        useState(false);
 
     // issue with rendering when document not yet defined
     const quill = () => {
@@ -100,6 +100,11 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
             });
 
             updateSuggestions(feedback);
+            mixpanelTrack("Analyze Button Clicked", {
+                "Number of suggestions generated": feedback.length,
+                Suggestions: feedback,
+                Input: text,
+            });
 
             // DEPRECATED: group feedback by category
             // const categories = feedback.reduce((r: any, a: any) => {
@@ -119,10 +124,31 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
             quillRef.current.editor.enable(true);
         }
     };
+
+    const showModal = () => {
+        setIsAccessCodeModalVisible(true);
+    };
+
+    const onClose = () => {
+        setIsAccessCodeModalVisible(false);
+    };
+
     return (
         <div className="textbox col-span-3">
             <div className="flex pb-6">
                 <div className="font-bold my-auto">Resume Feedback</div>
+                <div
+                    onClick={showModal}
+                    className="italic text-blue-500 m-auto hover:underline"
+                >
+                    {" "}
+                    Want an access code?{" "}
+                </div>
+                <AccessCodeModal
+                    onClose={onClose}
+                    visible={isAccessCodeModalVisible}
+                />
+
                 <Button
                     style={{ width: "117px", height: "36px" }}
                     className={getButtonClasses()}

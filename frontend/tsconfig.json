@@ -19,6 +19,12 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
+      "@api": [ 
+        "src/api"
+      ],
+      "@api/*": [ 
+        "src/api/*"
+      ],
       "@components/*": [
         "src/components/*"
       ],
@@ -36,7 +42,13 @@
       ],
       "@styles": [
         "src/styles"
-      ]
+      ],
+      "@utils": [ 
+        "src/utils"
+      ],
+      "@utils/*": [ 
+        "src/utils/*"
+      ],
     },
     "incremental": true
   },
@@ -44,7 +56,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/components/utils/getAccessCode.js"  ],
   "exclude": [
     "node_modules"
   ]

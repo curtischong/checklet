@@ -8,7 +8,7 @@ import {
     Draggable,
     DropResult,
 } from "react-beautiful-dnd";
-import { Api } from "../../api/Api";
+import { Api } from "@api";
 
 import css from "./structure.module.scss";
 
