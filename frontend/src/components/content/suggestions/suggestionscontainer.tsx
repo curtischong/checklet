@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import classnames from "classnames";
-import { LengthMetric, Suggestion } from "./suggestionsTypes";
+import { Suggestion } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
 import { SuggestionCollapse } from "./suggestionCollapse";
 import ZeroImage from "./ZeroState.png";
+import { ContainerHeader } from "../containerHeader";
 
 export type SuggestionsContainerProps = {
     suggestions: Suggestion[];
@@ -15,16 +16,20 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     const { suggestions } = props;
     const [activeKey, setActiveKey] = useState<number>(0);
 
+    const suggestionsHeader = (
+        <div className="font-bold text-16 pb-4 pt-1 flex">
+            {suggestions.length > 0 && (
+                <div className={classnames(css.number)}>
+                    {suggestions.length}
+                </div>
+            )}
+            All Suggestions
+        </div>
+    );
+
     return (
         <div className="col-span-2">
-            <div className="font-bold text-16 pb-4 pt-1 flex">
-                {suggestions.length > 0 && (
-                    <div className={classnames(css.number)}>
-                        {suggestions.length}
-                    </div>
-                )}
-                All Suggestions
-            </div>
+            <ContainerHeader header={suggestionsHeader} />
 
             <div className="px-4">
                 {suggestions.length > 0 ? (

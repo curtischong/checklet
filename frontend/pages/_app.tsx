@@ -17,8 +17,6 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
         mixpanelTrack("Opened app");
     }, []);
 
-    // mixpanel.init("c0a764f0dc29ac3aced3d053e01ccf71", { debug: true });
-
     if (typeof window !== "undefined" && Component) {
         return <Component {...pageProps} />;
     }

@@ -5,6 +5,7 @@ import { Suggestion } from "../suggestions/suggestionsTypes";
 import "react-quill/dist/quill.snow.css";
 import { AccessCodeModal } from "./accessCodeModal";
 import { mixpanelTrack } from "@utils";
+import { ContainerHeader } from "../containerHeader";
 
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
@@ -133,31 +134,36 @@ export const TextboxContainer: React.FC<TextboxContainerProps> = (
         setIsAccessCodeModalVisible(false);
     };
 
+    const textboxHeader = (
+        <div className="flex pb-6">
+            <div className="font-bold my-auto">Resume Feedback</div>
+            <div
+                onClick={showModal}
+                className="italic text-blue-500 m-auto hover:underline"
+            >
+                {" "}
+                Want an access code?{" "}
+            </div>
+            <AccessCodeModal
+                onClose={onClose}
+                visible={isAccessCodeModalVisible}
+            />
+
+            <Button
+                style={{ width: "117px", height: "36px" }}
+                className={getButtonClasses()}
+                onClick={analyzeText}
+                loading={loading}
+            >
+                Analyze
+            </Button>
+        </div>
+    );
+
     return (
         <div className="textbox col-span-3">
-            <div className="flex pb-6">
-                <div className="font-bold my-auto">Resume Feedback</div>
-                <div
-                    onClick={showModal}
-                    className="italic text-blue-500 m-auto hover:underline"
-                >
-                    {" "}
-                    Want an access code?{" "}
-                </div>
-                <AccessCodeModal
-                    onClose={onClose}
-                    visible={isAccessCodeModalVisible}
-                />
+            <ContainerHeader header={textboxHeader} />
 
-                <Button
-                    style={{ width: "117px", height: "36px" }}
-                    className={getButtonClasses()}
-                    onClick={analyzeText}
-                    loading={loading}
-                >
-                    Analyze
-                </Button>
-            </div>
             <Quill
                 style={{ minHeight: "400px" }}
                 ref={quillRef}
