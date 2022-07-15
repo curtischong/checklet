@@ -2,41 +2,46 @@ import glob
 import os
 import traceback
 from abc import ABC
-
-import yaml
+from copy import deepcopy
 
 from core.converters.input.naut_parser import NautDoc
 from core.dag.dag import DAG
 from core.dag.node import Node
-from core.heuristics.feedback import FeedbackGenerator, Feedback
+from core.heuristics.feedback import Feedback, FeedbackGenerator
+from core.heuristics.pipeline import CheckDef
 from core.models.NautEmbeddings import NautEmbeddings
+
+
+class CheckDefinitionError(BaseException):
+    pass
 
 
 class Check:
     def __init__(self, check_path: str):
         self.name = check_path
-        with open(check_path, 'r') as stream:
-            config = yaml.safe_load(stream)
+        self.check_def = CheckDef(check_path)
+        self.template_dag = DAG(check_path, self.check_def.pipeline_def)
+        self.template_feedback_generator = FeedbackGenerator(self.check_def.feedback_def)
+        self._validate()
 
-        self.config = config
-        self.DAG = None
-        self.feedback_generator = None
-        self.feedback = []
-
-    def init_state(self):
-        pipeline = self.config["Pipeline"]
-        feedback_template = self.config["Feedback"]
-        self.DAG = DAG(self.name, pipeline)
-        self.feedback_generator = FeedbackGenerator(self.name, feedback_template)
-        self.feedback = []
-
-    def gen_feedback(self, computed_leaves: list[Node]) -> list[Feedback]:
-        self.feedback = self.feedback_generator.run(computed_leaves)
-        return self.feedback
+    def _validate(self):
+        # validate that feedback uses variables that are defined in the pipeline
+        feedback_vars = {x for x in [self.template_feedback_generator.src_naut_tokens_var_name,
+                                     self.template_feedback_generator.src_naut_sentences_var_name,
+                                     self.template_feedback_generator.src_naut_tokens_on_select_var_name] if
+                         x is not None}
+        leaf_outputs = {output for leaf in self.template_dag.get_leaves() for output in leaf.output_names}
+        if not leaf_outputs.issuperset(feedback_vars):
+            raise CheckDefinitionError(f"{self.name} feedback uses variable not produced by pipeline")
 
     def run(self, data: dict[str, any]) -> list[Feedback]:
-        leaves = self.DAG.run(**data)
+        dag = deepcopy(self.template_dag)
+        leaves = dag.run(data)
         return self.gen_feedback(leaves)
+
+    def gen_feedback(self, computed_leaves: list[Node]) -> list[Feedback]:
+        feedback_generator = deepcopy(self.template_feedback_generator)
+        return feedback_generator.run(computed_leaves)
 
 
 class Heuristic(ABC):
@@ -62,7 +67,6 @@ class Resume(Heuristic):
         all_feedback = []
         # TODO: add concurrency, and stream results eagerly
         for check in self.checks:
-            check.init_state()
             try:
                 check_feedback = check.run({
                     "naut_doc": doc,

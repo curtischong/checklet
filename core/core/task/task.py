@@ -6,10 +6,7 @@ from inspect import getmembers, isfunction, isclass
 from os.path import dirname, basename, isfile, join
 from typing import ClassVar, get_type_hints
 
-# parsing constants
 from core.type.Type import get_types, Type
-
-DEPENDENCIES = "dependencies"
 
 
 class InvalidTaskImplementationError(Exception):
@@ -36,7 +33,7 @@ class Task:
         for var, type_hint in type_hints.items():
             if var == "return":
                 continue
-            self.inputs[var] = Type(str(type_hint))
+            self.inputs[var] = Type.of_type_str(str(type_hint))
 
         # parse output vars
         if "return" not in type_hints:
@@ -44,7 +41,7 @@ class Task:
         return_types = get_types(str(type_hints["return"]))
         self._init_outputs(return_types, func_def)
 
-        self.is_feedback_task = True if return_types == [Type("Feedback")] else False
+        self.is_feedback_task = True if return_types == [Type.of_type_str("Feedback")] else False
 
     def _init_outputs(self, return_types: list[Type], func_def: callable):
         if len(return_types) == 1:

@@ -19,6 +19,14 @@ class Type:
     def __repr__(self):
         return self.type
 
+    @classmethod
+    def of_val(cls, arg: any) -> Type:
+        return cls(str(type(arg)))
+
+    @classmethod
+    def of_type_str(cls, type_str: str) -> Type:
+        return cls(type_str)
+
 
 def _get_type(type_str: str) -> str:
     stripped = type_str \
@@ -46,7 +54,7 @@ def get_types(type_str: str) -> list[Type]:
     type_str = type_str.replace("typing.", "")
     type_str = type_str.replace(" ", "")
     if not type_str.lower().startswith("tuple"):
-        return [Type(type_str)]
+        return [Type.of_type_str(type_str)]
 
     # if there are nested tuples, we use this variable
     # to know if we are in the outermost tuple
@@ -62,7 +70,7 @@ def get_types(type_str: str) -> list[Type]:
             rbrackets_remaining -= 1
             if rbrackets_remaining == 0:
                 # we are finished parsing
-                t = Type(type_str[last_var_start: i])
+                t = Type.of_type_str(type_str[last_var_start: i])
                 ans.append(t)
                 return ans
         elif cur == ",":
@@ -74,8 +82,9 @@ def get_types(type_str: str) -> list[Type]:
 
 
 # typing constants for generic use
-TYPE_DICT = Type(str(type({})))
-TYPE_LIST = Type(str(type([])))
+TYPE_DICT = Type.of_val({})
+TYPE_LIST = Type.of_val([])
+TYPE_STR = Type.of_val('')
 
 if __name__ == "__main__":
     def assert_equal(actual: list[Type], expected: list[str]):

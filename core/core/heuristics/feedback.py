@@ -4,7 +4,7 @@ from typing import Union
 
 from core.converters.input.naut_parser import NautToken, NautSent
 from core.dag.node import Node
-from core.lib.utils.optional import only_one
+from core.heuristics.pipeline import FeedbackDefinition
 
 
 class HighlightRange:
@@ -58,24 +58,15 @@ class Feedback:
 
 
 class FeedbackGenerator:
-    def __init__(self, check_id: str, feedback_template: dict[any, any]):
-        self.check_id = check_id
-        self.short_desc_template = feedback_template["shortDesc"]
-        self.long_desc_template = feedback_template["longDesc"]
-        self.feedback_type = feedback_template["type"]
-
-        # We currently assume that there is only one variable in "srcNautTokens" or "srcNautSentences"
-        # Otherwise, we'll need to check if their types are the same. It also introduces
-        # extra complexity since we have to concatenate each arrays of all srcNautToken variables
-        # But which array goes first when we concatenate them together?
-        # I guess one assumption we can make is to concat all the lists in the same order as they appear in the yaml
-        self.src_naut_tokens_var_name = feedback_template.get("srcNautTokens")
-        self.dst_text_var_name = feedback_template.get("dstText")
-        self.src_naut_sentences_var_name = feedback_template.get("srcNautSentences")
-        assert only_one(self.src_naut_tokens_var_name, self.src_naut_sentences_var_name), \
-            f"The Feedback for {check_id} can only contain one of srcNautTokens or srcNautSentences in the .yaml"
-
-        self.src_naut_tokens_on_select_var_name = feedback_template.get("srcNautTokensOnSelect")
+    def __init__(self, feedback_def: FeedbackDefinition):
+        self.check_id = feedback_def.check_id
+        self.short_desc_template = feedback_def.short_desc_template
+        self.long_desc_template = feedback_def.long_desc_template
+        self.feedback_type = feedback_def.feedback_type
+        self.src_naut_tokens_var_name = feedback_def.src_naut_tokens_var_name
+        self.dst_text_var_name = feedback_def.dst_text_var_name
+        self.src_naut_sentences_var_name = feedback_def.src_naut_sentences_var_name
+        self.src_naut_tokens_on_select_var_name = feedback_def.src_naut_tokens_on_select_var_name
 
     def run(self, computed_leaves: list[Node]) -> list[Feedback]:
         all_feedback = []
@@ -109,7 +100,7 @@ class FeedbackGenerator:
     def _extract_output_from_computed_leaves(self, computed_leaves: list[Node]) -> dict[str, any]:
         var_to_output = {}
         for leaf in computed_leaves:
-            for key, val in leaf.named_outputs.items():
+            for key, val in leaf.output_vals.items():
                 var_to_output[key] = val
         return var_to_output
 
