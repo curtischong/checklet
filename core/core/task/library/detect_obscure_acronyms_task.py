@@ -13,6 +13,12 @@ known_acronyms = [
     "QA",
     "AWS",
     "SEO",
+    "SQL",
+    "CSS",
+    "HTML",
+    "K8S",
+    "USA",
+    "PHP",
 ]
 
 
@@ -26,7 +32,7 @@ def detect_obscure_acronyms_task(naut_doc: NautDoc) -> list[NautToken]:
     for sentence in naut_doc.sentences:
         for token in sentence.tokens:
             isAcronym = token.text.isupper()
-            if isAcronym and token.text not in known_acronyms:
+            if len(token) >= 2 and isAcronym and token.text not in known_acronyms:
                 obscure_acronyms.append(token)
 
     return obscure_acronyms
