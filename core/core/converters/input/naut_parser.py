@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from enum import Enum
 from typing import Generator
 
 import spacy
@@ -16,7 +17,7 @@ class NautToken:
     def __init__(self, token: Token, naut_sent: NautSent):
         self.naut_sent = naut_sent
         self.text = token.text
-        self.ent_type = token.ent_type_  # The type of named entity
+        self.ent_type = NautEntityType.from_str(token.ent_type_)  # The type of named entity
 
         # TODO: consider making POS a constant since we're not sure which POS format we're using
         # Although, we are currently using the treetags one, which is pretty universal
@@ -83,6 +84,40 @@ class NautToken:
         self.children_dep.append((child_naut_token, dep_label))
 
 
+class NautEntityType(Enum):
+    LOC = 1
+    ORG = 2
+    MONEY = 3
+    NONE = 4
+    UNKNOWN = 5
+
+    @staticmethod
+    def from_str(label: str):
+        # sadge match statements don't exist in python 3.9
+        if label == "":
+            return NautEntityType.NONE
+        elif label == "GPE":  # geopolitical entity (countries, cities, states)
+            return NautEntityType.LOC
+        elif label == "ORG":  # organization(Companies, agencies, institutions)
+            return NautEntityType.ORG
+        elif label == "MONEY":  # Monetary values, including unit.
+            return NautEntityType.MONEY
+        else:
+            print(f"Cannot map NER label {label} to an enum")
+            return NautEntityType.UNKNOWN
+
+
+# entities from named entity recognition
+class NautEntity:
+    def __init__(self, tokens: list[NautToken], dep: str):
+        self.tokens = tokens
+        self.type = NautEntityType.from_str(dep)
+
+    def __repr__(self):
+        tokens_repr = " ".join([str(token) for token in self.tokens])
+        return f"{self.type}: {tokens_repr}"
+
+
 class NautSent:
     def __init__(self, sentence: Span, sent_idx: int):
         self.idx = sent_idx
@@ -91,8 +126,7 @@ class NautSent:
         # the root of the dependency tree
         self.root = self._parse_dependency_tree(sentence.root, self)
 
-        # TODO: Extract Entities via named entity recognition
-        # self.entities = self._parse_entities(sentence.ents)
+        self.entities = self._parse_entities(sentence)
 
     def _parse_tokens(self, sentence: Span) -> tuple[dict, list[NautToken]]:
         naut_tokens = []
@@ -105,6 +139,13 @@ class NautSent:
             token_idx_to_naut_token[token.idx] = naut_token
             naut_tokens.append(naut_token)
         return token_idx_to_naut_token, naut_tokens
+
+    def _parse_entities(self, sentence: Span) -> list[NautEntity]:
+        naut_entities = []
+        for entity in sentence.ents:
+            entity_naut_tokens = [self._get_naut_token(token) for token in entity]
+            naut_entities.append(NautEntity(entity_naut_tokens, entity.label_))
+        return naut_entities
 
     def _get_naut_token(self, token: Token) -> NautToken:
         return self.token_idx_to_naut_token[token.idx]
