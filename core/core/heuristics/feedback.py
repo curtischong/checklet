@@ -14,11 +14,11 @@ class HighlightRange:
 
     @classmethod
     def from_naut_token(cls, naut_token: NautToken) -> HighlightRange:
-        return cls(naut_token.start_pos(), naut_token.end_pos())
+        return cls(naut_token.start_pos, naut_token.end_pos)
 
     @classmethod
     def from_naut_sent(cls, naut_sent: NautSent) -> HighlightRange:
-        return cls(naut_sent.tokens[0].start_pos(), naut_sent.tokens[-1].end_pos())
+        return cls(naut_sent.tokens[0].start_pos, naut_sent.tokens[-1].end_pos)
 
     @classmethod
     def from_naut_obj(cls, naut_obj: Union[NautToken, NautSent]) -> HighlightRange:

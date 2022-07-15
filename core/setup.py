@@ -4,7 +4,9 @@ from setuptools import setup
 
 install_requires = [
     "spacy==3.3.1",
-    "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.3.0/en_core_web_sm-3.3.0-py3-none-any.whl",
+    # note, the #egg=en_core_web_lg at the end of the URL tells pip to not reinstall this package
+    # from: https://github.com/explosion/spaCy/issues/1143
+    "en-core-web-lg @ https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.3.0/en_core_web_lg-3.3.0-py3-none-any.whl#egg=en_core_web_lg",
     "stanza==1.4.0",
     "PyYAML==6.0",
     "networkx==2.8.4",

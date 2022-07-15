@@ -13,13 +13,16 @@ from core.models.NautEmbeddings import NautEmbeddings
 class NautParserManager(BaseManager):
     pass
 
+
 # If you move or rename SERVER_ADDRESS, please update `run_core.sh`
 SERVER_ADDRESS = ('', 42952)
 AUTHKEY = b'buhr'
 
 
 def _start_server() -> None:
+    print("[TaskParsingHelperServer] loading NautParser")
     naut_parser = NautParser()
+    print("[TaskParsingHelperServer] loading NautEmbeddings")
     naut_embeddings = NautEmbeddings()
     NautParserManager.register('get_naut_parser', callable=lambda: naut_parser)
     NautParserManager.register('get_naut_embeddings', callable=lambda: naut_embeddings)

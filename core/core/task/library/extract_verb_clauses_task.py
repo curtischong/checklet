@@ -9,12 +9,12 @@ def is_valid_clause(cur_clause: list[NautToken], cur_clause_has_noun: bool):
     return len(cur_clause) > 1 and cur_clause_has_noun
 
 
-tokens_to_rtrim = {"CC", ",", "."}  # helps us trim excess tokens
+token_pos_to_rtrim = {"PUNCT", "CONJ", "CCONJ", "SCONJ"}  # helps us trim excess tokens
 
 
 # rtrim the clauses to remove conjunctions (such as "and") and unwanted punctuation (like commas)
 def rtrim_excess_tokens(cur_clause: list[NautToken]):
-    while cur_clause and cur_clause[-1].pos_tag in tokens_to_rtrim:
+    while cur_clause and cur_clause[-1].pos in token_pos_to_rtrim:
         cur_clause.pop()
 
 

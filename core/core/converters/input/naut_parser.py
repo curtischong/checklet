@@ -2,154 +2,142 @@ from __future__ import annotations
 
 from typing import Generator
 
-import stanza
-from stanza.models.common.doc import Document, Sentence, Token
-from stanza.models.constituency.parse_tree import Tree
+import spacy
+from spacy.language import Language, Doc
+from spacy.tokens import Token, Span
 
 
 # tokens are contiguous pieces of characters that are separated by whitespace/punctuation
 # note that hyphens are their own tokens, so hand-made is considered as 3 tokens.
 class NautToken:
-    verbs = {"VB", "VBD", "VBG", "VBN", "VBP", "VBZ"}
-    nouns = {"NN", "NNS", "NNP", "NNPS"}
+    verbs = {"VERB"}
+    nouns = {"NOUN", "PROPN"}
 
-    def __init__(self, token: Token):
-        token.naut_token = self
-        self.naut_sent: NautSent = token.sent.naut_sent if token.sent else None  # reference to the sentence this token is in
-        self.token = token
-        self.text: str = token.text
-        self.ner = token.ner  # named entity recognition tag
+    def __init__(self, token: Token, naut_sent: NautSent):
+        self.naut_sent = naut_sent
+        self.text = token.text
+        self.ent_type = token.ent_type_  # The type of named entity
 
-        # In Stanza, there is a further abstraction called a word. This is for
-        # languages whose tokens can be comprised of multiple words. In english,
-        # there is a one-to-one mapping from tokens to words.
-        # But in French, the word "du" comprises 2 words: de, le
-        # we don't care about words for now, so here, we
-        # save the word's POS tag to our token.
-        self._word = self.token.words[0]
-        self.pos_tag = self._word.xpos
-        self.pos = self._word.pos  # the position of the first character in the token (relative to the start of the doc)
+        # TODO: consider making POS a constant since we're not sure which POS format we're using
+        # Although, we are currently using the treetags one, which is pretty universal
+        # performance: store the pos as an enum rather than a str
+        # list of Spacy POS tags: https://machinelearningknowledge.ai/tutorial-on-spacy-part-of-speech-pos-tagging/
+        self.pos = token.pos_  # point of speech tag
+        self.is_verb = self.pos in self.verbs
+        self.is_noun = self.pos in self.nouns
 
-        self.is_verb = self.pos_tag in self.verbs
-        self.is_noun = self.pos_tag in self.nouns
+        # Spacy's dependency tree: https://spacy.io/usage/linguistic-features#dependency-parse
+        # The token's parent (in the dependency tree) is parsed after all NautTokens are created
+        self.parent_dep: NautToken | None = None
+
+        # Edges to token's children in the dependency tree.
+        # Each edge is in the form: (<child NautToken>, <dependency label>)
+        # performance: store the <dependency label> as a hash rather than a str
+        self.children_dep: list[tuple[NautToken, str]] = []
+        self.left_deps: list[NautToken] = []
+        self.right_deps: list[NautToken] = []
+
+        # the location of the first character relative to the document
+        self.start_pos: int = token.idx
+        self.end_pos: int = token.idx + len(self)
 
     def __repr__(self):
         return str(self.text)
 
     def __len__(self):
-        return self._word.end_char - self._word.start_char
+        return len(self.text)
 
-    def start_pos(self):
-        return self._word.start_char
+    def is_leaf_in_dep_tree(self) -> bool:
+        return len(self.left_deps) + len(self.right_deps) == 0
 
-    def end_pos(self):
-        return self._word.end_char
-
-
-class NautTree:
-    def __init__(self, label: str):
-        self.label = label
-        self.parent = None
-        self.children = []
-        self.token = None  # When this NautTree is a leaf node, self.token points to the NautToken that follows this constituency label
-
-    def is_leaf(self):
-        return len(self.children) == 0
-
-    def set_token(self, token: NautToken):
-        if not self.is_leaf():
-            print("WARNING: setting a token to a non-leaf node")
-        self.token = token
-
-    def add_child(self, child_tree: NautTree) -> None:
-        child_tree.parent = self
-        self.children.append(child_tree)
-
-    # the NautTokens that are the leaf nodes of this subtree
-    def leaves(self) -> list[NautTree]:
-        if self.is_leaf():
-            return [self]
-        leaves = []
-        for child in self.children:
-            leaves.extend(child.leaves())
-        return leaves
-
-    # returns all tokens under this subtree
-    def tokens(self) -> list[NautToken]:
-        leaves = self.leaves()
-        return [leaf.token for leaf in leaves]
-
-    # a generator for preorder traversal on all nodes of the tree (NautTokens excluded)
-    def preorder(self) -> Generator[NautTree, None, None]:
+    # a generator for preorder traversal on all nodes in the dependency tree
+    def preorder_dep(self) -> Generator[NautToken, None, None]:
         yield self
-        for child in self.children:
-            if isinstance(child, NautTree):
-                yield from child.preorder()
+        for child, _ in self.children_dep:
+            yield from child.preorder_dep()
 
-    def __repr__(self) -> str:
-        if self.is_leaf():
-            return "({} {})".format(self.label, str(self.token))
+    def preorder_dependency_tree_repr(self) -> str:
+        if self.is_leaf_in_dep_tree():
+            return f"({self})"
 
-        children_repr = " ".join([str(child) for child in self.children])
-        return "({} {})".format(self.label, children_repr)
+        children_repr = []
+        for child, label in self.children_dep:
+            children_repr.append(f"{label}:{child.preorder_dependency_tree_repr()}")
+        children_repr = " ".join(children_repr)
+        return f"({self} {children_repr})"
+
+    def inorder_dependency_tree_repr(self) -> str:
+        if self.is_leaf_in_dep_tree():
+            return f"({self})"
+
+        left_repr = []
+        for child in self.left_deps:
+            left_repr.append(child.inorder_dependency_tree_repr())
+        right_repr = []
+        for child in self.right_deps:
+            right_repr.append(child.inorder_dependency_tree_repr())
+        return f"({' '.join(left_repr)} {self} {' '.join(right_repr)})"
+
+    def set_child_dep(self, child_naut_token: NautToken, dep_label: str) -> None:
+        child_naut_token.parent_dep = self
+        self.children_dep.append((child_naut_token, dep_label))
 
 
 class NautSent:
-    def __init__(self, sentence: Sentence):
-        sentence.naut_sent = self
-        self.sentence = sentence
-        self.index = sentence.index
-        self.tokens = [NautToken(token) for token in sentence.tokens]
-        self.entities = sentence.entities
-        self.constituency_tree = self._parse_naut_tree(sentence, self.tokens)
-        # TODO: have an array of named entities. I think we extract them from the tokens
+    def __init__(self, sentence: Span, sent_idx: int):
+        self.idx = sent_idx
+        self.token_idx_to_naut_token, self.tokens = self._parse_tokens(sentence)
 
-    # this deep-copies the stanza constituency tree and converts it to naut trees
-    def _parse_naut_tree(self, sentence: Sentence, tokens: list[NautToken]) -> NautTree:
-        root: Tree = sentence.constituency
-        token_idx = 0
-        # the idea is to perform DFS to deep copy the Stanza nodes into NautTree Nodes
-        root_parent = NautTree("dummy parent")
-        stack = [(root, root_parent)]
+        # the root of the dependency tree
+        self.root = self._parse_dependency_tree(sentence.root, self)
 
-        while stack:
-            stanza_nd, naut_parent = stack.pop()
-            if stanza_nd.is_leaf():
-                # We want the leaf nodes of the NautTree to reference a NautToken
-                text = stanza_nd.label
-                if text != tokens[token_idx].text:  # validate that the leaf node is the ith NautToken
-                    print("WARNING: the NautToken text mismatches from the constituency leaf text")
-                naut_token = tokens[token_idx]
-                token_idx += 1
-                naut_parent.set_token(naut_token)
-                continue
-            naut_nd = NautTree(stanza_nd.label)
-            naut_parent.add_child(naut_nd)
+        # TODO: Extract Entities via named entity recognition
+        # self.entities = self._parse_entities(sentence.ents)
 
-            # Append this node's children to the stack
-            # Note: we append in reverse order since we want to visit
-            # the child nodes from left to right (so we traverse the leaf
-            # nodes in chronological order)
-            for nxt in range(len(stanza_nd.children) - 1, -1, -1):
-                child = stanza_nd.children[nxt]
-                stack.append((child, naut_nd))
+    def _parse_tokens(self, sentence: Span) -> tuple[dict, list[NautToken]]:
+        naut_tokens = []
+        token_idx_to_naut_token = {}
+        for token in sentence:
+            naut_token = NautToken(token, self)
 
-        naut_root = root_parent.children[0]
-        naut_root.parent = None  # remove the pointer to the dummy parent
-        return naut_root
+            # populate the token_idx_to_naut_token so we can find
+            # the naut_token that the spacy token references
+            token_idx_to_naut_token[token.idx] = naut_token
+            naut_tokens.append(naut_token)
+        return token_idx_to_naut_token, naut_tokens
+
+    def _get_naut_token(self, token: Token) -> NautToken:
+        return self.token_idx_to_naut_token[token.idx]
+
+    def _parse_dependency_tree(self, root: Token, naut_sent: NautSent) -> NautToken:
+        root_naut_token = self._get_naut_token(root)
+
+        # set the child dependencies for this root
+        for child in root.children:
+            child_naut_token = self._parse_dependency_tree(child, naut_sent)
+            dep_label = child.dep_
+            root_naut_token.set_child_dep(child_naut_token, dep_label)
+
+        # set the left dependencies for this root
+        for left in root.lefts:
+            root_naut_token.left_deps.append(self._get_naut_token(left))
+
+        # set the right dependencies for this root
+        for right in root.rights:
+            root_naut_token.right_deps.append(self._get_naut_token(right))
+
+        return root_naut_token
 
     def __repr__(self):
         return " ".join([str(token) for token in self.tokens])
 
-    def num_chars(self):
+    def num_chars(self) -> int:
         return len(str(self))
 
 
 class NautDoc:
-    def __init__(self, doc: Document):
-        doc.naut_doc = self
-        self.doc = doc
-        self.sentences = [NautSent(sent) for sent in doc.sentences]
+    def __init__(self, doc: Doc):
+        self.sentences = [NautSent(sent, sent_idx) for sent_idx, sent in enumerate(doc.sents)]
         self.tokens = []
         for sentence in self.sentences:
             self.tokens.extend(sentence.tokens)
@@ -158,16 +146,28 @@ class NautDoc:
         return str(self.sentences)
 
 
+# Splits a list of tokens into sentences if there is a newline or a period
+@Language.component("newline_sentencizer")
+def newline_sentencizer(doc: Doc) -> Doc:
+    splitters = ["\n", "."]
+    for i, token in enumerate(doc[:-2]):
+        next_token = doc[i + 1]
+
+        # see if this token is the start of the next sentence
+        if (token.text[0] in splitters and  # we're using text[0] to work around this edge case: "\n "
+                not next_token.text.islower()  # we don't look for isupper() since bullet points '-' are not upper
+        ):
+            doc[i + 1].is_sent_start = True
+        else:
+            doc[i + 1].is_sent_start = False  # explicitly tell the parser this token isn't sent_start
+    return doc
+
+
 class NautParser:
     def __init__(self):
-        stanza.install_corenlp()
-        # Stanza's default tokenizer uses a neural network and although it's generally
-        # more accurate, it fails to properly segemnt this sentence:
-        # Built a Go server that... (The word Go makes it think that it's the start of a second sentence)
-        # To fix this, I enabled the rule-based spacy tokenization. but spacy is less accurate generally
-        # https://stanfordnlp.github.io/stanza/tokenize.html#use-spacy-for-fast-tokenization-and-sentence-segmentation
-        self.stanza_client = stanza.Pipeline('en', processors={'tokenize': 'spacy'})
+        self.nlp = spacy.load('en_core_web_lg')
+        self.nlp.add_pipe("newline_sentencizer", before="parser")
 
     def parse(self, text: str) -> NautDoc:
-        doc = self.stanza_client(text)
+        doc = self.nlp(text)
         return NautDoc(doc)
