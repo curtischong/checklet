@@ -12,7 +12,8 @@ Feedback:
   longDesc: "Removing **{honourifics[i]}** will help save space."
   srcNautTokens: "honourifics"
   dstText: ""
-  type: "WHITESPACE"
+  type: "SUGGESTION"
+  category: "WHITESPACE"
 
 TruePositives:
   - { old: "Bachelor of Software Engineering Honours", new: "Bachelor of Software Engineering" }

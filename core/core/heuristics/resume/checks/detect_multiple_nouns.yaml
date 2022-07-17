@@ -8,6 +8,7 @@ Feedback:
   longDesc: "You may not need to repeat **{repeated_nouns[i]}** in the sentence."
   srcNautTokens: "repeated_nouns" # must be a List[NautTokens].. these are the words you're highlighting
   type: "WARNING"
+  category: "WHITESPACE"
 
 TruePositives:
   - {

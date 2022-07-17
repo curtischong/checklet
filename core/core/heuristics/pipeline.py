@@ -80,7 +80,8 @@ class FeedbackDefinition:
     SRC_NAUT_TOKENS_ON_SELECT = "srcNautTokenDsOnSelect"
     DST_TEXT = "dstText"
     TYPE = "type"
-    REQUIRED_KEYS = {TYPE}
+    CATEGORY = "category"
+    REQUIRED_KEYS = {TYPE, CATEGORY}
 
     def __init__(self, check_id: str, config: dict[any, any]):
         self.check_id = check_id
@@ -88,6 +89,7 @@ class FeedbackDefinition:
             raise FeedbackDefinitionError(f"{check_id} is missing required keys in its Feedback definition")
 
         self.feedback_type = config.get(self.TYPE)
+        self.feedback_category = config.get(self.CATEGORY)
         self.short_desc_template = config.get(self.SHORT_DESC)
         self.long_desc_template = config.get(self.LONG_DESC)
 

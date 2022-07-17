@@ -47,7 +47,8 @@ class HighlightRange:
 
 class Feedback:
     def __init__(self, short_desc: str, long_desc: str, highlight_ranges: list[HighlightRange],
-                 highlight_ranges_on_select: list[HighlightRange], src_naut_obj: any, replacement_text: str, type: str):
+                 highlight_ranges_on_select: list[HighlightRange], src_naut_obj: any, replacement_text: str,
+                 type: str, category: str):
         self.short_desc = short_desc
         self.long_desc = long_desc
         self.highlight_ranges = highlight_ranges
@@ -55,6 +56,7 @@ class Feedback:
         self.src_naut_obj = src_naut_obj
         self.replacement_text = replacement_text
         self.type = type
+        self.category = category
 
 
 class FeedbackGenerator:
@@ -63,6 +65,7 @@ class FeedbackGenerator:
         self.short_desc_template = feedback_def.short_desc_template
         self.long_desc_template = feedback_def.long_desc_template
         self.feedback_type = feedback_def.feedback_type
+        self.feedback_category = feedback_def.feedback_category
         self.src_naut_tokens_var_name = feedback_def.src_naut_tokens_var_name
         self.dst_text_var_name = feedback_def.dst_text_var_name
         self.src_naut_sentences_var_name = feedback_def.src_naut_sentences_var_name
@@ -93,7 +96,7 @@ class FeedbackGenerator:
 
             all_feedback.append(
                 Feedback(short_desc, long_desc, highlight_ranges, highlight_ranges_on_select, src_naut_obj, dst_text,
-                         self.feedback_type))
+                         self.feedback_type, self.feedback_category))
 
         return all_feedback
 

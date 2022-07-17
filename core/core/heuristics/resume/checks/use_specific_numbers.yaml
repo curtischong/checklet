@@ -11,7 +11,8 @@ Feedback:
   shortDesc: "Use specific numbers"
   longDesc: "Consider using **specific numbers** instead of *{src_many[i]}*."
   srcNautTokens: "src_many"
-  type: "WORDING"
+  type: "SUGGESTION"
+  category: "WORDING"
 
 TruePositives:
   - { old: "Created many test suites", new: "Created 10 test suites" }

@@ -7,7 +7,8 @@ Feedback:
   shortDesc: "Start with action word"
   longDesc: "Start this point with an **action** word instead of *{first_word[i]}*"
   srcNautTokens: "first_word" # must be a List[NautTokens].. these are the words you're highlighting
-  type: "WORDING"
+  type: "SUGGESTION"
+  category: "WORDING"
 
 TruePositives:
   - {
