@@ -85,27 +85,38 @@ class NautToken:
 
 
 class NautEntityType(Enum):
-    LOC = 1
-    ORG = 2
-    MONEY = 3
-    NONE = 4
-    UNKNOWN = 5
+    PERSON = 1          # People, including fictional.
+    NORP = 2            # Nationalities or religious or political groups.
+    FAC = 3             # Buildings, airports, highways, bridges, etc.
+    ORG = 4             # Companies, agencies, institutions, etc.
+    GPE = 5             # Countries, cities, states.
+    LOC = 6             # Non-GPE locations, mountain ranges, bodies of water.
+    PRODUCT = 7         # Objects, vehicles, foods, etc. (Not services.)
+    EVENT = 8           # Named hurricanes, battles, wars, sports events, etc.
+    WORK_OF_ART = 9     # Titles of books, songs, etc.
+    LAW = 10            # Named documents made into laws.
+    LANGUAGE = 11       # Any named language.
+    DATE = 12           # Absolute or relative dates or periods.
+    TIME = 13           # Times smaller than a day.
+    PERCENT = 14        # Percentage, including ”%“.
+    MONEY = 15          # Monetary values, including unit.
+    QUANTITY = 16       # Measurements, as of weight or distance.
+    ORDINAL = 17        # “first”, “second”, etc.
+    CARDINAL = 18       # Numerals that do not fall under another type.
+    NONE = 19
+    UNKNOWN = 20
+
 
     @staticmethod
     def from_str(label: str):
-        # sadge match statements don't exist in python 3.9
         if label == "":
             return NautEntityType.NONE
-        elif label == "GPE":  # geopolitical entity (countries, cities, states)
-            return NautEntityType.LOC
-        elif label == "ORG":  # organization(Companies, agencies, institutions)
-            return NautEntityType.ORG
-        elif label == "MONEY":  # Monetary values, including unit.
-            return NautEntityType.MONEY
-        else:
+
+        try:
+            return NautEntityType[label]
+        except KeyError as e:
             print(f"Cannot map NER label {label} to an enum")
             return NautEntityType.UNKNOWN
-
 
 # entities from named entity recognition
 class NautEntity:
