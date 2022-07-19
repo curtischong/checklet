@@ -1,3 +1,5 @@
+import { RefObject } from "react";
+
 export type LengthMetric = {
     name: string;
     value: number; // time is given in seconds?
@@ -16,6 +18,7 @@ type Range = {
 };
 
 export type Suggestion = {
+    id: string;
     feedbackCategory: string;
     feedbackType: string;
     srcNautObj: string;
@@ -31,4 +34,5 @@ export type Suggestion = {
         endChar: number;
     };
     color: string;
+    cardRef: RefObject<HTMLDivElement>;
 };

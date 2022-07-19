@@ -11,12 +11,15 @@
     },
     "dependencies": {
         "@types/color": "^3.0.3",
+        "@types/draft-js": "^0.11.9",
         "@types/mixpanel-browser": "^2.38.0",
+        "@types/uuid": "^8.3.4",
         "antd": "^4.21.0",
         "axios": "^0.21.1",
         "classnames": "^2.3.1",
         "color": "^4.2.3",
         "css-loader": "^6.7.1",
+        "draft-js": "^0.11.7",
         "mixpanel-browser": "^2.45.0",
         "next": "12.0.7",
         "next-compose-plugins": "^2.2.1",
@@ -30,7 +33,9 @@
         "react-router": "^6.3.0",
         "react-router-dom": "^6.3.0",
         "remark-gfm": "^3.0.1",
-        "sass": "^1.52.3"
+        "sass": "^1.52.3",
+        "uuid": "^8.3.2",
+        "uuidv4": "^6.2.13"
     },
     "devDependencies": {
         "@types/node": "^14.14.13",
