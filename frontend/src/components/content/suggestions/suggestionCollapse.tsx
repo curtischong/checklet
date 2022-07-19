@@ -13,10 +13,11 @@ type SuggestionCollapseProps = {
     index: number;
     activeKey: string;
     onClick: () => void;
+    onReplaceClick: () => void;
 };
 export const SuggestionCollapse = forwardRef(
     (props: SuggestionCollapseProps, ref) => {
-        const { index, activeKey, onClick, suggestion } = props;
+        const { index, activeKey, onClick, onReplaceClick, suggestion } = props;
         const isActive = useMemo(() => {
             return suggestion.id === activeKey;
         }, [index, activeKey]);
@@ -65,7 +66,10 @@ export const SuggestionCollapse = forwardRef(
                                     <AiOutlineArrowRight
                                         className={css.arrow}
                                     />
-                                    <div className={css.replace}>
+                                    <div
+                                        onClick={onReplaceClick}
+                                        className={css.replace}
+                                    >
                                         {replacementText}
                                     </div>
                                 </>

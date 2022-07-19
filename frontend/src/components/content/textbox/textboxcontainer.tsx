@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { createRef } from "react";
 import {
     Editor,
     EditorState,
@@ -9,7 +9,6 @@ import { v4 as uuidv4 } from "uuid";
 import { Api } from "@api";
 import { Button } from "antd";
 import { Suggestion } from "../suggestions/suggestionsTypes";
-import "react-quill/dist/quill.snow.css";
 import { AccessCodeModal } from "./accessCodeModal";
 import { getAccessCode, mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
@@ -17,6 +16,8 @@ import { ExamplesModal } from "./examplesModal";
 
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
+    editorState: EditorState;
+    updateEditorState: (e: EditorState) => void;
     updateSuggestions: (s: Suggestion[]) => void;
     updateCollapseKey: (k: string) => void;
     updateRefs: (s: { [key: string]: any }) => void;
@@ -31,23 +32,18 @@ export class TextboxContainer extends React.Component<
         loading: boolean;
         isAccessCodeModalVisible: boolean;
         isExampleCodeModalVisible: boolean;
-        editorState: any;
-        compositeDecorator: any;
     }
 > {
     constructor(props: any) {
         super(props);
 
-        const compositeDecorator = new CompositeDecorator([
-            {
-                strategy: this.handleStrategy,
-                component: (props: any) =>
-                    this.HandleSpan(props, this.handleUnderlineClicked),
-            },
-        ]);
+        this.props.updateEditorState(
+            EditorState.moveFocusToEnd(
+                EditorState.createEmpty(this.decorator()),
+            ),
+        );
+
         this.state = {
-            compositeDecorator,
-            editorState: EditorState.createEmpty(compositeDecorator),
             loading: false,
             isAccessCodeModalVisible: false,
             isExampleCodeModalVisible: false,
@@ -55,6 +51,26 @@ export class TextboxContainer extends React.Component<
         this.analyzeText = this.analyzeText.bind(this);
         this.handleStrategy = this.handleStrategy.bind(this);
     }
+
+    componentDidUpdate = (prevProps: TextboxContainerProps) => {
+        if (
+            prevProps.editorState !== this.props.editorState &&
+            prevProps.editorState.getCurrentContent().getPlainText() !==
+                this.props.editorState.getCurrentContent().getPlainText()
+        ) {
+            this.analyzeText();
+        }
+    };
+
+    decorator = () => {
+        return new CompositeDecorator([
+            {
+                strategy: this.handleStrategy,
+                component: (props: any) =>
+                    this.HandleSpan(props, this.handleUnderlineClicked),
+            },
+        ]);
+    };
 
     render() {
         return (
@@ -65,9 +81,9 @@ export class TextboxContainer extends React.Component<
                 <ContainerHeader header={this.textboxHeader()} />
                 <Editor
                     spellCheck={true}
-                    editorState={this.state.editorState}
+                    editorState={this.props.editorState}
                     onChange={this.onChange}
-                    placeholder="Add some stuff"
+                    placeholder="Type or paste your resume here"
                 />
             </div>
         );
@@ -128,11 +144,31 @@ export class TextboxContainer extends React.Component<
         return shared;
     };
 
-    handleStrategy = (contentBlock: any, callback: any, contentState: any) => {
-        const text = contentBlock.getText();
+    handleStrategy = (
+        contentBlock: any,
+        callback: any,
+        contentState: ContentState,
+    ) => {
+        let currBlock = contentBlock;
+        let start = 0;
+        while (contentState.getBlockBefore(currBlock.getKey()) != null) {
+            currBlock = contentState.getBlockBefore(currBlock.getKey());
+            start += currBlock.getLength() + 1;
+        }
+
+        const end = start + contentBlock.getLength();
         this.props.suggestions.forEach((suggestion: Suggestion) => {
             suggestion.highlightRanges.forEach((range) => {
-                callback(range.startPos, range.endPos, suggestion);
+                if (range.startPos > end || range.endPos < start) {
+                    return;
+                }
+
+                const startPos = range.startPos - start;
+                const endPos = range.endPos - start;
+                callback(
+                    Math.max(startPos, 0),
+                    Math.min(contentBlock.getLength(), endPos),
+                );
             });
         });
     };
@@ -150,7 +186,19 @@ export class TextboxContainer extends React.Component<
     };
 
     handleUnderlineClicked = (props: any) => {
-        const key = props.start + "," + props.end + props.decoratedText;
+        const contentState = props.contentState;
+
+        let currBlock = contentState.getBlockForKey(props.blockKey);
+        let start = 0;
+
+        while (contentState.getBlockBefore(currBlock.getKey()) != null) {
+            currBlock = contentState.getBlockBefore(currBlock.getKey());
+            start += currBlock.getLength() + 1;
+        }
+
+        const startPos = props.start + start;
+        const endPos = props.end + start;
+        const key = startPos + "," + endPos + props.decoratedText;
         this.props.refs[key].current.scrollIntoView({
             behavior: "smooth",
             block: "center",
@@ -158,8 +206,8 @@ export class TextboxContainer extends React.Component<
 
         const result = this.props.suggestions.find(
             (s) =>
-                s.highlightRanges[0].endPos === props.end &&
-                s.highlightRanges[0].startPos === props.start &&
+                s.highlightRanges[0].endPos === endPos &&
+                s.highlightRanges[0].startPos === startPos &&
                 s.srcNautObj === props.decoratedText,
         );
 
@@ -195,7 +243,7 @@ export class TextboxContainer extends React.Component<
     };
 
     onChange = (editorState: any) => {
-        this.setState({ editorState });
+        this.props.updateEditorState(editorState);
     };
 
     showAccessCodeModal = () => {
@@ -215,18 +263,23 @@ export class TextboxContainer extends React.Component<
     };
 
     handleExampleClicked = (text: string) => {
-        this.setState({
-            editorState: EditorState.createWithContent(
+        this.props.updateEditorState(
+            EditorState.createWithContent(
                 ContentState.createFromText(text),
-                this.state.compositeDecorator,
+                this.decorator(),
             ),
+        );
+        this.setState({
             isExampleCodeModalVisible: false,
         });
     };
 
     analyzeText = async () => {
+        if (this.state.loading) {
+            return;
+        }
         this.setState({ loading: true });
-        const plaintext = this.state.editorState
+        const plaintext = this.props.editorState
             .getCurrentContent()
             .getPlainText();
 
@@ -244,7 +297,7 @@ export class TextboxContainer extends React.Component<
         feedback.forEach((f: Suggestion) => {
             f.color = highlightColors[idx++ % 5];
 
-            const ref = React.createRef();
+            const ref = createRef();
             if (f.srcNautObj.substring(0, 1) === "[") {
                 f.srcNautObj = f.srcNautObj.substring(
                     1,
@@ -262,11 +315,16 @@ export class TextboxContainer extends React.Component<
 
         this.props.updateSuggestions(feedback);
         this.props.updateRefs(feedbackRefs);
-        this.onChange(this.state.editorState);
-        const newState = EditorState.set(this.state.editorState, {
-            decorator: this.state.compositeDecorator,
-        });
-        this.setState({ editorState: newState });
+        let editor = this.props.editorState;
+
+        const selectionState = editor.getSelection();
+        const content = editor.getCurrentContent();
+
+        editor = EditorState.createWithContent(content, this.decorator());
+
+        this.props.updateEditorState(
+            EditorState.forceSelection(editor, selectionState),
+        );
 
         mixpanelTrack("Analyze Button Clicked", {
             "Number of suggestions generated": feedback.length,
@@ -274,5 +332,13 @@ export class TextboxContainer extends React.Component<
             Input: plaintext,
         });
         this.setState({ loading: false });
+
+        if (
+            this.props.editorState.getCurrentContent().getPlainText() !==
+            plaintext
+        ) {
+            this.analyzeText();
+        }
+        return editor;
     };
 }

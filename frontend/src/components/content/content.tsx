@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
 import { Suggestion } from "./suggestions/suggestionsTypes";
+import { EditorState } from "draft-js";
 
 export const Content: React.FC = () => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -9,6 +10,10 @@ export const Content: React.FC = () => {
         [key: string]: any;
     }>({});
     const [activeKey, setActiveKey] = useState("");
+    const [editorState, setEditorState] = useState<EditorState>(
+        EditorState.createEmpty(),
+    );
+
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
@@ -18,12 +23,16 @@ export const Content: React.FC = () => {
                     updateSuggestions={setSuggestions}
                     refs={suggestionsRefs}
                     updateRefs={setSuggestionsRefs}
+                    editorState={editorState}
+                    updateEditorState={setEditorState}
                 />
                 <SuggestionsContainer
                     suggestions={suggestions}
                     refs={suggestionsRefs}
                     activeKey={activeKey}
                     setActiveKey={setActiveKey}
+                    editorState={editorState}
+                    updateEditorState={setEditorState}
                 />
             </div>
         </div>
