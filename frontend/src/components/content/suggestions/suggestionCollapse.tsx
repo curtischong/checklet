@@ -1,8 +1,8 @@
-import React, { RefObject } from "react";
+import React, { forwardRef, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { AiOutlineArrowRight } from "react-icons/ai";
-import { Suggestion, SuggestionCategory } from "./suggestionsTypes";
+import { Suggestion } from "./suggestionsTypes";
 import classnames from "classnames";
 import { capitalizeFirstLetter } from "util/capitalizeFirstLetter";
 
@@ -14,18 +14,18 @@ type SuggestionCollapseProps = {
     activeKey: string;
     onClick: () => void;
 };
-export const SuggestionCollapse = React.forwardRef(
+export const SuggestionCollapse = forwardRef(
     (props: SuggestionCollapseProps, ref) => {
         const { index, activeKey, onClick, suggestion } = props;
-        const isActive = React.useMemo(() => {
+        const isActive = useMemo(() => {
             return suggestion.id === activeKey;
         }, [index, activeKey]);
 
-        const srcNaut = React.useMemo(() => {
+        const srcNaut = useMemo(() => {
             return capitalizeFirstLetter(suggestion.srcNautObj);
         }, [suggestion.srcNautObj]);
 
-        const replacementText = React.useMemo(() => {
+        const replacementText = useMemo(() => {
             return capitalizeFirstLetter(suggestion.replacementText);
         }, [suggestion.replacementText]);
 

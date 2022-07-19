@@ -1,13 +1,19 @@
 import React, { useState, useRef } from "react";
-import { Editor, EditorState, CompositeDecorator } from "draft-js";
+import {
+    Editor,
+    EditorState,
+    CompositeDecorator,
+    ContentState,
+} from "draft-js";
 import { v4 as uuidv4 } from "uuid";
 import { Api } from "@api";
 import { Button } from "antd";
 import { Suggestion } from "../suggestions/suggestionsTypes";
 import "react-quill/dist/quill.snow.css";
 import { AccessCodeModal } from "./accessCodeModal";
-import { mixpanelTrack } from "@utils";
+import { getAccessCode, mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
+import { ExamplesModal } from "./examplesModal";
 
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
@@ -23,7 +29,8 @@ export class TextboxContainer extends React.Component<
     TextboxContainerProps,
     {
         loading: boolean;
-        isModalVisible: boolean;
+        isAccessCodeModalVisible: boolean;
+        isExampleCodeModalVisible: boolean;
         editorState: any;
         compositeDecorator: any;
     }
@@ -42,7 +49,8 @@ export class TextboxContainer extends React.Component<
             compositeDecorator,
             editorState: EditorState.createEmpty(compositeDecorator),
             loading: false,
-            isModalVisible: false,
+            isAccessCodeModalVisible: false,
+            isExampleCodeModalVisible: false,
         };
         this.analyzeText = this.analyzeText.bind(this);
         this.handleStrategy = this.handleStrategy.bind(this);
@@ -70,15 +78,30 @@ export class TextboxContainer extends React.Component<
             <div className="flex pb-6">
                 <div className="font-bold my-auto">Resume Feedback</div>
                 <div
-                    onClick={this.showModal}
+                    onClick={this.showAccessCodeModal}
                     className="italic text-blue-500 m-auto hover:underline"
                 >
                     {" "}
                     Want an access code?{" "}
                 </div>
                 <AccessCodeModal
-                    onClose={this.onClose}
-                    visible={this.state.isModalVisible}
+                    onClose={this.closeAccessCodeModal}
+                    visible={this.state.isAccessCodeModalVisible}
+                />
+                {getAccessCode() === "admin" && (
+                    <div
+                        onClick={this.showExamplesModal}
+                        className="italic text-blue-500 m-auto hover:underline"
+                    >
+                        {" "}
+                        Examples
+                    </div>
+                )}
+
+                <ExamplesModal
+                    onClose={this.closeExamplesModal}
+                    visible={this.state.isExampleCodeModalVisible}
+                    onClick={this.handleExampleClicked}
                 />
 
                 <Button
@@ -175,12 +198,30 @@ export class TextboxContainer extends React.Component<
         this.setState({ editorState });
     };
 
-    showModal = () => {
-        this.setState({ isModalVisible: true });
+    showAccessCodeModal = () => {
+        this.setState({ isAccessCodeModalVisible: true });
     };
 
-    onClose = () => {
-        this.setState({ isModalVisible: false });
+    closeAccessCodeModal = () => {
+        this.setState({ isAccessCodeModalVisible: false });
+    };
+
+    showExamplesModal = () => {
+        this.setState({ isExampleCodeModalVisible: true });
+    };
+
+    closeExamplesModal = () => {
+        this.setState({ isExampleCodeModalVisible: false });
+    };
+
+    handleExampleClicked = (text: string) => {
+        this.setState({
+            editorState: EditorState.createWithContent(
+                ContentState.createFromText(text),
+                this.state.compositeDecorator,
+            ),
+            isExampleCodeModalVisible: false,
+        });
     };
 
     analyzeText = async () => {
@@ -222,9 +263,10 @@ export class TextboxContainer extends React.Component<
         this.props.updateSuggestions(feedback);
         this.props.updateRefs(feedbackRefs);
         this.onChange(this.state.editorState);
-        EditorState.set(this.state.editorState, {
+        const newState = EditorState.set(this.state.editorState, {
             decorator: this.state.compositeDecorator,
         });
+        this.setState({ editorState: newState });
 
         mixpanelTrack("Analyze Button Clicked", {
             "Number of suggestions generated": feedback.length,

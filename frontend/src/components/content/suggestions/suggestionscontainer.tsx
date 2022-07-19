@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import classnames from "classnames";
 import { Suggestion } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
