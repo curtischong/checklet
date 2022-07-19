@@ -40,9 +40,21 @@ export const SuggestionCollapse: React.FC<SuggestionCollapseProps> = (
         >
             <div className={css.header} onClick={onClick}>
                 <span className={css.bigDot} />
-                {srcNaut}
-                <span className={css.smallDot} />
-                <div className={css.shortDesc}> {suggestion.shortDesc} </div>
+                {isActive ? (
+                    <div className={css.activeCategory}>
+                        {suggestion.feedbackCategory}
+                    </div>
+                ) : (
+                    <>
+                        <div className={css.srcNautObj}>
+                            {suggestion.srcNautObj}
+                        </div>
+                        <span className={css.smallDot} />
+                        <div className={css.shortDesc}>
+                            {suggestion.shortDesc}
+                        </div>
+                    </>
+                )}
             </div>
             {isActive && (
                 <div className={css.cardBody}>

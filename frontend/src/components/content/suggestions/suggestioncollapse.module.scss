@@ -36,6 +36,19 @@
         color: #6E758B;
         font-weight: 400;
     }
+
+    .activeCategory {
+        
+        color: #6E758B;
+        
+    }
+
+    .srcNautObj {
+        overflow: hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        max-width:40%;   
+    }
 }
 
 

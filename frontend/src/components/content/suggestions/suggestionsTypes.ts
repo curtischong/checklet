@@ -16,6 +16,8 @@ type Range = {
 };
 
 export type Suggestion = {
+    feedbackCategory: string;
+    feedbackType: string;
     srcNautObj: string;
     replacementText: string;
     highlightRanges: Range[];
@@ -28,6 +30,5 @@ export type Suggestion = {
         startChar: number;
         endChar: number;
     };
-    category: string;
     color: string;
 };
