@@ -19,6 +19,10 @@ known_acronyms = set([
     "K8S",
     "USA",
     "PHP",
+    ".NET",
+    "CSV",
+    "CI",
+    "CD",
 ])
 
 
