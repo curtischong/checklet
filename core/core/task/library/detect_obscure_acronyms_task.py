@@ -1,6 +1,6 @@
 from core.converters.input.naut_parser import NautDoc, NautToken
 
-known_acronyms = [
+known_acronyms = set([
     "ML",
     "GPU",
     "NLP",
@@ -19,7 +19,7 @@ known_acronyms = [
     "K8S",
     "USA",
     "PHP",
-]
+])
 
 
 # Obscure Acronyms
