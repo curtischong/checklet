@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
 import { Suggestion } from "./suggestions/suggestionsTypes";
@@ -13,6 +13,7 @@ export const Content: React.FC = () => {
     const [editorState, setEditorState] = useState<EditorState>(
         EditorState.createEmpty(),
     );
+    const domEditorRef = useRef<{ focus: () => void }>();
 
     return (
         <div className="mx-auto max-w-screen-lg">
@@ -25,6 +26,7 @@ export const Content: React.FC = () => {
                     updateRefs={setSuggestionsRefs}
                     editorState={editorState}
                     updateEditorState={setEditorState}
+                    editorRef={domEditorRef}
                 />
                 <SuggestionsContainer
                     suggestions={suggestions}

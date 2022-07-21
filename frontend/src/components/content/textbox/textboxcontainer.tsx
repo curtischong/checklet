@@ -1,4 +1,4 @@
-import React, { createRef } from "react";
+import React, { createRef, MutableRefObject } from "react";
 import {
     Editor,
     EditorState,
@@ -22,6 +22,7 @@ export type TextboxContainerProps = {
     updateCollapseKey: (k: string) => void;
     updateRefs: (s: { [key: string]: any }) => void;
     refs: { [key: string]: any };
+    editorRef: MutableRefObject<any>;
 };
 
 const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
@@ -53,6 +54,9 @@ export class TextboxContainer extends React.Component<
     }
 
     componentDidUpdate = (prevProps: TextboxContainerProps) => {
+        if (!this.state.isAccessCodeModalVisible) {
+            this.props.editorRef.current?.focus();
+        }
         if (
             prevProps.editorState !== this.props.editorState &&
             prevProps.editorState.getCurrentContent().getPlainText() !==
@@ -84,6 +88,7 @@ export class TextboxContainer extends React.Component<
                     editorState={this.props.editorState}
                     onChange={this.onChange}
                     placeholder="Type or paste your resume here"
+                    ref={this.props.editorRef}
                 />
             </div>
         );
@@ -264,9 +269,11 @@ export class TextboxContainer extends React.Component<
 
     handleExampleClicked = (text: string) => {
         this.props.updateEditorState(
-            EditorState.createWithContent(
-                ContentState.createFromText(text),
-                this.decorator(),
+            EditorState.moveFocusToEnd(
+                EditorState.createWithContent(
+                    ContentState.createFromText(text),
+                    this.decorator(),
+                ),
             ),
         );
         this.setState({
