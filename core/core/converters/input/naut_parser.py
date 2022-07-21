@@ -130,9 +130,16 @@ class NautEntity:
 
 
 class NautSent:
+    FILTER_POS = set(["PUNCT", "SYM", "X"])
+
     def __init__(self, sentence: Span, sent_idx: int):
         self.idx = sent_idx
-        self.token_idx_to_naut_token, self.tokens = self._parse_tokens(sentence)
+        self.token_idx_to_naut_token, self.raw_tokens = self._parse_tokens(sentence)
+        self.tokens = self.raw_tokens
+        if len(self.tokens) > 0:
+            first_token = self.tokens[0]
+            if first_token.pos in self.FILTER_POS:
+                self.tokens.pop(0)
 
         # the root of the dependency tree
         self.root = self._parse_dependency_tree(sentence.root, self)
