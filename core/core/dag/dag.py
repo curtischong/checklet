@@ -31,29 +31,26 @@ class DAG:
         self._pass_two(pipeline)
         self._validate()
 
-    def run(self, user_inputs: dict[any, any]):
+    def run(self, user_inputs: dict[any, any]) -> set[Node]:
         queue: deque[Node] = deque()
         self._inject_user_inputs(user_inputs, queue)
         for node in self.name_to_node.values():
             missing_inputs = node.get_unaccounted_inputs()
             assert not missing_inputs, f"DAG {self.name}, node {node.name} has unaccounted inputs {missing_inputs}"
 
-        nodes_ran: list[str] = []
-        leaves = []
+        nodes_ran: set[Node] = set()
         while queue:
             node = queue.popleft()
-            nodes_ran.append(node.name)
             named_outputs = node.run()
-            if not self.children[node]:
-                leaves.append(node)
+            nodes_ran.add(node)
             for child in self.children[node]:
                 child.inject_runtime_input(node, named_outputs, queue)
-        assert len(nodes_ran) == len(
-            self.name_to_node), f"DAG {self.name} did not run nodes {set(self.name_to_node.values()).difference(nodes_ran)}"
-        return leaves
+        assert len(nodes_ran) == len(self.name_to_node), \
+            f"DAG {self.name} did not run nodes {set(self.name_to_node.values()).difference(n.name for n in nodes_ran)}"
+        return nodes_ran
 
-    def get_leaves(self) -> set[Node]:
-        return {node for node in self.name_to_node.values() if not self.children[node]}
+    def get_nodes(self) -> set[Node]:
+        return set(self.name_to_node.values())
 
     def _pass_one(self, pipeline: PipelineDefinition) -> None:
         # create the nodes

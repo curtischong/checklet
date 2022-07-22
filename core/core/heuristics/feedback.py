@@ -71,11 +71,11 @@ class FeedbackGenerator:
         self.src_naut_sentences_var_name = feedback_def.src_naut_sentences_var_name
         self.src_naut_tokens_on_select_var_name = feedback_def.src_naut_tokens_on_select_var_name
 
-    def run(self, computed_leaves: list[Node]) -> list[Feedback]:
+    def run(self, nodes_ran: list[Node]) -> list[Feedback]:
         all_feedback = []
 
         # maps var name (assigned in yaml) -> output from leaf
-        var_to_output = self._extract_output_from_computed_leaves(computed_leaves)
+        var_to_output = self._extract_output_from_computed_leaves(nodes_ran)
 
         short_desc_vars = self._parse_var_names_from_str(self.short_desc_template)
         long_desc_vars = self._parse_var_names_from_str(self.long_desc_template)

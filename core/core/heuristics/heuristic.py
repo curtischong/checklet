@@ -30,18 +30,19 @@ class Check:
                                      self.template_feedback_generator.src_naut_sentences_var_name,
                                      self.template_feedback_generator.src_naut_tokens_on_select_var_name] if
                          x is not None}
-        leaf_outputs = {output for leaf in self.template_dag.get_leaves() for output in leaf.output_names}
+        leaf_outputs = {output for leaf in self.template_dag.get_nodes() for output in leaf.output_names}
         if not leaf_outputs.issuperset(feedback_vars):
-            raise CheckDefinitionError(f"{self.name} feedback uses variable not produced by pipeline")
+            raise CheckDefinitionError(
+                f"feedback {self.name} uses variables {feedback_vars.difference(leaf_outputs)} not produced by pipeline")
 
     def run(self, data: dict[str, any]) -> list[Feedback]:
         dag = deepcopy(self.template_dag)
-        leaves = dag.run(data)
-        return self.gen_feedback(leaves)
+        nodes_ran = dag.run(data)
+        return self.gen_feedback(nodes_ran)
 
-    def gen_feedback(self, computed_leaves: list[Node]) -> list[Feedback]:
+    def gen_feedback(self, nodes_ran: list[Node]) -> list[Feedback]:
         feedback_generator = deepcopy(self.template_feedback_generator)
-        return feedback_generator.run(computed_leaves)
+        return feedback_generator.run(nodes_ran)
 
 
 class Heuristic(ABC):
