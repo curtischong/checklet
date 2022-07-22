@@ -1,18 +1,19 @@
-.container { 
+.container {
     display: flex;
-    width: 100%; 
-    border-radius: 5px; 
+    width: 100%;
+    border-radius: 5px;
     box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.08);
     padding: 10px 10px;
     margin-bottom: 20px;
+    animation: closed 0.075s linear 0.3s forwards;
 }
 
-.header { 
+.header {
     display: flex;
     overflow: hidden;
     font-size: 12px;
 
-    .smallDot { 
+    .smallDot {
         background-color: #6E758B;
         border-radius: 50%;
         height: 2px;
@@ -20,8 +21,8 @@
         vertical-align: auto;
         margin: auto 10px;
     }
-    
-    .bigDot { 
+
+    .bigDot {
         display: flex;
         background-color: #D7343F;
         border-radius: 50%;
@@ -31,57 +32,81 @@
         margin: auto 5px;
     }
 
-    .shortDesc { 
+    .shortDesc {
         overflow: hidden;
         color: #6E758B;
         font-weight: 400;
     }
 
     .activeCategory {
-        
+
         color: #6E758B;
-        
+
     }
 
     .srcNautObj {
         overflow: hidden;
         white-space:nowrap;
         text-overflow:ellipsis;
-        max-width:40%;   
+        max-width:40%;
     }
 }
 
-
-
-.containerActive { 
-    width: 100%; 
-    border-radius: 8px; 
+.containerActive {
+    width: 100%;
+    border-radius: 8px;
     box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.16);
     padding: 10px 15px;
     margin-bottom: 30px;
+    animation: open 0.3s linear forwards;
 }
 
-.cardBody { 
+@keyframes open {
+    0%{
+        opacity:0;
+        transform:scaleY(.2) translateY(-50%)
+    }
+    100%{
+        opacity:1;
+        transform:scaleY(1)
+    }
+    80%{
+        opacity:1;
+        transform:scaleY(.8)
+        translateY(0%)
+    }
+}
+
+@keyframes close {
+    0% {
+        opacity: 0;
+    }
+    100% {
+       opacity: 1;
+    }
+}
+
+.cardBody {
     padding: 15px 10px;
 
-    .longDesc { 
+    .longDesc {
         font-size: 13px;
     }
 
-    .suggestion { 
+    .suggestion {
         font-size: 16px;
         padding-bottom: 10px;
         display: flex;
 
-        .arrow { 
+        .arrow {
             margin: auto 10px;
         }
-        
-        .remove { 
+
+        .remove {
             text-decoration: line-through #DC5262;
         }
-        
-        .replace { 
+
+        .replace {
             color: white;
             background-color: #4F71D9;
             border-radius: 5px;
@@ -89,4 +114,3 @@
         }
     }
 }
-

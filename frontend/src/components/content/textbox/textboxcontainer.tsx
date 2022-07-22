@@ -204,11 +204,6 @@ export class TextboxContainer extends React.Component<
         const startPos = props.start + start;
         const endPos = props.end + start;
         const key = startPos + "," + endPos + props.decoratedText;
-        this.props.refs[key].current.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-        });
-
         const result = this.props.suggestions.find(
             (s) =>
                 s.highlightRanges[0].endPos === endPos &&
@@ -219,6 +214,12 @@ export class TextboxContainer extends React.Component<
         const id = result?.id ?? "";
         this.props.updateCollapseKey(id);
 
+        setTimeout(() => {
+            this.props.refs[key].current.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+            });
+        });
         mixpanelTrack("Underlined text selected", {
             suggestion: result,
         });
