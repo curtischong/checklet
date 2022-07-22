@@ -71,24 +71,25 @@ class FeedbackGenerator:
         self.src_naut_sentences_var_name = feedback_def.src_naut_sentences_var_name
         self.src_naut_tokens_on_select_var_name = feedback_def.src_naut_tokens_on_select_var_name
 
+        self.short_desc_vars = self._parse_var_names_from_str(self.short_desc_template)
+        self.long_desc_vars = self._parse_var_names_from_str(self.long_desc_template)
+        self.desc_vars = self.short_desc_vars + self.long_desc_vars
+
     def run(self, nodes_ran: list[Node]) -> list[Feedback]:
         all_feedback = []
 
         # maps var name (assigned in yaml) -> output from leaf
         var_to_output = self._extract_output_from_computed_leaves(nodes_ran)
-
-        short_desc_vars = self._parse_var_names_from_str(self.short_desc_template)
-        long_desc_vars = self._parse_var_names_from_str(self.long_desc_template)
-        desc_vars = short_desc_vars + long_desc_vars
-
         num_feedback = self._num_feedback(var_to_output)
-        self._validate_vars_length(num_feedback, var_to_output, desc_vars)
+        self._validate_vars_length(num_feedback, var_to_output, self.desc_vars)
         self._validate_replacement_length(num_feedback, var_to_output)
 
         # now generate each feedback
         for feedback_idx in range(num_feedback):
-            short_desc = self._inject_desc_vars(short_desc_vars, self.short_desc_template, feedback_idx, var_to_output)
-            long_desc = self._inject_desc_vars(long_desc_vars, self.long_desc_template, feedback_idx, var_to_output)
+            short_desc = self._inject_desc_vars(self.short_desc_vars, self.short_desc_template, feedback_idx,
+                                                var_to_output)
+            long_desc = self._inject_desc_vars(self.long_desc_vars, self.long_desc_template, feedback_idx,
+                                               var_to_output)
 
             src_naut_obj, highlight_ranges, highlight_ranges_on_select = self._calculate_highlight_ranges(feedback_idx,
                                                                                                           var_to_output)
@@ -100,7 +101,8 @@ class FeedbackGenerator:
 
         return all_feedback
 
-    def _extract_output_from_computed_leaves(self, computed_leaves: list[Node]) -> dict[str, any]:
+    @staticmethod
+    def _extract_output_from_computed_leaves(computed_leaves: list[Node]) -> dict[str, any]:
         var_to_output = {}
         for leaf in computed_leaves:
             for key, val in leaf.output_vals.items():
@@ -108,7 +110,8 @@ class FeedbackGenerator:
         return var_to_output
 
     # assumes no nested "{}"
-    def _parse_var_names_from_str(self, src: str) -> list[str]:
+    @staticmethod
+    def _parse_var_names_from_str(src: str) -> list[str]:
         names = []
         var_name_start = 0
         for i in range(len(src)):
@@ -157,7 +160,8 @@ class FeedbackGenerator:
                       f"{num_feedback} feedback")
 
     # This method replaces the variables in the description template with the actual value for the ith feedback.
-    def _inject_desc_vars(self, desc_vars: list[str], desc_template: str, feedback_idx: int,
+    @staticmethod
+    def _inject_desc_vars(desc_vars: list[str], desc_template: str, feedback_idx: int,
                           var_to_output: dict[str, any]) -> str:
         desc = desc_template
         for desc_var in desc_vars:
@@ -190,7 +194,8 @@ class FeedbackGenerator:
 
         return var_to_output[self.dst_text_var_name][feedback_idx]
 
-    def _calculate_highlight_ranges_for_output(self, src_naut_obj: any) -> list[HighlightRange]:
+    @staticmethod
+    def _calculate_highlight_ranges_for_output(src_naut_obj: any) -> list[HighlightRange]:
         highlight_ranges = []
 
         if not isinstance(src_naut_obj, list):
