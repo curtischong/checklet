@@ -1,3 +1,11 @@
+# Run Tests
+
+### Run all tests
+`pytest`
+
+### Run individual test
+`pytest test.py`
+
 # Troubleshooting
 
 ### How to install Core as a package

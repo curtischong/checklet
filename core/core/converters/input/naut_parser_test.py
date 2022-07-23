@@ -1,4 +1,4 @@
-from naut_parser import NautParser
+from core.converters.input.naut_parser import NautParser
 
 
 def run_test():

@@ -16,6 +16,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Run core tests
+        run: |
+          pip install -r requirements.txt
+          pytest ../core
+
       - name: Set up gcloud Cloud SDK environment
         uses: google-github-actions/setup-gcloud@v0.6.0
         with:

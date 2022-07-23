@@ -1,19 +1,18 @@
 from core.task.library.detect_obscure_acronyms_task import detect_obscure_acronyms_task
-from core.task.test.task_parsing_helper import TaskParsingHelper
+from core.converters.input.naut_parser import NautParser
 
-inputs = [
-    "Worked on new NLP algorithm",
-    "Used MLML to speed up engine"
-]
-
-
-def run_test():
-    tph = TaskParsingHelper()
-    for input in inputs:
-        doc = tph.parse_document(input)
+class TestObscureAcronyms:
+    def test_common_acronym(self):
+        naut_parser = NautParser()
+        input = "Worked on new NLP algorithm"
+        doc = naut_parser.parse(input)
         res = detect_obscure_acronyms_task(doc)
-        print(res)
+        assert not res
 
 
-if __name__ == "__main__":
-    run_test()
+    def test_obscure_acronym(self):
+        naut_parser = NautParser()
+        input = "Used MLML to speed up engine"
+        doc = naut_parser.parse(input)
+        res = detect_obscure_acronyms_task(doc)
+        assert res and res[0].text == "MLML"

@@ -1,5 +1,5 @@
-from core.task.library.extract_verb_clauses import extract_verb_clauses_task
-from core.task.test.task_parsing_helper import TaskParsingHelper
+from core.task.library.extract_verb_clauses_task import extract_verb_clauses_task
+from core.converters.input.naut_parser import NautParser
 
 # sent = "he plays cricket but does not play hockey."
 sent = "Automated inserting and categorizing 20k+ emails from over 200 clients in a CRM by creating an email monitoring REST API using Express, and deployed the service on Azure Cloud with Docker"
@@ -13,13 +13,24 @@ sent = "Automated inserting and categorizing 20k+ emails from over 200 clients i
 # sent = "Established a cron testing service in Spring Boot with integrations to databases and multiple platform services to support overall system validation scenarios"
 # sent = "Designed and built a new React web application to amalgamate three core client workflows into one tool, with emphasis on ease of use, and improved functionality"
 
-def run_test():
-    tph = TaskParsingHelper()
-    doc = tph.parse_document(sent)
-    clauses = extract_verb_clauses_task(doc)
-    for clause in clauses:
-        print(clause)
+class TestExtractVerbClauses:
+    def test_one(self):
+        naut_parser = NautParser()
+        sent = "Automated inserting and categorizing 20k+ emails from over 200 clients in a CRM by creating an email monitoring REST API using Express, and deployed the service on Azure Cloud with Docker"
+        doc = naut_parser.parse(sent)
+        clauses = extract_verb_clauses_task(doc)
+        assert clauses and len(clauses[0]) == 5 # split into 5 clauses
 
+    def test_two(self):
+        naut_parser = NautParser()
+        sent = "Developed a CI/CD system with Jenkins to automatically test, build, and publish a Scikit-Learn based ML service, reducing test failures by 80% and decreasing deployment time by 50%"
+        doc = naut_parser.parse(sent)
+        clauses = extract_verb_clauses_task(doc)
+        assert clauses and len(clauses[0]) == 5
 
-if __name__ == "__main__":
-    run_test()
+    def test_three(self):
+        naut_parser = NautParser()
+        sent = "Implemented a host-device communications system in Rust and Node.js to increase data transfer speed by 7x compared to previous methods, enabling the addition of new types of sensors"
+        doc = naut_parser.parse(sent)
+        clauses = extract_verb_clauses_task(doc)
+        assert clauses and len(clauses[0]) == 4
