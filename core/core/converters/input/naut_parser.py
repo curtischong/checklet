@@ -20,6 +20,10 @@ class NautToken:
         self.text = token.text
         self.ent_type = NautEntityType.from_str(token.ent_type_)  # The type of named entity
 
+        morph = token.morph
+        tense = morph.get("Tense")
+        self.tense = tense[0].lower() if len(tense) > 0 else ""
+
         # TODO: consider making POS a constant since we're not sure which POS format we're using
         # Although, we are currently using the treetags one, which is pretty universal
         # performance: store the pos as an enum rather than a str

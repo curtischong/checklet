@@ -1,12 +1,19 @@
 Pipeline:
+  - name: filter_first_words
+    task: filter_first_words_
+    outputs: [first_words]
   - name: starts_with_action_word
     task: starts_with_action_word_
-    outputs: [first_word]
+    dependencies:
+      - filter_first_words: {
+        "first_words": "first_words"
+      }
+    outputs: [first_nonaction_word]
 
 Feedback:
   shortDesc: "Start with action word"
-  longDesc: "Start this point with an **action** word instead of *{first_word[i]}*"
-  srcNautTokens: "first_word" # must be a List[NautTokens].. these are the words you're highlighting
+  longDesc: "Start this point with an **action** word instead of *{first_nonaction_word[i]}*"
+  srcNautTokens: "first_nonaction_word" # must be a List[NautTokens].. these are the words you're highlighting
   type: "SUGGESTION"
   category: "WORDING"
 

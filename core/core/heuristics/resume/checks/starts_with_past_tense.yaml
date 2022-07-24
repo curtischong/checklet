@@ -1,0 +1,29 @@
+Pipeline:
+  - name: filter_first_words
+    task: filter_first_words_
+    outputs: [first_words]
+  - name: filter_tense
+    task: filter_tense_
+    params: {
+      "tense": "past",
+    }
+    dependencies:
+      - filter_first_words: {
+        "first_words": "words"
+      }
+    outputs: [not_past_tense_words]
+
+Feedback:
+  shortDesc: "Past tense"
+  longDesc: "Start this point in past tense instead of *{not_past_tense_words[i]}*"
+  srcNautTokens: "not_past_tense_words" # must be a List[NautTokens].. these are the words you're highlighting
+  type: "SUGGESTION"
+  category: "TONE"
+
+TruePositives:
+  - {
+      old: "Building storage engine",
+      new: "Built storage engine",
+    }
+TrueNegatives:
+  - "Created concurrent library"
