@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from enum import Enum
 from typing import Generator
 
@@ -85,6 +86,7 @@ class NautToken:
 
 
 class NautEntityType(Enum):
+    # @formatter:off
     PERSON = 1          # People, including fictional.
     NORP = 2            # Nationalities or religious or political groups.
     FAC = 3             # Buildings, airports, highways, bridges, etc.
@@ -105,7 +107,7 @@ class NautEntityType(Enum):
     CARDINAL = 18       # Numerals that do not fall under another type.
     NONE = 19
     UNKNOWN = 20
-
+    # @formatter:on
 
     @staticmethod
     def from_str(label: str):
@@ -117,6 +119,7 @@ class NautEntityType(Enum):
         except KeyError as e:
             print(f"Cannot map NER label {label} to an enum")
             return NautEntityType.UNKNOWN
+
 
 # entities from named entity recognition
 class NautEntity:
@@ -209,11 +212,18 @@ class NautDoc:
 @Language.component("newline_sentencizer")
 def newline_sentencizer(doc: Doc) -> Doc:
     splitters = ["\n", "."]
+
+    def _text_without_blank_chars(token: Token) -> str:
+        return re.sub("[ \t]", "", token.text)
+
+    # iterate to the n-2th element since the smallest length a sentence
+    # can be is 2 words (e.g. They waited). if the token at idx i=n-2 is a period,
+    # then there are enough tokens to form a sentence with the remaining two tokens.
     for i, token in enumerate(doc[:-2]):
         next_token = doc[i + 1]
 
         # see if this token is the start of the next sentence
-        if (token.text[0] in splitters and  # we're using text[0] to work around this edge case: "\n "
+        if (_text_without_blank_chars(token) in splitters and
                 not next_token.text.islower()  # we don't look for isupper() since bullet points '-' are not upper
         ):
             doc[i + 1].is_sent_start = True
