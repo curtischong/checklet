@@ -1,9 +1,15 @@
-import { RefObject } from "react";
+import { ReactElement, RefObject } from "react";
 
 export type LengthMetric = {
     name: string;
     value: number; // time is given in seconds?
     isTime?: boolean;
+};
+
+export type SuggestionMessage = {
+    imageSrc: string;
+    header: string;
+    content: ReactElement;
 };
 
 export type SuggestionCategory = {

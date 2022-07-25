@@ -3,7 +3,9 @@ import classnames from "classnames";
 import { Suggestion } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
 import { SuggestionCollapse } from "./suggestionCollapse";
-import ZeroImage from "./ZeroState.png";
+import { NoSuggestionMessage } from "./nosuggestionmessage";
+import ZeroImage from "./ZeroState.svg";
+import NoSuggestionsImage from "./NoSuggestionsState.svg";
 import { mixpanelTrack } from "src/utils";
 import { ContainerHeader } from "../containerHeader";
 import { ContentBlock, EditorState, Modifier, SelectionState } from "draft-js";
@@ -28,6 +30,11 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
         editorState,
         updateEditorState,
     } = props;
+
+    const editorHasText = React.useMemo(
+        () => editorState.getCurrentContent().hasText(),
+        [editorState],
+    );
 
     const suggestionsHeader = (
         <div className="font-bold text-16 pb-4 pt-1 flex">
@@ -80,6 +87,65 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
         }
     };
 
+    const renderSuggestions = React.useCallback(() => {
+        if (editorHasText) {
+            if (suggestions.length > 0) {
+                return suggestions.map((s: Suggestion, index: number) => {
+                    return (
+                        <SuggestionCollapse
+                            key={index}
+                            suggestion={s}
+                            index={index}
+                            activeKey={activeKey}
+                            onClick={() => onCollapseClick(s)}
+                            onReplaceClick={() => onReplaceClick(s)}
+                            ref={
+                                refs[
+                                    s.highlightRanges[0].startPos +
+                                        "," +
+                                        s.highlightRanges[0].endPos +
+                                        s.srcNautObj
+                                ]
+                            }
+                        />
+                    );
+                });
+            }
+
+            return (
+                <NoSuggestionMessage
+                    imageSrc={NoSuggestionsImage.src}
+                    header={"No issues found"}
+                    content={
+                        <>
+                            <div className={css.noSuggestContent}>
+                                Nautilus ran dozens of checks on your text and
+                                found no resume issues.
+                            </div>
+                            <div>
+                                Check back in when you're ready to write some
+                                more.
+                            </div>
+                        </>
+                    }
+                />
+            );
+        }
+
+        return (
+            <NoSuggestionMessage
+                imageSrc={ZeroImage.src}
+                header={"Nothing to check yet"}
+                content={
+                    <div className={css.zeroContent}>
+                        Start writing or paste your resume to see Nautilus's
+                        feedback.
+                    </div>
+                }
+            />
+        );
+    }, [editorHasText, suggestions]);
+
     return (
         <div className="col-span-2">
             <ContainerHeader header={suggestionsHeader} />
@@ -87,38 +153,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                 className="px-4"
                 style={{ maxHeight: "calc(100vh - 61px)", overflow: "auto" }}
             >
-                {suggestions.length > 0 ? (
-                    suggestions.map((s: Suggestion, index: number) => {
-                        return (
-                            <SuggestionCollapse
-                                key={index}
-                                suggestion={s}
-                                index={index}
-                                activeKey={activeKey}
-                                onClick={() => onCollapseClick(s)}
-                                onReplaceClick={() => onReplaceClick(s)}
-                                ref={
-                                    refs[
-                                        s.highlightRanges[0].startPos +
-                                            "," +
-                                            s.highlightRanges[0].endPos +
-                                            s.srcNautObj
-                                    ]
-                                }
-                            />
-                        );
-                    })
-                ) : (
-                    <div className={css.zeroState}>
-                        <img src={ZeroImage.src} />
-                        <div className={css.header}> Nothing to check yet </div>
-                        <div>
-                            {" "}
-                            Start writing or paste your resume to see Nautilus's
-                            feedback.{" "}
-                        </div>
-                    </div>
-                )}
+                {renderSuggestions()}
             </div>
         </div>
     );

@@ -1,9 +1,9 @@
-.divider { 
+.divider {
     border: 0.5px solid lightgrey;
     margin: 10px 0;
 }
 
-.number { 
+.number {
     color: white;
     background-color: #6E758B;
     padding: 0 5px;
@@ -12,13 +12,10 @@
     margin: auto 5px;
 }
 
-.zeroState { 
-    text-align: center;
-    margin: auto;
-    padding-top: 30px;
+.zeroContent {
+    width: 70%;
+}
 
-    .header { 
-        font-weight: 700;
-        padding: 10px 0;
-    }
+.noSuggestContent {
+    width: 75%;
 }
