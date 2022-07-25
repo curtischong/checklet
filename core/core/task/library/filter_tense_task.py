@@ -1,4 +1,4 @@
-from core.converters.input.naut_parser import NautDoc, NautToken
+from core.converters.input.naut_parser import NautToken
 
 # Returns all words that does not match the tense
 def filter_tense_task(words: list[NautToken], tense: str) -> list[NautToken]:

@@ -1,5 +1,7 @@
-from core.converters.input.naut_parser import NautDoc, NautToken
 from collections import defaultdict
+
+from core.converters.input.naut_parser import NautDoc, NautToken
+
 
 def detect_multiple_nouns_task(naut_doc: NautDoc) -> list[NautToken]:
     repeated_nouns = []

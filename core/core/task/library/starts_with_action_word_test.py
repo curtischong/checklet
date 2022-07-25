@@ -1,5 +1,6 @@
-from core.task.library.starts_with_action_word_task import starts_with_action_word_task
 from core.converters.input.naut_parser import NautParser
+from core.task.library.starts_with_action_word_task import starts_with_action_word_task
+
 
 class TestActionWord:
     def test_absent_action_verb(self):

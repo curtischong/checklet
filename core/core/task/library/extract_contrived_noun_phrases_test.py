@@ -1,5 +1,6 @@
-from core.task.library.extract_contrived_noun_phrases_task import extract_contrived_noun_phrases_task
 from core.converters.input.naut_parser import NautParser
+from core.task.library.extract_contrived_noun_phrases_task import extract_contrived_noun_phrases_task
+
 
 class TestContrivedNouns:
     def test_contrived_nouns_one(self):
@@ -8,7 +9,7 @@ class TestContrivedNouns:
         doc = naut_parser.parse(input)
         res = extract_contrived_noun_phrases_task(doc)
         assert len(res) == 1
-        
+
         expected_words = ["user", "creation", "generation"]
         for (token, expected) in zip(res[0], expected_words):
             assert token.text == expected

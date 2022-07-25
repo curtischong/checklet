@@ -1,5 +1,6 @@
-from core.task.library.filter_by_google_search_result_count_task import filter_by_google_search_result_count_task
 from core.converters.input.naut_parser import NautParser
+from core.task.library.filter_by_google_search_result_count_task import filter_by_google_search_result_count_task
+
 
 class TestGoogleSearchResultCount:
     def test_obscure_phrase(self):

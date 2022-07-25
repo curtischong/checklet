@@ -1,0 +1,16 @@
+Pipeline:
+  - name: find_contiguous_spaces
+    task: detect_contiguous_spaces_
+    outputs: [ "space_tokens" ]
+
+Feedback:
+  shortDesc: "Remove contiguous spaces"
+  longDesc: "Consider removing contiguous spaces."
+  srcNautTokens: "space_tokens"
+  type: "SUGGESTION"
+  category: "WHITESPACE"
+
+TruePositives:
+  - { old: "I made the server  10% faster", new: "I made the server 10% faster" }
+TrueNegatives:
+  - "I made the server 10% faster"

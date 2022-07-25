@@ -137,7 +137,7 @@ class NautEntity:
 
 
 class NautSent:
-    FILTER_POS = set(["PUNCT", "SYM", "X", "SPACE"])
+    FILTER_POS = {"PUNCT", "SYM", "X", "SPACE"}
 
     def __init__(self, sentence: Span, sent_idx: int):
         self.idx = sent_idx

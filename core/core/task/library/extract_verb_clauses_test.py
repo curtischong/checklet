@@ -1,5 +1,5 @@
-from core.task.library.extract_verb_clauses_task import extract_verb_clauses_task
 from core.converters.input.naut_parser import NautParser
+from core.task.library.extract_verb_clauses_task import extract_verb_clauses_task
 
 # sent = "he plays cricket but does not play hockey."
 sent = "Automated inserting and categorizing 20k+ emails from over 200 clients in a CRM by creating an email monitoring REST API using Express, and deployed the service on Azure Cloud with Docker"
