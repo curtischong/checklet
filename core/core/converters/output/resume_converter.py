@@ -21,13 +21,6 @@ def get_json_friendly(output: EngineResponse) -> list[dict[str, any]]:
             "srcNautObj": str(feedback.src_naut_obj),
             "feedbackType": feedback.type,
             "feedbackCategory": feedback.category,
-
-            # deprecated
-            "srcWord": {
-                "text": "",  # I don't think we need to surface this to the user since we return highlight chunks
-                "startChar": 0,
-                "endChar": 1
-            },
         })
 
     return json_output
