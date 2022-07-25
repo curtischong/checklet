@@ -100,7 +100,7 @@ export class TextboxContainer extends React.Component<
                 <div className="font-bold my-auto">Resume Feedback</div>
                 <div
                     onClick={this.showAccessCodeModal}
-                    className="italic text-blue-500 m-auto hover:underline"
+                    className="italic nautilus-text-blue m-auto hover:underline"
                 >
                     {" "}
                     Want an access code?{" "}
@@ -112,7 +112,7 @@ export class TextboxContainer extends React.Component<
                 {getAccessCode() === "admin" && (
                     <div
                         onClick={this.showExamplesModal}
-                        className="italic text-blue-500 m-auto hover:underline"
+                        className="italic nautilus-text-blue m-auto hover:underline"
                     >
                         {" "}
                         Examples
@@ -139,12 +139,12 @@ export class TextboxContainer extends React.Component<
 
     getButtonClasses = () => {
         let shared =
-            "ml-auto mr-0 bg-transparent text-blue-700 h-[120px] py-1 border border-blue-500 rounded";
+            "ml-auto mr-0 bg-transparent nautilus-text-blue h-[120px] py-1 border nautilus-border-blue rounded";
         if (this.state.loading) {
             shared += " disabled";
         } else {
             shared +=
-                " hover:bg-blue-500 hover:text-white hover:border-transparent";
+                " hover:nautilus-blue hover:text-white hover:border-transparent";
         }
         return shared;
     };

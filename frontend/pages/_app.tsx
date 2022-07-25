@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { AppProps } from "next/app";
+import Head from "next/head";
 import mixpanel from "mixpanel-browser";
 import { mixpanelTrack } from "src/utils";
 import "antd/dist/antd.css";
@@ -18,7 +19,15 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     }, []);
 
     if (typeof window !== "undefined" && Component) {
-        return <Component {...pageProps} />;
+        return (
+            <>
+                <Head>
+                    <title>Nautilus | Resume Feedback</title>
+                    <link rel="shortcut icon" href="/nautilus-favicon.jpeg" />
+                </Head>
+                <Component {...pageProps} />
+            </>
+        );
     }
     return <></>;
 }

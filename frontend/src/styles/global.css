@@ -14,3 +14,15 @@ body {
     height: 100vh;
     max-height: 100vh;
 }
+
+.nautilus-border-blue {
+    border-color: #296cd8;
+}
+
+.hover\:nautilus-blue:hover {
+    background-color: #296cd8;
+}
+
+.nautilus-text-blue {
+    color: #296cd8;
+}
