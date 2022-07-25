@@ -11,8 +11,6 @@ fi
 
 # get dependencies
 source env/bin/activate
-pip3 install --upgrade pip
-pip3 install -e ./core
 
 DATASETS_PATH="core/core/datasets"
 if [[ ! -d $DATASETS_PATH ]]
@@ -21,12 +19,25 @@ then
     exit 1
 fi
 
-PORT=$(cat core/core/task/test/task_parsing_helper.py | grep 'SERVER_ADDRESS =' | tr -dc '0-9')
-CONN_RES=$(lsof -i:$PORT)
-if [[ -z $CONN_RES ]]
-then
-    echo "serving task parsing helper"
-    make serve-naut-parser
-else
-    echo "task parsing helper is already running"
-fi
+run_serve_naut_parser() {
+    PORT=$(cat core/core/task/test/task_parsing_helper.py | grep 'SERVER_ADDRESS =' | tr -dc '0-9')
+    CONN_RES=$(lsof -i:$PORT)
+    if [[ -z $CONN_RES ]]
+    then
+        echo "serving task parsing helper"
+        make serve-naut-parser
+    else
+        echo "task parsing helper is already running"
+    fi
+}
+
+# try to run server without installing deps
+run_serve_naut_parser
+
+
+# This is a very quick hacky workaround - at the request of 10'xer Curtis Chong
+pip3 install --upgrade pip
+pip3 install -e ./core
+
+# okay, we installed dependencies, try running now
+run_serve_naut_parser
