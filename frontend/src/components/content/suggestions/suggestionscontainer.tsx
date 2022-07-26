@@ -51,7 +51,11 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
         mixpanelTrack("Suggestion opened", {
             suggestion: s,
         });
-        setActiveKey(s.id);
+        if (activeKey == s.id) {
+            setActiveKey("");
+        } else {
+            setActiveKey(s.id);
+        }
     };
 
     const onReplaceClick = (s: Suggestion) => {
@@ -144,7 +148,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                 }
             />
         );
-    }, [editorHasText, suggestions]);
+    }, [editorHasText, suggestions, activeKey]);
 
     return (
         <div className="col-span-2">
