@@ -48,12 +48,15 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     );
 
     const onCollapseClick = (s: Suggestion) => {
-        mixpanelTrack("Suggestion opened", {
-            suggestion: s,
-        });
-        if (activeKey == s.id) {
+        if (activeKey === s.id) {
+            mixpanelTrack("Suggestion closed", {
+                suggestion: s,
+            });
             setActiveKey("");
         } else {
+            mixpanelTrack("Suggestion opened", {
+                suggestion: s,
+            });
             setActiveKey(s.id);
         }
     };
