@@ -6,8 +6,10 @@
 # How to use: run python task_parsing_helper OR (from the root) make serve-naut-parser to start the server!
 from multiprocessing.managers import BaseManager
 
+from core.lib.models.naut_embeddings import NautEmbeddings
+
 from core.converters.input.naut_parser import NautParser, NautDoc, NautSent, NautToken
-from core.models.NautEmbeddings import NautEmbeddings
+from core.lib.corpus.action_verbs import ActionVerbs
 
 
 class NautParserManager(BaseManager):
@@ -18,14 +20,21 @@ class NautParserManager(BaseManager):
 SERVER_ADDRESS = ('', 42952)
 AUTHKEY = b'buhr'
 
+GET_NAUT_PARSER = "get_naut_parser"
+GET_NAUT_EMBEDDINGS = "get_naut_embeddings"
+GET_ACTION_VERBS = "get_action_verbs"
+
 
 def _start_server() -> None:
+    print("[TaskParsingHelperServer] loading ActionVerbs dataset")
+    action_verbs = ActionVerbs()
     print("[TaskParsingHelperServer] loading NautParser")
     naut_parser = NautParser()
     print("[TaskParsingHelperServer] loading NautEmbeddings")
     naut_embeddings = NautEmbeddings()
-    NautParserManager.register('get_naut_parser', callable=lambda: naut_parser)
-    NautParserManager.register('get_naut_embeddings', callable=lambda: naut_embeddings)
+    NautParserManager.register(GET_NAUT_PARSER, callable=lambda: naut_parser)
+    NautParserManager.register(GET_NAUT_EMBEDDINGS, callable=lambda: naut_embeddings)
+    NautParserManager.register(GET_ACTION_VERBS, callable=lambda: action_verbs)
     m = NautParserManager(address=SERVER_ADDRESS, authkey=AUTHKEY)
     s = m.get_server()
     print("[TaskParsingHelperServer] serving dependencies!")
@@ -43,8 +52,9 @@ if __name__ == "__main__":
 # So please just call the public methods of these served Classes and offload computation to the classes.
 class TaskParsingHelper:
     def __init__(self):
-        NautParserManager.register('get_naut_parser')
-        NautParserManager.register('get_naut_embeddings')
+        NautParserManager.register(GET_NAUT_PARSER)
+        NautParserManager.register(GET_NAUT_EMBEDDINGS)
+        NautParserManager.register(GET_ACTION_VERBS)
         manager = NautParserManager(address=SERVER_ADDRESS, authkey=AUTHKEY)
         try:
             manager.connect()
@@ -54,6 +64,7 @@ class TaskParsingHelper:
                 " in a new terminal to serve it!")
         self.naut_parser: NautParser = manager.get_naut_parser()
         self.naut_embeddings: NautEmbeddings = manager.get_naut_embeddings()
+        self.action_verbs: ActionVerbs = manager.get_action_verbs()
 
     def parse_document(self, text: str) -> NautDoc:
         return self.naut_parser.parse(text)

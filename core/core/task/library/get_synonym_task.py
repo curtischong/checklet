@@ -2,7 +2,7 @@ import numpy as np
 from numpy import ndarray
 
 from core.converters.input.naut_parser import NautToken
-from core.models.NautEmbeddings import NautEmbeddings
+from core.lib.models.naut_embeddings import NautEmbeddings
 
 
 # How this works:

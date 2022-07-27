@@ -1,7 +1,7 @@
 import pytest
 
 from core.converters.input.naut_parser import NautParser
-from core.models.NautEmbeddings import NautEmbeddings
+from core.lib.models.naut_embeddings import NautEmbeddings
 from core.task.library.get_synonym_task import get_synonym_task
 
 
@@ -16,4 +16,3 @@ class TestGetSynonyms:
         assert synonyms
         for (synonym, expected) in zip(synonyms[0], expected_words):
             assert synonym == expected
- 

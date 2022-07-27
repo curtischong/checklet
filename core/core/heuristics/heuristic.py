@@ -9,7 +9,7 @@ from core.dag.dag import DAG
 from core.dag.node import Node
 from core.heuristics.feedback import Feedback, FeedbackGenerator
 from core.heuristics.pipeline import CheckDef
-from core.models.NautEmbeddings import NautEmbeddings
+from core.lib.models.naut_embeddings import NautEmbeddings
 
 
 class CheckDefinitionError(BaseException):

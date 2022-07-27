@@ -9,7 +9,7 @@ class NautEmbeddings:
     embedding_len = 300
 
     def __init__(self):
-        path = pathlib.Path(__file__).parent.joinpath("../datasets/embeddings")
+        path = pathlib.Path(__file__).parent.joinpath("../../datasets/embeddings")
         # this is a 2D matrix of embeddings for each word
         # y axis: words. x axis: the embedding for that word
         word_embeddings = np.load(os.path.join(path, 'word_embeddings.npz'))
