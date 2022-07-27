@@ -1,9 +1,6 @@
-import { Input, Modal } from "antd";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { Modal } from "antd";
+import React from "react";
 import { AiOutlineCopy } from "react-icons/ai";
-
-import { getAccessCode, mixpanelTrack } from "../../../utils";
 
 export type ExamplesModalProps = {
     onClick: (text: string) => void;
@@ -22,8 +19,6 @@ export const ExamplesModal: React.FC<ExamplesModalProps> = (
     props: ExamplesModalProps,
 ) => {
     const { visible, onClose, onClick } = props;
-    const router = useRouter();
-    const [textCode, setTextCode] = useState("");
 
     return (
         <Modal

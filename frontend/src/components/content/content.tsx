@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
-import { Suggestion } from "./suggestions/suggestionsTypes";
+import { Suggestion, SuggestionRefs } from "./suggestions/suggestionsTypes";
 import { EditorState } from "draft-js";
 
 export const Content: React.FC = () => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-    const [suggestionsRefs, setSuggestionsRefs] = useState<{
-        [key: string]: any;
-    }>({});
+    const [suggestionsRefs, setSuggestionsRefs] = useState<SuggestionRefs>({});
     const [activeKey, setActiveKey] = useState("");
     const [editorState, setEditorState] = useState<EditorState>(
         EditorState.createEmpty(),

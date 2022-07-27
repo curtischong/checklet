@@ -18,6 +18,10 @@ export type SuggestionCategory = {
     color: string; // could use Color library instead
 };
 
+export type SuggestionRefs = {
+    [key: string]: RefObject<HTMLDivElement>;
+};
+
 type Range = {
     endPos: number;
     startPos: number;

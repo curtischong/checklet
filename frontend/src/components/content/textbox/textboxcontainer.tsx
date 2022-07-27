@@ -8,7 +8,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { Api } from "@api";
 import { Button } from "antd";
-import { Suggestion } from "../suggestions/suggestionsTypes";
+import { Suggestion, SuggestionRefs } from "../suggestions/suggestionsTypes";
 import { AccessCodeModal } from "./accessCodeModal";
 import { getAccessCode, mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
@@ -20,8 +20,8 @@ export type TextboxContainerProps = {
     updateEditorState: (e: EditorState) => void;
     updateSuggestions: (s: Suggestion[]) => void;
     updateCollapseKey: (k: string) => void;
-    updateRefs: (s: { [key: string]: any }) => void;
-    refs: { [key: string]: any };
+    updateRefs: (s: SuggestionRefs) => void;
+    refs: SuggestionRefs;
     editorRef: MutableRefObject<any>;
 };
 
@@ -35,7 +35,7 @@ export class TextboxContainer extends React.Component<
         isExampleCodeModalVisible: boolean;
     }
 > {
-    constructor(props: any) {
+    constructor(props: TextboxContainerProps) {
         super(props);
 
         this.props.updateEditorState(
@@ -53,7 +53,7 @@ export class TextboxContainer extends React.Component<
         this.handleStrategy = this.handleStrategy.bind(this);
     }
 
-    componentDidUpdate = (prevProps: TextboxContainerProps) => {
+    componentDidUpdate = (prevProps: TextboxContainerProps): void => {
         if (!this.state.isAccessCodeModalVisible) {
             this.props.editorRef.current?.focus();
         }
@@ -204,6 +204,11 @@ export class TextboxContainer extends React.Component<
         const startPos = props.start + start;
         const endPos = props.end + start;
         const key = startPos + "," + endPos + props.decoratedText;
+
+        if (!(key in this.props.refs)) {
+            console.log("could not find key: " + key);
+        }
+
         const result = this.props.suggestions.find(
             (s) =>
                 s.highlightRanges[0].endPos === endPos &&
@@ -215,7 +220,7 @@ export class TextboxContainer extends React.Component<
         this.props.updateCollapseKey(id);
 
         setTimeout(() => {
-            this.props.refs[key].current.scrollIntoView({
+            this.props.refs[key].current?.scrollIntoView({
                 behavior: "smooth",
                 block: "center",
             });
@@ -296,7 +301,7 @@ export class TextboxContainer extends React.Component<
         const feedback = response.feedback;
 
         let idx = 0;
-        const feedbackRefs: { [key: string]: any } = {};
+        const feedbackRefs: SuggestionRefs = {};
         feedback.sort(
             (a, b) =>
                 a.highlightRanges[0].startPos - b.highlightRanges[0].startPos,
@@ -305,7 +310,7 @@ export class TextboxContainer extends React.Component<
         feedback.forEach((f: Suggestion) => {
             f.color = highlightColors[idx++ % 5];
 
-            const ref = createRef();
+            const ref = createRef<HTMLDivElement>();
             if (f.srcNautObj.substring(0, 1) === "[") {
                 f.srcNautObj = f.srcNautObj.substring(
                     1,

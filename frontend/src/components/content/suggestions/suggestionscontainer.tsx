@@ -1,6 +1,6 @@
 import React from "react";
 import classnames from "classnames";
-import { Suggestion } from "./suggestionsTypes";
+import { Suggestion, SuggestionRefs } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
 import { SuggestionCollapse } from "./suggestionCollapse";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
@@ -12,7 +12,7 @@ import { ContentBlock, EditorState, Modifier, SelectionState } from "draft-js";
 
 export type SuggestionsContainerProps = {
     suggestions: Suggestion[];
-    refs: { [key: string]: any };
+    refs: SuggestionRefs;
     activeKey: string;
     setActiveKey: (k: string) => void;
     editorState: EditorState;

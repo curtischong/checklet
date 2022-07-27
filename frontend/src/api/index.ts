@@ -6,8 +6,8 @@ export class Api {
     static createRequest = async (
         endpoint: string,
         requestType: string,
-        payload: any,
-    ) => {
+        payload = {},
+    ): Promise<any> => {
         const response = await fetch(`${baseUrl}${endpoint}`, {
             method: requestType,
             headers: {
@@ -25,7 +25,7 @@ export class Api {
         return undefined;
     };
 
-    static structureSuggestions = async (payload: any) => {
+    static structureSuggestions = async (payload = {}): Promise<any> => {
         const data = await Api.createRequest(
             "structure/suggestions",
             "POST",
