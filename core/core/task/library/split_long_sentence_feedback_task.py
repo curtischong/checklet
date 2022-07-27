@@ -24,7 +24,7 @@ def split_long_sentence_feedback_task(clauses_in_long_sentences: list[list[list[
             clause_start = clause[0].start_pos
             clause_end = clause[-1].end_pos
             clause_text = sentence_text[clause_start:clause_end]
-            clauses_text.append(f"- {clause_text}")
+            clauses_text.append(f"\t- {clause_text}")
         clause_lists.append("\n".join(clauses_text))
 
     sentences_to_highlight = []
