@@ -3,12 +3,14 @@ import classnames from "classnames";
 import { Suggestion, SuggestionRefs } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
 import { SuggestionCollapse } from "./suggestionCollapse";
-import { NoSuggestionMessage } from "./nosuggestionmessage";
 import ZeroImage from "./ZeroState.svg";
+import { BsSortDownAlt } from "react-icons/bs";
+import { NoSuggestionMessage } from "./nosuggestionmessage";
 import NoSuggestionsImage from "./NoSuggestionsState.svg";
 import { mixpanelTrack } from "src/utils";
 import { ContainerHeader } from "../containerHeader";
 import { ContentBlock, EditorState, Modifier, SelectionState } from "draft-js";
+import { Tooltip } from "antd";
 
 export type SuggestionsContainerProps = {
     suggestions: Suggestion[];
@@ -17,6 +19,7 @@ export type SuggestionsContainerProps = {
     setActiveKey: (k: Suggestion | undefined) => void;
     editorState: EditorState;
     updateEditorState: (e: EditorState) => void;
+    updateSortIdx: (idx: number) => void;
 };
 
 export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
@@ -29,8 +32,20 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
         setActiveKey,
         editorState,
         updateEditorState,
+        updateSortIdx,
     } = props;
 
+    const SortIcon = (idx: number, tooltip: string) => {
+        return (
+            <Tooltip title={tooltip}>
+                <BsSortDownAlt
+                    className="ml-2"
+                    size={20}
+                    onClick={() => updateSortIdx(idx)}
+                />
+            </Tooltip>
+        );
+    };
     const editorHasText = React.useMemo(
         () => editorState.getCurrentContent().hasText(),
         [editorState],
@@ -44,6 +59,10 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                 </div>
             )}
             All Suggestions
+            <div className="flex ml-auto mr-1">
+                {SortIcon(0, "Sort by text order")}
+                {SortIcon(1, "Sort by relevance")}
+            </div>
         </div>
     );
 
@@ -102,7 +121,6 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                         <SuggestionCollapse
                             key={index}
                             suggestion={s}
-                            index={index}
                             activeKey={activeKey}
                             onClick={() => onCollapseClick(s)}
                             onReplaceClick={() => onReplaceClick(s)}

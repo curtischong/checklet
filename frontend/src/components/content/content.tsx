@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
-import { Suggestion, SuggestionRefs } from "./suggestions/suggestionsTypes";
+import {
+    FeedbackTypeOrder,
+    Suggestion,
+    SuggestionRefs,
+} from "./suggestions/suggestionsTypes";
 import { EditorState } from "draft-js";
 
 export const Content: React.FC = () => {
@@ -11,6 +15,19 @@ export const Content: React.FC = () => {
     const [editorState, setEditorState] = useState<EditorState>(
         EditorState.createEmpty(),
     );
+    const [sortIdx, setSortIdx] = useState(1);
+
+    const sorts: ((a: Suggestion, b: Suggestion) => number)[] = [
+        (a, b) => a.highlightRanges[0].startPos - b.highlightRanges[0].startPos,
+        (a, b) =>
+            FeedbackTypeOrder[a.feedbackType] -
+            FeedbackTypeOrder[b.feedbackType],
+    ];
+
+    const updateSortIdx = (idx: number) => {
+        setSortIdx(idx);
+        setSuggestions((prevSuggestions) => prevSuggestions.sort(sorts[idx]));
+    };
     const domEditorRef = useRef<{ focus: () => void }>();
 
     const updateActiveKey = (s: Suggestion | undefined) => {
@@ -33,6 +50,7 @@ export const Content: React.FC = () => {
                     updateRefs={setSuggestionsRefs}
                     editorState={editorState}
                     updateEditorState={setEditorState}
+                    sort={sorts[sortIdx]}
                     editorRef={domEditorRef}
                 />
                 <SuggestionsContainer
@@ -42,6 +60,7 @@ export const Content: React.FC = () => {
                     setActiveKey={updateActiveKey}
                     editorState={editorState}
                     updateEditorState={setEditorState}
+                    updateSortIdx={updateSortIdx}
                 />
             </div>
         </div>

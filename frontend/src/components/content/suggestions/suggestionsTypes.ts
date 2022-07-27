@@ -27,10 +27,20 @@ type Range = {
     startPos: number;
 };
 
+export enum FeedbackType {
+    SUGGESTION = "SUGGESTION",
+    WARNING = "WARNING",
+}
+
+export const FeedbackTypeOrder = {
+    [FeedbackType.SUGGESTION]: 0,
+    [FeedbackType.WARNING]: 1,
+};
+
 export type Suggestion = {
     id: string;
     feedbackCategory: string;
-    feedbackType: string;
+    feedbackType: FeedbackType;
     srcNautObj: string;
     replacementText: string;
     highlightRanges: Range[];

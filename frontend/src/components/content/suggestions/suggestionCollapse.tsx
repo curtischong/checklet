@@ -10,7 +10,6 @@ import css from "./suggestioncollapse.module.scss";
 
 type SuggestionCollapseProps = {
     suggestion: Suggestion;
-    index: number;
     activeKey: Suggestion | undefined;
     onClick: () => void;
     onReplaceClick: () => void;
@@ -21,7 +20,7 @@ const isEqual = (...objects: Suggestion[]) =>
 
 export const SuggestionCollapse = forwardRef(
     (props: SuggestionCollapseProps, ref) => {
-        const { index, activeKey, onClick, onReplaceClick, suggestion } = props;
+        const { activeKey, onClick, onReplaceClick, suggestion } = props;
         const isActive = useMemo(() => {
             if (activeKey == null) {
                 return false;

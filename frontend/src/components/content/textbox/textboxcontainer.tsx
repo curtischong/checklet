@@ -13,6 +13,14 @@ import { getAccessCode, mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
 import { ExamplesModal } from "./examplesModal";
 
+/*
+    TONE
+    WORDING
+    SIMPLICITY
+    WHITESPACE
+    WARNING
+    */
+
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
     editorState: EditorState;
@@ -22,6 +30,7 @@ export type TextboxContainerProps = {
     updateCollapseKey: (k: Suggestion | undefined) => void;
     updateRefs: (s: SuggestionRefs) => void;
     refs: SuggestionRefs;
+    sort: (a: Suggestion, b: Suggestion) => number;
     editorRef: MutableRefObject<any>;
 };
 
@@ -314,12 +323,8 @@ export class TextboxContainer extends React.Component<
         const response = await Api.analyzeResume({ text: plaintext });
 
         const feedback = response.feedback;
-
         const feedbackRefs: SuggestionRefs = {};
-        feedback.sort(
-            (a, b) =>
-                a.highlightRanges[0].startPos - b.highlightRanges[0].startPos,
-        );
+        feedback.sort(this.props.sort);
 
         feedback.forEach((f: Suggestion) => {
             const ref = createRef<HTMLDivElement>();
