@@ -13,8 +13,8 @@ import { ContentBlock, EditorState, Modifier, SelectionState } from "draft-js";
 export type SuggestionsContainerProps = {
     suggestions: Suggestion[];
     refs: SuggestionRefs;
-    activeKey: string;
-    setActiveKey: (k: string) => void;
+    activeKey: Suggestion | undefined;
+    setActiveKey: (k: Suggestion | undefined) => void;
     editorState: EditorState;
     updateEditorState: (e: EditorState) => void;
 };
@@ -48,16 +48,16 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     );
 
     const onCollapseClick = (s: Suggestion) => {
-        if (activeKey === s.id) {
+        if (activeKey === s) {
             mixpanelTrack("Suggestion closed", {
                 suggestion: s,
             });
-            setActiveKey("");
+            setActiveKey(undefined);
         } else {
             mixpanelTrack("Suggestion opened", {
                 suggestion: s,
             });
-            setActiveKey(s.id);
+            setActiveKey(s);
         }
     };
 

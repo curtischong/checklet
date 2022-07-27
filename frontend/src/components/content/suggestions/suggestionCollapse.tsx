@@ -11,16 +11,23 @@ import css from "./suggestioncollapse.module.scss";
 type SuggestionCollapseProps = {
     suggestion: Suggestion;
     index: number;
-    activeKey: string;
+    activeKey: Suggestion | undefined;
     onClick: () => void;
     onReplaceClick: () => void;
 };
+
+const isEqual = (...objects: Suggestion[]) =>
+    objects.every((obj) => JSON.stringify(obj) === JSON.stringify(objects[0]));
+
 export const SuggestionCollapse = forwardRef(
     (props: SuggestionCollapseProps, ref) => {
         const { index, activeKey, onClick, onReplaceClick, suggestion } = props;
         const isActive = useMemo(() => {
-            return suggestion.id === activeKey;
-        }, [index, activeKey]);
+            if (activeKey == null) {
+                return false;
+            }
+            return isEqual(suggestion, activeKey);
+        }, [suggestion, activeKey]);
 
         const srcNaut = useMemo(() => {
             return capitalizeFirstLetter(suggestion.srcNautObj);

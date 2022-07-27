@@ -1,11 +1,10 @@
-import React, { createRef, MutableRefObject } from "react";
+import React, { createRef, CSSProperties, MutableRefObject } from "react";
 import {
     Editor,
     EditorState,
     CompositeDecorator,
     ContentState,
 } from "draft-js";
-import { v4 as uuidv4 } from "uuid";
 import { Api } from "@api";
 import { Button } from "antd";
 import { Suggestion, SuggestionRefs } from "../suggestions/suggestionsTypes";
@@ -17,9 +16,10 @@ import { ExamplesModal } from "./examplesModal";
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
     editorState: EditorState;
+    activeKey: Suggestion | undefined;
     updateEditorState: (e: EditorState) => void;
     updateSuggestions: (s: Suggestion[]) => void;
-    updateCollapseKey: (k: string) => void;
+    updateCollapseKey: (k: Suggestion | undefined) => void;
     updateRefs: (s: SuggestionRefs) => void;
     refs: SuggestionRefs;
     editorRef: MutableRefObject<any>;
@@ -71,7 +71,11 @@ export class TextboxContainer extends React.Component<
             {
                 strategy: this.handleStrategy,
                 component: (props: any) =>
-                    this.HandleSpan(props, this.handleUnderlineClicked),
+                    this.HandleSpan(
+                        props,
+                        this.spanStyle,
+                        this.handleUnderlineClicked,
+                    ),
             },
         ]);
     };
@@ -178,16 +182,49 @@ export class TextboxContainer extends React.Component<
         });
     };
 
-    HandleSpan = (props: any, onClick: (p: any) => void) => {
+    HandleSpan = (
+        props: any,
+        getStyle: (p: any) => CSSProperties,
+        onClick: (p: any) => void,
+    ) => {
         return (
             <span
-                style={{ textDecoration: "underline #4F71D9" }}
+                style={getStyle(props)}
                 data-offset-key={props.offsetKey}
                 onClick={() => onClick(props)}
             >
                 {props.children}
             </span>
         );
+    };
+
+    spanStyle = (props: any): CSSProperties => {
+        const style: CSSProperties = {
+            borderBottom: "2px solid #4F71D9",
+        };
+        const contentState = props.contentState;
+
+        let currBlock = contentState.getBlockForKey(props.blockKey);
+        let start = 0;
+
+        while (contentState.getBlockBefore(currBlock.getKey()) != null) {
+            currBlock = contentState.getBlockBefore(currBlock.getKey());
+            start += currBlock.getLength() + 1;
+        }
+        const startPos = props.start + start;
+        const endPos = props.end + start;
+        const result = this.props.activeKey;
+
+        if (
+            startPos === result?.highlightRanges[0].startPos &&
+            endPos === result?.highlightRanges[0].endPos
+        ) {
+            style.backgroundColor = "#DBEBFF";
+            style.padding = "1.5px 0 1px";
+            style.backgroundPosition = "center calc(100% + 2px)";
+            style.backgroundClip = "text";
+        }
+        return style;
     };
 
     handleUnderlineClicked = (props: any) => {
@@ -216,8 +253,9 @@ export class TextboxContainer extends React.Component<
                 s.srcNautObj === props.decoratedText,
         );
 
-        const id = result?.id ?? "";
-        this.props.updateCollapseKey(id);
+        if (result != null) {
+            this.props.updateCollapseKey(result);
+        }
 
         setTimeout(() => {
             this.props.refs[key].current?.scrollIntoView({
@@ -228,29 +266,6 @@ export class TextboxContainer extends React.Component<
         mixpanelTrack("Underlined text selected", {
             suggestion: result,
         });
-    };
-
-    openCollapse = (
-        props: any,
-        refs: any,
-        suggestions: Suggestion[],
-        updateCollapseKey: (k: string) => void,
-    ) => {
-        const key = props.start + "," + props.end + props.decoratedText;
-        refs[key].current.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-        });
-
-        const result = suggestions.find(
-            (s) =>
-                s.highlightRanges[0].endPos === props.end &&
-                s.highlightRanges[0].startPos === props.start &&
-                s.srcNautObj === props.decoratedText,
-        );
-
-        const id = result?.id ?? "";
-        updateCollapseKey(id);
     };
 
     onChange = (editorState: any) => {
@@ -300,7 +315,6 @@ export class TextboxContainer extends React.Component<
 
         const feedback = response.feedback;
 
-        let idx = 0;
         const feedbackRefs: SuggestionRefs = {};
         feedback.sort(
             (a, b) =>
@@ -308,8 +322,6 @@ export class TextboxContainer extends React.Component<
         );
 
         feedback.forEach((f: Suggestion) => {
-            f.color = highlightColors[idx++ % 5];
-
             const ref = createRef<HTMLDivElement>();
             if (f.srcNautObj.substring(0, 1) === "[") {
                 f.srcNautObj = f.srcNautObj.substring(
@@ -317,7 +329,6 @@ export class TextboxContainer extends React.Component<
                     f.srcNautObj.length - 1,
                 );
             }
-            f.id = uuidv4();
             const key: string =
                 f.highlightRanges[0].startPos +
                 "," +

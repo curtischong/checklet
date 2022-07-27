@@ -7,17 +7,26 @@ import { EditorState } from "draft-js";
 export const Content: React.FC = () => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
     const [suggestionsRefs, setSuggestionsRefs] = useState<SuggestionRefs>({});
-    const [activeKey, setActiveKey] = useState("");
+    const [activeKey, setActiveKey] = useState<Suggestion>();
     const [editorState, setEditorState] = useState<EditorState>(
         EditorState.createEmpty(),
     );
     const domEditorRef = useRef<{ focus: () => void }>();
 
+    const updateActiveKey = (s: Suggestion | undefined) => {
+        setActiveKey(s);
+
+        const selectionState = editorState.getSelection();
+
+        setEditorState(EditorState.forceSelection(editorState, selectionState));
+    };
+
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
                 <TextboxContainer
-                    updateCollapseKey={setActiveKey}
+                    activeKey={activeKey}
+                    updateCollapseKey={updateActiveKey}
                     suggestions={suggestions}
                     updateSuggestions={setSuggestions}
                     refs={suggestionsRefs}
@@ -30,7 +39,7 @@ export const Content: React.FC = () => {
                     suggestions={suggestions}
                     refs={suggestionsRefs}
                     activeKey={activeKey}
-                    setActiveKey={setActiveKey}
+                    setActiveKey={updateActiveKey}
                     editorState={editorState}
                     updateEditorState={setEditorState}
                 />
