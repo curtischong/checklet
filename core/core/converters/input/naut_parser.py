@@ -150,6 +150,7 @@ class NautSent:
 
         # the root of the dependency tree
         self.root = self._parse_dependency_tree(sentence.root, self)
+        self._repr = sentence.__repr__()
 
         self.entities = self._parse_entities(sentence)
 
@@ -195,7 +196,7 @@ class NautSent:
         return root_naut_token
 
     def __repr__(self):
-        return " ".join([str(token) for token in self.tokens])
+        return self._repr
 
     def num_chars(self) -> int:
         return len(str(self))

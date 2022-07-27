@@ -21,13 +21,13 @@ Pipeline:
       - verb_clauses_in_long_sentences: {
         "clauses_in_long_sentences": "clauses_in_long_sentences"
       }
-    outputs: [ "long_desc", "sentences_to_highlight", "tokens_to_highlight_on_select" ]
+    outputs: [ "clause_lists", "sentences_to_highlight" ]
 
 Feedback:
   shortDesc: "Long bullet point"
-  longDesc: "{long_desc[i]}"
+  longDesc: "This sentence is quite long. Consider reorganizing these core ideas into two sentences: \n {clause_lists[i]}"
   srcNautSentences: "sentences_to_highlight"
-  srcNautTokensOnSelect: "tokens_to_highlight_on_select"
+  srcNautTokensOnSelect: "clauses_in_long_sentences"
   type: "SUGGESTION"
   category: "SIMPLICITY"
 
