@@ -15,10 +15,11 @@ def query_for_words(qwords: list[str], naut_embeddings: NautEmbeddings) -> ndarr
     return combined_embedding / n
 
 
-def get_synonym_task(queries: list[list[NautToken]], naut_embeddings: NautEmbeddings) -> list[list[str]]:
+def get_synonym_task(queries: list[list[NautToken]], naut_embeddings: NautEmbeddings, num_synonyms: int) \
+        -> list[list[str]]:
     synonyms = []
     for query in queries:
-        tokens = [token.text for token in query]
+        tokens = [str(token) for token in query]
         qvector = query_for_words(tokens, naut_embeddings)
-        synonyms.append(naut_embeddings.get_k_closest_words(qvector, 5))
+        synonyms.append(naut_embeddings.get_k_closest_words(qvector, num_synonyms))
     return synonyms

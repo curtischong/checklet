@@ -11,7 +11,7 @@ class TestGetSynonyms:
         naut_parser = NautParser()
         doc = naut_parser.parse("designed and implemented")
         naut_embeddings = NautEmbeddings()
-        synonyms = get_synonym_task([doc.tokens], naut_embeddings)
+        synonyms = get_synonym_task([doc.tokens], naut_embeddings, 5)
         expected_words = ["designed", "implemented", "implement", "Orano", "built"]
         assert synonyms
         for (synonym, expected) in zip(synonyms[0], expected_words):
