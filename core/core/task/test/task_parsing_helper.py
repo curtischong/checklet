@@ -6,10 +6,9 @@
 # How to use: run python task_parsing_helper OR (from the root) make serve-naut-parser to start the server!
 from multiprocessing.managers import BaseManager
 
-from core.lib.models.naut_embeddings import NautEmbeddings
-
 from core.converters.input.naut_parser import NautParser, NautDoc, NautSent, NautToken
 from core.lib.corpus.action_verbs import ActionVerbs
+from core.lib.models.naut_embeddings import NautEmbeddings
 
 
 class NautParserManager(BaseManager):

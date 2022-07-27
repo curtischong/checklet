@@ -1,0 +1,37 @@
+Pipeline:
+  - name: extract_verb_conjunctions_at_sentence_start
+    task: extract_verb_conjunctions_at_sentence_start_
+    outputs: [ "verb_conjunctions" ]
+  - name: get_synonym
+    task: get_synonym_
+    dependencies:
+      - extract_verb_conjunctions_at_sentence_start: { "verb_conjunctions": "queries" }
+    params: {
+      "num_synonyms": 15 # Find so many since the synonyms task can return invalid synonyms. We filter those out later
+    }
+    outputs: [ "synonyms" ]
+  - name: filter_by_action_verbs
+    task: filter_by_action_verbs_
+    dependencies:
+      - get_synonym: { "synonyms": "texts" }
+    outputs: [ "known_synonyms" ]
+  - name: limit_num_suggestions
+    task: limit_num_suggestions_
+    dependencies:
+      - filter_by_action_verbs: { "known_synonyms": "all_suggestions" }
+    params: { "max_suggestions": 7 }
+    outputs: [ "suggestions" ]
+
+Feedback:
+  shortDesc: "Verb Conjunctions"
+  longDesc: "Consider replacing **{verb_conjunctions[i]}** with one verb to be more concise.\n\n Here are a few suggestions: {suggestions[i]}"
+  srcNautTokens: "verb_conjunctions"
+  type: "SUGGESTION"
+  category: "WORDING"
+
+TruePositives:
+  - {
+    old: "Led and organized a relay race.",
+  }
+TrueNegatives:
+  - "Led a relay race."
