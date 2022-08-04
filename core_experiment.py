@@ -9,6 +9,7 @@ def run_test():
     # text = "Optimized user creation generation using ASP.Net and React, reducing wait time by 80%"
     # text = "made our many engines faster on honours january 23"
     # text = "- Developed generic ML pipeline-interface, enabling major codebase refactor to 5+ different pipelines, allowing for easier readability and maintainability of current pipeline architectures"
+    # text = "Languages Python, Java, Go, TypeScript, JavaScript, C#, C/C++"
     text = "led and organized a relay race"
     # text = "Bachelor of Applied Science Honours"
 

@@ -1,0 +1,26 @@
+Pipeline:
+  - name: filter_sentences_by_start
+    task: filter_sentences_by_start_
+    params: {
+      "start_words": ["languages", "technologies", "skills", "tools", "frameworks", "libraries"],
+    }
+    outputs: ["filtered_sents"]
+  - name: check_number_skills
+    task: check_number_skills_
+    dependencies:
+      - filter_sentences_by_start: {
+        "filtered_sents": "skill_sents"
+      }
+    outputs: ["flagged_sents"]
+
+Feedback:
+  shortDesc: "Too many skills"
+  longDesc: "Keep the number of skills listed to less than 7."
+  srcNautSentences: "flagged_sents"
+  type: "WARNING"
+  category: "SIMPLICITY"
+
+TruePositives:
+  - "Tools: Unity, Docker, Android Studio, Xcode, Visual Studio, VSCode, IntelliJ, Git, Bash, Unix, Ansible"
+TrueNegatives:
+  - "Tools: Unity, Docker, Android Studio, Xcode"

@@ -147,6 +147,7 @@ class NautSent:
             first_token = self.tokens[0]
             if first_token.pos in self.FILTER_POS:
                 self.tokens.pop(0)
+        self.text = sentence.text
 
         # the root of the dependency tree
         self.root = self._parse_dependency_tree(sentence.root, self)
