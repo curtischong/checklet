@@ -12,6 +12,7 @@ import { AccessCodeModal } from "./accessCodeModal";
 import { getAccessCode, mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
 import { ExamplesModal } from "./examplesModal";
+import "draft-js/dist/Draft.css";
 
 /*
     TONE
