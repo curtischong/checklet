@@ -6,13 +6,20 @@ import {
     ContentState,
 } from "draft-js";
 import { Api } from "@api";
-import { Button } from "antd";
+import { Button, Upload, UploadProps } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 import { Suggestion, SuggestionRefs } from "../suggestions/suggestionsTypes";
-import { AccessCodeModal } from "./accessCodeModal";
+import * as pdfjs from "pdfjs-dist";
 import { getAccessCode, mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
 import { ExamplesModal } from "./examplesModal";
 import "draft-js/dist/Draft.css";
+// const PizZip = require("pizzip");
+import Docxtemplater from "docxtemplater";
+import PizZip from "pizzip";
+
+// need same version with worker and pdfjs for it to work properly
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 /*
     TONE
@@ -76,6 +83,31 @@ export class TextboxContainer extends React.Component<
         }
     };
 
+    beforeFileUpload = (file: any) => {
+        const reader = new FileReader();
+
+        reader.onload = async (event: any) => {
+            const content = event.target.result;
+            const parseStrategy = this.getParseStrategy(file);
+            const text = await parseStrategy(content);
+            this.props.updateEditorState(
+                EditorState.createWithContent(
+                    ContentState.createFromText(text),
+                    this.decorator(),
+                ),
+            );
+        };
+        reader.readAsBinaryString(file);
+
+        return false;
+    };
+
+    uploadProps: UploadProps = {
+        accept: ".pdf,.docx",
+        beforeUpload: this.beforeFileUpload,
+        showUploadList: false,
+    };
+
     decorator = () => {
         return new CompositeDecorator([
             {
@@ -108,11 +140,56 @@ export class TextboxContainer extends React.Component<
         );
     }
 
+    getParseStrategy = (file: any) => {
+        if (file.type === "application/pdf") {
+            return async (content: any) => {
+                const doc = pdfjs.getDocument({ data: content });
+                return await doc.promise.then((pdf: any) => {
+                    const maxPages = pdf._pdfInfo.numPages;
+                    const countPromises: Promise<any>[] = [];
+                    for (let i = 1; i <= maxPages; ++i) {
+                        const page = pdf.getPage(i);
+                        countPromises.push(
+                            page.then((p: any) => {
+                                const textContent = p.getTextContent();
+                                return textContent.then((text: any) => {
+                                    let result = "";
+                                    let lastY = text.items[0] ?? -1;
+                                    text.items.forEach(
+                                        (item: any, itemIndex: any) => {
+                                            if (item.transform[5] != lastY) {
+                                                result += "\n";
+                                                lastY = item.transform[5];
+                                            }
+                                            result += item.str;
+                                        },
+                                    );
+                                    return result;
+                                });
+                            }),
+                        );
+                    }
+                    return Promise.all(countPromises).then((texts) => {
+                        const result = texts.join("");
+                        return result;
+                    });
+                });
+            };
+        }
+
+        return async (content: any) => {
+            const zip = new PizZip(content);
+            const doc = new Docxtemplater(zip);
+            return doc.getFullText();
+        };
+    };
+
     textboxHeader() {
         return (
             <div className="flex pb-6">
                 <div className="font-bold my-auto">Resume Feedback</div>
-                <div
+                {/* deprecated
+                <div 
                     onClick={this.showAccessCodeModal}
                     className="italic nautilus-text-blue m-auto hover:underline"
                 >
@@ -122,7 +199,17 @@ export class TextboxContainer extends React.Component<
                 <AccessCodeModal
                     onClose={this.closeAccessCodeModal}
                     visible={this.state.isAccessCodeModalVisible}
-                />
+                /> */}
+                <Upload className="pl-6" {...this.uploadProps}>
+                    <Button
+                        style={{ width: "150px", height: "36px" }}
+                        className={this.getButtonClasses()}
+                        icon={<UploadOutlined />}
+                    >
+                        Click to Upload
+                    </Button>
+                </Upload>
+
                 {getAccessCode() === "admin" && (
                     <div
                         onClick={this.showExamplesModal}

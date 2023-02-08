@@ -44,6 +44,7 @@ npm manifest:
           "mixpanel-browser": "^2.45.0",
           "next": "12.0.7",
           "next-compose-plugins": "^2.2.1",
+          "pizzip": "^3.1.1",
           "prettier": "^2.2.1",
           "react": "17.0.2",
           "react-beautiful-dnd": "^13.1.0",
@@ -82,6 +83,11 @@ npm manifest:
           "hooks": {
               "pre-commit": "lint-staged"
           }
+      },
+      "browser": {
+          "fs": false,
+          "path": false,
+          "os": false
       }
   }
 
@@ -577,6 +583,11 @@ Lockfile:
       "@typescript-eslint/types" "4.33.0"
       eslint-visitor-keys "^2.0.0"
   
+  "@xmldom/xmldom@^0.8.2":
+    version "0.8.2"
+    resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.8.2.tgz#b695ff674e8216efa632a3d36ad51ae9843380c0"
+    integrity sha512-+R0juSseERyoPvnBQ/cZih6bpF7IpCXlWbHRoCRzYzqpz6gWHOgf8o4MOEf6KBVuOyqU+gCNLkCWVIJAro8XyQ==
+  
   acorn-jsx@^5.3.1:
     version "5.3.2"
     resolved "https://registry.npmjs.org/acorn-jsx/-/acorn-jsx-5.3.2.tgz"
@@ -946,6 +957,11 @@ Lockfile:
       escalade "^3.1.1"
       node-releases "^2.0.5"
       picocolors "^1.0.0"
+  
+  buffer-crc32@~0.2.3:
+    version "0.2.13"
+    resolved "https://registry.yarnpkg.com/buffer-crc32/-/buffer-crc32-0.2.13.tgz#0d333e3f00eac50aa1454abd30ef8c2a5d9a7242"
+    integrity sha512-VO9Ht/+p3SN7SKWqcrgEzjGbRSJYTx+Q1pTQC0wrWqHx0vpJraQ6GtHx8tvcg1rlK1byhU5gccxgOgj7B0TDkQ==
   
   buffer-xor@^1.0.3:
     version "1.0.3"
@@ -1964,6 +1980,11 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
     integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
+  
+  fs@^0.0.1-security:
+    version "0.0.1-security"
+    resolved "https://registry.yarnpkg.com/fs/-/fs-0.0.1-security.tgz#8a7bd37186b6dddf3813f23858b57ecaaf5e41d4"
+    integrity sha512-3XY9e1pP0CVEUCdj5BmfIZxRBTSDycnbqhIOGec9QYtmVH2fbLpj86CFWkrNOkt/Fvty4KZG5lTglL9j/gJ87w==
   
   fsevents@~2.3.1, fsevents@~2.3.2:
     version "2.3.2"
@@ -3510,6 +3531,11 @@ Lockfile:
     resolved "https://registry.npmjs.org/p-try/-/p-try-2.2.0.tgz"
     integrity sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
   
+  pako@^2.0.4:
+    version "2.0.4"
+    resolved "https://registry.yarnpkg.com/pako/-/pako-2.0.4.tgz#6cebc4bbb0b6c73b0d5b8d7e8476e2b2fbea576d"
+    integrity sha512-v8tweI900AUkZN6heMU/4Uy4cXRc2AYNRggVmTR+dEncawDJgCdLMximOVA2p4qO57WMynangsfGRb5WD6L1Bg==
+  
   pako@~1.0.5:
     version "1.0.11"
     resolved "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz"
@@ -3589,6 +3615,11 @@ Lockfile:
       safe-buffer "^5.0.1"
       sha.js "^2.4.8"
   
+  pend@~1.2.0:
+    version "1.2.0"
+    resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
+    integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
+  
   picocolors@^1.0.0:
     version "1.0.0"
     resolved "https://registry.npmjs.org/picocolors/-/picocolors-1.0.0.tgz"
@@ -3598,6 +3629,13 @@ Lockfile:
     version "2.3.1"
     resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz"
     integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
+  
+  pizzip@^3.1.1:
+    version "3.1.1"
+    resolved "https://registry.yarnpkg.com/pizzip/-/pizzip-3.1.1.tgz#4f4896189da7386e5060b148696e116a61cb2bd0"
+    integrity sha512-+SYbkj87i+/4LR2F0lIeLTRFg95aj14OhGka988Jg8HiXZVOifdBIWaKZTnfZFvvUl5torCXQ/e+wZ6D23hPuQ==
+    dependencies:
+      pako "^2.0.4"
   
   pkg-dir@^4.1.0:
     version "4.2.0"
@@ -5294,6 +5332,14 @@ Lockfile:
     dependencies:
       isexe "^2.0.0"
   
+  word-extractor@^1.0.4:
+    version "1.0.4"
+    resolved "https://registry.yarnpkg.com/word-extractor/-/word-extractor-1.0.4.tgz#ffbe3faef642b41ad2237c20b7b055234d100f15"
+    integrity sha512-PyAGZQ2gjnVA5kcZAOAxoYciCMaAvu0dbVlw/zxHphhy+3be8cDeYKHJPO8iedIM3Sx0arA/ugKTJyXhZNgo6g==
+    dependencies:
+      saxes "^5.0.1"
+      yauzl "^2.10.0"
+  
   word-wrap@^1.2.3:
     version "1.2.3"
     resolved "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.3.tgz"
@@ -5322,6 +5368,11 @@ Lockfile:
     resolved "https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz"
     integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
   
+  xmlchars@^2.2.0:
+    version "2.2.0"
+    resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
+    integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
+  
   xtend@^4.0.2:
     version "4.0.2"
     resolved "https://registry.npmjs.org/xtend/-/xtend-4.0.2.tgz"
@@ -5336,6 +5387,14 @@ Lockfile:
     version "1.10.2"
     resolved "https://registry.npmjs.org/yaml/-/yaml-1.10.2.tgz"
     integrity sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==
+  
+  yauzl@^2.10.0:
+    version "2.10.0"
+    resolved "https://registry.yarnpkg.com/yauzl/-/yauzl-2.10.0.tgz#c7eb17c93e112cb1086fa6d8e51fb0667b79a5f9"
+    integrity sha512-p4a9I6X6nu6IhoGmBqAcbJy1mlC4j27vEPZX9F4L4/vZT3Lyq1VkFHw/V/PUcB9Buo+DG3iHkT0x3Qya58zc3g==
+    dependencies:
+      buffer-crc32 "~0.2.3"
+      fd-slicer "~1.1.0"
   
   yocto-queue@^0.1.0:
     version "0.1.0"
