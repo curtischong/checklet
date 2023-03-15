@@ -50,6 +50,7 @@ export class TextboxContainer extends React.Component<
         loading: boolean;
         isAccessCodeModalVisible: boolean;
         isExampleCodeModalVisible: boolean;
+        keysToRefs: any;
     }
 > {
     constructor(props: TextboxContainerProps) {
@@ -65,6 +66,7 @@ export class TextboxContainer extends React.Component<
             loading: false,
             isAccessCodeModalVisible: false,
             isExampleCodeModalVisible: false,
+            keysToRefs: {},
         };
         this.analyzeText = this.analyzeText.bind(this);
         this.handleStrategy = this.handleStrategy.bind(this);
@@ -189,7 +191,7 @@ export class TextboxContainer extends React.Component<
             <div className="flex pb-6">
                 <div className="font-bold my-auto">Resume Feedback</div>
                 {/* deprecated
-                <div 
+                <div
                     onClick={this.showAccessCodeModal}
                     className="italic nautilus-text-blue m-auto hover:underline"
                 >
@@ -263,7 +265,7 @@ export class TextboxContainer extends React.Component<
         }
 
         const end = start + contentBlock.getLength();
-        this.props.suggestions.forEach((suggestion: Suggestion) => {
+        this.props.suggestions.forEach((suggestion: Suggestion, index: number) => {
             suggestion.highlightRanges.forEach((range) => {
                 if (range.startPos > end || range.endPos < start) {
                     return;
@@ -271,6 +273,8 @@ export class TextboxContainer extends React.Component<
 
                 const startPos = range.startPos - start;
                 const endPos = range.endPos - start;
+                const keys = this.state.keysToRefs;
+                keys[range.startPos + "," + range.endPos] = index;
                 callback(
                     Math.max(startPos, 0),
                     Math.min(contentBlock.getLength(), endPos),
@@ -311,10 +315,10 @@ export class TextboxContainer extends React.Component<
         const startPos = props.start + start;
         const endPos = props.end + start;
         const result = this.props.activeKey;
+        const idx = this.state.keysToRefs[startPos + "," + endPos];
 
         if (
-            startPos === result?.highlightRanges[0].startPos &&
-            endPos === result?.highlightRanges[0].endPos
+            idx === result?.id
         ) {
             style.backgroundColor = "#DBEBFF";
             style.padding = "1.5px 0 1px";
@@ -326,7 +330,6 @@ export class TextboxContainer extends React.Component<
 
     handleUnderlineClicked = (props: any) => {
         const contentState = props.contentState;
-
         let currBlock = contentState.getBlockForKey(props.blockKey);
         let start = 0;
 
@@ -337,31 +340,33 @@ export class TextboxContainer extends React.Component<
 
         const startPos = props.start + start;
         const endPos = props.end + start;
-        const key = startPos + "," + endPos + props.decoratedText;
+        const key = startPos + "," + endPos;
 
-        if (!(key in this.props.refs)) {
+        if (!(key in this.state.keysToRefs)) {
             console.log("could not find key: " + key);
         }
 
-        const result = this.props.suggestions.find(
-            (s) =>
-                s.highlightRanges[0].endPos === endPos &&
-                s.highlightRanges[0].startPos === startPos &&
-                s.srcNautObj === props.decoratedText,
-        );
+        // const result = this.props.suggestions.find(
+        //     (s) =>
+        //         s.highlightRanges[0].endPos === endPos &&
+        //         s.highlightRanges[0].startPos === startPos,
+        // );
 
-        if (result != null) {
-            this.props.updateCollapseKey(result);
-        }
+        // if (result != null) {
+        //     this.props.updateCollapseKey(result);
+        // }
 
+        const idx = this.state.keysToRefs[key];
+        const sugg = this.props.suggestions[idx];
+        this.props.updateCollapseKey(sugg);
         setTimeout(() => {
-            this.props.refs[key].current?.scrollIntoView({
+            this.props.refs[idx].current?.scrollIntoView({
                 behavior: "smooth",
                 block: "center",
             });
         });
         mixpanelTrack("Underlined text selected", {
-            suggestion: result,
+            suggestion: sugg,
         });
     };
 
@@ -414,7 +419,7 @@ export class TextboxContainer extends React.Component<
         const feedbackRefs: SuggestionRefs = {};
         feedback.sort(this.props.sort);
 
-        feedback.forEach((f: Suggestion) => {
+        feedback.forEach((f: Suggestion, index: number) => {
             const ref = createRef<HTMLDivElement>();
             if (f.srcNautObj.substring(0, 1) === "[") {
                 f.srcNautObj = f.srcNautObj.substring(
@@ -422,12 +427,8 @@ export class TextboxContainer extends React.Component<
                     f.srcNautObj.length - 1,
                 );
             }
-            const key: string =
-                f.highlightRanges[0].startPos +
-                "," +
-                f.highlightRanges[0].endPos +
-                f.srcNautObj;
-            feedbackRefs[key] = ref;
+            f.id = index;
+            feedbackRefs[index] = ref;
         });
 
         this.props.updateSuggestions(feedback);

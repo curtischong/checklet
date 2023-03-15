@@ -38,7 +38,7 @@ export const FeedbackTypeOrder = {
 };
 
 export type Suggestion = {
-    id: string;
+    id: number;
     feedbackCategory: string;
     feedbackType: FeedbackType;
     srcNautObj: string;

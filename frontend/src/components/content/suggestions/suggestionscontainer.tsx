@@ -125,12 +125,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                             onClick={() => onCollapseClick(s)}
                             onReplaceClick={() => onReplaceClick(s)}
                             ref={
-                                refs[
-                                    s.highlightRanges[0].startPos +
-                                        "," +
-                                        s.highlightRanges[0].endPos +
-                                        s.srcNautObj
-                                ]
+                                refs[s.id]
                             }
                         />
                     );
