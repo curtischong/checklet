@@ -124,9 +124,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                             activeKey={activeKey}
                             onClick={() => onCollapseClick(s)}
                             onReplaceClick={() => onReplaceClick(s)}
-                            ref={
-                                refs[s.id]
-                            }
+                            ref={refs[s.id]}
                         />
                     );
                 });

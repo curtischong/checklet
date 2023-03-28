@@ -265,22 +265,24 @@ export class TextboxContainer extends React.Component<
         }
 
         const end = start + contentBlock.getLength();
-        this.props.suggestions.forEach((suggestion: Suggestion, index: number) => {
-            suggestion.highlightRanges.forEach((range) => {
-                if (range.startPos > end || range.endPos < start) {
-                    return;
-                }
+        this.props.suggestions.forEach(
+            (suggestion: Suggestion, index: number) => {
+                suggestion.highlightRanges.forEach((range) => {
+                    if (range.startPos > end || range.endPos < start) {
+                        return;
+                    }
 
-                const startPos = range.startPos - start;
-                const endPos = range.endPos - start;
-                const keys = this.state.keysToRefs;
-                keys[range.startPos + "," + range.endPos] = index;
-                callback(
-                    Math.max(startPos, 0),
-                    Math.min(contentBlock.getLength(), endPos),
-                );
-            });
-        });
+                    const startPos = range.startPos - start;
+                    const endPos = range.endPos - start;
+                    const keys = this.state.keysToRefs;
+                    keys[range.startPos + "," + range.endPos] = index;
+                    callback(
+                        Math.max(startPos, 0),
+                        Math.min(contentBlock.getLength(), endPos),
+                    );
+                });
+            },
+        );
     };
 
     HandleSpan = (
@@ -317,9 +319,7 @@ export class TextboxContainer extends React.Component<
         const result = this.props.activeKey;
         const idx = this.state.keysToRefs[startPos + "," + endPos];
 
-        if (
-            idx === result?.id
-        ) {
+        if (idx === result?.id) {
             style.backgroundColor = "#DBEBFF";
             style.padding = "1.5px 0 1px";
             style.backgroundPosition = "center calc(100% + 2px)";
