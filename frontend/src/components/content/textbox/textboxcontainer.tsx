@@ -222,6 +222,13 @@ export class TextboxContainer extends React.Component<
                     </div>
                 )}
 
+                <a
+                    href="https://uwrizzu.me"
+                    className="italic nautilus-text-blue m-auto hover:underline"
+                >
+                    Play Rizzume
+                </a>
+
                 <ExamplesModal
                     onClose={this.closeExamplesModal}
                     visible={this.state.isExampleCodeModalVisible}
