@@ -17,6 +17,8 @@ import "draft-js/dist/Draft.css";
 // const PizZip = require("pizzip");
 import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
+import css from "./textboxcontainer.module.scss";
+import classnames from "classnames";
 
 // need same version with worker and pdfjs for it to work properly
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -188,7 +190,7 @@ export class TextboxContainer extends React.Component<
 
     textboxHeader() {
         return (
-            <div className="flex pb-6">
+            <div className={classnames(css.textboxHeader, "pb-6")}>
                 <div className="font-bold my-auto">Resume Feedback</div>
                 {/* deprecated
                 <div
@@ -202,10 +204,15 @@ export class TextboxContainer extends React.Component<
                     onClose={this.closeAccessCodeModal}
                     visible={this.state.isAccessCodeModalVisible}
                 /> */}
-                <Upload className="pl-6" {...this.uploadProps}>
+                <Upload
+                    className={classnames(css.upload)}
+                    {...this.uploadProps}
+                >
                     <Button
-                        style={{ width: "150px", height: "36px" }}
-                        className={this.getButtonClasses()}
+                        className={classnames(
+                            this.getButtonClasses(),
+                            css.uploadButton,
+                        )}
                         icon={<UploadOutlined />}
                     >
                         Click to Upload
@@ -224,7 +231,10 @@ export class TextboxContainer extends React.Component<
 
                 <a
                     href="https://uwrizzu.me"
-                    className="italic nautilus-text-blue m-auto hover:underline"
+                    className={classnames(
+                        css.rizzLink,
+                        "italic nautilus-text-blue m-auto hover:underline",
+                    )}
                 >
                     Play Rizzume
                 </a>
@@ -236,10 +246,12 @@ export class TextboxContainer extends React.Component<
                 />
 
                 <Button
-                    style={{ width: "117px", height: "36px" }}
                     onClick={this.analyzeText}
                     loading={this.state.loading}
-                    className={this.getButtonClasses()}
+                    className={classnames(
+                        this.getButtonClasses(),
+                        css.analyzeButton,
+                    )}
                 >
                     Analyze
                 </Button>
