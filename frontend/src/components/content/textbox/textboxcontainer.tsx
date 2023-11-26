@@ -215,7 +215,7 @@ export class TextboxContainer extends React.Component<
                         )}
                         icon={<UploadOutlined />}
                     >
-                        Click to Upload
+                        Upload PDF
                     </Button>
                 </Upload>
 
@@ -228,16 +228,6 @@ export class TextboxContainer extends React.Component<
                         Examples
                     </div>
                 )}
-
-                <a
-                    href="https://uwrizzu.me"
-                    className={classnames(
-                        css.rizzLink,
-                        "italic nautilus-text-blue m-auto hover:underline",
-                    )}
-                >
-                    Play Rizzume
-                </a>
 
                 <ExamplesModal
                     onClose={this.closeExamplesModal}
