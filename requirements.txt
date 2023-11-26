@@ -1,0 +1,11 @@
+annotated-types==0.6.0
+chatgpt==2.2212.0
+colorama==0.4.6
+markdown-it-py==3.0.0
+mdurl==0.1.2
+pydantic==2.5.2
+pydantic_core==2.14.5
+Pygments==2.17.2
+rich==13.7.0
+tls-client==0.2.2
+typing_extensions==4.8.0
