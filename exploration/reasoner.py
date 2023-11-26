@@ -8,7 +8,7 @@ import chatgpt
 
 os.environ["OPENAI_API_KEY"] = open('openai_key.txt', 'r').read().strip('\n')
 class Reasoner:
-    def __init__(self, system_prompt=None, model='gpt-4'):
+    def __init__(self, system_prompt=None, model='gpt-3.5-turbo'):
         self.model = model
         self.messages = []
         if system_prompt:
@@ -45,7 +45,7 @@ class Reasoner:
 
 
 class StructuredReasoner(Reasoner):
-    def __init__(self, system_prompt=None, model='gpt-4'):
+    def __init__(self, system_prompt=None, model='gpt-3.5-turbo'):
         super().__init__(system_prompt, model)
     
     def extract_info(self, info_format, output_type: Union[BaseModel, Type]):

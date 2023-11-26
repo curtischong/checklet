@@ -4,4 +4,6 @@ env/
 .vscode
 .DS_Store
 __pycache__
+
 *openai_key.txt
+*.chatgpt_history
