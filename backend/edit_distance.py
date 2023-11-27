@@ -1,12 +1,19 @@
 from feedback_types import Range
+from typing import Any
 
-class EditOperation:
+class EditOp:
     def __init__(self, range:Range, newString:str):
         self.range = range
         self.newString = newString
 
     def __repr__(self):
         return f"EditOperation(Range({self.range.start}, {self.range.end}), '{self.newString}')"
+
+    def to_json(self) -> dict[str,Any]:
+        return {
+            "range": self.range.to_json(),
+            "newString": self.newString
+        }
 
 
 def edit_distance_operations_with_classes(str1:str, str2:str):
@@ -58,15 +65,15 @@ def edit_distance_operations_with_classes(str1:str, str2:str):
 
 
     # Consolidate adjacent operations
-    consolidated_operations:list[EditOperation] = []
+    consolidated_operations:list[EditOp] = []
     for op in operations[::-1]:
         if consolidated_operations and consolidated_operations[-1].range.is_adjacent(op['range']):
             consolidated_operations[-1].range.merge(op['range'])
             consolidated_operations[-1].newString += op['newString']
         else:
-            consolidated_operations.append(EditOperation(op['range'], op['newString']))
+            consolidated_operations.append(EditOp(op['range'], op['newString']))
 
     return consolidated_operations
 
 # Example usage
-print(edit_distance_operations_with_classes("kitten", "sittinggg"))
+# print(edit_distance_operations_with_classes("kitten", "sittinggg"))
