@@ -50,7 +50,6 @@ const defaultSections: SectionMetadata[] = [
 
 export const Structure: React.FC = () => {
     const [sections, setSections] = useState(defaultSections);
-    const [suggestedOrder, setSuggestedOrder] = useState([]);
 
     const handleDrop = (droppedItem: DropResult) => {
         if (!droppedItem.destination) return;
@@ -60,29 +59,10 @@ export const Structure: React.FC = () => {
         setSections(updatedList);
     };
 
-    useEffect(() => {
-        analyzeOrder();
-    }, [sections]);
-
-    const analyzeOrder = async () => {
-        const response = await Api.structureSuggestions({
-            structure: sections,
-        });
-        setSuggestedOrder(response.structure);
-    };
-
     const handleCheckboxChange = (index: number) => {
         const items = [...sections];
         items[index].isSelected = !items[index].isSelected;
         setSections(items);
-    };
-
-    const getOrderStyling = (item: string, section: SectionMetadata) => {
-        if (item !== section.sectionType) {
-            return {
-                backgroundColor: "#DCBAB9",
-            };
-        }
     };
 
     return (
@@ -141,26 +121,6 @@ export const Structure: React.FC = () => {
                             )}
                         </Droppable>
                     </DragDropContext>
-                </div>
-                <div className="grid">
-                    <>
-                        <div className="font-bold pb-5"> Suggested Order </div>
-                        <div>
-                            {suggestedOrder.map((item: string, idx: number) => (
-                                <div key={idx} className="flex pb-1">
-                                    <div
-                                        style={getOrderStyling(
-                                            item,
-                                            sections[idx],
-                                        )}
-                                        className={css.suggestedOrder}
-                                    >
-                                        {item}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </>
                 </div>
             </div>
         </div>

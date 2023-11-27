@@ -8,7 +8,7 @@ import chatgpt
 
 os.environ["OPENAI_API_KEY"] = open('openai_key.txt', 'r').read().strip('\n')
 class Reasoner:
-    def __init__(self, system_prompt=None, model='gpt-3.5-turbo'):
+    def __init__(self, system_prompt=None, model='gpt-4'):
         self.model = model
         self.messages = []
         if system_prompt:
@@ -45,7 +45,7 @@ class Reasoner:
 
 
 class StructuredReasoner(Reasoner):
-    def __init__(self, system_prompt=None, model='gpt-3.5-turbo'):
+    def __init__(self, system_prompt=None, model='gpt-4'):
         super().__init__(system_prompt, model)
     
     def extract_info(self, info_format, output_type: Union[BaseModel, Type]):
@@ -112,10 +112,10 @@ class StructuredReasoner(Reasoner):
         }
 
         response = chatgpt.complete(messages=self.messages, model=self.model, functions=[json_schema], function_call={'name': func_name}, use_cache=True)
-        if response['role'] != 'function':
-            raise Exception(f"Expected a function call, but got: {response['content']}")
+        if not response.function_call:
+            raise Exception(f"Expected a function call. Got: {response}")
         
-        value = response['args']
+        value = response.function_call.arguments
         if use_pydantic:
             value = output_type.model_construct(value)
         else:
@@ -126,7 +126,7 @@ class StructuredReasoner(Reasoner):
                 value = value.popitem()[1]
 
         info = info_format.format(**{field_name: value})
-        self.add_message('function', f'Stored information: "{info}"', name=response['name'])
+        self.add_message('function', f'Stored information: "{info}"', name=response.function_call.name)
         return value
     
 
@@ -145,7 +145,7 @@ if __name__ == '__main__':
         "You use your internal monologue to reason before responding to the user. "
         "You try to maximize how funny your response is."
     )
-    reasoner = StructuredReasoner(system_prompt=system_prompt, model='gpt-4')
+    reasoner = StructuredReasoner(system_prompt=system_prompt, model='gpt-3.5-turbo')
 
     while True:
         message = input("\nUser: ")

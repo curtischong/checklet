@@ -24,16 +24,6 @@ export class Api {
         }
         return undefined;
     };
-
-    static structureSuggestions = async (payload = {}): Promise<any> => {
-        const data = await Api.createRequest(
-            "structure/suggestions",
-            "POST",
-            payload,
-        );
-        return data;
-    };
-
     static analyzeResume = async (
         payload: FeedbackRequest,
     ): Promise<FeedbackResponse> => {
