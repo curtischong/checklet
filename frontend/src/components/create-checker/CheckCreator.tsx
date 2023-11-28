@@ -16,6 +16,7 @@ interface Props {
 export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
     const [longDesc, setLongDesc] = React.useState("");
+    const [instruction, setInstruction] = React.useState("");
     const [category, setCategory] = React.useState("");
     const [positiveExamples, setPositiveExamples] = React.useState<
         PositiveCheckExample[]
@@ -39,6 +40,20 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                     placeholder="Shorten Month"
                 />
                 <div className="flex flex-row mt-2">
+                    <label>Model Instructions</label>
+                    <HelpIcon
+                        className="mt-1 ml-1"
+                        text={
+                            "Here is where you tell the model how to edit the text."
+                        }
+                    />
+                </div>
+                <TextArea
+                    value={instruction}
+                    onChange={(e) => setInstruction(e.target.value)}
+                    placeholder={`In this text, if you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period. Do not repeat back the entire text. Only output the edited text plus a bit of context around the edit for context.`}
+                />
+                <div className="flex flex-row mt-2">
                     <label>Long Description</label>
                     <HelpIcon
                         className="mt-1 ml-1"
@@ -50,7 +65,7 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 <TextArea
                     value={longDesc}
                     onChange={(e) => setLongDesc(e.target.value)}
-                    placeholder={`say: Shorter months create more whitespace.`}
+                    placeholder={`Shorter months create more whitespace.`}
                 />
                 <div className="flex flex-row mt-2">
                     <label>Category (optional)</label>
@@ -68,7 +83,15 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 />
 
                 <div className="mt-4">
-                    <div className="text-md">Positive Examples</div>
+                    <div className="flex flex-row mt-2">
+                        <label>Positive Examples</label>
+                        <HelpIcon
+                            className="mt-1 ml-1"
+                            text={
+                                "Positive examples help the model understand when to apply your check"
+                            }
+                        />
+                    </div>
                     <div className="flex flex-col">
                         {positiveExamples.map((example, idx) => (
                             <div
