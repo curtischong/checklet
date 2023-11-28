@@ -1,4 +1,5 @@
-import { Button, NormalButton, SubmitButton } from "@components/Button";
+import { Check } from "@api/check";
+import { NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { TextArea } from "@components/TextArea";
 import { CheckBlueprint } from "@components/create-checker/Check";
@@ -7,7 +8,6 @@ import {
     PositiveCheckExampleCreator,
 } from "@components/create-checker/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
-import { Tooltip } from "antd";
 import React, { useEffect } from "react";
 
 interface Props {
@@ -50,7 +50,7 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 <div className="flex flex-row mt-2">
                     <label>Model Instructions</label>
                     <HelpIcon
-                        className="mt-1 ml-1"
+                        className="mt-[3px] ml-1"
                         text={
                             "Here is where you tell the model how to edit the text."
                         }
@@ -64,7 +64,7 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 <div className="flex flex-row mt-2">
                     <label>Long Description</label>
                     <HelpIcon
-                        className="mt-1 ml-1"
+                        className="mt-[3px] ml-1"
                         text={
                             "This is a great place to explain your suggestion. Users will see this when they expand the card."
                         }
@@ -78,7 +78,7 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 <div className="flex flex-row mt-2">
                     <label>Category (optional)</label>
                     <HelpIcon
-                        className="mt-1 ml-1"
+                        className="mt-[3px] ml-1"
                         text={
                             "If you want to organize your cards by category, you can add a category here."
                         }
@@ -94,7 +94,7 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                     <div className="flex flex-row mt-2">
                         <label>Positive Examples</label>
                         <HelpIcon
-                            className="mt-1 ml-1"
+                            className="mt-[3px] ml-1"
                             text={
                                 "Positive examples help the model understand when to apply your check"
                             }
@@ -147,9 +147,14 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 <div className="mt-4">
                     <NormalButton
                         onClick={() => {
-                            // onCreate({
-                            //     name,
-                            // })
+                            const checkBlueprint: CheckBlueprint = {
+                                name,
+                                instruction,
+                                longDesc,
+                                category,
+                                positiveExamples,
+                            };
+                            onCreate(checkBlueprint);
                         }}
                     >
                         Create Check

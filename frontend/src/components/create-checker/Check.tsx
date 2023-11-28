@@ -4,7 +4,7 @@ export type CheckBlueprint = {
     name: string;
     instruction: string;
     longDesc: string;
-    category: string | undefined;
+    category: string; // optional
     positiveExamples: PositiveCheckExample[];
     // negativeExamples: NegativeCheckExample[]; // TODO
 };

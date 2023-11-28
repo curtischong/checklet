@@ -3,7 +3,7 @@ import { CheckBlueprint, CheckDisplay } from "@components/create-checker/Check";
 import { CheckCreator } from "@components/create-checker/CheckCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { Input } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import { downloadTextFile } from "util/download";
 
 export type CheckerBlueprint = {
@@ -16,6 +16,17 @@ export const CheckerCreator: React.FC = () => {
     const [checkBlueprints, setCheckBlueprints] = React.useState<
         CheckBlueprint[]
     >([]);
+
+    const [err, setErr] = React.useState("");
+    useEffect(() => {
+        if (name === "") {
+            setErr("Please enter a name");
+        } else if (checkBlueprints.length === 0) {
+            setErr("Please enter at least one check");
+        } else {
+            setErr("");
+        }
+    }, [name, checkBlueprints]);
 
     return (
         <div className="flex justify-center ">
@@ -62,15 +73,18 @@ export const CheckerCreator: React.FC = () => {
                         }}
                     />
 
+                    <div className="text-[#ff0000] bg-white px-2 mt-4 ">
+                        {err}
+                    </div>
                     <SubmitButton
                         onClick={() => {
                             const checker = {
                                 name,
-                                checkBlueprints: [], // todo: populate
+                                checkBlueprints,
                             } as CheckerBlueprint;
                             downloadTextFile(
-                                JSON.stringify(checker),
                                 `${name.replaceAll(" ", "-")}.json`,
+                                JSON.stringify(checker),
                             );
                         }}
                         className="mt-4"
