@@ -15,7 +15,7 @@ import React, { useCallback, useEffect } from "react";
 
 interface Props {
     onCreate: (check: CheckBlueprint) => void;
-    setPage: SetState<Page>;
+    setPage: (page: Page) => void;
 }
 export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
