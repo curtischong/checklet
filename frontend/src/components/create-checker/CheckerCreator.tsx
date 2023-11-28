@@ -1,19 +1,21 @@
 import { Button, SubmitButton } from "@components/Button";
-import { Check, CheckDisplay } from "@components/create-checker/Check";
+import { CheckBlueprint, CheckDisplay } from "@components/create-checker/Check";
 import { CheckCreator } from "@components/create-checker/CheckCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { Input } from "antd";
 import React from "react";
 import { downloadTextFile } from "util/download";
 
-type Checker = {
+export type CheckerBlueprint = {
     name: string;
-    checks: Check[];
+    checkBlueprints: CheckBlueprint[];
 };
 
 export const CheckerCreator: React.FC = () => {
     const [name, setName] = React.useState("");
-    const [checks, setChecks] = React.useState<Check[]>([]);
+    const [checkBlueprints, setCheckBlueprints] = React.useState<
+        CheckBlueprint[]
+    >([]);
 
     return (
         <div className="flex justify-center ">
@@ -41,14 +43,14 @@ export const CheckerCreator: React.FC = () => {
                         />
                     </div>
                     <div>
-                        {checks.map((check, idx) => (
+                        {checkBlueprints.map((check, idx) => (
                             <CheckDisplay
                                 key={`check-${idx}`}
-                                check={check}
+                                checkBlueprint={check}
                                 onDelete={() => {
-                                    const newChecks = [...checks];
+                                    const newChecks = [...checkBlueprints];
                                     newChecks.splice(idx, 1);
-                                    setChecks(newChecks);
+                                    setCheckBlueprints(newChecks);
                                 }}
                             />
                         ))}
@@ -56,7 +58,7 @@ export const CheckerCreator: React.FC = () => {
 
                     <CheckCreator
                         onCreate={(check) => {
-                            setChecks([...checks, check]);
+                            setCheckBlueprints([...checkBlueprints, check]);
                         }}
                     />
 
@@ -64,8 +66,8 @@ export const CheckerCreator: React.FC = () => {
                         onClick={() => {
                             const checker = {
                                 name,
-                                checks: [], // todo: populate
-                            } as Checker;
+                                checkBlueprints: [], // todo: populate
+                            } as CheckerBlueprint;
                             downloadTextFile(
                                 JSON.stringify(checker),
                                 `${name.replaceAll(" ", "-")}.json`,

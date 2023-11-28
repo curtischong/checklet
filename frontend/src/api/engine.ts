@@ -1,5 +1,5 @@
 import { Checker } from "@api/checker";
-import { Check } from "@components/create-checker/Check";
+import { CheckBlueprint } from "@components/create-checker/Check";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -17,9 +17,10 @@ export class Engine {
         });
     }
 
-    checkDoc(document: string, check: Check): void {
+    checkDoc(document: string, check: CheckBlueprint): void {
         // TODO: feed prompt to LLM
         // TODO: Implement the method logic
+        check.longDesc;
         console.log(systemPrompt); // Ensure 'systemPrompt' is defined or passed as an argument
     }
 }

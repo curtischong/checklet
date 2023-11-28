@@ -1,7 +1,7 @@
 import { Button, NormalButton, SubmitButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { TextArea } from "@components/TextArea";
-import { Check } from "@components/create-checker/Check";
+import { CheckBlueprint } from "@components/create-checker/Check";
 import {
     PositiveCheckExample,
     PositiveCheckExampleCreator,
@@ -11,7 +11,7 @@ import { Tooltip } from "antd";
 import React, { useEffect } from "react";
 
 interface Props {
-    onCreate: (check: Check) => void;
+    onCreate: (check: CheckBlueprint) => void;
 }
 export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
