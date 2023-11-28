@@ -6,6 +6,8 @@ import {
     PositiveCheckExample,
     PositiveCheckExampleCreator,
 } from "@components/create-checker/PositiveCheckExampleCreator";
+import { HelpIcon } from "@components/icons/HelpIcon";
+import { Tooltip } from "antd";
 import React, { useEffect } from "react";
 
 interface Props {
@@ -31,13 +33,13 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
         <div className="flex flex-row">
             <div className="flex flex-col">
                 <h1 className="mt-4 text-xl font-bold">Create Check</h1>
-                <label className="text-md font-bold">Name</label>
+                <label className="text-md mt-4">Name</label>
                 <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Shorten Month"
                 />
-                <label>Short Description Prompt</label>
+                <label className="mt-2">Short Description Prompt</label>
                 <Input
                     value={shortDesc}
                     onChange={(e) => setShortDesc(e.target.value)}
@@ -45,21 +47,37 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 />
 
                 {/* TODO: add a tooltip saying: "a great place to explain why this card is useful" */}
-                <label>Long Description Prompt</label>
+                <div className="flex flex-row mt-2">
+                    <label>Long Description Prompt</label>
+                    <HelpIcon
+                        className="mt-1 ml-1"
+                        text={
+                            "This is a great place to explain your suggestion. Users will see this when they expand the card."
+                        }
+                    />
+                </div>
                 <TextArea
                     value={longDesc}
                     onChange={(e) => setLongDesc(e.target.value)}
                     placeholder={`say: Shorter months create more whitespace.`}
                 />
-                <label>Category (optional)</label>
+                <div className="flex flex-row mt-2">
+                    <label>Category (optional)</label>
+                    <HelpIcon
+                        className="mt-1 ml-1"
+                        text={
+                            "If you want to organize your cards by category, you can add a category here."
+                        }
+                    />
+                </div>
                 <Input
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     placeholder={`Whitespace`}
                 />
 
-                <div>
-                    <div className="text-md font-bold">Positive Examples</div>
+                <div className="mt-4">
+                    <div className="text-md">Positive Examples</div>
                     <div className="flex flex-col">
                         {positiveExamples.map((example, idx) => (
                             <div
