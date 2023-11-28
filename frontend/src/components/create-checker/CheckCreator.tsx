@@ -24,9 +24,17 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
     const [err, setErr] = React.useState("");
     useEffect(() => {
         if (name === "") {
-            setErr("Please enter a short description");
+            setErr("Please enter a name");
+        } else if (instruction === "") {
+            setErr("Please enter a model instruction");
+        } else if (longDesc === "") {
+            setErr("Please enter a long description");
+        } else if (positiveExamples.length === 0) {
+            setErr("Please enter at least one positive example");
+        } else {
+            setErr("");
         }
-    }, []);
+    }, [name, longDesc, instruction, positiveExamples]);
 
     // TODO: we should have a demo card that appears as you fill in the fields (it'll be on the right side)
     return (
