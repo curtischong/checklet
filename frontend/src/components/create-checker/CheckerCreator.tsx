@@ -54,6 +54,7 @@ export const CheckerCreator: React.FC = () => {
                                 `${name.replaceAll(" ", "-")}.json`,
                             );
                         }}
+                        className="mt-4"
                     >
                         Create Checker
                     </SubmitButton>

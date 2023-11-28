@@ -1,3 +1,4 @@
+import { Input, SmallInput } from "@components/Input";
 import React from "react";
 
 export interface PositiveCheckExample {
@@ -16,15 +17,20 @@ export const PositiveCheckExampleCreator = ({
     const [originalText, setOriginalText] = React.useState("");
     const [editedText, setEditedText] = React.useState("");
     return (
-        <div className="flex flex-row">
-            <label className="text-md">Original Text</label>
-            <input
+        <div className="flex flex-row space-x-2">
+            <div className="flex items-center">
+                <label className="text-md">Original Text</label>
+            </div>
+            <SmallInput
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
                 placeholder="January"
+                className="py-[2px] px-2"
             />
-            <label>Edited Text</label>
-            <input
+            <div className="flex items-center">
+                <label>Edited Text</label>
+            </div>
+            <SmallInput
                 value={editedText}
                 onChange={(e) => setEditedText(e.target.value)}
                 placeholder="Jan"

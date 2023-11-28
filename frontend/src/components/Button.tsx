@@ -43,7 +43,7 @@ export const SubmitButton: React.FC<IButton> = ({
     return (
         <button
             // className={`py-2 px-4 rounded duration-300 bg-white transition-transform transform hover:bg-blue-500 focus:outline-none ring-opacity-75 ring-blue-300 focus:ring text-black text-lg ${className}`}
-            className={`bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition duration-300 ${className}`}
+            className={`bg-[#43b56c] hover:bg-[#3a9e5e] text-white py-2 px-4 rounded transition duration-300 ${className}`}
             {...rest}
         >
             {children}
