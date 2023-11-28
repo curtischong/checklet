@@ -7,6 +7,7 @@ import { CheckCreator } from "@components/create-checker/CheckCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { SetState } from "@utils/types";
 import { Input } from "antd";
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import { downloadTextFile } from "util/download";
 
@@ -24,7 +25,16 @@ export const CheckerCreator: React.FC = () => {
     const [checkBlueprints, setCheckBlueprints] = React.useState<
         CheckBlueprint[]
     >([]);
-    const [page, setPage] = React.useState(Page.Main);
+    const router = useRouter();
+    const hash = router.asPath.split("#")[1] || "";
+    const page = hash === "check" ? Page.CheckCreator : Page.Main;
+    const setPage = (page: Page) => {
+        if (page === Page.Main) {
+            router.push("");
+        } else {
+            router.push("#check");
+        }
+    };
 
     return (
         <div className="flex justify-center ">
@@ -56,7 +66,7 @@ interface Props {
     setName: SetState<string>;
     checkBlueprints: CheckBlueprint[];
     setCheckBlueprints: SetState<CheckBlueprint[]>;
-    setPage: SetState<Page>;
+    setPage: (page: Page) => void;
 }
 
 const MainCheckerPage = ({
