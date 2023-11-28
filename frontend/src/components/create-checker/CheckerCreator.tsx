@@ -123,6 +123,7 @@ const MainCheckerPage = ({
                 ))}
             </div>
             <NormalButton
+                className="mt-4"
                 onClick={() => {
                     setPage(Page.CheckCreator);
                 }}
