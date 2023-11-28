@@ -1,4 +1,4 @@
-import { Button } from "@components/button";
+import { Button, SubmitButton } from "@components/Button";
 import { Check, CheckDisplay } from "@components/create-checker/Check";
 import { CheckCreator } from "@components/create-checker/CheckCreator";
 import { Input } from "antd";
@@ -30,20 +30,20 @@ export const CheckerCreator: React.FC = () => {
                         value={name}
                     />
 
-                    <CheckCreator
-                        onCreate={(check) => {
-                            setChecks([...checks, check]);
-                        }}
-                    />
-
-                    <h1>Your Checks</h1>
+                    <h1 className="font-bold text-xl mt-4">Your Checks</h1>
                     <div>
                         {checks.map((check, idx) => (
                             <CheckDisplay key={`check-${idx}`} check={check} />
                         ))}
                     </div>
 
-                    <Button
+                    <CheckCreator
+                        onCreate={(check) => {
+                            setChecks([...checks, check]);
+                        }}
+                    />
+
+                    <SubmitButton
                         onClick={() => {
                             const checker = {
                                 name,
@@ -55,8 +55,9 @@ export const CheckerCreator: React.FC = () => {
                             );
                         }}
                     >
-                        Upload
-                    </Button>
+                        Create Checker
+                    </SubmitButton>
+                    <div className="h-10"></div>
                 </div>
             </div>
         </div>

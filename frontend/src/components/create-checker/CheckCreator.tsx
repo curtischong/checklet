@@ -1,4 +1,4 @@
-import { Button } from "@components/button";
+import { Button, NormalButton, SubmitButton } from "@components/Button";
 import { Check } from "@components/create-checker/Check";
 import {
     PositiveCheckExample,
@@ -94,15 +94,17 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                     />
                 </div>
 
-                <Button
-                    onClick={() => {
-                        // onCreate({
-                        //     name,
-                        // })
-                    }}
-                >
-                    Submit
-                </Button>
+                <div className="mt-4">
+                    <NormalButton
+                        onClick={() => {
+                            // onCreate({
+                            //     name,
+                            // })
+                        }}
+                    >
+                        Create Check
+                    </NormalButton>
+                </div>
             </div>
             <div>
                 <h1>todo: preview card</h1>
