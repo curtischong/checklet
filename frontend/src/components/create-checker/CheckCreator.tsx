@@ -3,17 +3,21 @@ import { NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { TextArea } from "@components/TextArea";
 import { CheckBlueprint } from "@components/create-checker/Check";
+import { Page } from "@components/create-checker/CheckerCreator";
 import {
     PositiveCheckExample,
     PositiveCheckExampleCreator,
 } from "@components/create-checker/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
+import { RightArrowIcon } from "@components/icons/RightArrowIcon";
+import { SetState } from "@utils/types";
 import React, { useEffect } from "react";
 
 interface Props {
     onCreate: (check: CheckBlueprint) => void;
+    setPage: SetState<Page>;
 }
-export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
+export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
     const [longDesc, setLongDesc] = React.useState("");
     const [instruction, setInstruction] = React.useState("");
@@ -38,9 +42,22 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
 
     // TODO: we should have a demo card that appears as you fill in the fields (it'll be on the right side)
     return (
-        <div className="flex flex-row">
+        <div className="flex flex-row mt-4">
             <div className="flex flex-col">
-                <h1 className="mt-4 text-xl font-bold">Create Check</h1>
+                <div className="flex flex-row items-center">
+                    <p
+                        className="text-gray-800 cursor-pointer"
+                        onClick={() => {
+                            setPage(Page.Main);
+                        }}
+                    >
+                        Create checker
+                    </p>
+                    <RightArrowIcon className="mx-2 w-[14px]" />
+                    <p className="font-bold">Create check</p>
+                </div>
+
+                <h1 className=" text-xl font-bold">Create Check</h1>
                 <label className="text-md mt-4">Name</label>
                 <Input
                     value={name}
