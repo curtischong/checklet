@@ -1,5 +1,5 @@
 import { Check } from "@api/check";
-import { NormalButton } from "@components/Button";
+import { DeleteButton, NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { TextArea } from "@components/TextArea";
 import { CheckBlueprint } from "@components/create-checker/Check";
@@ -133,6 +133,15 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
                                 className="flex flex-row"
                                 id={`positive-example-${idx}`}
                             >
+                                <DeleteButton
+                                    onClick={() => {
+                                        setPositiveExamples(
+                                            positiveExamples.filter(
+                                                (_, i) => i !== idx,
+                                            ),
+                                        );
+                                    }}
+                                />
                                 <div className="flex flex-col">
                                     <div className="text-md font-bold">
                                         Original Text
@@ -145,17 +154,6 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
                                     </div>
                                     <div>{example.editedText}</div>
                                 </div>
-                                <button
-                                    onClick={() => {
-                                        setPositiveExamples(
-                                            positiveExamples.filter(
-                                                (_, i) => i !== idx,
-                                            ),
-                                        );
-                                    }}
-                                >
-                                    Delete
-                                </button>
                             </div>
                         ))}
                     </div>

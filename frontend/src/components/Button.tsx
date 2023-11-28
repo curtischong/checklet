@@ -1,3 +1,4 @@
+import { TrashIcon } from "@components/icons/TrashIcon";
 import React from "react";
 
 export type IButton = React.DetailedHTMLProps<
@@ -64,5 +65,21 @@ export const TextButton: React.FC<IButton> = ({
         >
             {children}
         </button>
+    );
+};
+
+export const DeleteButton: React.FC<IButton> = ({
+    className = "",
+    ...rest
+}) => {
+    return (
+        <div className="flex items-center">
+            <button
+                className={` hover:bg-red-600 text-gray hover:text-white px-[4px] py-[4px] mx-[10px] rounded transition duration-300 ${className}`}
+                {...rest}
+            >
+                <TrashIcon />
+            </button>
+        </div>
     );
 };
