@@ -18,9 +18,9 @@ export const CheckerCreator: React.FC = () => {
         <div className="flex justify-center ">
             <div className="container">
                 <div className="flex flex-col">
-                    <h1>Create Checker</h1>
+                    <h1 className="text-xl font-bold">Create Checker</h1>
 
-                    <label>Name</label>
+                    <label className="text-lg">Name</label>
                     <Input
                         className="w-40"
                         placeholder="Rizzume"

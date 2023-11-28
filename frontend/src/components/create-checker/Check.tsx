@@ -1,10 +1,13 @@
+import { PositiveCheckExample } from "@components/create-checker/PositiveCheckExampleCreator";
+
 export type Check = {
     name: string;
-    // shortDesc: string;
+    category: string | undefined;
     default: string | undefined;
     identifyPrompt: string;
     replacementPrompt: string;
-    category: string | undefined;
+    positiveExamples: PositiveCheckExample[];
+    // negativeExamples: NegativeCheckExample[]; // TODO
 };
 
 interface Props {
