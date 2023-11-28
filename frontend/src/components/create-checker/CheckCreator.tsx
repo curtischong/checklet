@@ -10,6 +10,10 @@ import {
 } from "@components/create-checker/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
+import {
+    RightArrowIwthTailIcon,
+    RightArrowWithTailIcon,
+} from "@components/icons/RightArrowWithTailIcon";
 import { SetState } from "@utils/types";
 import React, { useCallback, useEffect } from "react";
 
@@ -143,15 +147,10 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
                                     }}
                                 />
                                 <div className="flex flex-col">
-                                    <div className="text-md font-bold">
-                                        Original Text
-                                    </div>
                                     <div>{example.originalText}</div>
                                 </div>
+                                <RightArrowWithTailIcon className="mx-4" />
                                 <div className="flex flex-col">
-                                    <div className="text-md font-bold">
-                                        Edited Text
-                                    </div>
                                     <div>{example.editedText}</div>
                                 </div>
                             </div>

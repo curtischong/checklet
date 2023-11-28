@@ -1,5 +1,9 @@
 // from https://icon-sets.iconify.design/icon-park/right/
-export const RightArrowIcon = ({ className = "" }: { className?: string }) => {
+export const RightArrowIcon = ({
+    className = "",
+}: {
+    className?: string;
+}): JSX.Element => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"

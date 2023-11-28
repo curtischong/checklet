@@ -1,4 +1,5 @@
-export const TrashIcon = () => {
+// https://icon-sets.iconify.design/octicon/trash-16/
+export const TrashIcon = (): JSX.Element => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
