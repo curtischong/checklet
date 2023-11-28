@@ -50,3 +50,19 @@ export const SubmitButton: React.FC<IButton> = ({
         </button>
     );
 };
+
+// this button only has text, no border
+export const TextButton: React.FC<IButton> = ({
+    className = "",
+    children,
+    ...rest
+}) => {
+    return (
+        <button
+            className={` text-gray-700 hover:text-gray-800 py-2 px-4 rounded transition duration-300 ${className}`}
+            {...rest}
+        >
+            {children}
+        </button>
+    );
+};

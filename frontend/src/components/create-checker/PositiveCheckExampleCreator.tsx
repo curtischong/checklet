@@ -1,3 +1,4 @@
+import { TextButton } from "@components/Button";
 import { Input, SmallInput } from "@components/Input";
 import React from "react";
 
@@ -35,7 +36,7 @@ export const PositiveCheckExampleCreator = ({
                 onChange={(e) => setEditedText(e.target.value)}
                 placeholder="Jan"
             />
-            <button
+            <TextButton
                 disabled={originalText === "" || editedText === ""}
                 onClick={() => {
                     onCreate({
@@ -47,7 +48,7 @@ export const PositiveCheckExampleCreator = ({
                 }}
             >
                 Create
-            </button>
+            </TextButton>
         </div>
     );
 };

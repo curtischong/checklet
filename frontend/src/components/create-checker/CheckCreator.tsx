@@ -1,17 +1,17 @@
-import { Button, NormalButton, SubmitButton } from "@components/Button";
+import { Check } from "@api/check";
+import { NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { TextArea } from "@components/TextArea";
-import { Check } from "@components/create-checker/Check";
+import { CheckBlueprint } from "@components/create-checker/Check";
 import {
     PositiveCheckExample,
     PositiveCheckExampleCreator,
 } from "@components/create-checker/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
-import { Tooltip } from "antd";
 import React, { useEffect } from "react";
 
 interface Props {
-    onCreate: (check: Check) => void;
+    onCreate: (check: CheckBlueprint) => void;
 }
 export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
@@ -24,9 +24,17 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
     const [err, setErr] = React.useState("");
     useEffect(() => {
         if (name === "") {
-            setErr("Please enter a short description");
+            setErr("Please enter a name");
+        } else if (instruction === "") {
+            setErr("Please enter a model instruction");
+        } else if (longDesc === "") {
+            setErr("Please enter a long description");
+        } else if (positiveExamples.length === 0) {
+            setErr("Please enter at least one positive example");
+        } else {
+            setErr("");
         }
-    }, []);
+    }, [name, longDesc, instruction, positiveExamples]);
 
     // TODO: we should have a demo card that appears as you fill in the fields (it'll be on the right side)
     return (
@@ -42,7 +50,7 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 <div className="flex flex-row mt-2">
                     <label>Model Instructions</label>
                     <HelpIcon
-                        className="mt-1 ml-1"
+                        className="mt-[3px] ml-1"
                         text={
                             "Here is where you tell the model how to edit the text."
                         }
@@ -56,7 +64,7 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 <div className="flex flex-row mt-2">
                     <label>Long Description</label>
                     <HelpIcon
-                        className="mt-1 ml-1"
+                        className="mt-[3px] ml-1"
                         text={
                             "This is a great place to explain your suggestion. Users will see this when they expand the card."
                         }
@@ -70,7 +78,7 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 <div className="flex flex-row mt-2">
                     <label>Category (optional)</label>
                     <HelpIcon
-                        className="mt-1 ml-1"
+                        className="mt-[3px] ml-1"
                         text={
                             "If you want to organize your cards by category, you can add a category here."
                         }
@@ -86,7 +94,7 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                     <div className="flex flex-row mt-2">
                         <label>Positive Examples</label>
                         <HelpIcon
-                            className="mt-1 ml-1"
+                            className="mt-[3px] ml-1"
                             text={
                                 "Positive examples help the model understand when to apply your check"
                             }
@@ -139,9 +147,14 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                 <div className="mt-4">
                     <NormalButton
                         onClick={() => {
-                            // onCreate({
-                            //     name,
-                            // })
+                            const checkBlueprint: CheckBlueprint = {
+                                name,
+                                instruction,
+                                longDesc,
+                                category,
+                                positiveExamples,
+                            };
+                            onCreate(checkBlueprint);
                         }}
                     >
                         Create Check
