@@ -60,7 +60,7 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
             <div className="flex flex-col">
                 <div className="flex flex-row items-center">
                     <p
-                        className="text-gray-800 cursor-pointer"
+                        className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
                         onClick={() => {
                             setPage(Page.Main);
                         }}
@@ -68,7 +68,7 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
                         Create checker
                     </p>
                     <RightArrowIcon className="mx-2 w-[14px]" />
-                    <p className="font-bold">Create check</p>
+                    <p className="font-bold text-gray-600">Create check</p>
                 </div>
 
                 <h1 className=" text-xl font-bold">Create Check</h1>

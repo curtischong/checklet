@@ -28,7 +28,7 @@ export const NormalButton: React.FC<IButton> = ({
 }) => {
     return (
         <button
-            className={`bg-white hover:bg-[#5384d4] text-gray-600 border border-[#5384d4] hover:text-white py-2 px-4 rounded transition duration-300 ${className}`}
+            className={`bg-white hover:bg-[#5384d4] text-gray-600 border border-gray-300 hover:text-white py-2 px-4 rounded transition duration-300 ${className}`}
             {...rest}
         >
             {children}
