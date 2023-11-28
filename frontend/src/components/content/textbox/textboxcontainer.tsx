@@ -20,6 +20,7 @@ import PizZip from "pizzip";
 import css from "./textboxcontainer.module.scss";
 import classnames from "classnames";
 import { LoadingButton, NormalButton } from "@components/Button";
+import { UploadIcon } from "@components/icons/UploadIcon";
 
 // need same version with worker and pdfjs for it to work properly
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -213,10 +214,13 @@ export class TextboxContainer extends React.Component<
                         className={classnames(
                             this.getButtonClasses(),
                             css.uploadButton,
+                            "flex flex-row",
                         )}
-                        icon={<UploadOutlined />}
+                        icon={
+                            <UploadIcon className="relative mr-[10px] ml-[6px] w-[18px] mt-[1px]" />
+                        }
                     >
-                        Upload PDF
+                        <span className="mt-[2px]">Upload PDF </span>
                     </Button>
                 </Upload>
 
