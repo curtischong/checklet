@@ -1,4 +1,8 @@
 import { Check } from "@components/create-checker/Check";
+import {
+    CheckExample,
+    CheckExampleCreator,
+} from "@components/create-checker/CheckExampleCreator";
 import React from "react";
 
 interface Props {
@@ -9,6 +13,9 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
     const [shortDesc, setShortDesc] = React.useState("");
     const [longDesc, setLongDesc] = React.useState("");
     const [category, setCategory] = React.useState("");
+    const [checkExamples, setCheckExamples] = React.useState<CheckExample[]>(
+        [],
+    );
 
     // TODO: we should have a demo card that appears as you fill in the fields (it'll be on the right side)
     return (
@@ -33,12 +40,18 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                     onChange={(e) => setCategory(e.target.value)}
                 />
 
+                <CheckExampleCreator
+                    onCreate={(newExample) => {
+                        setCheckExamples([...checkExamples, newExample]);
+                    }}
+                />
+
                 <button
-                    onClick={() =>
-                        onCreate({
-                            name,
-                        })
-                    }
+                    onClick={() => {
+                        // onCreate({
+                        //     name,
+                        // })
+                    }}
                 >
                     Submit
                 </button>

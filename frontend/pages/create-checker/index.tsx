@@ -1,6 +1,6 @@
-import { CheckCreator } from "@components/create-checker/CheckerCreator";
+import { CheckerCreator } from "@components/create-checker/CheckerCreator";
 
 const Editor = (): JSX.Element => {
-    return <CheckCreator />;
+    return <CheckerCreator />;
 };
 export default Editor;

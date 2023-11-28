@@ -45,8 +45,12 @@ export const CheckerCreator: React.FC = () => {
 
                     <Button
                         onClick={() => {
+                            const checker = {
+                                name,
+                                checks: [], // todo: populate
+                            } as Checker;
                             downloadTextFile(
-                                JSON.stringify({ name, checks }),
+                                JSON.stringify(checker),
                                 `${name.replaceAll(" ", "-")}.json`,
                             );
                         }}
