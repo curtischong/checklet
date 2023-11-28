@@ -10,8 +10,8 @@ body {
         "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
-    /* background-color: #FFFFFF; */
-    background-color: #666666;
+    background-color: #fff0f1;
+    /* background-color: #666666; */
     height: 100vh;
     max-height: 100vh;
 }

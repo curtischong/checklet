@@ -1,5 +1,8 @@
 import { Button, NormalButton, SubmitButton } from "@components/Button";
-import { CheckBlueprint, CheckDisplay } from "@components/create-checker/Check";
+import {
+    CheckBlueprint,
+    CheckOverview,
+} from "@components/create-checker/Check";
 import { CheckCreator } from "@components/create-checker/CheckCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { SetState } from "@utils/types";
@@ -99,7 +102,7 @@ const MainCheckerPage = ({
             </div>
             <div>
                 {checkBlueprints.map((check, idx) => (
-                    <CheckDisplay
+                    <CheckOverview
                         key={`check-${idx}`}
                         checkBlueprint={check}
                         onDelete={() => {
