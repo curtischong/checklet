@@ -25,6 +25,8 @@ export const CheckerCreator: React.FC = () => {
     const [checkBlueprints, setCheckBlueprints] = React.useState<
         CheckBlueprint[]
     >([]);
+
+    // https://stackoverflow.com/questions/60036703/is-it-possible-to-define-hash-route-in-next-js
     const router = useRouter();
     const hash = router.asPath.split("#")[1] || "";
     const page = hash === "check" ? Page.CheckCreator : Page.Main;
