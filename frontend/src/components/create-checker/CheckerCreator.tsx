@@ -1,6 +1,7 @@
 import { Button, SubmitButton } from "@components/Button";
 import { Check, CheckDisplay } from "@components/create-checker/Check";
 import { CheckCreator } from "@components/create-checker/CheckCreator";
+import { HelpIcon } from "@components/icons/HelpIcon";
 import { Input } from "antd";
 import React from "react";
 import { downloadTextFile } from "util/download";
@@ -30,10 +31,26 @@ export const CheckerCreator: React.FC = () => {
                         value={name}
                     />
 
-                    <h1 className="font-bold text-xl mt-4">Your Checks</h1>
+                    <div className="flex flex-row mt-2">
+                        <h1 className="font-bold text-xl mt-4">Your Checks</h1>
+                        <HelpIcon
+                            className="mt-[22px] ml-2"
+                            text={
+                                "These are the individual checks your checker runs on the document. "
+                            }
+                        />
+                    </div>
                     <div>
                         {checks.map((check, idx) => (
-                            <CheckDisplay key={`check-${idx}`} check={check} />
+                            <CheckDisplay
+                                key={`check-${idx}`}
+                                check={check}
+                                onDelete={() => {
+                                    const newChecks = [...checks];
+                                    newChecks.splice(idx, 1);
+                                    setChecks(newChecks);
+                                }}
+                            />
                         ))}
                     </div>
 
