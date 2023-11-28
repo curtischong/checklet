@@ -20,7 +20,7 @@ export const CheckOverview = ({
     onDelete,
 }: Props): JSX.Element => {
     return (
-        <div className="border">
+        <div className="border bg-white rounded-md w-60">
             <div className="flex flex-row items-end">
                 <div className="text-lg font-bold">{checkBlueprint.name}</div>
                 <div className="ml-2">{checkBlueprint.category}</div>
@@ -37,6 +37,7 @@ export const CheckOverview = ({
                     </div>
                 ))}
             </div>
+            <TextButton onClick={onDelete}>Edit</TextButton>
             <TextButton onClick={onDelete}>Delete</TextButton>
         </div>
     );
