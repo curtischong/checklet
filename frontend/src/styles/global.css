@@ -27,3 +27,8 @@ body {
 .nautilus-text-blue {
     color: #296cd8;
 }
+
+.ant-btn-loading-icon {
+    position: relative;
+    top: -3px;
+}

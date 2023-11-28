@@ -1,25 +1,11 @@
 import { TrashIcon } from "@components/icons/TrashIcon";
+import { Button } from "antd";
 import React from "react";
 
 export type IButton = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
 >;
-
-export const Button: React.FC<IButton> = ({
-    className = "",
-    children,
-    ...rest
-}) => {
-    return (
-        <button
-            className={`py-2 px-4 rounded bg-green-500 hover:bg-green-600 focus:outline-none ring-opacity-75 ring-green-400 focus:ring text-white text-lg ${className}`}
-            {...rest}
-        >
-            {children}
-        </button>
-    );
-};
 
 export const NormalButton: React.FC<IButton> = ({
     className = "",
@@ -33,6 +19,28 @@ export const NormalButton: React.FC<IButton> = ({
         >
             {children}
         </button>
+    );
+};
+
+export const LoadingButton: React.FC<IButton & { loading: boolean }> = ({
+    className = "",
+    children,
+    loading,
+    ...rest
+}) => {
+    delete rest.type;
+    return (
+        <>
+            <Button
+                className={`bg-white hover:bg-[#5384d4] text-gray-600 border border-gray-300 hover:text-white px-4 rounded transition duration-300 ${className}`}
+                {...rest}
+                loading={loading}
+                ref={undefined}
+                type="text"
+            >
+                {children}
+            </Button>
+        </>
     );
 };
 

@@ -24,14 +24,10 @@ export class Api {
         }
         return undefined;
     };
-    static analyzeResume = async (
+    static checkDoc = async (
         payload: FeedbackRequest,
     ): Promise<FeedbackResponse> => {
-        const data = await Api.createRequest(
-            "resumes/feedback",
-            "POST",
-            payload,
-        );
+        const data = await Api.createRequest("api/checkDoc", "POST", payload);
         return data;
     };
 }

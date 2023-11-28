@@ -19,6 +19,7 @@ import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 import css from "./textboxcontainer.module.scss";
 import classnames from "classnames";
+import { LoadingButton, NormalButton } from "@components/Button";
 
 // need same version with worker and pdfjs for it to work properly
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -190,8 +191,8 @@ export class TextboxContainer extends React.Component<
 
     textboxHeader() {
         return (
-            <div className={classnames(css.textboxHeader, "pb-6")}>
-                <div className="font-bold my-auto">Resume Feedback</div>
+            <div className="pb-6 flex flex-row">
+                <div className="font-bold my-auto">Checker Name</div>
                 {/* deprecated
                 <div
                     onClick={this.showAccessCodeModal}
@@ -235,16 +236,13 @@ export class TextboxContainer extends React.Component<
                     onClick={this.handleExampleClicked}
                 />
 
-                <Button
+                <LoadingButton
                     onClick={this.analyzeText}
                     loading={this.state.loading}
-                    className={classnames(
-                        this.getButtonClasses(),
-                        css.analyzeButton,
-                    )}
+                    className="h-9 float-right ml-32"
                 >
-                    Analyze
-                </Button>
+                    Check Document
+                </LoadingButton>
             </div>
         );
     }
@@ -422,7 +420,7 @@ export class TextboxContainer extends React.Component<
             .getCurrentContent()
             .getPlainText();
 
-        const response = await Api.analyzeResume({ text: plaintext });
+        const response = await Api.checkDoc({ text: plaintext });
 
         const feedback = response.feedback;
         const feedbackRefs: SuggestionRefs = {};
