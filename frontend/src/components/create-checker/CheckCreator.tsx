@@ -11,7 +11,7 @@ import {
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { SetState } from "@utils/types";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 
 interface Props {
     onCreate: (check: CheckBlueprint) => void;
@@ -25,20 +25,30 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
     const [positiveExamples, setPositiveExamples] = React.useState<
         PositiveCheckExample[]
     >([]);
+
+    const [clickedSubmit, setClickedSubmit] = React.useState(false);
     const [err, setErr] = React.useState("");
-    useEffect(() => {
+
+    const getIncompleteFormErr = useCallback(() => {
         if (name === "") {
-            setErr("Please enter a name");
+            return "Please enter a name";
         } else if (instruction === "") {
-            setErr("Please enter a model instruction");
+            return "Please enter a model instruction";
         } else if (longDesc === "") {
-            setErr("Please enter a long description");
+            return "Please enter a long description";
         } else if (positiveExamples.length === 0) {
-            setErr("Please enter at least one positive example");
+            return "Please enter at least one positive example";
         } else {
-            setErr("");
+            return "";
         }
-    }, [name, longDesc, instruction, positiveExamples]);
+    }, [name, instruction, longDesc, positiveExamples]);
+
+    useEffect(() => {
+        if (!clickedSubmit) {
+            return;
+        }
+        setErr(getIncompleteFormErr());
+    }, [getIncompleteFormErr, clickedSubmit]);
 
     // TODO: we should have a demo card that appears as you fill in the fields (it'll be on the right side)
     return (
@@ -159,11 +169,16 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
                     />
                 </div>
 
-                <div className="text-[#ff0000] bg-white px-2 mt-4 ">{err}</div>
+                <div className="text-[#ff0000] mt-4 ">{err}</div>
 
                 <div className="mt-4">
                     <NormalButton
                         onClick={() => {
+                            setClickedSubmit(true);
+                            if (getIncompleteFormErr() !== "") {
+                                return;
+                            }
+
                             const checkBlueprint: CheckBlueprint = {
                                 name,
                                 instruction,

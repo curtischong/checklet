@@ -7,7 +7,7 @@ import { CheckCreator } from "@components/create-checker/CheckCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { SetState } from "@utils/types";
 import { Input } from "antd";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { downloadTextFile } from "util/download";
 
 export type CheckerBlueprint = {
@@ -67,15 +67,24 @@ const MainCheckerPage = ({
     setPage,
 }: Props) => {
     const [err, setErr] = React.useState("");
-    useEffect(() => {
+    const [clickedSubmit, setClickedSubmit] = React.useState(false);
+
+    const getIncompleteFormErr = useCallback(() => {
         if (name === "") {
-            setErr("Please enter a name");
+            return "Please enter a name";
         } else if (checkBlueprints.length === 0) {
-            setErr("Please enter at least one check");
+            return "Please enter at least one check";
         } else {
-            setErr("");
+            return "";
         }
     }, [name, checkBlueprints]);
+
+    useEffect(() => {
+        if (!clickedSubmit) {
+            return;
+        }
+        setErr(getIncompleteFormErr());
+    }, [getIncompleteFormErr, clickedSubmit]);
 
     return (
         <div className="flex flex-col">
@@ -121,9 +130,14 @@ const MainCheckerPage = ({
                 Create Check
             </NormalButton>
 
-            <div className="text-[#ff0000] bg-white px-2 mt-4 ">{err}</div>
+            <div className="text-[#ff0000]  mt-4 ">{err}</div>
             <SubmitButton
                 onClick={() => {
+                    setClickedSubmit(true);
+                    if (getIncompleteFormErr() !== "") {
+                        return;
+                    }
+
                     const checker = {
                         name,
                         checkBlueprints,

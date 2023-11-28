@@ -22,7 +22,7 @@ export const TextArea: React.FC<ITextArea> = ({
     }, [rest.value]);
     return (
         <textarea
-            className={`bg-gray-100 p-1 my-1 text-gray-600 border border-[#5384d4] py-2 px-4 rounded resize-none ${className}`}
+            className={`bg-white p-1 my-1 text-gray-600 border border-[#5384d4] py-2 px-4 rounded resize-none ${className}`}
             {...rest}
             ref={textareaRef}
         >
