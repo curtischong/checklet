@@ -4,7 +4,7 @@ import * as fs from "fs";
 
 export class Checker {
     blueprint: CheckerBlueprint;
-    checks: Check[] = []; // Type of checks can be specified more precisely depending on the structure of the checks
+    checks: Check[] = [];
 
     constructor(checkerBlueprint: CheckerBlueprint) {
         this.blueprint = checkerBlueprint;

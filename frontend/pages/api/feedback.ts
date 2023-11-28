@@ -1,6 +1,4 @@
-// pages/api/resumes/feedback.js
-
-import { Engine } from "@api/engine"; // This needs to be a JavaScript equivalent of your Python Engine
+import { Engine } from "@api/engine";
 
 export default async function handler(req, res) {
     if (req.method === "POST") {
