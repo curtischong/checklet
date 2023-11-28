@@ -15,7 +15,6 @@ interface Props {
 }
 export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
-    const [shortDesc, setShortDesc] = React.useState("");
     const [longDesc, setLongDesc] = React.useState("");
     const [category, setCategory] = React.useState("");
     const [positiveExamples, setPositiveExamples] = React.useState<
@@ -23,7 +22,7 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
     >([]);
     const [err, setErr] = React.useState("");
     useEffect(() => {
-        if (shortDesc === "") {
+        if (name === "") {
             setErr("Please enter a short description");
         }
     }, []);
@@ -39,16 +38,8 @@ export const CheckCreator = ({ onCreate }: Props): JSX.Element => {
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Shorten Month"
                 />
-                <label className="mt-2">Short Description Prompt</label>
-                <Input
-                    value={shortDesc}
-                    onChange={(e) => setShortDesc(e.target.value)}
-                    placeholder={`say: Shorten Month`}
-                />
-
-                {/* TODO: add a tooltip saying: "a great place to explain why this card is useful" */}
                 <div className="flex flex-row mt-2">
-                    <label>Long Description Prompt</label>
+                    <label>Long Description</label>
                     <HelpIcon
                         className="mt-1 ml-1"
                         text={
