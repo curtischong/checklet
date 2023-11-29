@@ -1,6 +1,9 @@
+import { Api } from "@api";
 import { NormalButton, TextButton } from "@components/Button";
+import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { useClientContext } from "@utils/ClientContext";
 import { useRouter } from "next/router";
+import React from "react";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -8,12 +11,20 @@ import { toast } from "react-toastify";
 const Dashboard: React.FC = () => {
     const { user, firebaseAuth } = useClientContext();
     const router = useRouter();
+    const [checkers, setCheckers] = React.useState<CheckerBlueprint[]>([]);
     useEffect(() => {
         const isLoggedOut = user === null;
         if (isLoggedOut) {
             router.push("/login");
         }
     }, [user]);
+
+    useEffect(() => {
+        (async () => {
+            const checkerBlueprints = await Api.fetchUserCheckerBlueprints();
+            setCheckers(checkerBlueprints);
+        })();
+    }, []);
 
     return (
         <div className="flex">
@@ -36,6 +47,24 @@ const Dashboard: React.FC = () => {
             <div className="container mx-auto text-center mt-20">
                 {user ? user.email : <></>}
                 <p className="text-xl font-bold">Your Checkers</p>
+                {checkers.map((checker, idx) => {
+                    return (
+                        <div
+                            className="flex justify-center"
+                            key={`checker-${idx}`}
+                        >
+                            <NormalButton
+                                onClick={() => {
+                                    router.push(
+                                        `/create-checker/${checker.id}`, // TODO: add a url param so if it exists, we call redis and pass the blueprint
+                                    );
+                                }}
+                            >
+                                {checker.name}
+                            </NormalButton>
+                        </div>
+                    );
+                })}
                 <NormalButton
                     onClick={() => {
                         router.push("/create-checker");

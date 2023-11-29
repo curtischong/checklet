@@ -2,6 +2,7 @@ import { Check } from "@api/check";
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import * as fs from "fs";
 
+export type CheckerId = string; // TODO: make this 32 bytes?
 export class Checker {
     blueprint: CheckerBlueprint;
     id: string;
