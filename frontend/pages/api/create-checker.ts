@@ -21,30 +21,25 @@ export default async function handler(
     await redisClient.connect();
     const checkerBlueprint: CheckerBlueprint = req.body.blueprint;
     const checkerId = req.body.checkerId;
-    // console.log(
-    //     "req.body: ",
-    //     req.body,
-    //     checkerId,
-    //     JSON.stringify(checkerBlueprint),
-    // );
+
+    // TODO: use sadd? cause it'll be more efficient?
+    // I just don't know how to handle the initial case when there's an empty set
+    // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis
     await redisClient.set(
         `checkers/${checkerId}`,
         JSON.stringify(checkerBlueprint), // TODO: compress this
     );
 
     const checkerIdsKey = `users/${userId}/checkerIds`;
-    // console.log("1");
     const rawCheckerIds = await redisClient.get(checkerIdsKey);
     const checkerIds: CheckerId[] = rawCheckerIds
         ? JSON.parse(rawCheckerIds)
         : [];
-    // console.log("2");
     if (checkerIds.includes(checkerId)) {
         console.error("checkerId already exists");
         res.status(400);
         return;
     }
-    // console.log("3");
     checkerIds.push(checkerId);
     await redisClient.set(checkerIdsKey, JSON.stringify(checkerIds));
 
