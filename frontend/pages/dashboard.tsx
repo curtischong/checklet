@@ -1,4 +1,4 @@
-import { Api } from "@api";
+import { Api } from "@api/apis";
 import { NormalButton, TextButton } from "@components/Button";
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { useClientContext } from "@utils/ClientContext";

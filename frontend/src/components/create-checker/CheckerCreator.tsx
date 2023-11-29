@@ -14,6 +14,7 @@ import * as crypto from "crypto";
 import { toast } from "react-toastify";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useClientContext } from "@utils/ClientContext";
+import { Api } from "@api/apis";
 
 export type CheckerBlueprint = {
     name: string;
@@ -176,24 +177,23 @@ const MainCheckerPage = ({
                     const checkerId = crypto.randomBytes(32).toString("hex");
                     // const checkerId =
                     //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
-                    (async () => {
-                        try {
-                            await setDoc(
-                                doc(firestore, "checkers", checkerId),
-                                {
-                                    blueprint: checker,
-                                    userId: user.uid, // since you are the person that sets it. I think it's fine. hackers can't set someone else's userId
-                                },
-                            );
-                            console.log(
-                                "Document written with ID: ",
-                                checkerId,
-                            );
-                            // TODO: make the button a loader button and visualize success
-                        } catch (e) {
-                            toast.error(`Error adding document: ${e}`);
-                        }
-                    })();
+                    Api.createChecker(checker, checkerId);
+                    // try {
+                    //     await setDoc(
+                    //         doc(firestore, "checkers", checkerId),
+                    //         {
+                    //             blueprint: checker,
+                    //             userId: user.uid, // since you are the person that sets it. I think it's fine. hackers can't set someone else's userId
+                    //         },
+                    //     );
+                    //     console.log(
+                    //         "Document written with ID: ",
+                    //         checkerId,
+                    //     );
+                    //     // TODO: make the button a loader button and visualize success
+                    // } catch (e) {
+                    //     toast.error(`Error adding document: ${e}`);
+                    // }
                 }}
                 className="mt-4 w-80"
             >
