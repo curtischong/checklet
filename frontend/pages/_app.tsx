@@ -5,6 +5,7 @@ import mixpanel from "mixpanel-browser";
 import { mixpanelTrack } from "src/utils";
 import "antd/dist/antd.css";
 import "@styles/global.css";
+import { ClientContextProvider } from "@utils/ClientContext";
 
 const mixPanelDevToken = "94ac9cfab8d2280edba19b31b2937926";
 const mixPanelProdToken = "dc8c89187149505f2392759f15e0fd4d";
@@ -25,7 +26,9 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                     <title>Nautilus | Resume Feedback</title>
                     <link rel="shortcut icon" href="/nautilus-favicon.jpeg" />
                 </Head>
-                <Component {...pageProps} />
+                <ClientContextProvider>
+                    <Component {...pageProps} />
+                </ClientContextProvider>
             </>
         );
     }

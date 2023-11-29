@@ -20,6 +20,8 @@
         "css-loader": "^6.7.1",
         "docxtemplater": "^3.31.2",
         "draft-js": "^0.11.7",
+        "firebase": "^10.7.0",
+        "firebaseui": "^6.1.0",
         "fs": "^0.0.1-security",
         "gulp": "^4.0.2",
         "gulp-cli": "^2.3.0",
