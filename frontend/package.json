@@ -21,6 +21,7 @@
         "docxtemplater": "^3.31.2",
         "draft-js": "^0.11.7",
         "firebase": "^10.7.0",
+        "firebase-tools": "^12.9.1",
         "firebaseui": "^6.1.0",
         "fs": "^0.0.1-security",
         "gulp": "^4.0.2",

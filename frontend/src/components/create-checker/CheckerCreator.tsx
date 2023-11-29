@@ -173,9 +173,9 @@ const MainCheckerPage = ({
                     //     JSON.stringify(checker),
                     // );
 
-                    const checkerId = crypto.randomBytes(32).toString("hex"); // TODO: I can save spacei f I don't storethis
+                    const checkerId = crypto.randomBytes(32).toString("hex");
                     // const checkerId =
-                    //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161";
+                    //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
                     (async () => {
                         try {
                             await setDoc(
