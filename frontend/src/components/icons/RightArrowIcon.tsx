@@ -17,7 +17,7 @@ export const RightArrowIcon = ({
                 stroke="#333333"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="6"
+                strokeWidth="6"
                 d="M19 12L31 24L19 36"
             />
         </svg>
