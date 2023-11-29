@@ -1,9 +1,10 @@
 import React from "react";
 
 // good tutorial: https://www.freecodecamp.org/news/use-firebase-authentication-in-a-react-app/
+// good tutorial2: https://medium.com/geekculture/firebase-auth-with-react-and-typescript-abeebcd7940a
 // Import the functions you need from the SDKs you need
 import { FirebaseApp, initializeApp } from "firebase/app";
-import { Auth, getAuth } from "firebase/auth";
+import { Auth, User, getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -22,6 +23,7 @@ const firebaseConfig = {
 export interface ClientContext {
     firebaseApp: FirebaseApp;
     firebaseAuth: Auth;
+    user: User | null;
 }
 
 export interface ClientContextReact {
@@ -40,19 +42,30 @@ export const ClientContextProvider = ({
     children: React.ReactNode | React.ReactNode[];
 }): JSX.Element => {
     const [value, setValue] = React.useState<ClientContextReact | undefined>();
-    React.useEffect(() => {
-        (async () => {
-            const firebaseApp = initializeApp(firebaseConfig);
-            const firebaseAuth = getAuth(firebaseApp);
-            // const analytics = getAnalytics(firebaseApp);
 
+    // React.useEffect(() => {
+    //     if (!value || !value.clientContext) {
+    //         return;
+    //     }
+    // }, []);
+
+    React.useEffect(() => {
+        const firebaseApp = initializeApp(firebaseConfig);
+        const firebaseAuth = getAuth(firebaseApp);
+        // const analytics = getAnalytics(firebaseApp);
+
+        const unsubscribe = firebaseAuth.onAuthStateChanged((firebaseUser) => {
+            console.log("firebaseUser", firebaseUser);
+            // only set the value after the user's login status is known, so we render the page knowing
             setValue({
                 clientContext: {
-                    firebaseApp,
-                    firebaseAuth,
+                    firebaseApp: firebaseApp,
+                    firebaseAuth: firebaseAuth,
+                    user: firebaseUser,
                 },
             });
-        })();
+        });
+        return unsubscribe;
     }, []);
 
     if (value) {
