@@ -7,6 +7,8 @@ import {
     SuggestionRefs,
 } from "./suggestions/suggestionsTypes";
 import { EditorState } from "draft-js";
+import { TextButton } from "@components/Button";
+import { useRouter } from "next/router";
 
 export const Content: React.FC = () => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -16,6 +18,7 @@ export const Content: React.FC = () => {
         EditorState.createEmpty(),
     );
     const [sortIdx, setSortIdx] = useState(1);
+    const router = useRouter();
 
     const sorts: ((a: Suggestion, b: Suggestion) => number)[] = [
         (a, b) => a.highlightRanges[0].startPos - b.highlightRanges[0].startPos,
@@ -62,6 +65,14 @@ export const Content: React.FC = () => {
                     updateEditorState={setEditorState}
                     updateSortIdx={updateSortIdx}
                 />
+                <TextButton
+                    className="fixed top-2 right-5"
+                    onClick={() => {
+                        router.push("/dashboard");
+                    }}
+                >
+                    Create Your Own Checker
+                </TextButton>
             </div>
         </div>
     );
