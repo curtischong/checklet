@@ -30,11 +30,32 @@ ${positiveExamples}
     }
 
     async checkDoc(doc: string): Promise<string> {
-        const prompt: ChatCompletionUserMessageParam = {
-            role: "user",
-            content: doc,
-        };
-        const response = await this.llm.prompt(prompt);
-        return response.choices[0].message.content ?? "unknown result";
+        const data = await this.llm.callFunction({
+            prompt: doc,
+            functionDesc: "Fixes text",
+            functionParams: {
+                type: "array",
+                items: {
+                    type: "object",
+                    // https://community.openai.com/t/function-call-complex-arrays-as-parameters/295648/2
+                    properties: {
+                        originalText: {
+                            type: "string",
+                            description: "The text you found the issue in.",
+                        },
+                        editedText: {
+                            type: "string",
+                            description: "The fixed text.",
+                        },
+                    },
+                },
+            },
+            fn: (d) => {
+                return d;
+            },
+        });
+        console.log(data);
+        // return response.choices[0].message.content ?? "unknown result";
+        return data;
     }
 }

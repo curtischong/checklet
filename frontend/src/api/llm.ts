@@ -1,4 +1,3 @@
-import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
 import { OpenAI } from "openai";
@@ -50,40 +49,44 @@ export class Llm {
     }
 
     // TODO: run functions
-    callFunction(
-        prompt: string,
-        functionDesc: string,
-        functionParams: JSONSchema,
-        fn: (...args: any[]) => any,
-    ): void {
+    async callFunction<Res>(callData: {
+        prompt: string;
+        functionDesc: string;
+        functionParams: JSONSchema;
+        fn: (...args: any[]) => Res;
+    }): Promise<Res> {
         if (this.useCache) {
             const cachedValue = cache.get(prompt);
             if (cachedValue) {
-                return fn(...cachedValue);
+                return callData.fn(...cachedValue);
             }
         }
 
-        this.client.beta.chat.completions
-            .runFunctions({
-                model: "gpt-3.5-turbo",
-                messages: [
-                    {
-                        role: "user",
-                        content: prompt,
-                    },
-                ],
-                functions: [
-                    {
-                        function: (...args: any[]) => {
-                            cache.set(prompt, args);
-                            return fn(args);
+        const result = new Promise<Res>((resolve, reject) => {
+            this.client.beta.chat.completions
+                .runFunctions({
+                    model: "gpt-3.5-turbo",
+                    messages: [
+                        {
+                            role: "user",
+                            content: callData.prompt,
                         },
-                        description: functionDesc,
-                        parse: JSON.parse, // or use a validation library like zod for typesafe parsing.
-                        parameters: functionParams,
-                    },
-                ],
-            })
-            .on("message", (message) => console.log(message));
+                    ],
+                    functions: [
+                        {
+                            function: (...args: any[]) => {
+                                cache.set(prompt, args);
+                                const res = callData.fn(args);
+                                resolve(res);
+                            },
+                            description: callData.functionDesc,
+                            parse: JSON.parse, // or use a validation library like zod for typesafe parsing.
+                            parameters: callData.functionParams,
+                        },
+                    ],
+                })
+                .on("message", (message) => console.log(message));
+        });
+        return result;
     }
 }

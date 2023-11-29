@@ -1,16 +1,21 @@
+import { FeedbackRequest, FeedbackResponse } from "@api/ApiTypes";
 import { Engine } from "@api/engine";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req, res) {
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse,
+): Promise<void> {
     if (req.method === "POST") {
         try {
-            const { doc } = req.body;
+            const { doc, checkerId }: FeedbackRequest = req.body;
             const engine = new Engine(); // Assuming Engine is a class you've defined or imported
-            const feedback = engine.checkDoc(doc);
+            engine.checkDoc(doc, checkerId);
+            const feedback: any[] = [];
 
             res.status(200).json({
-                inputText: text,
                 feedback: feedback,
-            });
+            } as FeedbackResponse);
         } catch (error) {
             console.error("Error while calling engine:", error);
             res.status(500).json({ error: "Could not compute" });

@@ -1,4 +1,4 @@
-import { Button, NormalButton, SubmitButton } from "@components/Button";
+import { NormalButton, SubmitButton } from "@components/Button";
 import {
     CheckBlueprint,
     CheckOverview,
@@ -10,10 +10,12 @@ import { Input } from "antd";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import { downloadTextFile } from "util/download";
+import * as crypto from "crypto";
 
 export type CheckerBlueprint = {
     name: string;
     checkBlueprints: CheckBlueprint[];
+    id: string;
 };
 export enum Page {
     Main,
@@ -154,6 +156,7 @@ const MainCheckerPage = ({
                     const checker = {
                         name,
                         checkBlueprints,
+                        id: crypto.randomBytes(32).toString("hex"),
                     } as CheckerBlueprint;
                     downloadTextFile(
                         `${name.replaceAll(" ", "-")}.json`,

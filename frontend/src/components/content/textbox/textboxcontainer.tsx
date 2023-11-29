@@ -424,7 +424,7 @@ export class TextboxContainer extends React.Component<
             .getCurrentContent()
             .getPlainText();
 
-        const response = await Api.checkDoc({ text: plaintext });
+        const response = await Api.checkDoc({ doc: plaintext, checkerId });
 
         const feedback = response.feedback;
         const feedbackRefs: SuggestionRefs = {};

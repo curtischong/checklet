@@ -1,7 +1,8 @@
 import { Suggestion } from "@components";
 
 export type FeedbackRequest = {
-    text: string;
+    doc: string;
+    checkerId: string;
 };
 
 export type FeedbackResponse = {
