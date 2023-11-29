@@ -43,12 +43,6 @@ export const ClientContextProvider = ({
 }): JSX.Element => {
     const [value, setValue] = React.useState<ClientContextReact | undefined>();
 
-    // React.useEffect(() => {
-    //     if (!value || !value.clientContext) {
-    //         return;
-    //     }
-    // }, []);
-
     React.useEffect(() => {
         const firebaseApp = initializeApp(firebaseConfig);
         const firebaseAuth = getAuth(firebaseApp);
@@ -88,5 +82,4 @@ export const useClientContext = (): ClientContext => {
     return context;
 };
 
-// Export the context for use in other components
 export default ClientContext;

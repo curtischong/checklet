@@ -21,18 +21,16 @@ const Login: React.FC = () => {
                     // firebase.auth.PhoneAuthProvider.PROVIDER_ID,
                     // firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID,
                 ],
-                // tosUrl and privacyPolicyUrl accept either url string or a callback
-                // function.
-                // Terms of service url/callback.
                 tosUrl: () => {
                     router.push("/terms-of-service");
                 },
-                // Privacy policy url/callback.
                 privacyPolicyUrl: () => {
                     router.push("/privacy-policy");
                 },
             };
-            // we need to import firebaseui here so it isn't loaded on the server: https://stackoverflow.com/questions/54196395/requiring-firebaseui-window-is-not-defined
+
+            // we need to import firebaseui here (rather at the top) so it isn't loaded on the server
+            // https://stackoverflow.com/questions/54196395/requiring-firebaseui-window-is-not-defined
             const firebaseui = await import("firebaseui");
             // Initialize the FirebaseUI Widget using Firebase.
             const ui =
@@ -55,7 +53,6 @@ const Login: React.FC = () => {
             </div>
             <div id="firebaseui-auth-container"></div>
             <AuthBoxCss />
-            {/* <div id="loader">Loading...</div> */}
         </div>
     );
 };
