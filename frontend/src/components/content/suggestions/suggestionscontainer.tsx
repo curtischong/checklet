@@ -137,12 +137,8 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                     content={
                         <>
                             <div className={css.noSuggestContent}>
-                                Nautilus ran dozens of checks on your text and
-                                found no resume issues.
-                            </div>
-                            <div>
-                                Check back in when you're ready to write some
-                                more.
+                                We checked your text and found no issues
+                                &#10084;
                             </div>
                         </>
                     }

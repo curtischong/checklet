@@ -529,11 +529,6 @@
   resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.8.2.tgz#b695ff674e8216efa632a3d36ad51ae9843380c0"
   integrity sha512-+R0juSseERyoPvnBQ/cZih6bpF7IpCXlWbHRoCRzYzqpz6gWHOgf8o4MOEf6KBVuOyqU+gCNLkCWVIJAro8XyQ==
 
-Simple-Cache@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/Simple-Cache/-/Simple-Cache-1.0.0.tgz#4ee2e9733c4539e6cfb5a9f1150dd9dda57d4665"
-  integrity sha512-8ApT40fuCg+ilRABZVev/uMktcoixnq+2HezigDnTsTViLcEit0vGWvgSGsw+hNpdqnfE6CnjS8G1oclLxtD1Q==
-
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"

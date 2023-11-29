@@ -72,7 +72,7 @@ export class TextboxContainer extends React.Component<
             isExampleCodeModalVisible: false,
             keysToRefs: {},
         };
-        this.analyzeText = this.analyzeText.bind(this);
+        this.checkDocument = this.checkDocument.bind(this);
         this.handleStrategy = this.handleStrategy.bind(this);
     }
 
@@ -85,7 +85,7 @@ export class TextboxContainer extends React.Component<
             prevProps.editorState.getCurrentContent().getPlainText() !==
                 this.props.editorState.getCurrentContent().getPlainText()
         ) {
-            this.analyzeText();
+            this.checkDocument();
         }
     };
 
@@ -241,7 +241,7 @@ export class TextboxContainer extends React.Component<
                 />
 
                 <LoadingButton
-                    onClick={this.analyzeText}
+                    onClick={this.checkDocument}
                     loading={this.state.loading}
                     className="h-9 float-right ml-32"
                 >
@@ -415,7 +415,7 @@ export class TextboxContainer extends React.Component<
         });
     };
 
-    analyzeText = async () => {
+    checkDocument = async (): Promise<EditorState | undefined> => {
         if (this.state.loading) {
             return;
         }
@@ -455,7 +455,7 @@ export class TextboxContainer extends React.Component<
             EditorState.forceSelection(editor, selectionState),
         );
 
-        mixpanelTrack("Analyze Button Clicked", {
+        mixpanelTrack("Check Document Clicked", {
             "Number of suggestions generated": feedback.length,
             Suggestions: feedback,
             Input: plaintext,
@@ -466,7 +466,7 @@ export class TextboxContainer extends React.Component<
             this.props.editorState.getCurrentContent().getPlainText() !==
             plaintext
         ) {
-            this.analyzeText();
+            this.checkDocument();
         }
         return editor;
     };

@@ -135,7 +135,7 @@ const MainCheckerPage = ({
                 ))}
             </div>
             <NormalButton
-                className="mt-4"
+                className="mt-4 w-80"
                 onClick={() => {
                     setPage(Page.CheckCreator);
                 }}
@@ -160,7 +160,7 @@ const MainCheckerPage = ({
                         JSON.stringify(checker),
                     );
                 }}
-                className="mt-4"
+                className="mt-4 w-80"
             >
                 Create Checker
             </SubmitButton>

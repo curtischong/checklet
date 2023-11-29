@@ -25,5 +25,25 @@ export class Engine {
         // TODO: Implement the method logic
         // check.longDesc;
         console.log(doc); // Ensure 'systemPrompt' is defined or passed as an argument
+
+        // export type Suggestion = {
+        //     id: number;
+        //     feedbackCategory: string;
+        //     feedbackType: FeedbackType;
+        //     srcNautObj: string;
+        //     replacementText: string;
+        //     highlightRanges: Range[];
+        //     highlightRangesOnSelect: Range[];
+        //     shortDesc: string;
+        //     longDesc: string;
+        //     srcWord: {
+        //         id: number;
+        //         text: string;
+        //         startChar: number;
+        //         endChar: number;
+        //     };
+        //     color: string;
+        //     cardRef: RefObject<HTMLDivElement>;
+        // };
     }
 }
