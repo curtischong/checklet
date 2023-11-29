@@ -11,7 +11,7 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         const isLoggedOut = user === null;
         if (isLoggedOut) {
-            router.push("/");
+            router.push("/login");
         }
     }, [user]);
 

@@ -9,6 +9,7 @@ import {
 import { EditorState } from "draft-js";
 import { TextButton } from "@components/Button";
 import { useRouter } from "next/router";
+import { useClientContext } from "@utils/ClientContext";
 
 export const Content: React.FC = () => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -19,6 +20,7 @@ export const Content: React.FC = () => {
     );
     const [sortIdx, setSortIdx] = useState(1);
     const router = useRouter();
+    const { user } = useClientContext();
 
     const sorts: ((a: Suggestion, b: Suggestion) => number)[] = [
         (a, b) => a.highlightRanges[0].startPos - b.highlightRanges[0].startPos,
@@ -68,7 +70,12 @@ export const Content: React.FC = () => {
                 <TextButton
                     className="fixed top-2 right-5"
                     onClick={() => {
-                        router.push("/dashboard");
+                        const isLoggedOut = user === null;
+                        if (isLoggedOut) {
+                            router.push("/login");
+                        } else {
+                            router.push("/dashboard");
+                        }
                     }}
                 >
                     Create Your Own Checker
