@@ -1,22 +1,20 @@
 import { CheckerId } from "@api/checker";
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { NextApiRequest, NextApiResponse } from "next";
+import { requestMiddleware } from "pages/api/common";
 import { createClient } from "redis";
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse,
 ): Promise<void> {
-    if (req.method !== "POST") {
-        // Handle any non-POST requests
-        res.setHeader("Allow", ["POST"]);
-        res.status(405).end(`Method ${req.method} Not Allowed`);
+    const userId = await requestMiddleware(req, res);
+    if (userId === null) {
         return;
     }
-
     // https://redis.io/docs/connect/clients/nodejs/
     // const userId = req.cookies.userId;
-    const userId = "1234"; // TODO: pass the right userid
+    // const userId = "1234"; // TODO: pass the right userid
     const redisClient = createClient();
     await redisClient.connect();
     const checkerBlueprint: CheckerBlueprint = req.body.blueprint;

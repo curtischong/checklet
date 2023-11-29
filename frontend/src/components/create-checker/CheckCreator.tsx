@@ -135,7 +135,7 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
                         {positiveExamples.map((example, idx) => (
                             <div
                                 className="flex flex-row"
-                                id={`positive-example-${idx}`}
+                                key={`positive-example-${idx}`}
                             >
                                 <DeleteButton
                                     onClick={() => {

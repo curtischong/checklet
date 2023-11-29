@@ -21,7 +21,9 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         (async () => {
-            const checkerBlueprints = await Api.fetchUserCheckerBlueprints();
+            const checkerBlueprints = await Api.fetchUserCheckerBlueprints(
+                await user.getIdToken(),
+            );
             setCheckers(checkerBlueprints);
         })();
     }, []);

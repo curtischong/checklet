@@ -35,20 +35,24 @@ export class Api {
         return data;
     };
 
-    static fetchUserCheckerBlueprints = async (): Promise<
-        CheckerBlueprint[]
-    > => {
-        const data = await Api.createRequest("api/user-checkers", "POST", {});
+    static fetchUserCheckerBlueprints = async (
+        idToken: string,
+    ): Promise<CheckerBlueprint[]> => {
+        const data = await Api.createRequest("api/user-checkers", "POST", {
+            idToken,
+        });
         return data.checkerBlueprints;
     };
 
     static createChecker = async (
         blueprint: CheckerBlueprint,
         checkerId: CheckerId,
+        idToken: string,
     ): Promise<void> => {
         Api.createRequest("api/create-checker", "POST", {
             blueprint,
             checkerId,
+            idToken,
         }).catch((err) => {
             toast.error(err.message);
         });
