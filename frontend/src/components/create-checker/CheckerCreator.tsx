@@ -11,6 +11,9 @@ import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import { downloadTextFile } from "util/download";
 import * as crypto from "crypto";
+import { toast } from "react-toastify";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { useClientContext } from "@utils/ClientContext";
 
 export type CheckerBlueprint = {
     name: string;
@@ -82,6 +85,7 @@ const MainCheckerPage = ({
 }: Props) => {
     const [err, setErr] = React.useState("");
     const [clickedSubmit, setClickedSubmit] = React.useState(false);
+    const { firestore, user } = useClientContext();
 
     const getIncompleteFormErr = useCallback(() => {
         if (name === "") {
@@ -152,16 +156,44 @@ const MainCheckerPage = ({
                     if (getIncompleteFormErr() !== "") {
                         return;
                     }
+                    if (!user) {
+                        toast.error(
+                            "You must be logged in to create a checker",
+                        );
+                        return;
+                    }
 
                     const checker = {
                         name,
                         checkBlueprints,
-                        id: crypto.randomBytes(32).toString("hex"),
+                        // id: crypto.randomBytes(32).toString("hex"), // TODO: I can save spacei f I don't storethis
                     } as CheckerBlueprint;
-                    downloadTextFile(
-                        `${name.replaceAll(" ", "-")}.json`,
-                        JSON.stringify(checker),
-                    );
+                    // downloadTextFile(
+                    //     `${name.replaceAll(" ", "-")}.json`,
+                    //     JSON.stringify(checker),
+                    // );
+
+                    const checkerId = crypto.randomBytes(32).toString("hex"); // TODO: I can save spacei f I don't storethis
+                    // const checkerId =
+                    //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161";
+                    (async () => {
+                        try {
+                            await setDoc(
+                                doc(firestore, "checkers", checkerId),
+                                {
+                                    blueprint: checker,
+                                    userId: user.uid, // since you are the person that sets it. I think it's fine. hackers can't set someone else's userId
+                                },
+                            );
+                            console.log(
+                                "Document written with ID: ",
+                                checkerId,
+                            );
+                            // TODO: make the button a loader button and visualize success
+                        } catch (e) {
+                            toast.error(`Error adding document: ${e}`);
+                        }
+                    })();
                 }}
                 className="mt-4 w-80"
             >

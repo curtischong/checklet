@@ -1,4 +1,4 @@
-import { TextButton } from "@components/Button";
+import { NormalButton, TextButton } from "@components/Button";
 import { useClientContext } from "@utils/ClientContext";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -36,6 +36,13 @@ const Dashboard: React.FC = () => {
             <div className="container mx-auto text-center mt-20">
                 {user ? user.email : <></>}
                 <p className="text-xl font-bold">Your Checkers</p>
+                <NormalButton
+                    onClick={() => {
+                        router.push("/create-checker");
+                    }}
+                >
+                    Create Checker
+                </NormalButton>
             </div>
         </div>
     );

@@ -5,6 +5,7 @@ import React from "react";
 // Import the functions you need from the SDKs you need
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { Auth, User, getAuth } from "firebase/auth";
+import { Firestore, getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -23,6 +24,7 @@ const firebaseConfig = {
 export interface ClientContext {
     firebaseApp: FirebaseApp;
     firebaseAuth: Auth;
+    firestore: Firestore;
     user: User | null;
 }
 
@@ -47,6 +49,7 @@ export const ClientContextProvider = ({
         const firebaseApp = initializeApp(firebaseConfig);
         const firebaseAuth = getAuth(firebaseApp);
         // const analytics = getAnalytics(firebaseApp);
+        const firestore = getFirestore(firebaseApp);
 
         const unsubscribe = firebaseAuth.onAuthStateChanged((firebaseUser) => {
             console.log("firebaseUser", firebaseUser);
@@ -55,6 +58,7 @@ export const ClientContextProvider = ({
                 clientContext: {
                     firebaseApp: firebaseApp,
                     firebaseAuth: firebaseAuth,
+                    firestore,
                     user: firebaseUser,
                 },
             });
