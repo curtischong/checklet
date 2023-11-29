@@ -1,9 +1,12 @@
 import React, { useEffect } from "react";
 import { GoogleAuthProvider } from "firebase/auth";
 import { useClientContext } from "@utils/ClientContext";
+import { AuthBoxCss } from "pages/login/authBoxCss";
+import { useRouter } from "next/router";
 
 const Login: React.FC = () => {
     const { firebaseAuth } = useClientContext();
+    const router = useRouter();
     useEffect(() => {
         (async () => {
             const uiConfig = {
@@ -21,25 +24,40 @@ const Login: React.FC = () => {
                 // tosUrl and privacyPolicyUrl accept either url string or a callback
                 // function.
                 // Terms of service url/callback.
-                tosUrl: "<your-tos-url>",
+                tosUrl: () => {
+                    router.push("/terms-of-service");
+                },
                 // Privacy policy url/callback.
-                privacyPolicyUrl: function () {
-                    window.location.assign("<your-privacy-policy-url>");
+                privacyPolicyUrl: () => {
+                    router.push("/privacy-policy");
                 },
             };
             // we need to import firebaseui here so it isn't loaded on the server: https://stackoverflow.com/questions/54196395/requiring-firebaseui-window-is-not-defined
             const firebaseui = await import("firebaseui");
             // Initialize the FirebaseUI Widget using Firebase.
-            const ui = new firebaseui.auth.AuthUI(firebaseAuth);
+            const ui =
+                firebaseui.auth.AuthUI.getInstance() ||
+                new firebaseui.auth.AuthUI(firebaseAuth);
             // The start method will wait until the DOM is loaded.
-            // ui.start("#firebaseui-auth-container", uiConfig);
-            if (ui.isPendingRedirect()) {
-                ui.start("#firebaseui-auth-container", uiConfig);
-            }
+            ui.start("#firebaseui-auth-container", uiConfig);
+            // if (!ui.isPendingRedirect()) {
+            //     ui.start("#firebaseui-auth-container", uiConfig);
+            // }
         })();
     }, []);
 
-    return <div>hi</div>;
+    return (
+        <div className="flex flex-col justify-center">
+            <div className="mt-60 mb-20">
+                <h1 className="text-4xl font-bold text-center">
+                    Your Writer Friend
+                </h1>
+            </div>
+            <div id="firebaseui-auth-container"></div>
+            <AuthBoxCss />
+            {/* <div id="loader">Loading...</div> */}
+        </div>
+    );
 };
 
 export default Login;
