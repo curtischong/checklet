@@ -1,5 +1,6 @@
 import { Api } from "@api/apis";
 import { useClientContext } from "@utils/ClientContext";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export interface CheckerStorefront {
@@ -16,21 +17,39 @@ export const CheckerStore = () => {
         (async () => {
             const newStorefronts = await Api.publicChecks();
             if (newStorefronts) {
-                setStorefronts(storefronts);
+                setStorefronts(newStorefronts);
             }
         })();
     }, []);
 
     return (
         <div>
-            {storefronts.map((storefront) => {
+            {storefronts.map((storefront, idx) => {
                 return (
-                    <div>
-                        <div>{storefront.name}</div>
-                        <div>{storefront.desc}</div>
+                    <div key={`storefront-${idx}`}>
+                        <StoreFront storefront={storefront} />
                     </div>
                 );
             })}
+        </div>
+    );
+};
+
+interface StorefrontProps {
+    storefront: CheckerStorefront;
+}
+
+const StoreFront = ({ storefront }: StorefrontProps) => {
+    const router = useRouter();
+    return (
+        <div
+            className="bg-white rounded-md w-60 px-4 py-4 cursor-pointer"
+            onClick={() => {
+                router.push(`/editor/${storefront.id}`);
+            }}
+        >
+            <div className="text-xl font-bold">{storefront.name}</div>
+            <div>{storefront.desc}</div>
         </div>
     );
 };

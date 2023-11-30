@@ -99,4 +99,13 @@ export class Api {
         const data = await Api.createRequest("api/public-checks", "POST", {});
         return data?.checkerStorefronts;
     };
+
+    static doesCheckerExist = async (
+        checkerId: CheckerId,
+    ): Promise<boolean> => {
+        const data = await Api.createRequest("api/does-checker-exist", "POST", {
+            checkerId,
+        });
+        return data?.doesCheckerExist;
+    };
 }
