@@ -22,6 +22,16 @@ export default async function handler(
         sendBadRequest(res, validationErr);
         return;
     }
+    const existingChecker = await redisClient.get(`checkers/${checkerId}`);
+    if (existingChecker !== null) {
+        if (JSON.parse(existingChecker).creatorId !== userId) {
+            sendBadRequest(
+                res,
+                `You are not the creator of this checker. You cannot edit it.`,
+            );
+            return;
+        }
+    }
 
     await redisClient.set(
         `checkers/${checkerId}`,

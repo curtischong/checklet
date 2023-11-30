@@ -53,12 +53,12 @@ export class Api {
     static fetchCheckerBlueprint = async (
         idToken: string,
         checkerId: CheckerId,
-    ): Promise<CheckerBlueprint> => {
+    ): Promise<CheckerBlueprint | undefined> => {
         const data = await Api.createRequest("api/checker-blueprint", "POST", {
             idToken,
             checkerId,
         });
-        return data.checkerBlueprint;
+        return data?.checkerBlueprint;
     };
 
     static fetchUserCheckerBlueprints = async (
