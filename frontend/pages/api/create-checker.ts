@@ -38,6 +38,13 @@ export default async function handler(
         res.status(400);
         return;
     }
+    if (checkerIds.length >= 7) {
+        console.error(
+            "You can only have 7 checkers. Contact curtischong5@gmail.com if you want more!",
+        );
+        res.status(400);
+        return;
+    }
     checkerIds.push(checkerId);
     await redisClient.set(checkerIdsKey, JSON.stringify(checkerIds));
 

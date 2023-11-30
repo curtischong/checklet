@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useClientContext } from "@utils/ClientContext";
 import { Api } from "@api/apis";
+import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 
 export type CheckerBlueprint = {
     name: string;
@@ -87,6 +88,7 @@ const MainCheckerPage = ({
     const [err, setErr] = React.useState("");
     const [clickedSubmit, setClickedSubmit] = React.useState(false);
     const { firestore, user } = useClientContext();
+    const router = useRouter();
 
     const getIncompleteFormErr = useCallback(() => {
         if (name === "") {
@@ -107,6 +109,19 @@ const MainCheckerPage = ({
 
     return (
         <div className="flex flex-col">
+            <div className="flex flex-row items-center">
+                <p
+                    className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
+                    onClick={() => {
+                        router.push("/dashboard");
+                    }}
+                >
+                    Dashboard
+                </p>
+                <RightArrowIcon className="mx-2 w-[14px]" />
+                <p className="font-bold text-gray-600">Create checker</p>
+            </div>
+
             <h1 className="text-xl font-bold mt-10">Create Checker</h1>
 
             <label className="text-lg">Name</label>

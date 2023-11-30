@@ -10,11 +10,8 @@ import {
 } from "@components/create-checker/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
-import {
-    RightArrowIwthTailIcon,
-    RightArrowWithTailIcon,
-} from "@components/icons/RightArrowWithTailIcon";
-import { SetState } from "@utils/types";
+import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 
 interface Props {
@@ -32,6 +29,7 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
 
     const [clickedSubmit, setClickedSubmit] = React.useState(false);
     const [err, setErr] = React.useState("");
+    const router = useRouter();
 
     const getIncompleteFormErr = useCallback(() => {
         if (name === "") {
@@ -59,6 +57,15 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
         <div className="flex flex-row mt-4">
             <div className="flex flex-col">
                 <div className="flex flex-row items-center">
+                    <p
+                        className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
+                        onClick={() => {
+                            router.push("/dashboard");
+                        }}
+                    >
+                        Dashboard
+                    </p>
+                    <RightArrowIcon className="mx-2 w-[14px]" />
                     <p
                         className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
                         onClick={() => {
