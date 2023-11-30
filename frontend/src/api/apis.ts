@@ -2,6 +2,7 @@ import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { FeedbackRequest, FeedbackResponse } from "./ApiTypes";
 import { CheckerId } from "@api/checker";
 import { toast } from "react-toastify";
+import { CheckerStorefront } from "@components/CheckerStore";
 const baseUrl = "http://localhost:3000/"; // TODO: replace with the proper url. we should inject it from the env
 export class Api {
     // can refactor if need to do deletes, etc to have extended by each requestType
@@ -61,7 +62,7 @@ export class Api {
         return data?.checkerBlueprint;
     };
 
-    static fetchUserCheckerBlueprints = async (
+    static userCheckerBlueprints = async (
         idToken: string,
     ): Promise<CheckerBlueprint[]> => {
         const data = await Api.createRequest("api/user-checkers", "POST", {
@@ -90,5 +91,12 @@ export class Api {
             checkerId,
             idToken,
         });
+    };
+
+    static publicChecks = async (): Promise<
+        CheckerStorefront[] | undefined
+    > => {
+        const data = await Api.createRequest("api/public-checks", "POST", {});
+        return data?.checkerStorefronts;
     };
 }

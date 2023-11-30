@@ -1,4 +1,5 @@
-import { CheckerId } from "@api/checker";
+import { Checker, CheckerId } from "@api/checker";
+import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { NextApiRequest, NextApiResponse } from "next";
 import { requestMiddleware } from "pages/api/common";
 import { createClient } from "redis";
@@ -16,6 +17,21 @@ export default async function handler(
     const redisClient = createClient();
     await redisClient.connect();
     const checkerIds = await redisClient.sMembers(`users/${userId}/checkerIds`);
+    const checkerBlueprints = await getCheckerBlueprints(
+        redisClient,
+        checkerIds,
+    );
+
+    res.status(200).json({
+        checkerBlueprints,
+    });
+}
+
+type RedisClient = ReturnType<typeof createClient>;
+export const getCheckerBlueprints = async (
+    redisClient: RedisClient,
+    checkerIds: CheckerId[],
+): Promise<CheckerBlueprint[]> => {
     const checkerBlueprintPromises = checkerIds.map((checkerId) =>
         redisClient.get(`checkers/${checkerId}`),
     );
@@ -23,7 +39,7 @@ export default async function handler(
         checkerBlueprintPromises,
     );
 
-    const checkerBlueprints = [];
+    const checkerBlueprints: CheckerBlueprint[] = [];
     for (let i = 0; i < resolvedCheckerBlueprints.length; i++) {
         const checkerBlueprint = resolvedCheckerBlueprints[i];
         if (checkerBlueprint) {
@@ -38,8 +54,5 @@ export default async function handler(
             );
         }
     }
-
-    res.status(200).json({
-        checkerBlueprints,
-    });
-}
+    return checkerBlueprints;
+};

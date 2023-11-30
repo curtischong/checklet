@@ -27,6 +27,8 @@ export default async function deleteChecker(
         return;
     }
     await redisClient.sRem(`users/${userId}/checkerIds`, req.body.checkerId);
+    // https://redis.io/commands/srem/ This should be O(1)
+    await redisClient.sRem("publicCheckerIds", req.body.checkerId);
 
     await redisClient.del(`checkers/${req.body.checkerId}`);
     res.status(204);

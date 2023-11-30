@@ -3,20 +3,32 @@ import { getAuth } from "firebase-admin/auth";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { firebaseConfig } from "@utils/ClientContext";
 
-// returns the uid for the authenticated user.
-// If the user is not authenticated, or their headers are weird, it returns null
-export const requestMiddleware = async (
+// returns if the request is valid or not
+export const isUnauthenticatedRequestValid = (
     req: NextApiRequest,
     res: NextApiResponse,
-): Promise<string | null> => {
+): boolean => {
     if (req.method !== "POST") {
         // Handle any non-POST requests
         res.setHeader("Allow", ["POST"]);
         res.status(405).end(
             `Method ${req.method} Not Allowed. Only POST is allowed`,
         );
+        return false;
+    }
+    return true;
+};
+
+// returns the uid for the authenticated user.
+// If the user is not authenticated, or their headers are weird, it returns null
+export const requestMiddleware = async (
+    req: NextApiRequest,
+    res: NextApiResponse,
+): Promise<string | null> => {
+    if (!isUnauthenticatedRequestValid(req, res)) {
         return null;
     }
+
     // if we already initialized app, don't do it more than once:
     // https://github.com/firebase/firebase-admin-node/issues/2111
     const alreadyCreatedAps = getApps();

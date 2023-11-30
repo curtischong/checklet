@@ -16,6 +16,7 @@ import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { TextArea } from "@components/TextArea";
 import { createUniqueId } from "@utils/strings";
 
+// TODO: I think I should have a "creation Metadata object that is name, desc, creatorId, and id"
 export type CheckerBlueprint = {
     name: string;
     desc: string;
