@@ -51,7 +51,19 @@ export type TextboxContainerProps = {
 
 const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
 
-export const TextboxContainer = (props: TextboxContainerProps) => {
+export const TextboxContainer = ({
+    suggestions,
+    editorState,
+    activeKey,
+    updateEditorState,
+    updateSuggestions,
+    updateCollapseKey,
+    udpateRefs,
+    refs,
+    sort,
+    editorRef,
+    checkerId,
+}: TextboxContainerProps): JSX.Element => {
     // {
     //     loading: boolean;
     //     isAccessCodeModalVisible: boolean;
@@ -60,37 +72,17 @@ export const TextboxContainer = (props: TextboxContainerProps) => {
     //     checkerId: string;
     // }
 
-    const [loading, setLoading] = React.useState(false);
-    const [isAccessCodeModalVisible, setIsAccessCodeModalVisible] =
-        React.useState(false);
-    const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
-        React.useState(false);
     const [keysToRefs, setKeysToRefs] = React.useState<any>({});
     useEffect(() => {
         props.updateEditorState(
-            EditorState.moveFocusToEnd(
-                EditorState.createEmpty(this.decorator()),
-            ),
+            EditorState.moveFocusToEnd(EditorState.createEmpty(decorator())),
         );
+        // this.props.editorRef.current?.focus();
 
         // TODO?
         // this.checkDocument = this.checkDocument.bind(this);
         // this.handleStrategy = this.handleStrategy.bind(this);
     }, []);
-
-    // TODO: checkdocument on update? actually we shouldn't implement this. they should just press check document
-    // componentDidUpdate = (prevProps: TextboxContainerProps): void => {
-    //     if (!this.state.isAccessCodeModalVisible) {
-    //         this.props.editorRef.current?.focus();
-    //     }
-    //     if (
-    //         prevProps.editorState !== this.props.editorState &&
-    //         prevProps.editorState.getCurrentContent().getPlainText() !==
-    //             this.props.editorState.getCurrentContent().getPlainText()
-    //     ) {
-    //         this.checkDocument();
-    //     }
-    // };
 
     const decorator = () => {
         return new CompositeDecorator([
@@ -128,24 +120,22 @@ export const TextboxContainer = (props: TextboxContainerProps) => {
         }
 
         const end = start + contentBlock.getLength();
-        this.props.suggestions.forEach(
-            (suggestion: Suggestion, index: number) => {
-                suggestion.highlightRanges.forEach((range) => {
-                    if (range.startPos > end || range.endPos < start) {
-                        return;
-                    }
+        suggestions.forEach((suggestion: Suggestion, index: number) => {
+            suggestion.highlightRanges.forEach((range) => {
+                if (range.startPos > end || range.endPos < start) {
+                    return;
+                }
 
-                    const startPos = range.startPos - start;
-                    const endPos = range.endPos - start;
-                    const keys = this.state.keysToRefs;
-                    keys[range.startPos + "," + range.endPos] = index;
-                    callback(
-                        Math.max(startPos, 0),
-                        Math.min(contentBlock.getLength(), endPos),
-                    );
-                });
-            },
-        );
+                const startPos = range.startPos - start;
+                const endPos = range.endPos - start;
+                const keys = this.state.keysToRefs;
+                keys[range.startPos + "," + range.endPos] = index;
+                callback(
+                    Math.max(startPos, 0),
+                    Math.min(contentBlock.getLength(), endPos),
+                );
+            });
+        });
     };
 
     const HandleSpan = (
@@ -179,8 +169,8 @@ export const TextboxContainer = (props: TextboxContainerProps) => {
         }
         const startPos = props.start + start;
         const endPos = props.end + start;
-        const result = this.props.activeKey;
-        const idx = this.state.keysToRefs[startPos + "," + endPos];
+        const result = activeKey;
+        const idx = keysToRefs[startPos + "," + endPos];
 
         if (idx === result?.id) {
             style.backgroundColor = "#DBEBFF";
@@ -205,7 +195,7 @@ export const TextboxContainer = (props: TextboxContainerProps) => {
         const endPos = props.end + start;
         const key = startPos + "," + endPos;
 
-        if (!(key in this.state.keysToRefs)) {
+        if (!(key in keysToRefs)) {
             console.log("could not find key: " + key);
         }
 
@@ -219,11 +209,11 @@ export const TextboxContainer = (props: TextboxContainerProps) => {
         //     this.props.updateCollapseKey(result);
         // }
 
-        const idx = this.state.keysToRefs[key];
-        const sugg = this.props.suggestions[idx];
-        this.props.updateCollapseKey(sugg);
+        const idx = keysToRefs[key];
+        const sugg = suggestions[idx];
+        updateCollapseKey(sugg);
         setTimeout(() => {
-            this.props.refs[idx].current?.scrollIntoView({
+            refs[idx].current?.scrollIntoView({
                 behavior: "smooth",
                 block: "center",
             });
@@ -233,113 +223,18 @@ export const TextboxContainer = (props: TextboxContainerProps) => {
         });
     };
 
-    onChange = (editorState: any) => {
-        this.props.updateEditorState(editorState);
-    };
-
-    showAccessCodeModal = () => {
-        this.setState({ isAccessCodeModalVisible: true });
-    };
-
-    closeAccessCodeModal = () => {
-        this.setState({ isAccessCodeModalVisible: false });
-    };
-
-    showExamplesModal = () => {
-        this.setState({ isExampleCodeModalVisible: true });
-    };
-
-    closeExamplesModal = () => {
-        this.setState({ isExampleCodeModalVisible: false });
-    };
-
-    handleExampleClicked = (text: string) => {
-        this.props.updateEditorState(
-            EditorState.moveFocusToEnd(
-                EditorState.createWithContent(
-                    ContentState.createFromText(text),
-                    this.decorator(),
-                ),
-            ),
-        );
-        this.setState({
-            isExampleCodeModalVisible: false,
-        });
-    };
-
-    const checkDocument = useCallback(async (): Promise<
-        EditorState | undefined
-    > => {
-        if (this.state.loading) {
-            return;
-        }
-        this.setState({ loading: true });
-        const plaintext = this.props.editorState
-            .getCurrentContent()
-            .getPlainText();
-
-        const response = await Api.checkDoc({
-            doc: plaintext,
-            checkerId: this.props.checkerId,
-        });
-
-        const feedback = response.feedback;
-        const feedbackRefs: SuggestionRefs = {};
-        feedback.sort(this.props.sort);
-
-        feedback.forEach((f: Suggestion, index: number) => {
-            const ref = createRef<HTMLDivElement>();
-            if (f.srcNautObj.substring(0, 1) === "[") {
-                f.srcNautObj = f.srcNautObj.substring(
-                    1,
-                    f.srcNautObj.length - 1,
-                );
-            }
-            f.id = index;
-            feedbackRefs[index] = ref;
-        });
-
-        this.props.updateSuggestions(feedback);
-        this.props.updateRefs(feedbackRefs);
-        let editor = this.props.editorState;
-
-        const selectionState = editor.getSelection();
-        const content = editor.getCurrentContent();
-
-        editor = EditorState.createWithContent(content, this.decorator());
-
-        this.props.updateEditorState(
-            EditorState.forceSelection(editor, selectionState),
-        );
-
-        mixpanelTrack("Check Document Clicked", {
-            "Number of suggestions generated": feedback.length,
-            Suggestions: feedback,
-            Input: plaintext,
-        });
-        this.setState({ loading: false });
-
-        if (
-            this.props.editorState.getCurrentContent().getPlainText() !==
-            plaintext
-        ) {
-            this.checkDocument();
-        }
-        return editor;
-    }, []);
-
     return (
         <div
             className="textbox col-span-3"
             style={{ maxHeight: "calc(100vh - 80px)", overflow: "auto" }}
         >
-            <ContainerHeader header={textboxHeader()} />
+            <ContainerHeader />
             <Editor
                 spellCheck={true}
-                editorState={this.props.editorState}
-                onChange={this.onChange}
+                editorState={editorState}
+                onChange={updateEditorState}
                 placeholder="Type or paste your resume here"
-                ref={this.props.editorRef}
+                ref={editorRef}
             />
         </div>
     );

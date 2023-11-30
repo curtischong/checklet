@@ -56,7 +56,7 @@ export const Editor: React.FC = () => {
                     updateEditorState={setEditorState}
                     sort={sorts[sortIdx]}
                     editorRef={domEditorRef}
-                    checkerId={router.query.checkerId as string}
+                    checkerId={}
                 />
                 <SuggestionsContainer
                     suggestions={suggestions}
