@@ -1,6 +1,7 @@
 import { TextButton } from "@components/Button";
 import { PositiveCheckExample } from "@components/create-checker/PositiveCheckExampleCreator";
 
+export type CheckId = string;
 export type CheckBlueprint = {
     name: string;
     instruction: string;
@@ -8,16 +9,19 @@ export type CheckBlueprint = {
     category: string; // optional
     positiveExamples: PositiveCheckExample[];
     // negativeExamples: NegativeCheckExample[]; // TODO
+    checkId: CheckId;
 };
 
 interface Props {
     checkBlueprint: CheckBlueprint;
     onDelete: () => void;
+    onEdit: () => void;
 }
 
 export const CheckOverview = ({
     checkBlueprint,
     onDelete,
+    onEdit,
 }: Props): JSX.Element => {
     return (
         <div className="border bg-white rounded-md w-60">
@@ -37,7 +41,7 @@ export const CheckOverview = ({
                     </div>
                 ))}
             </div>
-            <TextButton onClick={onDelete}>Edit</TextButton>
+            <TextButton onClick={onEdit}>Edit</TextButton>
             <TextButton onClick={onDelete}>Delete</TextButton>
         </div>
     );

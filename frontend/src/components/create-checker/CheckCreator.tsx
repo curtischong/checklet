@@ -1,4 +1,3 @@
-import { Check } from "@api/check";
 import { DeleteButton, NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { TextArea } from "@components/TextArea";
@@ -11,14 +10,20 @@ import {
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
+import { getUniqueId } from "@utils/strings";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 
 interface Props {
     onCreate: (check: CheckBlueprint) => void;
-    setPage: (page: Page) => void;
+    setPage: (page: Page, pageData?: unknown) => void;
+    pageData?: unknown;
 }
-export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
+export const CheckCreator = ({
+    onCreate,
+    setPage,
+    pageData,
+}: Props): JSX.Element => {
     const [name, setName] = React.useState("");
     const [longDesc, setLongDesc] = React.useState("");
     const [instruction, setInstruction] = React.useState("");
@@ -26,6 +31,22 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
     const [positiveExamples, setPositiveExamples] = React.useState<
         PositiveCheckExample[]
     >([]);
+    const [checkId, setCheckId] = React.useState<string>(getUniqueId());
+
+    useEffect(() => {
+        const rawInitialCheckBlueprint = (pageData as any)
+            ?.initialCheckBlueprint;
+        if (rawInitialCheckBlueprint) {
+            const initialCheckBlueprint =
+                rawInitialCheckBlueprint as CheckBlueprint;
+            setName(initialCheckBlueprint.name);
+            setLongDesc(initialCheckBlueprint.longDesc);
+            setInstruction(initialCheckBlueprint.instruction);
+            setCategory(initialCheckBlueprint.category);
+            setPositiveExamples(initialCheckBlueprint.positiveExamples);
+            setCheckId(initialCheckBlueprint.checkId);
+        }
+    }, []);
 
     const [clickedSubmit, setClickedSubmit] = React.useState(false);
     const [err, setErr] = React.useState("");
@@ -189,6 +210,7 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
                                 longDesc,
                                 category,
                                 positiveExamples,
+                                checkId,
                             };
                             onCreate(checkBlueprint);
                         }}

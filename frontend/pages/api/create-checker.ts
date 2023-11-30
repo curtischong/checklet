@@ -1,4 +1,3 @@
-import { CheckerId } from "@api/checker";
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { NextApiRequest, NextApiResponse } from "next";
 import { requestMiddleware, sendBadRequest } from "pages/api/common";

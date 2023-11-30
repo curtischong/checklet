@@ -9,13 +9,12 @@ import { SetState } from "@utils/types";
 import { Input } from "antd";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
-import { downloadTextFile } from "util/download";
-import * as crypto from "crypto";
 import { toast } from "react-toastify";
 import { useClientContext } from "@utils/ClientContext";
 import { Api } from "@api/apis";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { TextArea } from "@components/TextArea";
+import { getUniqueId } from "@utils/strings";
 
 export type CheckerBlueprint = {
     name: string;
@@ -35,13 +34,15 @@ export const CheckerCreator: React.FC = () => {
     const [checkBlueprints, setCheckBlueprints] = React.useState<
         CheckBlueprint[]
     >([]);
+    const [pageData, setPageData] = React.useState<unknown>(null);
     const { user } = useClientContext();
 
     // https://stackoverflow.com/questions/60036703/is-it-possible-to-define-hash-route-in-next-js
     const router = useRouter();
     const hash = router.asPath.split("#")[1] || "";
     const page = hash === "check" ? Page.CheckCreator : Page.Main;
-    const setPage = (page: Page) => {
+    const setPage = (page: Page, pageData?: unknown) => {
+        setPageData(pageData);
         if (page === Page.Main) {
             router.push("");
         } else {
@@ -82,10 +83,21 @@ export const CheckerCreator: React.FC = () => {
                 ) : (
                     <CheckCreator
                         onCreate={(check) => {
-                            setCheckBlueprints([...checkBlueprints, check]);
+                            const existingCheckIdx = checkBlueprints.findIndex(
+                                (c) => c.checkId === check.checkId,
+                            );
+                            if (existingCheckIdx !== -1) {
+                                // this check already exists. So we find its index, and replace it
+                                const newChecks = [...checkBlueprints];
+                                newChecks[existingCheckIdx] = check;
+                                setCheckBlueprints(newChecks);
+                            } else {
+                                setCheckBlueprints([...checkBlueprints, check]);
+                            }
                             setPage(Page.Main);
                         }}
                         setPage={setPage}
+                        pageData={pageData}
                     />
                 )}
             </div>
@@ -100,7 +112,7 @@ interface Props {
     setDesc: SetState<string>;
     checkBlueprints: CheckBlueprint[];
     setCheckBlueprints: SetState<CheckBlueprint[]>;
-    setPage: (page: Page) => void;
+    setPage: (page: Page, pageData?: unknown) => void;
 }
 
 const MainCheckerPage = ({
@@ -114,7 +126,7 @@ const MainCheckerPage = ({
 }: Props) => {
     const [err, setErr] = React.useState("");
     const [clickedSubmit, setClickedSubmit] = React.useState(false);
-    const { firestore, user } = useClientContext();
+    const { user } = useClientContext();
     const router = useRouter();
 
     const getIncompleteFormErr = useCallback(() => {
@@ -165,7 +177,7 @@ const MainCheckerPage = ({
 
             <label className="text-lg">Description</label>
             <TextArea
-                className="w-40"
+                className="w-80"
                 placeholder="Rizzume will rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive."
                 onChange={(e) => {
                     setDesc(e.target.value);
@@ -183,14 +195,19 @@ const MainCheckerPage = ({
                 />
             </div>
             <div>
-                {checkBlueprints.map((check, idx) => (
+                {checkBlueprints.map((checkBlueprint, idx) => (
                     <CheckOverview
                         key={`check-${idx}`}
-                        checkBlueprint={check}
+                        checkBlueprint={checkBlueprint}
                         onDelete={() => {
                             const newChecks = [...checkBlueprints];
                             newChecks.splice(idx, 1);
                             setCheckBlueprints(newChecks);
+                        }}
+                        onEdit={() => {
+                            setPage(Page.CheckCreator, {
+                                initialCheckBlueprint: checkBlueprint,
+                            });
                         }}
                     />
                 ))}
@@ -226,7 +243,7 @@ const MainCheckerPage = ({
                         creatorId: user.uid,
                     } as CheckerBlueprint;
 
-                    const checkerId = crypto.randomBytes(32).toString("hex");
+                    const checkerId = getUniqueId();
                     // const checkerId =
                     //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
                     (async () => {
