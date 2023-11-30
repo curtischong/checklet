@@ -24,6 +24,7 @@ export default async function deleteChecker(
             res,
             "You did not create this checker. You cannot delete it",
         );
+        return;
     }
     await redisClient.sRem(`users/${userId}/checkerIds`, req.body.checkerId);
 

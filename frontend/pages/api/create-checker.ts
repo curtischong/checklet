@@ -33,6 +33,7 @@ export default async function handler(
         }
     }
 
+    checkerBlueprint.creatorId = userId; // override just for security purposes
     await redisClient.set(
         `checkers/${checkerId}`,
         JSON.stringify(checkerBlueprint), // TODO: compress this
