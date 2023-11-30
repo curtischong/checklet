@@ -30,7 +30,10 @@ export default async function handler(
     for (let i = 0; i < resolvedCheckerBlueprints.length; i++) {
         const checkerBlueprint = resolvedCheckerBlueprints[i];
         if (checkerBlueprint) {
-            checkerBlueprints.push(JSON.parse(checkerBlueprint));
+            checkerBlueprints.push({
+                ...JSON.parse(checkerBlueprint),
+                id: checkerIds[i],
+            });
         } else {
             console.error(
                 "couldn't find checkerBlueprint for checkerId: ",

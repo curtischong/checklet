@@ -18,6 +18,13 @@ export default async function handler(
     const checkerBlueprint: CheckerBlueprint = req.body.blueprint;
     const checkerId = req.body.checkerId;
 
+    const validationErr = isBlueprintValid(checkerBlueprint, checkerId);
+    if (validationErr !== "") {
+        console.error(validationErr);
+        res.status(400);
+        return;
+    }
+
     // TODO: use sadd? cause it'll be more efficient?
     // I just don't know how to handle the initial case when there's an empty set
     // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis
@@ -48,3 +55,21 @@ export default async function handler(
 
     res.status(200).json({ status: "success" });
 }
+
+const isBlueprintValid = (
+    blueprint: CheckerBlueprint,
+    checkerId: string,
+): string => {
+    if (blueprint.name === "") {
+        return "Checker description cannot be empty";
+    } else if (blueprint.desc === "") {
+        return "Checker description cannot be empty";
+    } else if (blueprint.checkBlueprints.length === 0) {
+        return "Checker must have at least one check";
+    } else if (checkerId.length !== 64) {
+        return `Checker id=${checkerId} must be 64 characters long`;
+    }
+    // TODO: validate checkBlueprints
+
+    return "";
+};
