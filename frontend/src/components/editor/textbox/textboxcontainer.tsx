@@ -1,26 +1,28 @@
-import React, { createRef, CSSProperties, MutableRefObject } from "react";
+import React, {
+    // createRef,
+    CSSProperties,
+    MutableRefObject,
+    // useCallback,
+    useEffect,
+} from "react";
 import {
     Editor,
     EditorState,
     CompositeDecorator,
     ContentState,
 } from "draft-js";
-import { Api } from "@api/apis";
-import { Button, Upload, UploadProps } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
 import { Suggestion, SuggestionRefs } from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
-import { getAccessCode, mixpanelTrack } from "../../../utils";
+import { mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
-import { ExamplesModal } from "./examplesModal";
 import "draft-js/dist/Draft.css";
+import { CheckerStorefront } from "@components/CheckerStore";
 // const PizZip = require("pizzip");
-import Docxtemplater from "docxtemplater";
-import PizZip from "pizzip";
-import css from "./textboxcontainer.module.scss";
-import classnames from "classnames";
-import { LoadingButton, NormalButton } from "@components/Button";
-import { UploadIcon } from "@components/icons/UploadIcon";
+// import Docxtemplater from "docxtemplater";
+// import PizZip from "pizzip";
+// import css from "./textboxcontainer.module.scss";
+// import classnames from "classnames";
+// import { LoadingButton, NormalButton } from "@components/Button";
 
 // need same version with worker and pdfjs for it to work properly
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -44,228 +46,56 @@ export type TextboxContainerProps = {
     refs: SuggestionRefs;
     sort: (a: Suggestion, b: Suggestion) => number;
     editorRef: MutableRefObject<any>;
-    checkerId: string;
+    storefront: CheckerStorefront;
 };
 
-const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
+// const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
 
-export class TextboxContainer extends React.Component<
-    TextboxContainerProps,
-    {
-        loading: boolean;
-        isAccessCodeModalVisible: boolean;
-        isExampleCodeModalVisible: boolean;
-        keysToRefs: any;
-        checkerId: string;
-    }
-> {
-    constructor(props: TextboxContainerProps) {
-        super(props);
+export const TextboxContainer = ({
+    suggestions,
+    editorState,
+    activeKey,
+    updateEditorState,
+    updateSuggestions,
+    updateCollapseKey,
+    updateRefs,
+    refs,
+    sort,
+    editorRef,
+    storefront,
+}: TextboxContainerProps): JSX.Element => {
+    // {
+    //     loading: boolean;
+    //     isAccessCodeModalVisible: boolean;
+    //     isExampleCodeModalVisible: boolean;
+    //     keysToRefs: any;
+    //     checkerId: string;
+    // }
 
-        this.props.updateEditorState(
-            EditorState.moveFocusToEnd(
-                EditorState.createEmpty(this.decorator()),
-            ),
+    const [keysToRefs, setKeysToRefs] = React.useState<any>({});
+    useEffect(() => {
+        updateEditorState(
+            EditorState.moveFocusToEnd(EditorState.createEmpty(decorator())),
         );
+        // this.props.editorRef.current?.focus();
 
-        this.state = {
-            loading: false,
-            isAccessCodeModalVisible: false,
-            isExampleCodeModalVisible: false,
-            keysToRefs: {},
-        };
-        this.checkDocument = this.checkDocument.bind(this);
-        this.handleStrategy = this.handleStrategy.bind(this);
-    }
+        // TODO?
+        // this.checkDocument = this.checkDocument.bind(this);
+        // this.handleStrategy = this.handleStrategy.bind(this);
+    }, []);
 
-    componentDidUpdate = (prevProps: TextboxContainerProps): void => {
-        if (!this.state.isAccessCodeModalVisible) {
-            this.props.editorRef.current?.focus();
-        }
-        if (
-            prevProps.editorState !== this.props.editorState &&
-            prevProps.editorState.getCurrentContent().getPlainText() !==
-                this.props.editorState.getCurrentContent().getPlainText()
-        ) {
-            this.checkDocument();
-        }
-    };
-
-    beforeFileUpload = (file: any) => {
-        const reader = new FileReader();
-
-        reader.onload = async (event: any) => {
-            const content = event.target.result;
-            const parseStrategy = this.getParseStrategy(file);
-            const text = await parseStrategy(content);
-            this.props.updateEditorState(
-                EditorState.createWithContent(
-                    ContentState.createFromText(text),
-                    this.decorator(),
-                ),
-            );
-        };
-        reader.readAsBinaryString(file);
-
-        return false;
-    };
-
-    uploadProps: UploadProps = {
-        accept: ".pdf,.docx",
-        beforeUpload: this.beforeFileUpload,
-        showUploadList: false,
-    };
-
-    decorator = () => {
+    const decorator = () => {
         return new CompositeDecorator([
             {
-                strategy: this.handleStrategy,
+                strategy: handleStrategy,
                 component: (props: any) =>
-                    this.HandleSpan(
-                        props,
-                        this.spanStyle,
-                        this.handleUnderlineClicked,
-                    ),
+                    HandleSpan(props, spanStyle, handleUnderlineClicked),
             },
         ]);
     };
 
-    render() {
-        return (
-            <div
-                className="textbox col-span-3"
-                style={{ maxHeight: "calc(100vh - 80px)", overflow: "auto" }}
-            >
-                <ContainerHeader header={this.textboxHeader()} />
-                <Editor
-                    spellCheck={true}
-                    editorState={this.props.editorState}
-                    onChange={this.onChange}
-                    placeholder="Type or paste your resume here"
-                    ref={this.props.editorRef}
-                />
-            </div>
-        );
-    }
-
-    getParseStrategy = (file: any) => {
-        if (file.type === "application/pdf") {
-            return async (content: any) => {
-                const doc = pdfjs.getDocument({ data: content });
-                return await doc.promise.then((pdf: any) => {
-                    const maxPages = pdf._pdfInfo.numPages;
-                    const countPromises: Promise<any>[] = [];
-                    for (let i = 1; i <= maxPages; ++i) {
-                        const page = pdf.getPage(i);
-                        countPromises.push(
-                            page.then((p: any) => {
-                                const textContent = p.getTextContent();
-                                return textContent.then((text: any) => {
-                                    let result = "";
-                                    let lastY = text.items[0] ?? -1;
-                                    text.items.forEach(
-                                        (item: any, itemIndex: any) => {
-                                            if (item.transform[5] != lastY) {
-                                                result += "\n";
-                                                lastY = item.transform[5];
-                                            }
-                                            result += item.str;
-                                        },
-                                    );
-                                    return result;
-                                });
-                            }),
-                        );
-                    }
-                    return Promise.all(countPromises).then((texts) => {
-                        const result = texts.join("");
-                        return result;
-                    });
-                });
-            };
-        }
-
-        return async (content: any) => {
-            const zip = new PizZip(content);
-            const doc = new Docxtemplater(zip);
-            return doc.getFullText();
-        };
-    };
-
-    textboxHeader() {
-        return (
-            <div className="pb-6 flex flex-row">
-                <div className="font-bold my-auto">Checker Name</div>
-                {/* deprecated
-                <div
-                    onClick={this.showAccessCodeModal}
-                    className="italic nautilus-text-blue m-auto hover:underline"
-                >
-                    {" "}
-                    Want an access code?{" "}
-                </div>
-                <AccessCodeModal
-                    onClose={this.closeAccessCodeModal}
-                    visible={this.state.isAccessCodeModalVisible}
-                /> */}
-                <Upload
-                    className={classnames(css.upload)}
-                    {...this.uploadProps}
-                >
-                    <Button
-                        className={classnames(
-                            this.getButtonClasses(),
-                            css.uploadButton,
-                            "flex flex-row",
-                        )}
-                        icon={
-                            <UploadIcon className="relative mr-[10px] ml-[6px] w-[18px] mt-[1px]" />
-                        }
-                    >
-                        <span className="mt-[2px]">Upload PDF </span>
-                    </Button>
-                </Upload>
-
-                {getAccessCode() === "admin" && (
-                    <div
-                        onClick={this.showExamplesModal}
-                        className="italic nautilus-text-blue m-auto hover:underline"
-                    >
-                        {" "}
-                        Examples
-                    </div>
-                )}
-
-                <ExamplesModal
-                    onClose={this.closeExamplesModal}
-                    visible={this.state.isExampleCodeModalVisible}
-                    onClick={this.handleExampleClicked}
-                />
-
-                <LoadingButton
-                    onClick={this.checkDocument}
-                    loading={this.state.loading}
-                    className="h-9 float-right ml-32"
-                >
-                    Check Document
-                </LoadingButton>
-            </div>
-        );
-    }
-
-    getButtonClasses = () => {
-        let shared =
-            "ml-auto mr-0 bg-transparent nautilus-text-blue h-[120px] py-1 border nautilus-border-blue rounded";
-        if (this.state.loading) {
-            shared += " disabled";
-        } else {
-            shared +=
-                " hover:nautilus-blue hover:text-white hover:border-transparent";
-        }
-        return shared;
-    };
-
-    handleStrategy = (
+    // handles decorating the text
+    const handleStrategy = (
         contentBlock: any,
         callback: any,
         contentState: ContentState,
@@ -278,27 +108,24 @@ export class TextboxContainer extends React.Component<
         }
 
         const end = start + contentBlock.getLength();
-        this.props.suggestions.forEach(
-            (suggestion: Suggestion, index: number) => {
-                suggestion.highlightRanges.forEach((range) => {
-                    if (range.startPos > end || range.endPos < start) {
-                        return;
-                    }
+        suggestions.forEach((suggestion: Suggestion, index: number) => {
+            suggestion.highlightRanges.forEach((range) => {
+                if (range.startPos > end || range.endPos < start) {
+                    return;
+                }
 
-                    const startPos = range.startPos - start;
-                    const endPos = range.endPos - start;
-                    const keys = this.state.keysToRefs;
-                    keys[range.startPos + "," + range.endPos] = index;
-                    callback(
-                        Math.max(startPos, 0),
-                        Math.min(contentBlock.getLength(), endPos),
-                    );
-                });
-            },
-        );
+                const startPos = range.startPos - start;
+                const endPos = range.endPos - start;
+                keysToRefs[range.startPos + "," + range.endPos] = index;
+                callback(
+                    Math.max(startPos, 0),
+                    Math.min(contentBlock.getLength(), endPos),
+                );
+            });
+        });
     };
 
-    HandleSpan = (
+    const HandleSpan = (
         props: any,
         getStyle: (p: any) => CSSProperties,
         onClick: (p: any) => void,
@@ -314,7 +141,7 @@ export class TextboxContainer extends React.Component<
         );
     };
 
-    spanStyle = (props: any): CSSProperties => {
+    const spanStyle = (props: any): CSSProperties => {
         const style: CSSProperties = {
             borderBottom: "2px solid #4F71D9",
         };
@@ -329,8 +156,8 @@ export class TextboxContainer extends React.Component<
         }
         const startPos = props.start + start;
         const endPos = props.end + start;
-        const result = this.props.activeKey;
-        const idx = this.state.keysToRefs[startPos + "," + endPos];
+        const result = activeKey;
+        const idx = keysToRefs[startPos + "," + endPos];
 
         if (idx === result?.id) {
             style.backgroundColor = "#DBEBFF";
@@ -341,7 +168,7 @@ export class TextboxContainer extends React.Component<
         return style;
     };
 
-    handleUnderlineClicked = (props: any) => {
+    const handleUnderlineClicked = (props: any) => {
         const contentState = props.contentState;
         let currBlock = contentState.getBlockForKey(props.blockKey);
         let start = 0;
@@ -355,7 +182,7 @@ export class TextboxContainer extends React.Component<
         const endPos = props.end + start;
         const key = startPos + "," + endPos;
 
-        if (!(key in this.state.keysToRefs)) {
+        if (!(key in keysToRefs)) {
             console.log("could not find key: " + key);
         }
 
@@ -369,11 +196,11 @@ export class TextboxContainer extends React.Component<
         //     this.props.updateCollapseKey(result);
         // }
 
-        const idx = this.state.keysToRefs[key];
-        const sugg = this.props.suggestions[idx];
-        this.props.updateCollapseKey(sugg);
+        const idx = keysToRefs[key];
+        const sugg = suggestions[idx];
+        updateCollapseKey(sugg);
         setTimeout(() => {
-            this.props.refs[idx].current?.scrollIntoView({
+            refs[idx].current?.scrollIntoView({
                 behavior: "smooth",
                 block: "center",
             });
@@ -383,96 +210,27 @@ export class TextboxContainer extends React.Component<
         });
     };
 
-    onChange = (editorState: any) => {
-        this.props.updateEditorState(editorState);
-    };
-
-    showAccessCodeModal = () => {
-        this.setState({ isAccessCodeModalVisible: true });
-    };
-
-    closeAccessCodeModal = () => {
-        this.setState({ isAccessCodeModalVisible: false });
-    };
-
-    showExamplesModal = () => {
-        this.setState({ isExampleCodeModalVisible: true });
-    };
-
-    closeExamplesModal = () => {
-        this.setState({ isExampleCodeModalVisible: false });
-    };
-
-    handleExampleClicked = (text: string) => {
-        this.props.updateEditorState(
-            EditorState.moveFocusToEnd(
-                EditorState.createWithContent(
-                    ContentState.createFromText(text),
-                    this.decorator(),
-                ),
-            ),
-        );
-        this.setState({
-            isExampleCodeModalVisible: false,
-        });
-    };
-
-    checkDocument = async (): Promise<EditorState | undefined> => {
-        if (this.state.loading) {
-            return;
-        }
-        this.setState({ loading: true });
-        const plaintext = this.props.editorState
-            .getCurrentContent()
-            .getPlainText();
-
-        const response = await Api.checkDoc({
-            doc: plaintext,
-            checkerId: this.props.checkerId,
-        });
-
-        const feedback = response.feedback;
-        const feedbackRefs: SuggestionRefs = {};
-        feedback.sort(this.props.sort);
-
-        feedback.forEach((f: Suggestion, index: number) => {
-            const ref = createRef<HTMLDivElement>();
-            if (f.srcNautObj.substring(0, 1) === "[") {
-                f.srcNautObj = f.srcNautObj.substring(
-                    1,
-                    f.srcNautObj.length - 1,
-                );
-            }
-            f.id = index;
-            feedbackRefs[index] = ref;
-        });
-
-        this.props.updateSuggestions(feedback);
-        this.props.updateRefs(feedbackRefs);
-        let editor = this.props.editorState;
-
-        const selectionState = editor.getSelection();
-        const content = editor.getCurrentContent();
-
-        editor = EditorState.createWithContent(content, this.decorator());
-
-        this.props.updateEditorState(
-            EditorState.forceSelection(editor, selectionState),
-        );
-
-        mixpanelTrack("Check Document Clicked", {
-            "Number of suggestions generated": feedback.length,
-            Suggestions: feedback,
-            Input: plaintext,
-        });
-        this.setState({ loading: false });
-
-        if (
-            this.props.editorState.getCurrentContent().getPlainText() !==
-            plaintext
-        ) {
-            this.checkDocument();
-        }
-        return editor;
-    };
-}
+    return (
+        <div
+            className="textbox col-span-3"
+            style={{ maxHeight: "calc(100vh - 80px)", overflow: "auto" }}
+        >
+            <ContainerHeader
+                editorState={editorState}
+                updateEditorState={updateEditorState}
+                decorator={decorator}
+                sort={sort}
+                updateRefs={updateRefs}
+                updateSuggestions={updateSuggestions}
+                storefront={storefront}
+            />
+            <Editor
+                spellCheck={true}
+                editorState={editorState}
+                onChange={updateEditorState}
+                placeholder="Type or paste your resume here"
+                ref={editorRef}
+            />
+        </div>
+    );
+};

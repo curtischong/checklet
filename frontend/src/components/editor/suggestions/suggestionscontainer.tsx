@@ -1,16 +1,14 @@
 import React from "react";
-import classnames from "classnames";
 import { Suggestion, SuggestionRefs } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
 import { SuggestionCollapse } from "./suggestionCollapse";
 import ZeroImage from "./ZeroState.svg";
-import { BsSortDownAlt } from "react-icons/bs";
+// import { BsSortDownAlt } from "react-icons/bs";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
 import NoSuggestionsImage from "./NoSuggestionsState.svg";
 import { mixpanelTrack } from "src/utils";
-import { ContainerHeader } from "../containerHeader";
 import { ContentBlock, EditorState, Modifier, SelectionState } from "draft-js";
-import { Tooltip } from "antd";
+// import { Tooltip } from "antd";
 
 export type SuggestionsContainerProps = {
     suggestions: Suggestion[];
@@ -32,39 +30,39 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
         setActiveKey,
         editorState,
         updateEditorState,
-        updateSortIdx,
+        // updateSortIdx,
     } = props;
 
-    const SortIcon = (idx: number, tooltip: string) => {
-        return (
-            <Tooltip title={tooltip}>
-                <BsSortDownAlt
-                    className="ml-2"
-                    size={20}
-                    onClick={() => updateSortIdx(idx)}
-                />
-            </Tooltip>
-        );
-    };
+    // const SortIcon = (idx: number, tooltip: string) => {
+    //     return (
+    //         <Tooltip title={tooltip}>
+    //             <BsSortDownAlt
+    //                 className="ml-2"
+    //                 size={20}
+    //                 onClick={() => updateSortIdx(idx)}
+    //             />
+    //         </Tooltip>
+    //     );
+    // };
     const editorHasText = React.useMemo(
         () => editorState.getCurrentContent().hasText(),
         [editorState],
     );
 
-    const suggestionsHeader = (
-        <div className="font-bold text-16 pb-4 pt-1 flex">
-            {suggestions.length > 0 && (
-                <div className={classnames(css.number)}>
-                    {suggestions.length}
-                </div>
-            )}
-            All Suggestions
-            <div className="flex ml-auto mr-1">
-                {SortIcon(0, "Sort by text order")}
-                {SortIcon(1, "Sort by relevance")}
-            </div>
-        </div>
-    );
+    // const suggestionsHeader = (
+    //     <div className="font-bold text-16 pb-4 pt-1 flex">
+    //         {suggestions.length > 0 && (
+    //             <div className={classnames(css.number)}>
+    //                 {suggestions.length}
+    //             </div>
+    //         )}
+    //         All Suggestions
+    //         <div className="flex ml-auto mr-1">
+    //             {SortIcon(0, "Sort by text order")}
+    //             {SortIcon(1, "Sort by relevance")}
+    //         </div>
+    //     </div>
+    // );
 
     const onCollapseClick = (s: Suggestion) => {
         if (activeKey === s) {
@@ -162,7 +160,11 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
 
     return (
         <div className="col-span-2">
-            <ContainerHeader header={suggestionsHeader} />
+            {/* <ContainerHeader
+                editorState={editorState}
+                updateEditorState={updateEditorState}
+                decorator={decorator}
+            /> */}
             <div
                 className="px-4"
                 style={{ maxHeight: "calc(100vh - 61px)", overflow: "auto" }}

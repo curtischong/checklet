@@ -1,6 +1,8 @@
 import { TrashIcon } from "@components/icons/TrashIcon";
-import { Button } from "antd";
-import React from "react";
+import { Button, Upload } from "antd";
+import classnames from "classnames";
+import React, { useCallback } from "react";
+import { UploadIcon } from "@components/icons/UploadIcon";
 
 export type IButton = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -89,5 +91,60 @@ export const DeleteButton: React.FC<IButton> = ({
                 <TrashIcon />
             </button>
         </div>
+    );
+};
+
+export const UploadButton = (): JSX.Element => {
+    const beforeFileUpload = useCallback((file: any) => {
+        const reader = new FileReader();
+
+        reader.onload = async (event: any) => {
+            const content = event.target.result;
+            const parseStrategy = getParseStrategy(file);
+            const text = await parseStrategy(content);
+            props.updateEditorState(
+                EditorState.createWithContent(
+                    ContentState.createFromText(text),
+                    this.decorator(),
+                ),
+            );
+        };
+        reader.readAsBinaryString(file);
+
+        return false;
+    }, []);
+
+    // todo: apply these styles:
+    //
+    // @media all and (min-width: 0px) and (max-width: 640px) {
+    // .uploadButton {
+    //     height: 30px;
+    //     width: 125px;
+    //     font-size: 12px;
+    //     padding-left: 10px;
+    //     margin-bottom: 10px;
+    //     margin-top: 10px;
+    // }
+
+    // .upload {
+    //     padding-left: 0;
+    // }
+
+    return (
+        <Upload
+            className={classnames("fl-2")}
+            accept=".pdf,.docx"
+            beforeUpload={beforeFileUpload}
+            showUploadList={false}
+        >
+            <Button
+                className={classnames("flex flex-row w-[150px] h-[36px]")}
+                icon={
+                    <UploadIcon className="relative mr-[10px] ml-[6px] w-[18px] mt-[1px]" />
+                }
+            >
+                <span className="mt-[2px]">Upload PDF </span>
+            </Button>
+        </Upload>
     );
 };
