@@ -1,7 +1,7 @@
 import { CheckerId } from "@api/checker";
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { NextApiRequest, NextApiResponse } from "next";
-import { requestMiddleware } from "pages/api/common";
+import { requestMiddleware, sendBadRequest } from "pages/api/common";
 import { createClient } from "redis";
 
 export default async function handler(
@@ -20,8 +20,7 @@ export default async function handler(
 
     const validationErr = isBlueprintValid(checkerBlueprint, checkerId);
     if (validationErr !== "") {
-        console.error(validationErr);
-        res.status(400);
+        sendBadRequest(res, validationErr);
         return;
     }
 
@@ -39,15 +38,11 @@ export default async function handler(
         ? JSON.parse(rawCheckerIds)
         : [];
     if (checkerIds.includes(checkerId)) {
-        console.error("checkerId already exists");
-        res.status(400);
+        sendBadRequest(res, "CheckerId already exists");
         return;
     }
     if (checkerIds.length >= 7) {
-        console.error(
-            "You can only have 7 checkers. Contact curtischong5@gmail.com if you want more!",
-        );
-        res.status(400);
+        sendBadRequest(res, "You can only have 7 checkers");
         return;
     }
     checkerIds.push(checkerId);

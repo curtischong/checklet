@@ -1,6 +1,6 @@
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { NextApiRequest, NextApiResponse } from "next";
-import { requestMiddleware } from "pages/api/common";
+import { requestMiddleware, sendBadRequest } from "pages/api/common";
 import { createClient } from "redis";
 
 export default async function handler(
@@ -21,14 +21,15 @@ export default async function handler(
     // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis
     const rawCheckerBlueprint = await redisClient.get(`checkers/${checkerId}`);
     if (!rawCheckerBlueprint) {
-        console.error("CheckerBlueprint not found");
-        res.status(400);
+        sendBadRequest(res, "CheckerBlueprint not found");
         return;
     }
     const checkerBlueprint: CheckerBlueprint = JSON.parse(rawCheckerBlueprint);
     if (checkerBlueprint.creatorId !== userId) {
-        console.error("You must be the creator of this checker to access it");
-        res.status(400);
+        sendBadRequest(
+            res,
+            "You must be the creator of this checker to access it",
+        );
         return;
     }
 
