@@ -102,7 +102,7 @@ export class Api {
 
     static doesCheckerExist = async (
         checkerId: CheckerId,
-    ): Promise<boolean> => {
+    ): Promise<boolean | undefined> => {
         const data = await Api.createRequest("api/does-checker-exist", "POST", {
             checkerId,
         });

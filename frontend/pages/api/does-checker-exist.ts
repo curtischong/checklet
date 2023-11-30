@@ -16,13 +16,13 @@ export default async function handler(
 
     const checkerId = req.body.checkerId;
 
-    const doesCheckerExists = await redisClient.sIsMember(
+    const doesCheckerExist = await redisClient.sIsMember(
         "publicCheckerIds",
         checkerId,
     );
 
     res.status(200).json({
-        doesCheckerExists: doesCheckerExists,
+        doesCheckerExist,
     });
     return;
 }

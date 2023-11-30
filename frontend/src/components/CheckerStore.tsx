@@ -10,6 +10,7 @@ export interface CheckerStorefront {
     creatorId: string;
 }
 
+// TODO: show user checkers and public checkers separately?
 export const CheckerStore = () => {
     const { user } = useClientContext();
     const [storefronts, setStorefronts] = useState<CheckerStorefront[]>([]);
@@ -53,12 +54,3 @@ const StoreFront = ({ storefront }: StorefrontProps) => {
         </div>
     );
 };
-
-// interface UserCheckersProps {
-//     userId: string;
-//     allStoreFronts
-// }
-
-// export const UserCheckers = () => {
-
-// }
