@@ -59,10 +59,10 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
         setIsLoading(true);
         const plaintext = editorState.getCurrentContent().getPlainText();
 
-        const response = await Api.checkDoc({
-            doc: plaintext,
-            checkerId: router.query.checkerId as string,
-        });
+        const response = await Api.checkDoc(
+            plaintext,
+            router.query.checkerId as string,
+        );
         console.log(response);
         return;
 
@@ -101,7 +101,7 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
         setIsLoading(false);
 
         return editor;
-    }, []);
+    }, [editorState, isLoading]);
 
     return (
         <Affix offsetTop={0}>

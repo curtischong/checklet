@@ -33,7 +33,8 @@ ${positiveExamples}
     async checkDoc(doc: string): Promise<string> {
         const data = await this.llm.callFunction({
             prompt: doc,
-            functionDesc: "Fixes text",
+            functionDesc:
+                "Applies the change on the original text to get teh edited text.",
             functionParams: {
                 type: "array",
                 items: {
@@ -51,6 +52,7 @@ ${positiveExamples}
                     },
                 },
             },
+            // TODO: what is this????
             fn: (d) => {
                 return d;
             },

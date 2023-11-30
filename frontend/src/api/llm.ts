@@ -54,7 +54,7 @@ export class Llm {
         fn: (...args: any[]) => Res;
     }): Promise<Res> {
         if (this.useCache) {
-            const cachedValue = this.cache.get(prompt);
+            const cachedValue = this.cache.get(callData.prompt);
             if (cachedValue) {
                 return callData.fn(...cachedValue);
             }

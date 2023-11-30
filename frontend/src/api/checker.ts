@@ -25,10 +25,11 @@ export class Checker {
         return new Checker(checkerBlueprint);
     }
 
-    checkDoc(doc: string): void {
+    async checkDoc(doc: string): Promise<void> {
         const results = [];
         for (const check of this.checks) {
-            results.push(check.checkDoc(doc));
+            // todo: parallelize
+            results.push(await check.checkDoc(doc));
         }
         console.log("results", results);
         // return "dummy";

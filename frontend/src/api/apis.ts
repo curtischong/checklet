@@ -45,9 +45,13 @@ export class Api {
     };
 
     static checkDoc = async (
-        payload: FeedbackRequest,
+        doc: string,
+        checkerId: CheckerId,
     ): Promise<FeedbackResponse> => {
-        const data = await Api.createRequest("api/check-doc", "POST", payload);
+        const data = await Api.createRequest("api/check-doc", "POST", {
+            doc,
+            checkerId,
+        });
         return data;
     };
 

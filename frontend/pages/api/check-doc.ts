@@ -36,6 +36,7 @@ export default async function handler(
     }
     const checkerBlueprint = JSON.parse(rawCheckerBlueprint);
     const checker = new Checker(checkerBlueprint);
+
     // todo: get data back
     checker.checkDoc(doc);
 
