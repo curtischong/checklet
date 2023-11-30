@@ -21,12 +21,15 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         (async () => {
+            if (user === null) {
+                return;
+            }
             const checkerBlueprints = await Api.fetchUserCheckerBlueprints(
                 await user.getIdToken(),
             );
             setCheckers(checkerBlueprints);
         })();
-    }, []);
+    }, [user]);
 
     return (
         <div className="flex">
@@ -45,6 +48,14 @@ const Dashboard: React.FC = () => {
                 }}
             >
                 logout
+            </TextButton>
+            <TextButton
+                className="fixed right-20 top-3"
+                onClick={() => {
+                    router.push("/");
+                }}
+            >
+                Editor
             </TextButton>
             <div className="container mx-auto text-center mt-20">
                 {user ? user.email : <></>}
