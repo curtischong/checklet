@@ -7,7 +7,8 @@
         "build": "next build",
         "start": "next start",
         "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
-        "prettier": "prettier --write '**/*.{js,jsx,ts,tsx}'"
+        "prettier": "prettier --write '**/*.{js,jsx,ts,tsx}'",
+        "redis": "docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest"
     },
     "dependencies": {
         "@types/draft-js": "^0.11.9",
