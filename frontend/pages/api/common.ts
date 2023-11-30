@@ -12,7 +12,9 @@ export const requestMiddleware = async (
     if (req.method !== "POST") {
         // Handle any non-POST requests
         res.setHeader("Allow", ["POST"]);
-        res.status(405).end(`Method ${req.method} Not Allowed`);
+        res.status(405).end(
+            `Method ${req.method} Not Allowed. Only POST is allowed`,
+        );
         return null;
     }
     // if we already initialized app, don't do it more than once:
@@ -32,4 +34,9 @@ export const requestMiddleware = async (
         return null;
     }
     return decodedToken.uid;
+};
+
+export const sendBadRequest = (res: NextApiResponse, msg: string): void => {
+    console.error(msg);
+    res.status(400).end(msg);
 };
