@@ -31,8 +31,6 @@ ${positiveExamples}
     }
 
     async checkDoc(doc: string): Promise<string> {
-        console.log("llm");
-        return;
         const data = await this.llm.callFunction({
             prompt: doc,
             functionDesc: "Fixes text",
@@ -57,7 +55,7 @@ ${positiveExamples}
                 return d;
             },
         });
-        console.log(data);
+        console.log("resdata", data);
         // return response.choices[0].message.content ?? "unknown result";
         return data;
     }

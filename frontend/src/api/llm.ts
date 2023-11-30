@@ -15,23 +15,17 @@ export class Llm {
         model = "gpt-3.5-turbo",
         useCache = false,
     ) {
-        console.log("llm1");
         this.useCache = useCache;
         this.client = new OpenAI();
-        console.log("llm2");
         this.model = model;
-        console.log("llm3");
         this.client.chat.completions.create({
             model,
             messages: [{ role: "system", content: systemPrompt }],
         });
 
-        const logsDir = path.join(process.cwd(), ".chatgpt_history/logs");
-        const cacheDir = path.join(process.cwd(), ".chatgpt_history/cache");
-        fs.mkdirSync(logsDir, { recursive: true });
+        const cacheDir = path.join(process.cwd(), ".chatgpt_history");
         fs.mkdirSync(cacheDir, { recursive: true });
-
-        this.cache = new SimpleCache(cacheDir);
+        this.cache = new SimpleCache(cacheDir + "/cache");
     }
 
     async prompt(

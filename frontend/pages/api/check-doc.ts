@@ -19,6 +19,16 @@ export default async function handler(
 
     const checkerId = req.body.checkerId;
     const doc = req.body.doc;
+
+    if (!checkerId) {
+        sendBadRequest(res, "checkerId is undefined");
+        return;
+    }
+    if (!doc) {
+        sendBadRequest(res, "doc is undefined");
+        return;
+    }
+
     const rawCheckerBlueprint = await redisClient.get(`checkers/${checkerId}`);
     if (!rawCheckerBlueprint) {
         sendBadRequest(res, "Checker does not exist");

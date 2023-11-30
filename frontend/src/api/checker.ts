@@ -12,12 +12,10 @@ export class Checker {
         this.blueprint = checkerBlueprint;
         this.id = checkerBlueprint.id;
 
-        console.log("this.checks1");
         for (const checkBlueprint of checkerBlueprint.checkBlueprints) {
             const check = new Check(checkBlueprint);
             this.checks.push(check);
         }
-        console.log("this.checks2");
     }
 
     static fromFile(checkerPath: string): Checker {
@@ -32,6 +30,7 @@ export class Checker {
         for (const check of this.checks) {
             results.push(check.checkDoc(doc));
         }
+        console.log("results", results);
         // return "dummy";
     }
 }

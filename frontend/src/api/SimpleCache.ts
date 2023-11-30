@@ -20,7 +20,9 @@ export class SimpleCache {
                 const fileContent = fs.readFileSync(this.filePath, "utf8");
                 this.cache = JSON.parse(fileContent);
             } catch (error) {
-                console.error("Error reading from cache file:", error);
+                console.error(
+                    `Error reading from cache file. filepath=${this.filePath}, err=${error}`,
+                );
             }
         }
     }
