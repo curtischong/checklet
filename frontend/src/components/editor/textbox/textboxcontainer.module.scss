@@ -1,22 +1,13 @@
-.textboxHeader { 
+.textboxHeader {
     display: flex;
 }
 
-.upload { 
-    padding-left: 1.5rem;
-}
-
-.uploadButton { 
-    width: 150px; 
-    height: 36px;
-}
-
-.analyzeButton { 
+.analyzeButton {
     height: 36px;
     width: 117px;
 }
 
-@media all and (min-width:0px) and (max-width: 640px) {
+@media all and (min-width: 0px) and (max-width: 640px) {
     .uploadButton {
         height: 30px;
         width: 125px;
@@ -26,11 +17,11 @@
         margin-top: 10px;
     }
 
-    .upload { 
+    .upload {
         padding-left: 0;
     }
 
-    .rizzLink { 
+    .rizzLink {
         font-size: 12px;
         margin-left: 10px;
         margin-right: 10px;
@@ -44,8 +35,7 @@
         margin-bottom: 10px;
     }
 
-    .textboxHeader { 
+    .textboxHeader {
         display: inline;
     }
 }
-
