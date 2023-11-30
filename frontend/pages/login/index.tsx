@@ -3,6 +3,7 @@ import { GoogleAuthProvider } from "firebase/auth";
 import { useClientContext } from "@utils/ClientContext";
 import { AuthBoxCss } from "pages/login/authBoxCss";
 import { useRouter } from "next/router";
+import { TextButton } from "@components/Button";
 
 const Login: React.FC = () => {
     const { firebaseAuth } = useClientContext();
@@ -46,11 +47,19 @@ const Login: React.FC = () => {
 
     return (
         <div className="flex flex-col justify-center">
-            <div className="mt-60 mb-20">
+            <div className="mt-60 mb-4">
                 <h1 className="text-4xl font-bold text-center">
                     Your Writer Friend
                 </h1>
             </div>
+            <TextButton
+                className="mx-auto mb-4"
+                onClick={() => {
+                    router.push("/editor");
+                }}
+            >
+                Go to Editor
+            </TextButton>
             <div id="firebaseui-auth-container"></div>
             <AuthBoxCss />
         </div>

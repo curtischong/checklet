@@ -11,7 +11,7 @@ import { TextButton } from "@components/Button";
 import { useRouter } from "next/router";
 import { useClientContext } from "@utils/ClientContext";
 
-export const Content: React.FC = () => {
+export const Editor: React.FC = () => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
     const [suggestionsRefs, setSuggestionsRefs] = useState<SuggestionRefs>({});
     const [activeKey, setActiveKey] = useState<Suggestion>();

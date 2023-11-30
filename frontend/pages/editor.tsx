@@ -1,8 +1,8 @@
 import React from "react";
-import { Content } from "@components/content/content";
+import { Editor } from "@components/editor/Editor";
 
 const Home: React.FC = () => {
-    return <Content />;
+    return <Editor />;
 };
 
 export default Home;

@@ -1,6 +1,6 @@
 import { Tabs } from "antd";
 import { Structure } from "@components/structure";
-import { Content } from "@components/content/content";
+import { Editor } from "@components/editor/Editor";
 import React from "react";
 import classnames from "classnames";
 import "./navigation.module.scss";
@@ -17,7 +17,7 @@ const tabProps: TabProps[] = [
     {
         displayName: "Content",
         key: "content",
-        element: <Content />,
+        element: <Editor />,
     },
     {
         displayName: "Structure",
