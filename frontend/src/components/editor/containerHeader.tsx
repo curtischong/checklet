@@ -63,6 +63,8 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
             doc: plaintext,
             checkerId: router.query.checkerId as string,
         });
+        console.log(response);
+        return;
 
         const feedback = response.feedback;
         const feedbackRefs: SuggestionRefs = {};

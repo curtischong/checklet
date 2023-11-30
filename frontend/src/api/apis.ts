@@ -47,7 +47,7 @@ export class Api {
     static checkDoc = async (
         payload: FeedbackRequest,
     ): Promise<FeedbackResponse> => {
-        const data = await Api.createRequest("api/checkDoc", "POST", payload);
+        const data = await Api.createRequest("api/check-doc", "POST", payload);
         return data;
     };
 

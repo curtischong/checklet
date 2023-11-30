@@ -1,10 +1,11 @@
 import { Llm } from "@api/llm";
-import { CheckBlueprint } from "@components/create-checker/Check";
-import { PositiveCheckExample } from "@components/create-checker/PositiveCheckExampleCreator";
-import { ChatCompletionUserMessageParam } from "openai/resources";
+import {
+    CheckBlueprint,
+    PositiveCheckExample,
+} from "@components/create-checker/CheckerTypes";
 
 export class Check {
-    llm: Llm;
+    private llm;
 
     constructor(private blueprint: CheckBlueprint) {
         this.llm = new Llm(this.getSystemPrompt(), "gpt-3.5-turbo", true);
@@ -30,6 +31,8 @@ ${positiveExamples}
     }
 
     async checkDoc(doc: string): Promise<string> {
+        console.log("llm");
+        return;
         const data = await this.llm.callFunction({
             prompt: doc,
             functionDesc: "Fixes text",

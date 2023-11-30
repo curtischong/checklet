@@ -1,16 +1,5 @@
 import { TextButton } from "@components/Button";
-import { PositiveCheckExample } from "@components/create-checker/PositiveCheckExampleCreator";
-
-export type CheckId = string;
-export type CheckBlueprint = {
-    name: string;
-    instruction: string;
-    longDesc: string;
-    category: string; // optional
-    positiveExamples: PositiveCheckExample[];
-    // negativeExamples: NegativeCheckExample[]; // TODO
-    checkId: CheckId;
-};
+import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
 
 interface Props {
     checkBlueprint: CheckBlueprint;

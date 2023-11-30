@@ -1,5 +1,5 @@
 import { Check } from "@api/check";
-import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import * as fs from "fs";
 
 export type CheckerId = string; // TODO: make this 32 bytes?
@@ -12,10 +12,12 @@ export class Checker {
         this.blueprint = checkerBlueprint;
         this.id = checkerBlueprint.id;
 
+        console.log("this.checks1");
         for (const checkBlueprint of checkerBlueprint.checkBlueprints) {
             const check = new Check(checkBlueprint);
             this.checks.push(check);
         }
+        console.log("this.checks2");
     }
 
     static fromFile(checkerPath: string): Checker {

@@ -1,11 +1,7 @@
 import { TextButton } from "@components/Button";
-import { Input, SmallInput } from "@components/Input";
+import { SmallInput } from "@components/Input";
+import { PositiveCheckExample } from "@components/create-checker/CheckerTypes";
 import React from "react";
-
-export interface PositiveCheckExample {
-    originalText: string;
-    editedText: string;
-}
 
 interface Props {
     onCreate: (example: PositiveCheckExample) => void;

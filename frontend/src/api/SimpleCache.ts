@@ -4,6 +4,7 @@ import * as crypto from "crypto";
 export class SimpleCache {
     filePath: string;
     cache: Record<string, string>;
+
     constructor(filePath: string) {
         this.filePath = filePath;
         this.cache = {};
@@ -12,7 +13,7 @@ export class SimpleCache {
         this.loadFromFile();
     }
 
-    loadFromFile() {
+    loadFromFile(): void {
         // Check if file exists
         if (fs.existsSync(this.filePath)) {
             try {
@@ -24,7 +25,7 @@ export class SimpleCache {
         }
     }
 
-    saveToFile() {
+    saveToFile(): void {
         try {
             const data = JSON.stringify(this.cache, null, 2);
             fs.writeFileSync(this.filePath, data, "utf8");
@@ -40,12 +41,12 @@ export class SimpleCache {
             .digest("hex");
     }
 
-    set(rawKey: any, value: any) {
+    set(rawKey: any, value: any): void {
         this.cache[this.getKey(rawKey)] = JSON.stringify(value);
         this.saveToFile();
     }
 
-    get(rawKey: any) {
+    get(rawKey: any): any {
         const key = this.getKey(rawKey);
         if (key in this.cache) {
             return undefined;
@@ -53,15 +54,13 @@ export class SimpleCache {
         return JSON.parse(this.cache[key]);
     }
 
-    remove(rawKey: any) {
+    remove(rawKey: any): void {
         delete this.cache[this.getKey(rawKey)];
         this.saveToFile();
     }
 
-    clear() {
+    clear(): void {
         this.cache = {};
         this.saveToFile();
     }
 }
-
-module.exports = SimpleCache;

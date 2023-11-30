@@ -1,5 +1,5 @@
 import { Checker } from "@api/checker";
-import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import * as fs from "fs";
 import * as path from "path";
 
