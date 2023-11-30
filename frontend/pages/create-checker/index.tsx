@@ -1,6 +1,6 @@
 import { CheckerCreator } from "@components/create-checker/CheckerCreator";
 
-const Editor = (): JSX.Element => {
+const CheckerCreatorPage = (): JSX.Element => {
     return <CheckerCreator />;
 };
-export default Editor;
+export default CheckerCreatorPage;
