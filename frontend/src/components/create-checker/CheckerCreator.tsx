@@ -14,6 +14,8 @@ import * as crypto from "crypto";
 import { toast } from "react-toastify";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useClientContext } from "@utils/ClientContext";
+import { Api } from "@api/apis";
+import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 
 export type CheckerBlueprint = {
     name: string;
@@ -86,6 +88,7 @@ const MainCheckerPage = ({
     const [err, setErr] = React.useState("");
     const [clickedSubmit, setClickedSubmit] = React.useState(false);
     const { firestore, user } = useClientContext();
+    const router = useRouter();
 
     const getIncompleteFormErr = useCallback(() => {
         if (name === "") {
@@ -106,6 +109,19 @@ const MainCheckerPage = ({
 
     return (
         <div className="flex flex-col">
+            <div className="flex flex-row items-center">
+                <p
+                    className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
+                    onClick={() => {
+                        router.push("/dashboard");
+                    }}
+                >
+                    Dashboard
+                </p>
+                <RightArrowIcon className="mx-2 w-[14px]" />
+                <p className="font-bold text-gray-600">Create checker</p>
+            </div>
+
             <h1 className="text-xl font-bold mt-10">Create Checker</h1>
 
             <label className="text-lg">Name</label>
@@ -177,23 +193,28 @@ const MainCheckerPage = ({
                     // const checkerId =
                     //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
                     (async () => {
-                        try {
-                            await setDoc(
-                                doc(firestore, "checkers", checkerId),
-                                {
-                                    blueprint: checker,
-                                    userId: user.uid, // since you are the person that sets it. I think it's fine. hackers can't set someone else's userId
-                                },
-                            );
-                            console.log(
-                                "Document written with ID: ",
-                                checkerId,
-                            );
-                            // TODO: make the button a loader button and visualize success
-                        } catch (e) {
-                            toast.error(`Error adding document: ${e}`);
-                        }
+                        Api.createChecker(
+                            checker,
+                            checkerId,
+                            await user.getIdToken(),
+                        );
                     })();
+                    // try {
+                    //     await setDoc(
+                    //         doc(firestore, "checkers", checkerId),
+                    //         {
+                    //             blueprint: checker,
+                    //             userId: user.uid, // since you are the person that sets it. I think it's fine. hackers can't set someone else's userId
+                    //         },
+                    //     );
+                    //     console.log(
+                    //         "Document written with ID: ",
+                    //         checkerId,
+                    //     );
+                    //     // TODO: make the button a loader button and visualize success
+                    // } catch (e) {
+                    //     toast.error(`Error adding document: ${e}`);
+                    // }
                 }}
                 className="mt-4 w-80"
             >

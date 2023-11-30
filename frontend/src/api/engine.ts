@@ -2,9 +2,28 @@ import { Checker } from "@api/checker";
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import * as fs from "fs";
 import * as path from "path";
+import redis from "redis";
 
 export class Engine {
     private checkers = new Map<string, Checker>(); // maps checker.id -> checkers
+
+    // constructor() {
+    //     const redisClient = redis.createClient();
+    //     redisClient.hSet();
+
+    //     (async () => {
+    //         redisClient.on("error", (err) => {
+    //             console.log("Redis Client Error", err);
+    //         });
+    //         redisClient.on("ready", () => console.log("Redis is ready"));
+
+    //         await redisClient.connect();
+
+    //         await redisClient.ping();
+    //     })();
+
+    //     this.importCheckers();
+    // }
 
     importCheckers(): void {
         const checkersDir = "./checkers/";

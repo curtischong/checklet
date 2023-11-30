@@ -5,7 +5,7 @@ import {
     CompositeDecorator,
     ContentState,
 } from "draft-js";
-import { Api } from "@api";
+import { Api } from "@api/apis";
 import { Button, Upload, UploadProps } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { Suggestion, SuggestionRefs } from "../suggestions/suggestionsTypes";
