@@ -13,8 +13,6 @@ export default async function handler(
     }
 
     // https://redis.io/docs/connect/clients/nodejs/
-    // const userId = req.cookies.userId;
-    // const userId = "1234"; // TODO: pass the right userid
     const redisClient = createClient();
     await redisClient.connect();
     const rawCheckerIds = await redisClient.get(`users/${userId}/checkerIds`);

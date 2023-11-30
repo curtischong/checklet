@@ -12,7 +12,6 @@ import React, { useCallback, useEffect } from "react";
 import { downloadTextFile } from "util/download";
 import * as crypto from "crypto";
 import { toast } from "react-toastify";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useClientContext } from "@utils/ClientContext";
 import { Api } from "@api/apis";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
@@ -199,22 +198,6 @@ const MainCheckerPage = ({
                             await user.getIdToken(),
                         );
                     })();
-                    // try {
-                    //     await setDoc(
-                    //         doc(firestore, "checkers", checkerId),
-                    //         {
-                    //             blueprint: checker,
-                    //             userId: user.uid, // since you are the person that sets it. I think it's fine. hackers can't set someone else's userId
-                    //         },
-                    //     );
-                    //     console.log(
-                    //         "Document written with ID: ",
-                    //         checkerId,
-                    //     );
-                    //     // TODO: make the button a loader button and visualize success
-                    // } catch (e) {
-                    //     toast.error(`Error adding document: ${e}`);
-                    // }
                 }}
                 className="mt-4 w-80"
             >

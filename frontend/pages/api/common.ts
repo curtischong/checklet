@@ -1,8 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "firebase-admin/auth";
 import { initializeApp, getApps } from "firebase-admin/app";
-// import firebase from 'firebase/compat/app';
-// import "firebase/compat/firestore";
 import { firebaseConfig } from "@utils/ClientContext";
 
 // returns the uid for the authenticated user.
@@ -33,6 +31,5 @@ export const requestMiddleware = async (
         res.status(401).end("Unauthorized");
         return null;
     }
-    const uid = decodedToken.uid;
-    return uid;
+    return decodedToken.uid;
 };
