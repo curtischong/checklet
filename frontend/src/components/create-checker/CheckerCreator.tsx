@@ -14,7 +14,7 @@ import { useClientContext } from "@utils/ClientContext";
 import { Api } from "@api/apis";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { TextArea } from "@components/TextArea";
-import { getUniqueId } from "@utils/strings";
+import { createUniqueId } from "@utils/strings";
 
 export type CheckerBlueprint = {
     name: string;
@@ -34,6 +34,7 @@ export const CheckerCreator: React.FC = () => {
     const [checkBlueprints, setCheckBlueprints] = React.useState<
         CheckBlueprint[]
     >([]);
+    const [checkerId, setCheckerId] = React.useState<string>(createUniqueId());
     const [pageData, setPageData] = React.useState<unknown>(null);
     const { user } = useClientContext();
 
@@ -60,9 +61,9 @@ export const CheckerCreator: React.FC = () => {
                 await user.getIdToken(),
                 data.checkerId as string,
             );
-            console.log(checkerBlueprint);
             setName(checkerBlueprint.name);
             setDesc(checkerBlueprint.desc);
+            setCheckerId(checkerBlueprint.id);
             setCheckBlueprints(checkerBlueprint.checkBlueprints);
         })();
     }, [user]);
@@ -78,6 +79,7 @@ export const CheckerCreator: React.FC = () => {
                         setDesc={setDesc}
                         checkBlueprints={checkBlueprints}
                         setCheckBlueprints={setCheckBlueprints}
+                        checkerId={checkerId}
                         setPage={setPage}
                     />
                 ) : (
@@ -110,6 +112,7 @@ interface Props {
     setName: SetState<string>;
     desc: string;
     setDesc: SetState<string>;
+    checkerId: string;
     checkBlueprints: CheckBlueprint[];
     setCheckBlueprints: SetState<CheckBlueprint[]>;
     setPage: (page: Page, pageData?: unknown) => void;
@@ -120,6 +123,7 @@ const MainCheckerPage = ({
     setName,
     desc,
     setDesc,
+    checkerId,
     checkBlueprints,
     setCheckBlueprints,
     setPage,
@@ -243,7 +247,6 @@ const MainCheckerPage = ({
                         creatorId: user.uid,
                     } as CheckerBlueprint;
 
-                    const checkerId = getUniqueId();
                     // const checkerId =
                     //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
                     (async () => {
