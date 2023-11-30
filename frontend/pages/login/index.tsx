@@ -52,7 +52,6 @@ const Login: React.FC = () => {
                     Your Writer Friend
                 </h1>
             </div>
-            <div>Sign in to create checkers</div>
             <TextButton
                 className="mx-auto mb-4"
                 onClick={() => {
@@ -61,6 +60,9 @@ const Login: React.FC = () => {
             >
                 Go to Editor
             </TextButton>
+            <div className="text-center">
+                Want to create a checker? Sign in below!
+            </div>
             <div id="firebaseui-auth-container"></div>
             <AuthBoxCss />
         </div>

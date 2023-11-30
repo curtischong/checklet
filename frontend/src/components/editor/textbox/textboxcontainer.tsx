@@ -1,8 +1,8 @@
 import React, {
-    createRef,
+    // createRef,
     CSSProperties,
     MutableRefObject,
-    useCallback,
+    // useCallback,
     useEffect,
 } from "react";
 import {
@@ -11,18 +11,17 @@ import {
     CompositeDecorator,
     ContentState,
 } from "draft-js";
-import { Api } from "@api/apis";
 import { Suggestion, SuggestionRefs } from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
 import "draft-js/dist/Draft.css";
 // const PizZip = require("pizzip");
-import Docxtemplater from "docxtemplater";
-import PizZip from "pizzip";
-import css from "./textboxcontainer.module.scss";
-import classnames from "classnames";
-import { LoadingButton, NormalButton } from "@components/Button";
+// import Docxtemplater from "docxtemplater";
+// import PizZip from "pizzip";
+// import css from "./textboxcontainer.module.scss";
+// import classnames from "classnames";
+// import { LoadingButton, NormalButton } from "@components/Button";
 
 // need same version with worker and pdfjs for it to work properly
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
@@ -46,10 +45,9 @@ export type TextboxContainerProps = {
     refs: SuggestionRefs;
     sort: (a: Suggestion, b: Suggestion) => number;
     editorRef: MutableRefObject<any>;
-    checkerId: string;
 };
 
-const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
+// const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
 
 export const TextboxContainer = ({
     suggestions,
@@ -58,11 +56,10 @@ export const TextboxContainer = ({
     updateEditorState,
     updateSuggestions,
     updateCollapseKey,
-    udpateRefs,
+    updateRefs,
     refs,
     sort,
     editorRef,
-    checkerId,
 }: TextboxContainerProps): JSX.Element => {
     // {
     //     loading: boolean;
@@ -74,7 +71,7 @@ export const TextboxContainer = ({
 
     const [keysToRefs, setKeysToRefs] = React.useState<any>({});
     useEffect(() => {
-        props.updateEditorState(
+        updateEditorState(
             EditorState.moveFocusToEnd(EditorState.createEmpty(decorator())),
         );
         // this.props.editorRef.current?.focus();
@@ -87,24 +84,12 @@ export const TextboxContainer = ({
     const decorator = () => {
         return new CompositeDecorator([
             {
-                strategy: this.handleStrategy,
+                strategy: handleStrategy,
                 component: (props: any) =>
                     HandleSpan(props, spanStyle, handleUnderlineClicked),
             },
         ]);
     };
-
-    // getButtonClasses = () => {
-    //     let shared =
-    //         "ml-auto mr-0 bg-transparent nautilus-text-blue h-[120px] py-1 border nautilus-border-blue rounded";
-    //     if (this.state.loading) {
-    //         shared += " disabled";
-    //     } else {
-    //         shared +=
-    //             " hover:nautilus-blue hover:text-white hover:border-transparent";
-    //     }
-    //     return shared;
-    // };
 
     // handles decorating the text
     const handleStrategy = (
@@ -128,8 +113,7 @@ export const TextboxContainer = ({
 
                 const startPos = range.startPos - start;
                 const endPos = range.endPos - start;
-                const keys = this.state.keysToRefs;
-                keys[range.startPos + "," + range.endPos] = index;
+                keysToRefs[range.startPos + "," + range.endPos] = index;
                 callback(
                     Math.max(startPos, 0),
                     Math.min(contentBlock.getLength(), endPos),
@@ -228,7 +212,14 @@ export const TextboxContainer = ({
             className="textbox col-span-3"
             style={{ maxHeight: "calc(100vh - 80px)", overflow: "auto" }}
         >
-            <ContainerHeader />
+            <ContainerHeader
+                editorState={editorState}
+                updateEditorState={updateEditorState}
+                decorator={decorator}
+                sort={sort}
+                updateRefs={updateRefs}
+                updateSuggestions={updateSuggestions}
+            />
             <Editor
                 spellCheck={true}
                 editorState={editorState}

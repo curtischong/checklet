@@ -138,10 +138,7 @@ export const UploadButton = (): JSX.Element => {
             showUploadList={false}
         >
             <Button
-                className={classnames(
-                    // this.getButtonClasses(),
-                    "flex flex-row w-[150px] h-[36px]",
-                )}
+                className={classnames("flex flex-row w-[150px] h-[36px]")}
                 icon={
                     <UploadIcon className="relative mr-[10px] ml-[6px] w-[18px] mt-[1px]" />
                 }
