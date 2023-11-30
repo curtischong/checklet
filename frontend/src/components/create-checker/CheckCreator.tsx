@@ -100,7 +100,7 @@ export const CheckCreator = ({ onCreate, setPage }: Props): JSX.Element => {
                     placeholder={`If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period. Do not repeat back the entire text. Only output the edited text plus a bit of context around the edit for context.`}
                 />
                 <div className="flex flex-row mt-2">
-                    <label>Long Description</label>
+                    <label>Suggestion Reason</label>
                     <HelpIcon
                         className="mt-[3px] ml-1"
                         text={

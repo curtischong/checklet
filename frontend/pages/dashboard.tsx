@@ -2,6 +2,7 @@ import { Api } from "@api/apis";
 import { NormalButton, TextButton } from "@components/Button";
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { useClientContext } from "@utils/ClientContext";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 import { useEffect } from "react";
@@ -66,15 +67,16 @@ const Dashboard: React.FC = () => {
                             className="flex justify-center"
                             key={`checker-${idx}`}
                         >
-                            <NormalButton
-                                onClick={() => {
-                                    router.push(
-                                        `/create-checker/${checker.id}`, // TODO: add a url param so if it exists, we call redis and pass the blueprint
-                                    );
+                            <Link
+                                href={{
+                                    pathname: "/create-checker",
+                                    query: {
+                                        checkerId: checker.id,
+                                    },
                                 }}
                             >
                                 {checker.name}
-                            </NormalButton>
+                            </Link>
                         </div>
                     );
                 })}

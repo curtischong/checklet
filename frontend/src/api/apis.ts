@@ -35,6 +35,17 @@ export class Api {
         return data;
     };
 
+    static fetchCheckerBlueprint = async (
+        idToken: string,
+        checkerId: CheckerId,
+    ): Promise<CheckerBlueprint> => {
+        const data = await Api.createRequest("api/checker-blueprint", "POST", {
+            idToken,
+            checkerId,
+        });
+        return data.checkerBlueprint;
+    };
+
     static fetchUserCheckerBlueprints = async (
         idToken: string,
     ): Promise<CheckerBlueprint[]> => {

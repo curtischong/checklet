@@ -15,10 +15,13 @@ import { toast } from "react-toastify";
 import { useClientContext } from "@utils/ClientContext";
 import { Api } from "@api/apis";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
+import { TextArea } from "@components/TextArea";
 
 export type CheckerBlueprint = {
     name: string;
+    desc: string;
     checkBlueprints: CheckBlueprint[];
+    creatorId: string;
     id: string;
 };
 export enum Page {
@@ -28,9 +31,11 @@ export enum Page {
 
 export const CheckerCreator: React.FC = () => {
     const [name, setName] = React.useState("");
+    const [desc, setDesc] = React.useState("");
     const [checkBlueprints, setCheckBlueprints] = React.useState<
         CheckBlueprint[]
     >([]);
+    const { user } = useClientContext();
 
     // https://stackoverflow.com/questions/60036703/is-it-possible-to-define-hash-route-in-next-js
     const router = useRouter();
@@ -44,6 +49,23 @@ export const CheckerCreator: React.FC = () => {
         }
     };
 
+    useEffect(() => {
+        const data = router.query;
+        (async () => {
+            if (!data.checkerId || !user) {
+                return;
+            }
+            const checkerBlueprint = await Api.fetchCheckerBlueprint(
+                await user.getIdToken(),
+                data.checkerId as string,
+            );
+            console.log(checkerBlueprint);
+            setName(checkerBlueprint.name);
+            setDesc(checkerBlueprint.desc);
+            setCheckBlueprints(checkerBlueprint.checkBlueprints);
+        })();
+    }, [user]);
+
     return (
         <div className="flex justify-center ">
             <div className="container">
@@ -51,6 +73,8 @@ export const CheckerCreator: React.FC = () => {
                     <MainCheckerPage
                         name={name}
                         setName={setName}
+                        desc={desc}
+                        setDesc={setDesc}
                         checkBlueprints={checkBlueprints}
                         setCheckBlueprints={setCheckBlueprints}
                         setPage={setPage}
@@ -72,6 +96,8 @@ export const CheckerCreator: React.FC = () => {
 interface Props {
     name: string;
     setName: SetState<string>;
+    desc: string;
+    setDesc: SetState<string>;
     checkBlueprints: CheckBlueprint[];
     setCheckBlueprints: SetState<CheckBlueprint[]>;
     setPage: (page: Page) => void;
@@ -80,6 +106,8 @@ interface Props {
 const MainCheckerPage = ({
     name,
     setName,
+    desc,
+    setDesc,
     checkBlueprints,
     setCheckBlueprints,
     setPage,
@@ -92,12 +120,14 @@ const MainCheckerPage = ({
     const getIncompleteFormErr = useCallback(() => {
         if (name === "") {
             return "Please enter a name";
+        } else if (desc === "") {
+            return "Please enter a description";
         } else if (checkBlueprints.length === 0) {
             return "Please enter at least one check";
         } else {
             return "";
         }
-    }, [name, checkBlueprints]);
+    }, [name, desc, checkBlueprints]);
 
     useEffect(() => {
         if (!clickedSubmit) {
@@ -131,6 +161,16 @@ const MainCheckerPage = ({
                     setName(e.target.value);
                 }}
                 value={name}
+            />
+
+            <label className="text-lg">Description</label>
+            <TextArea
+                className="w-40"
+                placeholder="Rizzume will rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive."
+                onChange={(e) => {
+                    setDesc(e.target.value);
+                }}
+                value={desc}
             />
 
             <div className="flex flex-row mt-2">
@@ -180,13 +220,11 @@ const MainCheckerPage = ({
 
                     const checker = {
                         name,
+                        desc,
                         checkBlueprints,
                         // id: crypto.randomBytes(32).toString("hex"), // TODO: I can save spacei f I don't storethis
+                        creatorId: user.uid,
                     } as CheckerBlueprint;
-                    // downloadTextFile(
-                    //     `${name.replaceAll(" ", "-")}.json`,
-                    //     JSON.stringify(checker),
-                    // );
 
                     const checkerId = crypto.randomBytes(32).toString("hex");
                     // const checkerId =
