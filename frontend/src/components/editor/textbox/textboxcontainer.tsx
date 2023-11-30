@@ -44,6 +44,7 @@ export type TextboxContainerProps = {
     refs: SuggestionRefs;
     sort: (a: Suggestion, b: Suggestion) => number;
     editorRef: MutableRefObject<any>;
+    checkerId: string;
 };
 
 const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
@@ -55,6 +56,7 @@ export class TextboxContainer extends React.Component<
         isAccessCodeModalVisible: boolean;
         isExampleCodeModalVisible: boolean;
         keysToRefs: any;
+        checkerId: string;
     }
 > {
     constructor(props: TextboxContainerProps) {
@@ -424,7 +426,10 @@ export class TextboxContainer extends React.Component<
             .getCurrentContent()
             .getPlainText();
 
-        const response = await Api.checkDoc({ doc: plaintext, checkerId });
+        const response = await Api.checkDoc({
+            doc: plaintext,
+            checkerId: this.props.checkerId,
+        });
 
         const feedback = response.feedback;
         const feedbackRefs: SuggestionRefs = {};
