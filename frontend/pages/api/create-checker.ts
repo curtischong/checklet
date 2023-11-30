@@ -24,19 +24,15 @@ export default async function handler(
         return;
     }
 
-    // TODO: use sadd? cause it'll be more efficient?
-    // I just don't know how to handle the initial case when there's an empty set
-    // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis
     await redisClient.set(
         `checkers/${checkerId}`,
         JSON.stringify(checkerBlueprint), // TODO: compress this
     );
 
+    // instead of json.stringifying an array, we use a set
+    // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis
     const checkerIdsKey = `users/${userId}/checkerIds`;
-    const rawCheckerIds = await redisClient.get(checkerIdsKey);
-    const checkerIds: CheckerId[] = rawCheckerIds
-        ? JSON.parse(rawCheckerIds)
-        : [];
+    const checkerIds = await redisClient.sMembers(checkerIdsKey);
     if (checkerIds.includes(checkerId)) {
         sendBadRequest(res, "CheckerId already exists");
         return;
@@ -45,8 +41,7 @@ export default async function handler(
         sendBadRequest(res, "You can only have 7 checkers");
         return;
     }
-    checkerIds.push(checkerId);
-    await redisClient.set(checkerIdsKey, JSON.stringify(checkerIds));
+    await redisClient.sAdd(checkerIdsKey, checkerId);
 
     res.status(200).json({ status: "success" });
 }

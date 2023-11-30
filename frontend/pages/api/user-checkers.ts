@@ -15,10 +15,7 @@ export default async function handler(
     // https://redis.io/docs/connect/clients/nodejs/
     const redisClient = createClient();
     await redisClient.connect();
-    const rawCheckerIds = await redisClient.get(`users/${userId}/checkerIds`);
-    const checkerIds: CheckerId[] = rawCheckerIds
-        ? JSON.parse(rawCheckerIds)
-        : [];
+    const checkerIds = await redisClient.sMembers(`users/${userId}/checkerIds`);
     const checkerBlueprintPromises = checkerIds.map((checkerId) =>
         redisClient.get(`checkers/${checkerId}`),
     );
