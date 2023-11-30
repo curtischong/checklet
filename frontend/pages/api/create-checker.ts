@@ -33,7 +33,8 @@ export default async function handler(
     const checkerIdsKey = `users/${userId}/checkerIds`;
     const checkerIds = await redisClient.sMembers(checkerIdsKey);
     if (checkerIds.includes(checkerId)) {
-        sendBadRequest(res, "CheckerId already exists");
+        // The user is probably trying to edit an existing checker. this checker is already in checkerIds
+        res.status(200).json({ status: "success" });
         return;
     }
     if (checkerIds.length >= 7) {

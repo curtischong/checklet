@@ -38,5 +38,6 @@ export const requestMiddleware = async (
 
 export const sendBadRequest = (res: NextApiResponse, msg: string): void => {
     console.error(msg);
-    res.status(400).end(msg);
+    res.status(400).send({ errorMsg: msg });
+    res.end();
 };

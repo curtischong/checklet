@@ -10,7 +10,7 @@ import {
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
-import { getUniqueId } from "@utils/strings";
+import { createUniqueId } from "@utils/strings";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 
@@ -31,7 +31,7 @@ export const CheckCreator = ({
     const [positiveExamples, setPositiveExamples] = React.useState<
         PositiveCheckExample[]
     >([]);
-    const [checkId, setCheckId] = React.useState<string>(getUniqueId());
+    const [checkId, setCheckId] = React.useState<string>(createUniqueId());
 
     useEffect(() => {
         const rawInitialCheckBlueprint = (pageData as any)

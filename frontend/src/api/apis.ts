@@ -11,15 +11,30 @@ export class Api {
         requestType: string,
         payload = {},
     ): Promise<any> => {
-        const response = await fetch(`${baseUrl}${endpoint}`, {
-            method: requestType,
-            headers: {
-                "Content-Type": `application/json`,
-            },
-            body: JSON.stringify(payload),
-        });
+        let response;
+        try {
+            response = await fetch(`${baseUrl}${endpoint}`, {
+                method: requestType,
+                headers: {
+                    "Content-Type": `application/json`,
+                },
+                body: JSON.stringify(payload),
+            });
+        } catch (err) {
+            toast.error(err.toString());
+            return undefined;
+        }
+
         if (!response.ok) {
-            throw new Error(response.statusText);
+            let errMsg = response.statusText;
+            try {
+                const responseText = JSON.parse(await response.text());
+                errMsg = responseText.errorMsg;
+            } catch (err) {
+                console.error("couldn't parse response text", err);
+            }
+            toast.error(errMsg);
+            return;
         }
 
         if (response.status !== 204) {
@@ -64,8 +79,6 @@ export class Api {
             blueprint,
             checkerId,
             idToken,
-        }).catch((err) => {
-            toast.error(err.message);
         });
     };
 }
