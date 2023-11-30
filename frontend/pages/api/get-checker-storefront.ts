@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { isUnauthenticatedRequestValid } from "pages/api/common";
+import { checkerBlueprintToCheckerStorefront } from "pages/api/public-checks";
 import { createClient } from "redis";
 
 export default async function handler(
@@ -16,13 +17,13 @@ export default async function handler(
 
     const checkerId = req.body.checkerId;
 
-    const doesCheckerExist = await redisClient.sIsMember(
-        "publicCheckerIds",
-        checkerId,
-    );
+    const checkerBlueprint = await redisClient.get(`checkers/${checkerId}`);
+    const checkerStorefront = checkerBlueprint
+        ? checkerBlueprintToCheckerStorefront(JSON.parse(checkerBlueprint))
+        : null;
 
     res.status(200).json({
-        doesCheckerExist,
+        checkerStorefront,
     });
     return;
 }

@@ -10,8 +10,12 @@ import { EditorState } from "draft-js";
 import { TextButton } from "@components/Button";
 import { useRouter } from "next/router";
 import { useClientContext } from "@utils/ClientContext";
+import { CheckerStorefront } from "@components/CheckerStore";
 
-export const Editor: React.FC = () => {
+interface Props {
+    storefront: CheckerStorefront;
+}
+export const Editor = ({ storefront }: Props): JSX.Element => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
     const [suggestionsRefs, setSuggestionsRefs] = useState<SuggestionRefs>({});
     const [activeKey, setActiveKey] = useState<Suggestion>();
@@ -56,6 +60,7 @@ export const Editor: React.FC = () => {
                     updateEditorState={setEditorState}
                     sort={sorts[sortIdx]}
                     editorRef={domEditorRef}
+                    storefront={storefront}
                 />
                 <SuggestionsContainer
                     suggestions={suggestions}

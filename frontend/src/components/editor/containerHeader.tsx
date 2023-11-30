@@ -12,6 +12,7 @@ import {
     Suggestion,
     SuggestionRefs,
 } from "@components/editor/suggestions/suggestionsTypes";
+import { CheckerStorefront } from "@components/CheckerStore";
 
 export type ContainerHeaderProps = {
     editorState: EditorState;
@@ -20,6 +21,7 @@ export type ContainerHeaderProps = {
     updateEditorState: (e: EditorState) => void;
     decorator: () => CompositeDecorator;
     sort: (a: Suggestion, b: Suggestion) => number;
+    storefront: CheckerStorefront;
 };
 
 export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
@@ -29,6 +31,7 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
     sort,
     updateSuggestions,
     updateRefs,
+    storefront,
 }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
@@ -102,7 +105,11 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
         <Affix offsetTop={0}>
             <div className={classnames(css.header)}>
                 <div className="pb-6 flex flex-row">
-                    <div className="font-bold my-auto">Checker Name</div>
+                    {/* TODO: maybe put on the right side, above feedback */}
+                    <div className="font-bold my-auto">{storefront.name}</div>
+                    <div className="font-bold my-auto ml-20">
+                        {storefront.desc}
+                    </div>
 
                     {getAccessCode() === "admin" && (
                         <div

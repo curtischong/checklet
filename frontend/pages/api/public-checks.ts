@@ -24,19 +24,20 @@ export default async function handler(
     );
 
     res.status(200).json({
-        checkerStorefronts:
-            checkerBlueprintsToCheckerPreviews(checkerBlueprints),
+        checkerStorefronts: checkerBlueprints.map(
+            checkerBlueprintToCheckerStorefront,
+        ),
     });
     return;
 }
 
-const checkerBlueprintsToCheckerPreviews = (
-    checkerBlueprints: CheckerBlueprint[],
-): CheckerStorefront[] => {
-    return checkerBlueprints.map((blueprint) => ({
+export const checkerBlueprintToCheckerStorefront = (
+    blueprint: CheckerBlueprint,
+): CheckerStorefront => {
+    return {
         id: blueprint.id,
         name: blueprint.name,
         desc: blueprint.desc,
         creatorId: blueprint.creatorId,
-    }));
+    };
 };

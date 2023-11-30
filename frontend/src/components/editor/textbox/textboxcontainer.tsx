@@ -16,6 +16,7 @@ import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
 import "draft-js/dist/Draft.css";
+import { CheckerStorefront } from "@components/CheckerStore";
 // const PizZip = require("pizzip");
 // import Docxtemplater from "docxtemplater";
 // import PizZip from "pizzip";
@@ -45,6 +46,7 @@ export type TextboxContainerProps = {
     refs: SuggestionRefs;
     sort: (a: Suggestion, b: Suggestion) => number;
     editorRef: MutableRefObject<any>;
+    storefront: CheckerStorefront;
 };
 
 // const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
@@ -60,6 +62,7 @@ export const TextboxContainer = ({
     refs,
     sort,
     editorRef,
+    storefront,
 }: TextboxContainerProps): JSX.Element => {
     // {
     //     loading: boolean;
@@ -219,6 +222,7 @@ export const TextboxContainer = ({
                 sort={sort}
                 updateRefs={updateRefs}
                 updateSuggestions={updateSuggestions}
+                storefront={storefront}
             />
             <Editor
                 spellCheck={true}

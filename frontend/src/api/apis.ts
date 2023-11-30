@@ -100,12 +100,16 @@ export class Api {
         return data?.checkerStorefronts;
     };
 
-    static doesCheckerExist = async (
+    static getCheckerStorefront = async (
         checkerId: CheckerId,
-    ): Promise<boolean | undefined> => {
-        const data = await Api.createRequest("api/does-checker-exist", "POST", {
-            checkerId,
-        });
-        return data?.doesCheckerExist;
+    ): Promise<CheckerStorefront | undefined> => {
+        const data = await Api.createRequest(
+            "api/get-checker-storefront",
+            "POST",
+            {
+                checkerId,
+            },
+        );
+        return data?.checkerStorefront;
     };
 }
