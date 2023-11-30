@@ -1,10 +1,12 @@
 import { Api } from "@api/apis";
-import { NormalButton, TextButton } from "@components/Button";
+import { DeleteButton, NormalButton, TextButton } from "@components/Button";
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
+import { TrashIcon } from "@components/icons/TrashIcon";
 import { useClientContext } from "@utils/ClientContext";
+import { Popconfirm } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useCallback } from "react";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
@@ -20,7 +22,7 @@ const Dashboard: React.FC = () => {
         }
     }, [user]);
 
-    useEffect(() => {
+    const fetchCheckerBlueprints = useCallback(() => {
         (async () => {
             if (user === null) {
                 return;
@@ -31,6 +33,10 @@ const Dashboard: React.FC = () => {
             setCheckers(checkerBlueprints);
         })();
     }, [user]);
+
+    useEffect(() => {
+        fetchCheckerBlueprints();
+    }, [fetchCheckerBlueprints]);
 
     return (
         <div className="flex">
@@ -58,28 +64,48 @@ const Dashboard: React.FC = () => {
             >
                 Editor
             </TextButton>
-            <div className="container mx-auto text-center mt-20">
+            <div className="container mx-auto mt-20">
                 {user ? user.email : <></>}
                 <p className="text-xl font-bold">Your Checkers</p>
-                {checkers.map((checker, idx) => {
-                    return (
-                        <div
-                            className="flex justify-center"
-                            key={`checker-${idx}`}
-                        >
-                            <Link
-                                href={{
-                                    pathname: "/create-checker",
-                                    query: {
-                                        checkerId: checker.id,
-                                    },
-                                }}
+                <div className="ml-4 w-80 mx-auto">
+                    {checkers.map((checker, idx) => {
+                        return (
+                            <div
+                                className="w-32 flex flex-row"
+                                key={`checker-${idx}`}
                             >
-                                {checker.name}
-                            </Link>
-                        </div>
-                    );
-                })}
+                                <Popconfirm title={"Confirm Delete"}>
+                                    <DeleteButton
+                                        onClick={async () => {
+                                            if (!user) {
+                                                toast.error(
+                                                    "You must be logged in to delete a checker",
+                                                );
+                                                return;
+                                            }
+                                            Api.deleteChecker(
+                                                checker.id,
+                                                await user.getIdToken(),
+                                            ).then(() => {
+                                                fetchCheckerBlueprints();
+                                            });
+                                        }}
+                                    />
+                                </Popconfirm>
+                                <Link
+                                    href={{
+                                        pathname: "/create-checker",
+                                        query: {
+                                            checkerId: checker.id,
+                                        },
+                                    }}
+                                >
+                                    {checker.name}
+                                </Link>
+                            </div>
+                        );
+                    })}
+                </div>
                 <NormalButton
                     onClick={() => {
                         router.push("/create-checker");

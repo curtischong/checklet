@@ -22,7 +22,18 @@ export default async function handler(
         sendBadRequest(res, validationErr);
         return;
     }
+    const existingChecker = await redisClient.get(`checkers/${checkerId}`);
+    if (existingChecker !== null) {
+        if (JSON.parse(existingChecker).creatorId !== userId) {
+            sendBadRequest(
+                res,
+                `You are not the creator of this checker. You cannot edit it.`,
+            );
+            return;
+        }
+    }
 
+    checkerBlueprint.creatorId = userId; // override just for security purposes
     await redisClient.set(
         `checkers/${checkerId}`,
         JSON.stringify(checkerBlueprint), // TODO: compress this
@@ -43,7 +54,7 @@ export default async function handler(
     }
     await redisClient.sAdd(checkerIdsKey, checkerId);
 
-    res.status(200).json({ status: "success" });
+    res.status(204);
 }
 
 const isBlueprintValid = (

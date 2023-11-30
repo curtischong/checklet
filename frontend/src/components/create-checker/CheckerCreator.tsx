@@ -61,6 +61,9 @@ export const CheckerCreator: React.FC = () => {
                 await user.getIdToken(),
                 data.checkerId as string,
             );
+            if (!checkerBlueprint) {
+                return;
+            }
             setName(checkerBlueprint.name);
             setDesc(checkerBlueprint.desc);
             setCheckerId(checkerBlueprint.id);
