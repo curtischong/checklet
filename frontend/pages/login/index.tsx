@@ -52,6 +52,7 @@ const Login: React.FC = () => {
                     Your Writer Friend
                 </h1>
             </div>
+            <div>Sign in to create checkers</div>
             <TextButton
                 className="mx-auto mb-4"
                 onClick={() => {

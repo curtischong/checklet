@@ -42,7 +42,6 @@ export const Editor: React.FC = () => {
 
         setEditorState(EditorState.forceSelection(editorState, selectionState));
     };
-
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
@@ -57,6 +56,7 @@ export const Editor: React.FC = () => {
                     updateEditorState={setEditorState}
                     sort={sorts[sortIdx]}
                     editorRef={domEditorRef}
+                    checkerId={router.query.checkerId as string}
                 />
                 <SuggestionsContainer
                     suggestions={suggestions}

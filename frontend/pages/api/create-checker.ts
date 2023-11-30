@@ -53,6 +53,7 @@ export default async function handler(
         return;
     }
     await redisClient.sAdd(checkerIdsKey, checkerId);
+    await redisClient.sAdd("publicCheckerIds", checkerId);
 
     res.status(204);
 }

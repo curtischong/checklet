@@ -27,7 +27,7 @@ const Dashboard: React.FC = () => {
             if (user === null) {
                 return;
             }
-            const checkerBlueprints = await Api.fetchUserCheckerBlueprints(
+            const checkerBlueprints = await Api.userCheckerBlueprints(
                 await user.getIdToken(),
             );
             setCheckers(checkerBlueprints);
