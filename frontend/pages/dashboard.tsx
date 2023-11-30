@@ -46,7 +46,7 @@ const Dashboard: React.FC = () => {
                     firebaseAuth.signOut().then(
                         function () {
                             // Sign-out successful.
-                            router.push("/");
+                            router.push("/editor");
                         },
                         function (error) {
                             toast.error(error.message);
@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
             <TextButton
                 className="fixed right-20 top-3"
                 onClick={() => {
-                    router.push("/");
+                    router.push("/editor");
                 }}
             >
                 Editor

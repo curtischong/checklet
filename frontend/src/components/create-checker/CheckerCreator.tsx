@@ -193,7 +193,7 @@ const MainCheckerPage = ({
             />
 
             <div className="flex flex-row mt-2">
-                <h1 className="font-bold text-xl mt-4">Your Checks</h1>
+                <h1 className="font-bold text-xl mt-4">Checks</h1>
                 <HelpIcon
                     className="mt-[22px] ml-2"
                     text={
