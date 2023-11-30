@@ -81,4 +81,14 @@ export class Api {
             idToken,
         });
     };
+
+    static deleteChecker = async (
+        checkerId: CheckerId,
+        idToken: string,
+    ): Promise<void> => {
+        Api.createRequest("api/delete-checker", "POST", {
+            checkerId,
+            idToken,
+        });
+    };
 }

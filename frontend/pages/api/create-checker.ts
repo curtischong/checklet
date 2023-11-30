@@ -43,7 +43,7 @@ export default async function handler(
     }
     await redisClient.sAdd(checkerIdsKey, checkerId);
 
-    res.status(200).json({ status: "success" });
+    res.status(204);
 }
 
 const isBlueprintValid = (
