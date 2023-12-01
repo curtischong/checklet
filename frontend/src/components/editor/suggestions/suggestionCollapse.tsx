@@ -40,6 +40,10 @@ export const SuggestionCollapse = forwardRef(
         const srcNaut = suggestion.originalText;
         const replacementText = suggestion.editedText;
 
+        const getCheckDesc = (suggestion: Suggestion) => {
+            return props.checkDescObj[suggestion.checkId];
+        };
+
         return (
             <div
                 ref={ref as React.RefObject<HTMLDivElement>}
@@ -51,17 +55,20 @@ export const SuggestionCollapse = forwardRef(
                     <span className={css.bigDot} />
                     {isActive ? (
                         <div className={css.activeCategory}>
-                            {suggestion.checkId}
+                            {getCheckDesc(suggestion).name}
+                            {/* <span
+                                className={"p-[3px] rounded-xl bg-red-800 mx-8"}
+                            /> */}
+                            <div className="absolute right-4 top-2">
+                                {getCheckDesc(suggestion).category}
+                            </div>
                         </div>
                     ) : (
                         <>
                             <div className={css.srcNautObj}>{srcNaut}</div>
                             <span className={css.smallDot} />
                             <div className={css.shortDesc}>
-                                {
-                                    props.checkDescObj[suggestion.checkId]
-                                        .longDesc
-                                }
+                                {getCheckDesc(suggestion).name}
                             </div>
                         </>
                     )}
@@ -90,8 +97,7 @@ export const SuggestionCollapse = forwardRef(
                             {" "}
                             <ReactMarkdown
                                 children={`${
-                                    props.checkDescObj[suggestion.checkId]
-                                        .longDesc
+                                    getCheckDesc(suggestion).longDesc
                                 }`}
                                 remarkPlugins={[remarkGfm]}
                             />{" "}
