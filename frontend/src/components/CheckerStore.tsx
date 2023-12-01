@@ -1,17 +1,11 @@
 import { Api } from "@api/apis";
+import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-export interface CheckerStorefront {
-    id: string;
-    name: string;
-    desc: string;
-    creatorId: string;
-}
-
 // TODO: show user checkers and public checkers separately?
-export const CheckerStore = () => {
+export const CheckerStore = (): JSX.Element => {
     const { user } = useClientContext();
     const [storefronts, setStorefronts] = useState<CheckerStorefront[]>([]);
     useEffect(() => {

@@ -1,8 +1,5 @@
 import { NormalButton, SubmitButton } from "@components/Button";
-import {
-    CheckBlueprint,
-    CheckOverview,
-} from "@components/create-checker/Check";
+import { CheckOverview } from "@components/create-checker/Check";
 import { CheckCreator } from "@components/create-checker/CheckCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { SetState } from "@utils/types";
@@ -15,15 +12,8 @@ import { Api } from "@api/apis";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { TextArea } from "@components/TextArea";
 import { createUniqueId } from "@utils/strings";
+import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
 
-// TODO: I think I should have a "creation Metadata object that is name, desc, creatorId, and id"
-export type CheckerBlueprint = {
-    name: string;
-    desc: string;
-    checkBlueprints: CheckBlueprint[];
-    creatorId: string;
-    id: string;
-};
 export enum Page {
     Main,
     CheckCreator,

@@ -13,6 +13,7 @@ import {
     SuggestionRefs,
 } from "@components/editor/suggestions/suggestionsTypes";
 import { CheckerStorefront } from "@components/CheckerStore";
+import { toast } from "react-toastify";
 
 export type ContainerHeaderProps = {
     editorState: EditorState;
@@ -59,10 +60,17 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
         setIsLoading(true);
         const plaintext = editorState.getCurrentContent().getPlainText();
 
-        const response = await Api.checkDoc({
-            doc: plaintext,
-            checkerId: router.query.checkerId as string,
-        });
+        const response = await Api.checkDoc(
+            plaintext,
+            router.query.checkerId as string,
+        );
+        setIsLoading(false);
+        if (!response) {
+            toast.error("Something went wrong, please try again later");
+            return;
+        }
+        console.log(response);
+        return;
 
         const feedback = response.feedback;
         const feedbackRefs: SuggestionRefs = {};
@@ -96,10 +104,9 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
             Suggestions: feedback,
             Input: plaintext,
         });
-        setIsLoading(false);
 
         return editor;
-    }, []);
+    }, [editorState, isLoading]);
 
     return (
         <Affix offsetTop={0}>
