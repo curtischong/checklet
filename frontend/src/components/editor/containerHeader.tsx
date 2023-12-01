@@ -53,9 +53,9 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
     const checkDocument = useCallback(async (): Promise<
         EditorState | undefined
     > => {
-        if (isLoading) {
-            return;
-        }
+        // if (isLoading) {
+        //     return;
+        // }
         setIsLoading(true);
         const plaintext = editorState.getCurrentContent().getPlainText();
 
@@ -131,7 +131,8 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
 
                     <LoadingButton
                         onClick={checkDocument}
-                        loading={isLoading}
+                        // loading={isLoading}
+                        loading={false}
                         className="h-9 float-right ml-32"
                     >
                         Check Document

@@ -42,8 +42,6 @@ async function getCurrentLocation() {
 
 async function getWeather(args: { location: string }) {
     const { location } = args;
-    console.log("called getWeather. location=", location);
-    const temperature = "50degF"; // Simulate lookup
     const precipitation = "high"; // Simulate lookup
     return { temperature, precipitation };
 }
@@ -58,5 +56,3 @@ main();
 // {role: "assistant", content: "It's looking cold and rainy - you might want to wear a jacket!"}
 //
 // Final content: "It's looking cold and rainy - you might want to wear a jacket!"
-
-export default 5;

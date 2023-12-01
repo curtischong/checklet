@@ -9,6 +9,7 @@ export class Llm {
     client: OpenAI;
     model: string;
     cache: SimpleCache;
+    systemPromptMessage: OpenAI.ChatCompletionMessageParam;
 
     constructor(
         systemPrompt: string,
@@ -18,10 +19,10 @@ export class Llm {
         this.useCache = useCache;
         this.client = new OpenAI();
         this.model = model;
-        this.client.chat.completions.create({
-            model,
-            messages: [{ role: "system", content: systemPrompt }],
-        });
+        this.systemPromptMessage = {
+            role: "system",
+            content: systemPrompt,
+        };
 
         const cacheDir = path.join(process.cwd(), ".chatgpt_history");
         fs.mkdirSync(cacheDir, { recursive: true });
@@ -40,7 +41,7 @@ export class Llm {
 
         const value = await this.client.chat.completions.create({
             model: this.model,
-            messages: [message],
+            messages: [this.systemPromptMessage, message],
         });
         this.cache.set(message, value);
         return value;
@@ -49,6 +50,7 @@ export class Llm {
     // TODO: run functions
     async callFunction<Res>(callData: {
         prompt: string;
+        functionName: string;
         functionDesc: string;
         functionParams: JSONSchema;
         fn: (...args: any[]) => Res;
@@ -60,11 +62,16 @@ export class Llm {
             }
         }
 
+        // do I do anything whn the function is called?
+        // do I do anything when I get a response from the assistant?
+        // how do I handle timeout?
+
         const result = new Promise<Res>((resolve, reject) => {
             this.client.beta.chat.completions
                 .runFunctions({
-                    model: "gpt-3.5-turbo",
+                    model: this.model,
                     messages: [
+                        this.systemPromptMessage,
                         {
                             role: "user",
                             content: callData.prompt,
@@ -73,18 +80,34 @@ export class Llm {
                     functions: [
                         {
                             function: (...args: any[]) => {
+                                console.log("called function with args", args);
                                 this.cache.set(prompt, args);
                                 const res = callData.fn(args);
                                 resolve(res);
                             },
+                            name: callData.functionName,
                             description: callData.functionDesc,
                             parse: JSON.parse, // or use a validation library like zod for typesafe parsing.
                             parameters: callData.functionParams,
                         },
                     ],
                 })
-                .on("message", (message) => console.log(message));
+                // do not care about this onMessage thing since it triggers for the systmemessage as well
+                .on("message", (message) => {
+                    // console.log("on message:", message);
+                    if (message.role === "assistant") {
+                        // the assistant made a response.
+                        if (message.function_call) {
+                        }
+                    }
+                });
+
+            // resolve the promise after 3 seconds. cause if the API fails to call our function, we'll be stuck here forever
+            setTimeout(() => {
+                reject("API call timed out after 3 seconds");
+            }, 3000);
         });
+
         return result;
     }
 }

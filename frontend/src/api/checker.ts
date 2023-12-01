@@ -1,3 +1,4 @@
+import { FeedbackResponse } from "@api/ApiTypes";
 import { Check } from "@api/check";
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import * as fs from "fs";
@@ -26,7 +27,7 @@ export class Checker {
     }
 
     async checkDoc(doc: string): Promise<void> {
-        const results = [];
+        const results [] = [];
         for (const check of this.checks) {
             // todo: parallelize
             results.push(await check.checkDoc(doc));

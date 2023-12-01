@@ -50,10 +50,16 @@ export class SimpleCache {
 
     get(rawKey: any): any {
         const key = this.getKey(rawKey);
-        if (key in this.cache) {
+        if (!(key in this.cache)) {
             return undefined;
         }
-        return JSON.parse(this.cache[key]);
+        const value = this.cache[key];
+        try {
+            return JSON.parse(value);
+        } catch (error) {
+            console.error("Error parsing cache value", error);
+            return undefined;
+        }
     }
 
     remove(rawKey: any): void {
