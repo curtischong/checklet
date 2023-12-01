@@ -8,7 +8,6 @@ import { useClientContext } from "@utils/ClientContext";
 import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
 
 const EditorPage: React.FC = () => {
-    // TODO: check if checker exists
     const router = useRouter();
     const { checkerId } = router.query;
     const [storefront, setStorefront] = React.useState<
