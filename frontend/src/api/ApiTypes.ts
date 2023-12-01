@@ -31,11 +31,14 @@ export const newEditOp = (range: DocRange, newString: string): EditOp => {
 //     cardRef: RefObject<HTMLDivElement>;
 // };
 
+export type SuggestionId = string;
+
 export type Suggestion = {
     originalText: string;
     editedText: string;
     editOps: EditOp[];
     checkId: string;
+    suggestionId: SuggestionId;
 };
 
 export class DocRange {

@@ -14,7 +14,6 @@ import {
 import { SuggestionRefs } from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
-import { ContainerHeader } from "../containerHeader";
 import "draft-js/dist/Draft.css";
 import { SetState } from "@utils/types";
 import {
@@ -37,14 +36,6 @@ import { Api } from "@api/apis";
 
 // need same version with worker and pdfjs for it to work properly
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-
-/*
-    TONE
-    WORDING
-    SIMPLICITY
-    WHITESPACE
-    WARNING
-    */
 
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
@@ -82,7 +73,9 @@ export const TextboxContainer = ({
     const [isLoading, setIsLoading] = React.useState(false);
     const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
         React.useState(false);
-    const [keysToRefs, setKeysToRefs] = React.useState<any>({});
+    const rangeToSuggestion = React.useRef<SuggestionRefs>({});
+
+    const router = useRouter();
     useEffect(() => {
         updateEditorState(
             EditorState.moveFocusToEnd(EditorState.createEmpty(decorator())),
@@ -98,8 +91,10 @@ export const TextboxContainer = ({
         return new CompositeDecorator([
             {
                 strategy: handleStrategy,
-                component: (props: any) =>
-                    HandleSpan(props, spanStyle, handleUnderlineClicked),
+                component: (props: any) => {
+                    console.log("decorator props", props);
+                    return HandleSpan(props, spanStyle, handleUnderlineClicked);
+                },
             },
         ]);
     };
@@ -118,7 +113,7 @@ export const TextboxContainer = ({
         }
 
         const end = start + contentBlock.getLength();
-        suggestions.forEach((suggestion: Suggestion, index: number) => {
+        suggestions.forEach((suggestion: Suggestion) => {
             suggestion.editOps.forEach((editOp) => {
                 const range = editOp.range;
                 if (range.start > end || range.end < start) {
@@ -127,7 +122,8 @@ export const TextboxContainer = ({
 
                 const startPos = range.start - start;
                 const endPos = range.end - start;
-                keysToRefs[range.start + "," + range.end] = index;
+                rangeToSuggestion.current[range.start + "," + range.end] =
+                    suggestion;
                 callback(
                     Math.max(startPos, 0),
                     Math.min(contentBlock.getLength(), endPos),
@@ -167,10 +163,9 @@ export const TextboxContainer = ({
         }
         const startPos = props.start + start;
         const endPos = props.end + start;
-        const result = activeKey;
-        const idx = keysToRefs[startPos + "," + endPos];
+        const suggestion = rangeToSuggestion.current[startPos + "," + endPos];
 
-        if (idx === result?.id) {
+        if (suggestion?.suggestionId === activeKey?.suggestionId) {
             style.backgroundColor = "#DBEBFF";
             style.padding = "1.5px 0 1px";
             style.backgroundPosition = "center calc(100% + 2px)";
@@ -193,36 +188,34 @@ export const TextboxContainer = ({
         const endPos = props.end + start;
         const key = startPos + "," + endPos;
 
-        if (!(key in keysToRefs)) {
+        if (!(key in rangeToSuggestion.current)) {
             toast.error("Could not find key corresponding suggestion");
             return;
         }
 
-        // const result = this.props.suggestions.find(
-        //     (s) =>
-        //         s.highlightRanges[0].endPos === endPos &&
-        //         s.highlightRanges[0].startPos === startPos,
-        // );
+        const suggestion = suggestions.find((s) => {
+            return s.editOps.some((editOp) => {
+                editOp.range.start === startPos && editOp.range.end === endPos;
+            });
+        });
 
-        // if (result != null) {
-        //     this.props.updateCollapseKey(result);
-        // }
+        if (!suggestion) {
+            toast.error("Could not find key corresponding suggestion");
+            return;
+        }
 
-        const idx = keysToRefs[key];
-        const sugg = suggestions[idx];
-        updateCollapseKey(sugg);
+        // TODO: uncollapse the previous suggestion?
+        updateCollapseKey(suggestion);
         setTimeout(() => {
-            refs[idx].current?.scrollIntoView({
+            refs[suggestion.checkId].current?.scrollIntoView({
                 behavior: "smooth",
                 block: "center",
             });
         });
         mixpanelTrack("Underlined text selected", {
-            suggestion: sugg,
+            suggestion,
         });
     };
-
-    const router = useRouter();
 
     const handleExampleClicked = (text: string) => {
         updateEditorState(
@@ -259,13 +252,14 @@ export const TextboxContainer = ({
         // return;
 
         const suggestions = response.suggestions;
-        const feedbackRefs: SuggestionRefs = {};
+        const suggestionRefs: SuggestionRefs = {};
         suggestions.sort(sort);
 
         console.log("suggestions", suggestions);
         setCheckDescObj(response.checkDescs);
         updateSuggestions(suggestions);
-        updateRefs(feedbackRefs);
+        // TODO: update the suggestionRefs with the actual ref of the card
+        updateRefs(suggestionRefs);
         let editor = editorState;
 
         const selectionState = editor.getSelection();
@@ -323,7 +317,7 @@ export const TextboxContainer = ({
                 onChange={updateEditorState}
                 placeholder="Type or paste your resume here"
                 ref={editorRef}
-            />
+            ></Editor>
         </div>
     );
 };
