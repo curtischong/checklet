@@ -38,10 +38,8 @@ export default async function handler(
     const checkerBlueprint = JSON.parse(rawCheckerBlueprint);
     const checker = new Checker(checkerBlueprint);
 
-    // todo: get data back
     const suggestions = await checker.checkDoc(doc);
 
-    // TODO: test this last.
     const uniqueCheckIds = new Set<string>(suggestions.map((r) => r.checkId));
     const checkDescs = getCheckDescForCheckIds(checker, uniqueCheckIds);
 

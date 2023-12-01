@@ -82,11 +82,7 @@ export class Llm {
                     functions: [
                         {
                             function: (...args: any[]) => {
-                                // this is an empty function call because the function is actually called at the end
-                                // console.log("called function with args", args);
-                                // this.cache.set(prompt, args);
-                                // const res = callData.fn(args);
-                                // resolve(res);
+                                // this is an empty function call because we will manually call the function when we get the assistant response
                             },
                             name: callData.functionName,
                             description: callData.functionDesc,
@@ -97,20 +93,20 @@ export class Llm {
                 })
                 // do not care about this onMessage thing since it triggers for the systmemessage as well
                 .on("message", (message) => {
-                    // console.log("on message:", message);
-                    if (message.role === "assistant") {
-                        // the assistant made a response.
+                    if (message.role !== "assistant") {
+                        // we need to filter for the assistant message since the systemprompt and user messages will also be here
+                        return;
+                    }
 
-                        clearTimeout(timeoutId);
-                        if (message.function_call) {
-                            const args = message.function_call.arguments;
-                            this.cache.set(callData.prompt, args);
-                            resolve(args);
-                        } else {
-                            reject(
-                                `no function_call made. content=${message.content}}`,
-                            );
-                        }
+                    clearTimeout(timeoutId);
+                    if (message.function_call) {
+                        const args = message.function_call.arguments;
+                        this.cache.set(callData.prompt, args);
+                        resolve(args);
+                    } else {
+                        reject(
+                            `no function_call made. content=${message.content}}`,
+                        );
                     }
                 });
         });

@@ -54,9 +54,9 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
     const checkDocument = useCallback(async (): Promise<
         EditorState | undefined
     > => {
-        // if (isLoading) {
-        //     return;
-        // }
+        if (isLoading) {
+            return;
+        }
         setIsLoading(true);
         const plaintext = editorState.getCurrentContent().getPlainText();
 
@@ -64,6 +64,7 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
             plaintext,
             router.query.checkerId as string,
         );
+        setIsLoading(false);
         if (!response) {
             toast.error("Something went wrong, please try again later");
             return;
@@ -103,7 +104,6 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
             Suggestions: feedback,
             Input: plaintext,
         });
-        setIsLoading(false);
 
         return editor;
     }, [editorState, isLoading]);
@@ -136,8 +136,7 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
 
                     <LoadingButton
                         onClick={checkDocument}
-                        // loading={isLoading}
-                        loading={false}
+                        loading={isLoading}
                         className="h-9 float-right ml-32"
                     >
                         Check Document
