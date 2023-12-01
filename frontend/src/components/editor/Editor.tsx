@@ -21,7 +21,7 @@ interface Props {
 export const Editor = ({ storefront }: Props): JSX.Element => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
     const [suggestionsRefs, setSuggestionsRefs] = useState<SuggestionRefs>({});
-    const [activeKey, setActiveKey] = useState<Suggestion>();
+    const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
     const [editorState, setEditorState] = useState<EditorState>(
         EditorState.createEmpty(),
     );
@@ -42,8 +42,8 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     };
     const domEditorRef = useRef<{ focus: () => void }>();
 
-    const updateActiveKey = (s: Suggestion | undefined) => {
-        setActiveKey(s);
+    const updateActiveSuggestion = (s: Suggestion | undefined) => {
+        setActiveSuggestion(s);
 
         const selectionState = editorState.getSelection();
 
@@ -53,8 +53,8 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
                 <TextboxContainer
-                    activeKey={activeKey}
-                    updateCollapseKey={updateActiveKey}
+                    activeSuggestion={activeSuggestion}
+                    updateActiveSuggestion={updateActiveSuggestion}
                     suggestions={suggestions}
                     updateSuggestions={setSuggestions}
                     refs={suggestionsRefs}
@@ -70,8 +70,8 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                 <SuggestionsContainer
                     suggestions={suggestions}
                     refs={suggestionsRefs}
-                    activeKey={activeKey}
-                    setActiveKey={updateActiveKey}
+                    activeKey={activeSuggestion}
+                    setActiveKey={updateActiveSuggestion}
                     editorState={editorState}
                     updateEditorState={setEditorState}
                     updateSortIdx={updateSortIdx}
