@@ -47,7 +47,7 @@ export class DocRange {
     constructor(public start: number, public end: number) {}
 
     isAdjacent(other: DocRange): boolean {
-        return this.end === other.start || this.start === other.end;
+        return this.end === other.start;
     }
     merge(other: DocRange): void {
         this.end = other.end;

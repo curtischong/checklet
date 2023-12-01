@@ -45,7 +45,7 @@ export default async function handler(
     // const uniqueCheckIds = new Set<string>(suggestions.map((r) => r.checkId));
     // const checkDescs = getCheckDescForCheckIds(checker, uniqueCheckIds);
 
-    console.log("results", suggestions);
+    console.log("results", JSON.stringify(suggestions));
 
     res.status(204);
 }

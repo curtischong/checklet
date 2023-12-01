@@ -3,8 +3,22 @@
         // these options are overrides used only by ts-node
         // same as the --compilerOptions flag and the TS_NODE_COMPILER_OPTIONS environment variable
         "compilerOptions": {
-            "module": "commonjs"
-        }
+            "module": "commonjs",
+            "baseUrl": ".",
+            "paths": {
+                "@api": ["src/api"],
+                "@api/*": ["src/api/*"],
+                "@components/*": ["src/components/*"],
+                "@components": ["src/components"],
+                "@public/*": ["public/*"],
+                "@public": ["public"],
+                "@styles/*": ["src/styles/*"],
+                "@styles": ["src/styles"],
+                "@utils": ["src/utils"],
+                "@utils/*": ["src/utils/*"]
+            }
+        },
+        "require": ["tsconfig-paths/register"]
     },
     "compilerOptions": {
         "target": "es6",

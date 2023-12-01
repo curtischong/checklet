@@ -47,26 +47,26 @@ export class Llm {
         return value;
     }
 
-    // TODO: run functions
-    async callFunction<Res>(callData: {
+    // returns params for the function call (these params are a json obj)
+    async callFunction(callData: {
         prompt: string;
         functionName: string;
         functionDesc: string;
         functionParams: JSONSchema;
-        fn: (...args: any[]) => Res;
-    }): Promise<Res> {
+    }): Promise<string> {
         if (this.useCache) {
             const cachedValue = this.cache.get(callData.prompt);
             if (cachedValue) {
-                return callData.fn(...cachedValue);
+                return cachedValue;
             }
         }
 
-        // do I do anything whn the function is called?
-        // do I do anything when I get a response from the assistant?
-        // how do I handle timeout?
+        const result = new Promise<string>((resolve, reject) => {
+            // resolve the promise after 10 seconds. cause if the API fails to call our function, we'll be stuck here forever
+            const timeoutId = setTimeout(() => {
+                reject("API call timed out after 10 seconds");
+            }, 10000);
 
-        const result = new Promise<Res>((resolve, reject) => {
             this.client.beta.chat.completions
                 .runFunctions({
                     model: this.model,
@@ -80,10 +80,11 @@ export class Llm {
                     functions: [
                         {
                             function: (...args: any[]) => {
-                                console.log("called function with args", args);
-                                this.cache.set(prompt, args);
-                                const res = callData.fn(args);
-                                resolve(res);
+                                // this is an empty function call because the function is actually called at the end
+                                // console.log("called function with args", args);
+                                // this.cache.set(prompt, args);
+                                // const res = callData.fn(args);
+                                // resolve(res);
                             },
                             name: callData.functionName,
                             description: callData.functionDesc,
@@ -97,15 +98,17 @@ export class Llm {
                     // console.log("on message:", message);
                     if (message.role === "assistant") {
                         // the assistant made a response.
+
+                        clearTimeout(timeoutId);
                         if (message.function_call) {
+                            resolve(message.function_call.arguments);
+                        } else {
+                            reject(
+                                `no function_call made. content=${message.content}}`,
+                            );
                         }
                     }
                 });
-
-            // resolve the promise after 3 seconds. cause if the API fails to call our function, we'll be stuck here forever
-            setTimeout(() => {
-                reject("API call timed out after 3 seconds");
-            }, 3000);
         });
 
         return result;

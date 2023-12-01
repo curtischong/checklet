@@ -1,5 +1,6 @@
 import { DocRange, EditOp, newEditOp } from "@api/ApiTypes";
 
+// https://github.com/curtischong/yourwriterfriend/blob/68103728393eee11683b6268fa86a8c6a62ce7c9/oldbackend/edit_distance.py
 export function editDistanceOperationsWithClasses(
     str1: string,
     str2: string,
@@ -22,7 +23,7 @@ export function editDistanceOperationsWithClasses(
     // Compute the edit distance matrix
     for (let i = 1; i <= m; i++) {
         for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] == str2[j - 1]) {
+            if (str1[i - 1] === str2[j - 1]) {
                 dp[i][j] = dp[i - 1][j - 1]; // No operation needed
             } else {
                 dp[i][j] =
@@ -41,19 +42,19 @@ export function editDistanceOperationsWithClasses(
     let i = m,
         j = n;
     while (i > 0 && j > 0) {
-        if (str1[i - 1] == str2[j - 1]) {
+        if (str1[i - 1] === str2[j - 1]) {
             i--;
             j--;
-        } else if (dp[i][j] == dp[i - 1][j - 1] + 1) {
+        } else if (dp[i][j] === dp[i - 1][j - 1] + 1) {
             // Replace
             operations.push(newEditOp(new DocRange(i - 1, i), str2[j - 1]));
             i--;
             j--;
-        } else if (dp[i][j] == dp[i - 1][j] + 1) {
+        } else if (dp[i][j] === dp[i - 1][j] + 1) {
             // Delete
             operations.push(newEditOp(new DocRange(i - 1, i), ""));
             i--;
-        } else if (dp[i][j] == dp[i][j - 1] + 1) {
+        } else if (dp[i][j] === dp[i][j - 1] + 1) {
             // Insert
             operations.push(newEditOp(new DocRange(j - 1, j), str2[j - 1]));
             j--;
@@ -71,26 +72,20 @@ export function editDistanceOperationsWithClasses(
     }
 
     // Consolidate adjacent operations
-    const consolidated_operations: EditOp[] = [];
+    const merged_ops: EditOp[] = [];
     for (const op of operations.reverse()) {
         if (
-            consolidated_operations.length &&
-            consolidated_operations[
-                consolidated_operations.length - 1
-            ].range.isAdjacent(op.range)
+            merged_ops.length &&
+            merged_ops[merged_ops.length - 1].range.isAdjacent(op.range)
         ) {
-            consolidated_operations[
-                consolidated_operations.length - 1
-            ].range.merge(op.range);
-            consolidated_operations[
-                consolidated_operations.length - 1
-            ].newString += op.newString;
+            merged_ops[merged_ops.length - 1].range.merge(op.range);
+            merged_ops[merged_ops.length - 1].newString += op.newString;
         } else {
-            consolidated_operations.push(newEditOp(op.range, op.newString));
+            merged_ops.push(newEditOp(op.range, op.newString));
         }
     }
 
-    return operations;
+    return merged_ops;
 }
 
 // Example usage
