@@ -2,7 +2,7 @@ import { Affix } from "antd";
 import classnames from "classnames";
 import React, { createRef, useCallback } from "react";
 import css from "./containerHeader.module.scss";
-import { getAccessCode, mixpanelTrack } from "@utils";
+import { mixpanelTrack } from "@utils";
 import { ExamplesModal } from "@components/editor/textbox/examplesModal";
 import { LoadingButton } from "@components/Button";
 import { CompositeDecorator, ContentState, EditorState } from "draft-js";
@@ -114,16 +114,6 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
                     <div className="font-bold my-auto ml-20">
                         {storefront.desc}
                     </div>
-
-                    {getAccessCode() === "admin" && (
-                        <div
-                            onClick={() => setIsExampleCodeModalVisible(true)}
-                            className="italic nautilus-text-blue m-auto hover:underline"
-                        >
-                            {" "}
-                            Examples
-                        </div>
-                    )}
 
                     <ExamplesModal
                         onClose={() => setIsExampleCodeModalVisible(false)}
