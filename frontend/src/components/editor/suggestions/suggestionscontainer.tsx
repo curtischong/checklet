@@ -128,7 +128,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                 return (
                     <NoSuggestionMessage
                         imageSrc={NoSuggestionsImage.src}
-                        header={"Looking Good!"}
+                        header={"Ready to check?"}
                         content={
                             <>
                                 <div className={css.noSuggestContent}>

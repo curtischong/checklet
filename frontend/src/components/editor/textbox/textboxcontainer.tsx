@@ -2,7 +2,7 @@ import React, {
     // createRef,
     CSSProperties,
     MutableRefObject,
-    // useCallback,
+    useCallback,
     useEffect,
 } from "react";
 import {
@@ -23,6 +23,11 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { Suggestion } from "@api/ApiTypes";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { ExamplesModal } from "@components/editor/textbox/examplesModal";
+import { LoadingButton } from "@components/Button";
+import { Affix } from "antd";
+import { Api } from "@api/apis";
 // const PizZip = require("pizzip");
 // import Docxtemplater from "docxtemplater";
 // import PizZip from "pizzip";
@@ -74,14 +79,9 @@ export const TextboxContainer = ({
     setCheckDescObj,
     setHasAnalyzedOnce,
 }: TextboxContainerProps): JSX.Element => {
-    // {
-    //     loading: boolean;
-    //     isAccessCodeModalVisible: boolean;
-    //     isExampleCodeModalVisible: boolean;
-    //     keysToRefs: any;
-    //     checkerId: string;
-    // }
-
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
+        React.useState(false);
     const [keysToRefs, setKeysToRefs] = React.useState<any>({});
     useEffect(() => {
         updateEditorState(
@@ -222,22 +222,101 @@ export const TextboxContainer = ({
         });
     };
 
+    const router = useRouter();
+
+    const handleExampleClicked = (text: string) => {
+        updateEditorState(
+            EditorState.moveFocusToEnd(
+                EditorState.createWithContent(
+                    ContentState.createFromText(text),
+                    decorator(),
+                ),
+            ),
+        );
+        setIsExampleCodeModalVisible(false);
+    };
+
+    const checkDocument = useCallback(async (): Promise<
+        EditorState | undefined
+    > => {
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
+        const plaintext = editorState.getCurrentContent().getPlainText();
+
+        const response = await Api.checkDoc(
+            plaintext,
+            router.query.checkerId as string,
+        );
+        setIsLoading(false);
+        if (!response) {
+            toast.error("Something went wrong, please try again later");
+            return;
+        }
+        setHasAnalyzedOnce(true);
+        console.log(response);
+        // return;
+
+        const suggestions = response.suggestions;
+        const feedbackRefs: SuggestionRefs = {};
+        suggestions.sort(sort);
+
+        console.log("suggestions", suggestions);
+        setCheckDescObj(response.checkDescs);
+        updateSuggestions(suggestions);
+        updateRefs(feedbackRefs);
+        let editor = editorState;
+
+        const selectionState = editor.getSelection();
+        const content = editor.getCurrentContent();
+
+        editor = EditorState.createWithContent(content, decorator());
+
+        updateEditorState(EditorState.forceSelection(editor, selectionState));
+
+        mixpanelTrack("Check Document Clicked", {
+            "Number of suggestions generated": suggestions.length,
+            Suggestions: suggestions,
+            Input: plaintext,
+        });
+
+        return editor;
+    }, [editorState, isLoading]);
+
     return (
         <div
             className="textbox col-span-3"
             style={{ maxHeight: "calc(100vh - 80px)", overflow: "auto" }}
         >
-            <ContainerHeader
-                editorState={editorState}
-                updateEditorState={updateEditorState}
-                decorator={decorator}
-                sort={sort}
-                updateRefs={updateRefs}
-                updateSuggestions={updateSuggestions}
-                storefront={storefront}
-                setCheckDescObj={setCheckDescObj}
-                setHasAnalyzedOnce={setHasAnalyzedOnce}
-            />
+            <Affix offsetTop={0}>
+                <div className="bg-gradient-to-b from-white via-white to-transparent pt-4 pb-4 pl-4">
+                    <div className="pb-6 flex flex-row">
+                        {/* TODO: maybe put on the right side, above feedback */}
+                        <div className="font-bold my-auto">
+                            {storefront.name}
+                        </div>
+                        <div className="font-bold my-auto ml-20">
+                            {storefront.desc}
+                        </div>
+
+                        <ExamplesModal
+                            onClose={() => setIsExampleCodeModalVisible(false)}
+                            visible={isExampleCodeModalVisible}
+                            onClick={handleExampleClicked}
+                        />
+
+                        <LoadingButton
+                            onClick={checkDocument}
+                            loading={isLoading}
+                            className="h-9 float-right ml-32"
+                        >
+                            Check Document
+                        </LoadingButton>
+                    </div>
+                </div>
+            </Affix>
+
             <Editor
                 spellCheck={true}
                 editorState={editorState}
