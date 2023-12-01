@@ -26,6 +26,9 @@ export type RangeToSuggestion = {
 export type SuggestionIdToRef = {
     [key: string]: RefObject<HTMLDivElement>;
 };
+export type SuggestionRangeToUnderlineRef = {
+    [key: string]: RefObject<HTMLSpanElement>;
+};
 
 export enum FeedbackType {
     SUGGESTION = "SUGGESTION",

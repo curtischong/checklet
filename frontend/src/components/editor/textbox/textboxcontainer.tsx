@@ -11,10 +11,11 @@ import {
     CompositeDecorator,
     ContentState,
     ContentBlock,
+    SelectionState,
 } from "draft-js";
 import {
     RangeToSuggestion,
-    SuggestionIdToRef,
+    SuggestionRangeToUnderlineRef,
 } from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
@@ -73,7 +74,11 @@ export const TextboxContainer = ({
     const [isLoading, setIsLoading] = React.useState(false);
     const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
         React.useState(false);
+
+    // TODO: use a map? also TODO: reset this?
     const rangeToSuggestion = React.useRef<RangeToSuggestion>({});
+
+    const underlineRef = React.useRef<SuggestionRangeToUnderlineRef>({});
 
     const router = useRouter();
     useEffect(() => {
@@ -83,6 +88,31 @@ export const TextboxContainer = ({
         );
         editorRef.current?.focus();
     }, []);
+
+    useEffect(() => {
+        if (activeSuggestion) {
+            // DO NOT change where the cursor is. cause if htey click on the underline to make the active suggestion, their cursor will be elsewhere
+            // const ref =
+            //     underlineRef.current[
+            //         activeSuggestion.editOps[0].range.start +
+            //             "," +
+            //             activeSuggestion.editOps[0].range.end
+            //     ];
+            // console.log(activeSuggestion, ref);
+            // // console.log(
+            // //     activeSuggestion.editOps[0].range.start +
+            // //         "," +
+            // //         activeSuggestion.editOps[0].range.end,
+            // // );
+            // // console.log(underlineRef.current);
+            // if (ref) {
+            //     ref.current?.scrollIntoView({
+            //         behavior: "smooth",
+            //         block: "center",
+            //     });
+            // }
+        }
+    }, [activeSuggestion]);
 
     // handles decorating the text
     const handleStrategy = useCallback(
@@ -102,6 +132,8 @@ export const TextboxContainer = ({
                     start += currBlock.getLength() + 1;
                 }
             }
+            const contentBlockKey = contentBlock.getKey();
+            // console.log("currBlock", currBlock.findKey());
 
             const end = start + contentBlock.getLength();
             suggestions.forEach((suggestion: Suggestion) => {
@@ -113,8 +145,9 @@ export const TextboxContainer = ({
 
                     const startPos = range.start - start;
                     const endPos = range.end - start;
-                    rangeToSuggestion.current[range.start + "," + range.end] =
-                        suggestion;
+                    rangeToSuggestion.current[
+                        contentBlockKey + "," + startPos + "," + endPos
+                    ] = suggestion;
                     callback(
                         Math.max(startPos, 0),
                         Math.min(contentBlock.getLength(), endPos),
@@ -131,11 +164,17 @@ export const TextboxContainer = ({
             getStyle: (p: any) => CSSProperties,
             onClick: (p: any) => void,
         ): JSX.Element => {
+            // how to get suggestionId
+            const ref = React.createRef<HTMLSpanElement>();
+            underlineRef.current[
+                props.blockKey + "," + props.start + "," + props.end
+            ] = ref;
             return (
                 <span
                     style={getStyle(props)}
                     data-offset-key={props.offsetKey}
                     onClick={() => onClick(props)}
+                    ref={ref}
                 >
                     {props.children}
                 </span>
@@ -204,14 +243,7 @@ export const TextboxContainer = ({
                 return;
             }
 
-            // TODO: uncollapse the previous suggestion?
             updateActiveSuggestion(suggestion);
-            // setTimeout(() => {
-            //     refs[suggestion.checkId].current?.scrollIntoView({
-            //         behavior: "smooth",
-            //         block: "center",
-            //     });
-            // });
             mixpanelTrack("Underlined text selected", {
                 suggestion,
             });
@@ -268,6 +300,7 @@ export const TextboxContainer = ({
             return;
         }
         setHasAnalyzedOnce(true);
+        underlineRef.current = {};
         console.log(response);
         // return;
 
@@ -295,9 +328,10 @@ export const TextboxContainer = ({
             decorator(),
         );
         updateEditorState(
-            EditorState.forceSelection(newEditorState, selectionState),
+            newEditorState,
+            // EditorState.forceSelection(newEditorState, selectionState),
         );
-    }, [decorator]);
+    }, [decorator, activeSuggestion, rangeToSuggestion.current]);
 
     return (
         <div

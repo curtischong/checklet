@@ -95,7 +95,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     useEffect(() => {
         if (activeSuggestion) {
             const ref = suggestionsRefs.current[activeSuggestion.suggestionId];
-            if (ref.current) {
+            if (ref?.current) {
                 ref.current.scrollIntoView({
                     behavior: "smooth",
                     block: "center",
@@ -105,6 +105,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     }, [activeSuggestion]);
 
     const renderSuggestions = React.useCallback(() => {
+        suggestionsRefs.current = {}; // reset refs
         if (editorHasText) {
             if (suggestions.length > 0) {
                 return suggestions.map((s: Suggestion, index: number) => {
