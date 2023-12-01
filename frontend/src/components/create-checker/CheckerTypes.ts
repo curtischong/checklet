@@ -17,6 +17,10 @@ export type CheckBlueprint = {
     checkId: CheckId;
 };
 
+export type CheckDescObj = {
+    [CheckId: string]: CheckDesc;
+};
+
 export type CheckDesc = {
     name: string;
     longDesc: string;
@@ -42,6 +46,6 @@ export interface CheckerStorefront {
 }
 
 export interface FeedbackResponse {
-    checkDescs: CheckDesc[];
+    checkDescs: CheckDescObj;
     suggestions: Suggestion[];
 }

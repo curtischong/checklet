@@ -1,5 +1,8 @@
 import { Checker } from "@api/checker";
-import { CheckDesc } from "@components/create-checker/CheckerTypes";
+import {
+    CheckDesc,
+    CheckDescObj,
+} from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
     isUnauthenticatedRequestValid,
@@ -53,8 +56,9 @@ export default async function handler(
 const getCheckDescForCheckIds = (
     checker: Checker,
     uniqueCheckIds: Set<string>,
-): CheckDesc[] => {
-    const checkDescs: CheckDesc[] = [];
+): CheckDescObj => {
+    const checkDescObj: CheckDescObj = {};
+
     for (const checkId of uniqueCheckIds) {
         console.log("checkId", checkId);
         const checkBlueprint = checker.checks.get(checkId)?.blueprint;
@@ -65,13 +69,13 @@ const getCheckDescForCheckIds = (
             );
             continue;
         }
-        checkDescs.push({
+        checkDescObj[checkId] = {
             name: checkBlueprint.name,
             longDesc: checkBlueprint.longDesc,
             category: checkBlueprint.category,
             positiveExamples: checkBlueprint.positiveExamples,
             checkId,
-        });
+        };
     }
-    return checkDescs;
+    return checkDescObj;
 };

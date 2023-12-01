@@ -3,14 +3,14 @@ import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
 import {
     FeedbackTypeOrder,
-    Suggestion,
     SuggestionRefs,
 } from "./suggestions/suggestionsTypes";
 import { EditorState } from "draft-js";
 import { TextButton } from "@components/Button";
 import { useRouter } from "next/router";
 import { useClientContext } from "@utils/ClientContext";
-import { CheckerStorefront } from "@components/CheckerStore";
+import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
+import { Suggestion } from "@api/ApiTypes";
 
 interface Props {
     storefront: CheckerStorefront;
@@ -27,10 +27,8 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const { user } = useClientContext();
 
     const sorts: ((a: Suggestion, b: Suggestion) => number)[] = [
-        (a, b) => a.highlightRanges[0].startPos - b.highlightRanges[0].startPos,
-        (a, b) =>
-            FeedbackTypeOrder[a.feedbackType] -
-            FeedbackTypeOrder[b.feedbackType],
+        (a, b) => a.editOps[0].range.start - b.editOps[0].range.start,
+        (a, b) => a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
     ];
 
     const updateSortIdx = (idx: number) => {

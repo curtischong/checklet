@@ -8,12 +8,10 @@ import { LoadingButton } from "@components/Button";
 import { CompositeDecorator, ContentState, EditorState } from "draft-js";
 import { Api } from "@api/apis";
 import { useRouter } from "next/router";
-import {
-    Suggestion,
-    SuggestionRefs,
-} from "@components/editor/suggestions/suggestionsTypes";
-import { CheckerStorefront } from "@components/CheckerStore";
+import { SuggestionRefs } from "@components/editor/suggestions/suggestionsTypes";
 import { toast } from "react-toastify";
+import { Suggestion } from "@api/ApiTypes";
+import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
 
 export type ContainerHeaderProps = {
     editorState: EditorState;
@@ -70,25 +68,13 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
             return;
         }
         console.log(response);
-        return;
+        // return;
 
-        const feedback = response.feedback;
+        const suggestions = response.suggestions;
         const feedbackRefs: SuggestionRefs = {};
-        feedback.sort(sort);
+        suggestions.sort(sort);
 
-        feedback.forEach((f: Suggestion, index: number) => {
-            const ref = createRef<HTMLDivElement>();
-            if (f.srcNautObj.substring(0, 1) === "[") {
-                f.srcNautObj = f.srcNautObj.substring(
-                    1,
-                    f.srcNautObj.length - 1,
-                );
-            }
-            f.id = index;
-            feedbackRefs[index] = ref;
-        });
-
-        updateSuggestions(feedback);
+        updateSuggestions(suggestions);
         updateRefs(feedbackRefs);
         let editor = editorState;
 
@@ -100,8 +86,8 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
         updateEditorState(EditorState.forceSelection(editor, selectionState));
 
         mixpanelTrack("Check Document Clicked", {
-            "Number of suggestions generated": feedback.length,
-            Suggestions: feedback,
+            "Number of suggestions generated": suggestions.length,
+            Suggestions: suggestions,
             Input: plaintext,
         });
 
