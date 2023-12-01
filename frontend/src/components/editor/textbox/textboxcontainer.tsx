@@ -145,9 +145,8 @@ export const TextboxContainer = ({
 
                     const startPos = range.start - start;
                     const endPos = range.end - start;
-                    rangeToSuggestion.current[
-                        contentBlockKey + "," + startPos + "," + endPos
-                    ] = suggestion;
+                    rangeToSuggestion.current[range.start + "," + range.end] =
+                        suggestion;
                     callback(
                         Math.max(startPos, 0),
                         Math.min(contentBlock.getLength(), endPos),
