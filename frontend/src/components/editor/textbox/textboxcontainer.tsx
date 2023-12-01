@@ -64,7 +64,6 @@ export const TextboxContainer = ({
     updateSuggestions,
     updateActiveSuggestion,
     updateRefs,
-    refs,
     sort,
     editorRef,
     storefront,
@@ -190,17 +189,13 @@ export const TextboxContainer = ({
 
             const startPos = props.start + start;
             const endPos = props.end + start;
-            const key = startPos + "," + endPos;
-
-            if (!(key in rangeToSuggestion.current)) {
-                toast.error("Could not find key corresponding suggestion");
-                return;
-            }
 
             const suggestion = suggestions.find((s) => {
                 return s.editOps.some((editOp) => {
-                    editOp.range.start === startPos &&
-                        editOp.range.end === endPos;
+                    return (
+                        editOp.range.start === startPos &&
+                        editOp.range.end === endPos
+                    );
                 });
             });
 
@@ -233,9 +228,8 @@ export const TextboxContainer = ({
         return new CompositeDecorator([
             {
                 strategy: handleStrategy, // Tells DraftJS which ranges of text should be decorated (handles newlines in the ranges)
+                // tells DraftJS how to actually render the component
                 component: (props: any) => {
-                    // actually renders the component
-                    console.log("decorator props", props);
                     return HandleSpan(props, spanStyle, handleUnderlineClicked);
                 },
             },
