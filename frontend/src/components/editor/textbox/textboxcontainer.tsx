@@ -22,6 +22,7 @@ import {
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
 import { Suggestion } from "@api/ApiTypes";
+import { toast } from "react-toastify";
 // const PizZip = require("pizzip");
 // import Docxtemplater from "docxtemplater";
 // import PizZip from "pizzip";
@@ -47,7 +48,7 @@ export type TextboxContainerProps = {
     updateEditorState: (e: EditorState) => void;
     updateSuggestions: (s: Suggestion[]) => void;
     updateCollapseKey: (k: Suggestion | undefined) => void;
-    updateRefs: (s: SuggestionRefs) => void;
+    updateRefs: SetState<SuggestionRefs>;
     refs: SuggestionRefs;
     sort: (a: Suggestion, b: Suggestion) => number;
     editorRef: MutableRefObject<any>;
@@ -118,14 +119,15 @@ export const TextboxContainer = ({
 
         const end = start + contentBlock.getLength();
         suggestions.forEach((suggestion: Suggestion, index: number) => {
-            suggestion.highlightRanges.forEach((range) => {
-                if (range.startPos > end || range.endPos < start) {
+            suggestion.editOps.forEach((editOp) => {
+                const range = editOp.range;
+                if (range.start > end || range.end < start) {
                     return;
                 }
 
-                const startPos = range.startPos - start;
-                const endPos = range.endPos - start;
-                keysToRefs[range.startPos + "," + range.endPos] = index;
+                const startPos = range.start - start;
+                const endPos = range.end - start;
+                keysToRefs[range.start + "," + range.end] = index;
                 callback(
                     Math.max(startPos, 0),
                     Math.min(contentBlock.getLength(), endPos),
@@ -192,7 +194,8 @@ export const TextboxContainer = ({
         const key = startPos + "," + endPos;
 
         if (!(key in keysToRefs)) {
-            console.log("could not find key: " + key);
+            toast.error("Could not find key corresponding suggestion");
+            return;
         }
 
         // const result = this.props.suggestions.find(
