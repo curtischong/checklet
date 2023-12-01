@@ -1,3 +1,4 @@
+import { Suggestion } from "@api/ApiTypes";
 import { ReactElement, RefObject } from "react";
 
 export type LengthMetric = {
@@ -19,12 +20,7 @@ export type SuggestionCategory = {
 };
 
 export type SuggestionRefs = {
-    [key: string]: RefObject<HTMLDivElement>;
-};
-
-type Range = {
-    endPos: number;
-    startPos: number;
+    [key: string]: Suggestion;
 };
 
 export enum FeedbackType {

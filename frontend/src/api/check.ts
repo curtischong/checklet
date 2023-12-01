@@ -5,6 +5,7 @@ import {
     CheckBlueprint,
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
+import { createUniqueId } from "@utils/strings";
 
 export class Check {
     private llm;
@@ -88,8 +89,17 @@ ${positiveExamples}
                         const originalTextIdx = doc
                             .substring(startIdx)
                             .indexOf(originalEx);
+                        const originalTextIdxRelativeToDoc =
+                            startIdx + originalTextIdx;
 
-                        startIdx = originalTextIdx + originalEx.length; // update the startIdx, so for the next example, we don't include this text in the search space
+                        startIdx =
+                            originalTextIdxRelativeToDoc + originalEx.length; // update the startIdx, so for the next example, we don't include this text in the search space
+
+                        // fix the range to be relative to the entire doc
+                        for (const editOp of editOps) {
+                            editOp.range.start += originalTextIdxRelativeToDoc;
+                            editOp.range.end += originalTextIdxRelativeToDoc;
+                        }
 
                         // now that we know where the original text is, we can create the suggestion
                         suggestions.push({
@@ -97,6 +107,7 @@ ${positiveExamples}
                             editedText: editedEx,
                             editOps,
                             checkId: this.blueprint.checkId,
+                            suggestionId: createUniqueId(),
                         });
                     }
                     resolve(suggestions);

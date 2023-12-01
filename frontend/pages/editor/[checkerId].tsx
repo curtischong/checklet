@@ -2,15 +2,18 @@ import React, { useEffect } from "react";
 import { Editor } from "@components/editor/Editor";
 import { Api } from "@api/apis";
 import { useRouter } from "next/router";
-import { CheckerStore, CheckerStorefront } from "@components/CheckerStore";
+import { CheckerStore } from "@components/CheckerStore";
+import { TextButton } from "@components/Button";
+import { useClientContext } from "@utils/ClientContext";
+import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
 
 const EditorPage: React.FC = () => {
-    // TODO: check if checker exists
     const router = useRouter();
     const { checkerId } = router.query;
     const [storefront, setStorefront] = React.useState<
         CheckerStorefront | undefined | "not found"
     >(undefined);
+    const { user } = useClientContext();
 
     useEffect(() => {
         (async () => {
@@ -35,6 +38,19 @@ const EditorPage: React.FC = () => {
                     find other checkers below
                 </div>
                 <CheckerStore />
+                <TextButton
+                    className="fixed top-2 right-5"
+                    onClick={() => {
+                        const isLoggedOut = user === null;
+                        if (isLoggedOut) {
+                            router.push("/login");
+                        } else {
+                            router.push("/dashboard");
+                        }
+                    }}
+                >
+                    Create Your Own Checker
+                </TextButton>
             </div>
         );
     } else {

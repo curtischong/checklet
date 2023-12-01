@@ -11,7 +11,7 @@
         "redis": "docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest"
     },
     "dependencies": {
-        "@types/draft-js": "^0.11.9",
+        "@types/draft-js": "^0.11.16",
         "@types/mixpanel-browser": "^2.38.0",
         "@types/pizzip": "^3.0.2",
         "@types/uuid": "^8.3.4",
@@ -50,7 +50,7 @@
     "devDependencies": {
         "@types/node": "^20.10.1",
         "@types/pdfjs-dist": "^2.10.378",
-        "@types/react": "^18.0.1",
+        "@types/react": "^18.2.39",
         "@types/react-beautiful-dnd": "^13.1.0",
         "@types/react-dom": "^18.0.5",
         "@typescript-eslint/eslint-plugin": "^4.9.1",

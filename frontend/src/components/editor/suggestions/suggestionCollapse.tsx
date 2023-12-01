@@ -2,17 +2,18 @@ import React, { forwardRef, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { AiOutlineArrowRight } from "react-icons/ai";
-import { Suggestion } from "./suggestionsTypes";
 import classnames from "classnames";
-import { capitalizeFirstLetter } from "util/capitalizeFirstLetter";
 
 import css from "./suggestioncollapse.module.scss";
+import { Suggestion } from "@api/ApiTypes";
+import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 
 type SuggestionCollapseProps = {
     suggestion: Suggestion;
     activeKey: Suggestion | undefined;
     onClick: () => void;
     onReplaceClick: () => void;
+    checkDescObj: CheckDescObj;
 };
 
 const isEqual = (...objects: Suggestion[]) =>
@@ -28,13 +29,20 @@ export const SuggestionCollapse = forwardRef(
             return isEqual(suggestion, activeKey);
         }, [suggestion, activeKey]);
 
-        const srcNaut = useMemo(() => {
-            return capitalizeFirstLetter(suggestion.srcNautObj);
-        }, [suggestion.srcNautObj]);
+        // const srcNaut = useMemo(() => {
+        //     return capitalizeFirstLetter(suggestion.srcNautObj);
+        // }, [suggestion.srcNautObj]);
 
-        const replacementText = useMemo(() => {
-            return capitalizeFirstLetter(suggestion.replacementText);
-        }, [suggestion.replacementText]);
+        // const replacementText = useMemo(() => {
+        //     return capitalizeFirstLetter(suggestion.replacementText);
+        // }, [suggestion.replacementText]);
+
+        const srcNaut = suggestion.originalText;
+        const replacementText = suggestion.editedText;
+
+        const getCheckDesc = (suggestion: Suggestion) => {
+            return props.checkDescObj[suggestion.checkId];
+        };
 
         return (
             <div
@@ -47,16 +55,20 @@ export const SuggestionCollapse = forwardRef(
                     <span className={css.bigDot} />
                     {isActive ? (
                         <div className={css.activeCategory}>
-                            {suggestion.feedbackCategory}
+                            {getCheckDesc(suggestion).name}
+                            {/* <span
+                                className={"p-[3px] rounded-xl bg-red-800 mx-8"}
+                            /> */}
+                            <div className="absolute right-4 top-2">
+                                {getCheckDesc(suggestion).category}
+                            </div>
                         </div>
                     ) : (
                         <>
-                            <div className={css.srcNautObj}>
-                                {suggestion.srcNautObj}
-                            </div>
+                            <div className={css.srcNautObj}>{srcNaut}</div>
                             <span className={css.smallDot} />
                             <div className={css.shortDesc}>
-                                {suggestion.shortDesc}
+                                {getCheckDesc(suggestion).name}
                             </div>
                         </>
                     )}
@@ -67,7 +79,7 @@ export const SuggestionCollapse = forwardRef(
                             {srcNaut && (
                                 <div className={css.remove}>{srcNaut}</div>
                             )}
-                            {suggestion.replacementText && (
+                            {suggestion.editOps.length > 0 && (
                                 <>
                                     <AiOutlineArrowRight
                                         className={css.arrow}
@@ -84,7 +96,9 @@ export const SuggestionCollapse = forwardRef(
                         <div className={css.longDesc}>
                             {" "}
                             <ReactMarkdown
-                                children={`${suggestion.longDesc}`}
+                                children={`${
+                                    getCheckDesc(suggestion).longDesc
+                                }`}
                                 remarkPlugins={[remarkGfm]}
                             />{" "}
                         </div>

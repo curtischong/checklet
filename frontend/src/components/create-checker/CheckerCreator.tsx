@@ -12,7 +12,10 @@ import { Api } from "@api/apis";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { TextArea } from "@components/TextArea";
 import { createUniqueId } from "@utils/strings";
-import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
+import {
+    CheckBlueprint,
+    CheckerBlueprint,
+} from "@components/create-checker/CheckerTypes";
 
 export enum Page {
     Main,
