@@ -12,12 +12,13 @@ import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import { Tooltip } from "antd";
 import { pluralize } from "@utils/strings";
 import { Suggestion } from "@api/ApiTypes";
+import { SetState } from "@utils/types";
 // import { Tooltip } from "antd";
 
 export type SuggestionsContainerProps = {
     suggestions: Suggestion[];
     activeSuggestion: Suggestion | undefined;
-    setActiveSuggestion: (k: Suggestion | undefined) => void;
+    setActiveSuggestion: SetState<Suggestion | undefined>;
     editorState: EditorState;
     updateEditorState: (e: EditorState) => void;
     updateSortIdx: (idx: number) => void;

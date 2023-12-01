@@ -48,7 +48,7 @@ export type TextboxContainerProps = {
     activeSuggestion: Suggestion | undefined;
     updateEditorState: (e: EditorState) => void;
     updateSuggestions: (s: Suggestion[]) => void;
-    updateActiveSuggestion: (k: Suggestion | undefined) => void;
+    updateActiveSuggestion: SetState<Suggestion | undefined>;
     sort: (a: Suggestion, b: Suggestion) => number;
     editorRef: MutableRefObject<any>;
     storefront: CheckerStorefront;
@@ -236,6 +236,7 @@ export const TextboxContainer = ({
                     );
                 });
             });
+            console.log("clicked suggestion", suggestion);
 
             if (!suggestion) {
                 toast.error("Could not find key corresponding suggestion");
@@ -320,6 +321,7 @@ export const TextboxContainer = ({
 
     useEffect(() => {
         const selectionState = editorState.getSelection();
+        // console.log("selecitonstate", selectionState.getAnchorOffset());
         const content = editorState.getCurrentContent();
 
         const newEditorState = EditorState.createWithContent(
@@ -327,10 +329,9 @@ export const TextboxContainer = ({
             decorator(),
         );
         updateEditorState(
-            newEditorState,
-            // EditorState.forceSelection(newEditorState, selectionState),
+            EditorState.forceSelection(newEditorState, selectionState),
         );
-    }, [decorator, activeSuggestion, rangeToSuggestion.current]);
+    }, [decorator, activeSuggestion]);
 
     return (
         <div

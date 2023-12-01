@@ -37,19 +37,12 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     };
     const domEditorRef = useRef<{ focus: () => void }>();
 
-    const updateActiveSuggestion = (s: Suggestion | undefined) => {
-        setActiveSuggestion(s);
-
-        const selectionState = editorState.getSelection();
-
-        setEditorState(EditorState.forceSelection(editorState, selectionState));
-    };
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
                 <TextboxContainer
                     activeSuggestion={activeSuggestion}
-                    updateActiveSuggestion={updateActiveSuggestion}
+                    updateActiveSuggestion={setActiveSuggestion}
                     suggestions={suggestions}
                     updateSuggestions={setSuggestions}
                     editorState={editorState}
@@ -63,7 +56,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                 <SuggestionsContainer
                     suggestions={suggestions}
                     activeSuggestion={activeSuggestion}
-                    setActiveSuggestion={updateActiveSuggestion}
+                    setActiveSuggestion={setActiveSuggestion}
                     editorState={editorState}
                     updateEditorState={setEditorState}
                     updateSortIdx={updateSortIdx}
