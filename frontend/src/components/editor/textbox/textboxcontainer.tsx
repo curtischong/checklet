@@ -12,7 +12,10 @@ import {
     ContentState,
     ContentBlock,
 } from "draft-js";
-import { SuggestionRefs } from "../suggestions/suggestionsTypes";
+import {
+    RangeToSuggestion,
+    SuggestionIdToRef,
+} from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
 import "draft-js/dist/Draft.css";
@@ -45,8 +48,6 @@ export type TextboxContainerProps = {
     updateEditorState: (e: EditorState) => void;
     updateSuggestions: (s: Suggestion[]) => void;
     updateActiveSuggestion: (k: Suggestion | undefined) => void;
-    updateRefs: SetState<SuggestionRefs>;
-    refs: SuggestionRefs;
     sort: (a: Suggestion, b: Suggestion) => number;
     editorRef: MutableRefObject<any>;
     storefront: CheckerStorefront;
@@ -63,7 +64,6 @@ export const TextboxContainer = ({
     updateEditorState,
     updateSuggestions,
     updateActiveSuggestion,
-    updateRefs,
     sort,
     editorRef,
     storefront,
@@ -73,7 +73,7 @@ export const TextboxContainer = ({
     const [isLoading, setIsLoading] = React.useState(false);
     const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
         React.useState(false);
-    const rangeToSuggestion = React.useRef<SuggestionRefs>({});
+    const rangeToSuggestion = React.useRef<RangeToSuggestion>({});
 
     const router = useRouter();
     useEffect(() => {
@@ -272,14 +272,12 @@ export const TextboxContainer = ({
         // return;
 
         const newSuggestions = response.suggestions;
-        const suggestionRefs: SuggestionRefs = {};
         newSuggestions.sort(sort);
 
         console.log("suggestions", newSuggestions);
         setCheckDescObj(response.checkDescs);
         updateSuggestions(newSuggestions);
         // TODO: update the suggestionRefs with the actual ref of the card
-        updateRefs(suggestionRefs);
 
         mixpanelTrack("Check Document Clicked", {
             "Number of suggestions generated": newSuggestions.length,

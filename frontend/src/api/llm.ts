@@ -67,7 +67,7 @@ export class Llm {
             // resolve the promise after 10 seconds. cause if the API fails to call our function, we'll be stuck here forever
             const timeoutId = setTimeout(() => {
                 reject("API call timed out after 10 seconds");
-            }, 10000);
+            }, 30000);
 
             this.client.beta.chat.completions
                 .runFunctions({

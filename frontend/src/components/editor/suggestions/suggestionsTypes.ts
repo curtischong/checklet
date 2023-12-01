@@ -19,8 +19,12 @@ export type SuggestionCategory = {
     color: string; // could use Color library instead
 };
 
-export type SuggestionRefs = {
+export type RangeToSuggestion = {
     [key: string]: Suggestion;
+};
+
+export type SuggestionIdToRef = {
+    [key: string]: RefObject<HTMLDivElement>;
 };
 
 export enum FeedbackType {
