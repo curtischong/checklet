@@ -16,7 +16,7 @@ if __name__ == '__main__':
         "You use your internal monologue to reason before responding to the user. "
         "You try to maximize how funny your response is."
     )
-    reasoner = StructuredReasoner(system_prompt=system_prompt, model='gpt-3.5-turbo')
+    reasoner = StructuredReasoner(system_prompt=system_prompt, model='gpt-3.5-turbo-0613')
 
     while True:
         message = input("\nUser: ")

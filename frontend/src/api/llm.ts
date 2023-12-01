@@ -13,7 +13,7 @@ export class Llm {
 
     constructor(
         systemPrompt: string,
-        model = "gpt-3.5-turbo",
+        model = "gpt-3.5-turbo-0613",
         useCache = false,
     ) {
         this.useCache = useCache;
@@ -55,10 +55,12 @@ export class Llm {
         functionParams: JSONSchema;
     }): Promise<string> {
         if (this.useCache) {
-            const cachedValue = this.cache.get(callData.prompt);
-            if (cachedValue) {
-                return cachedValue;
+            const cachedArgStr = this.cache.get(callData.prompt);
+            if (cachedArgStr) {
+                // console.log("cache success");
+                return cachedArgStr;
             }
+            // console.log("cache miss", callData.prompt);
         }
 
         const result = new Promise<string>((resolve, reject) => {
@@ -101,7 +103,9 @@ export class Llm {
 
                         clearTimeout(timeoutId);
                         if (message.function_call) {
-                            resolve(message.function_call.arguments);
+                            const args = message.function_call.arguments;
+                            this.cache.set(callData.prompt, args);
+                            resolve(args);
                         } else {
                             reject(
                                 `no function_call made. content=${message.content}}`,
