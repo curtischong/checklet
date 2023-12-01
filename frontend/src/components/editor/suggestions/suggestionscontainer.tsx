@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { RangeToSuggestion, SuggestionIdToRef } from "./suggestionsTypes";
+import React, { useEffect, useRef } from "react";
+import { SuggestionIdToRef } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
 import { SuggestionCollapse } from "./suggestionCollapse";
 import ZeroImage from "./ZeroState.svg";

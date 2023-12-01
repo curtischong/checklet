@@ -15,7 +15,8 @@ import {
 } from "draft-js";
 import {
     RangeToSuggestion,
-    SuggestionRangeToUnderlineRef,
+    BlockLocToUnderlineRef,
+    RangeToBlockLocation,
 } from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
@@ -76,9 +77,10 @@ export const TextboxContainer = ({
         React.useState(false);
 
     // TODO: use a map? also TODO: reset this?
-    const rangeToSuggestion = React.useRef<RangeToSuggestion>({});
+    const rangeToSuggestion = React.useRef<RangeToSuggestion>({}); // really useful when we need to map decorator to the curresponding
 
-    const underlineRef = React.useRef<SuggestionRangeToUnderlineRef>({});
+    const rangeBlockLoc = React.useRef<RangeToBlockLocation>({});
+    const underlineRef = React.useRef<BlockLocToUnderlineRef>({});
 
     const router = useRouter();
     useEffect(() => {
@@ -91,26 +93,23 @@ export const TextboxContainer = ({
 
     useEffect(() => {
         if (activeSuggestion) {
+            const blockLoc =
+                rangeBlockLoc.current[
+                    activeSuggestion.editOps[0].range.start +
+                        "," +
+                        activeSuggestion.editOps[0].range.end
+                ];
             // DO NOT change where the cursor is. cause if htey click on the underline to make the active suggestion, their cursor will be elsewhere
-            // const ref =
-            //     underlineRef.current[
-            //         activeSuggestion.editOps[0].range.start +
-            //             "," +
-            //             activeSuggestion.editOps[0].range.end
-            //     ];
-            // console.log(activeSuggestion, ref);
-            // // console.log(
-            // //     activeSuggestion.editOps[0].range.start +
-            // //         "," +
-            // //         activeSuggestion.editOps[0].range.end,
-            // // );
-            // // console.log(underlineRef.current);
-            // if (ref) {
-            //     ref.current?.scrollIntoView({
-            //         behavior: "smooth",
-            //         block: "center",
-            //     });
-            // }
+            const ref = underlineRef.current[blockLoc];
+            console.log("blockLoc", blockLoc, ref);
+            if (ref) {
+                // TODO: scrolling into view doens't work?
+                console.log("scrolling into view");
+                ref.current?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+            }
         }
     }, [activeSuggestion]);
 
@@ -142,11 +141,15 @@ export const TextboxContainer = ({
                     if (range.start > end || range.end < start) {
                         return;
                     }
+                    rangeToSuggestion.current[range.start + "," + range.end] =
+                        suggestion;
 
                     const startPos = range.start - start;
                     const endPos = range.end - start;
-                    rangeToSuggestion.current[range.start + "," + range.end] =
-                        suggestion;
+                    rangeBlockLoc.current[
+                        range.start + "," + range.end
+                    ] = `${contentBlockKey},${startPos},${endPos}`;
+
                     callback(
                         Math.max(startPos, 0),
                         Math.min(contentBlock.getLength(), endPos),

@@ -26,7 +26,11 @@ export type RangeToSuggestion = {
 export type SuggestionIdToRef = {
     [key: string]: RefObject<HTMLDivElement>;
 };
-export type SuggestionRangeToUnderlineRef = {
+
+export type RangeToBlockLocation = {
+    [key: string]: string;
+};
+export type BlockLocToUnderlineRef = {
     [key: string]: RefObject<HTMLSpanElement>;
 };
 
