@@ -26,6 +26,7 @@ export type ContainerHeaderProps = {
     sort: (a: Suggestion, b: Suggestion) => number;
     storefront: CheckerStorefront;
     setCheckDescObj: SetState<CheckDescObj>;
+    setHasAnalyzedOnce: SetState<boolean>;
 };
 
 export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
@@ -37,6 +38,7 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
     updateRefs,
     storefront,
     setCheckDescObj,
+    setHasAnalyzedOnce,
 }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
@@ -73,6 +75,7 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
             toast.error("Something went wrong, please try again later");
             return;
         }
+        setHasAnalyzedOnce(true);
         console.log(response);
         // return;
 
@@ -80,6 +83,7 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
         const feedbackRefs: SuggestionRefs = {};
         suggestions.sort(sort);
 
+        console.log("suggestions", suggestions);
         setCheckDescObj(response.checkDescs);
         updateSuggestions(suggestions);
         updateRefs(feedbackRefs);

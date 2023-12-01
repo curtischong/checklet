@@ -20,6 +20,7 @@ export type SuggestionsContainerProps = {
     updateEditorState: (e: EditorState) => void;
     updateSortIdx: (idx: number) => void;
     checkDescObj: CheckDescObj;
+    hasAnalyzedOnce: boolean;
 };
 
 export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
@@ -33,6 +34,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
         editorState,
         updateEditorState,
         // updateSortIdx,
+        hasAnalyzedOnce,
     } = props;
 
     // const SortIcon = (idx: number, tooltip: string) => {
@@ -131,20 +133,37 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                 });
             }
 
-            return (
-                <NoSuggestionMessage
-                    imageSrc={NoSuggestionsImage.src}
-                    header={"No issues found"}
-                    content={
-                        <>
-                            <div className={css.noSuggestContent}>
-                                We checked your text and found no issues
-                                &#10084;
-                            </div>
-                        </>
-                    }
-                />
-            );
+            if (hasAnalyzedOnce) {
+                return (
+                    <NoSuggestionMessage
+                        imageSrc={NoSuggestionsImage.src}
+                        header={"No issues found"}
+                        content={
+                            <>
+                                <div className={css.noSuggestContent}>
+                                    We checked your text and found no issues
+                                    &#10084;
+                                </div>
+                            </>
+                        }
+                    />
+                );
+            } else {
+                return (
+                    <NoSuggestionMessage
+                        imageSrc={NoSuggestionsImage.src}
+                        header={"Looking Good!"}
+                        content={
+                            <>
+                                <div className={css.noSuggestContent}>
+                                    Click 'Check Document' to check for mistakes
+                                    &#128640;
+                                </div>
+                            </>
+                        }
+                    />
+                );
+            }
         }
 
         return (

@@ -11,14 +11,17 @@ import {
     CompositeDecorator,
     ContentState,
 } from "draft-js";
-import { Suggestion, SuggestionRefs } from "../suggestions/suggestionsTypes";
+import { SuggestionRefs } from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
 import "draft-js/dist/Draft.css";
-import { CheckerStorefront } from "@components/CheckerStore";
 import { SetState } from "@utils/types";
-import { CheckDescObj } from "@components/create-checker/CheckerTypes";
+import {
+    CheckDescObj,
+    CheckerStorefront,
+} from "@components/create-checker/CheckerTypes";
+import { Suggestion } from "@api/ApiTypes";
 // const PizZip = require("pizzip");
 // import Docxtemplater from "docxtemplater";
 // import PizZip from "pizzip";
@@ -50,6 +53,7 @@ export type TextboxContainerProps = {
     editorRef: MutableRefObject<any>;
     storefront: CheckerStorefront;
     setCheckDescObj: SetState<CheckDescObj>;
+    setHasAnalyzedOnce: SetState<boolean>;
 };
 
 // const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
@@ -67,6 +71,7 @@ export const TextboxContainer = ({
     editorRef,
     storefront,
     setCheckDescObj,
+    setHasAnalyzedOnce,
 }: TextboxContainerProps): JSX.Element => {
     // {
     //     loading: boolean;
@@ -228,6 +233,7 @@ export const TextboxContainer = ({
                 updateSuggestions={updateSuggestions}
                 storefront={storefront}
                 setCheckDescObj={setCheckDescObj}
+                setHasAnalyzedOnce={setHasAnalyzedOnce}
             />
             <Editor
                 spellCheck={true}

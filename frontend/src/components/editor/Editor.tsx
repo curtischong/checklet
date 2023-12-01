@@ -27,6 +27,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     );
     const [checkDescObj, setCheckDescObj] = useState<CheckDescObj>({});
     const [sortIdx, setSortIdx] = useState(1);
+    const [hasAnalyzedOnce, setHasAnalyzedOnce] = useState(false);
     const router = useRouter();
     const { user } = useClientContext();
 
@@ -64,6 +65,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     editorRef={domEditorRef}
                     storefront={storefront}
                     setCheckDescObj={setCheckDescObj}
+                    setHasAnalyzedOnce={setHasAnalyzedOnce}
                 />
                 <SuggestionsContainer
                     suggestions={suggestions}
@@ -74,6 +76,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     updateEditorState={setEditorState}
                     updateSortIdx={updateSortIdx}
                     checkDescObj={checkDescObj}
+                    hasAnalyzedOnce={hasAnalyzedOnce}
                 />
                 <TextButton
                     className="fixed top-2 right-5"
