@@ -42,12 +42,14 @@ export default async function handler(
     const suggestions = await checker.checkDoc(doc);
 
     // TODO: test this last.
-    // const uniqueCheckIds = new Set<string>(suggestions.map((r) => r.checkId));
-    // const checkDescs = getCheckDescForCheckIds(checker, uniqueCheckIds);
-
-    console.log("results", JSON.stringify(suggestions));
+    const uniqueCheckIds = new Set<string>(suggestions.map((r) => r.checkId));
+    const checkDescs = getCheckDescForCheckIds(checker, uniqueCheckIds);
 
     res.status(204);
+    res.status(200).json({
+        checkDescs,
+        suggestions,
+    });
 }
 
 const getCheckDescForCheckIds = (
@@ -56,6 +58,7 @@ const getCheckDescForCheckIds = (
 ): CheckDesc[] => {
     const checkDescs: CheckDesc[] = [];
     for (const checkId of uniqueCheckIds) {
+        console.log("checkId", checkId);
         const checkBlueprint = checker.checks.get(checkId)?.blueprint;
         if (!checkBlueprint) {
             console.error(
@@ -64,13 +67,13 @@ const getCheckDescForCheckIds = (
             );
             continue;
         }
-        const checkDesc = {
+        checkDescs.push({
             name: checkBlueprint.name,
             longDesc: checkBlueprint.longDesc,
             category: checkBlueprint.category,
             positiveExamples: checkBlueprint.positiveExamples,
             checkId,
-        };
+        });
     }
     return checkDescs;
 };

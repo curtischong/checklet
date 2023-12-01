@@ -1,4 +1,4 @@
-import { FeedbackResponse, Suggestion } from "@api/ApiTypes";
+import { Suggestion } from "@api/ApiTypes";
 import { Check } from "@api/check";
 import {
     CheckId,

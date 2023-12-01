@@ -1,3 +1,5 @@
+import { Suggestion } from "@api/ApiTypes";
+
 export type CheckId = string;
 
 export interface PositiveCheckExample {
@@ -37,4 +39,9 @@ export interface CheckerStorefront {
     name: string;
     desc: string;
     creatorId: string;
+}
+
+export interface FeedbackResponse {
+    checkDescs: CheckDesc[];
+    suggestions: Suggestion[];
 }

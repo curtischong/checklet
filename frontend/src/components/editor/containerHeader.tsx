@@ -13,6 +13,7 @@ import {
     SuggestionRefs,
 } from "@components/editor/suggestions/suggestionsTypes";
 import { CheckerStorefront } from "@components/CheckerStore";
+import { toast } from "react-toastify";
 
 export type ContainerHeaderProps = {
     editorState: EditorState;
@@ -63,6 +64,10 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
             plaintext,
             router.query.checkerId as string,
         );
+        if (!response) {
+            toast.error("Something went wrong, please try again later");
+            return;
+        }
         console.log(response);
         return;
 
