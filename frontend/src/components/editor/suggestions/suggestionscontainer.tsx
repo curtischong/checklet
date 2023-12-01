@@ -8,6 +8,7 @@ import { NoSuggestionMessage } from "./nosuggestionmessage";
 import NoSuggestionsImage from "./NoSuggestionsState.svg";
 import { mixpanelTrack } from "src/utils";
 import { ContentBlock, EditorState, Modifier, SelectionState } from "draft-js";
+import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 // import { Tooltip } from "antd";
 
 export type SuggestionsContainerProps = {
@@ -18,6 +19,7 @@ export type SuggestionsContainerProps = {
     editorState: EditorState;
     updateEditorState: (e: EditorState) => void;
     updateSortIdx: (idx: number) => void;
+    checkDescObj: CheckDescObj;
 };
 
 export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
@@ -123,6 +125,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                             onClick={() => onCollapseClick(s)}
                             onReplaceClick={() => onReplaceClick(s)}
                             ref={refs[s.id]}
+                            checkDescObj={props.checkDescObj}
                         />
                     );
                 });

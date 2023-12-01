@@ -34,7 +34,7 @@ export const newEditOp = (range: DocRange, newString: string): EditOp => {
 export type Suggestion = {
     originalText: string;
     editedText: string;
-    editOps: EditOp[]; // this coord will be relative to the original text. not the document
+    editOps: EditOp[];
     checkId: string;
 };
 

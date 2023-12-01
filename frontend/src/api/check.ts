@@ -85,6 +85,12 @@ ${positiveExamples}
                             editedEx,
                         );
 
+                        // fix the range to be relative to the entire doc
+                        for (const editOp of editOps) {
+                            editOp.range.start += startIdx;
+                            editOp.range.end += startIdx;
+                        }
+
                         const originalTextIdx = doc
                             .substring(startIdx)
                             .indexOf(originalEx);

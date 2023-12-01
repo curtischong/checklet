@@ -17,6 +17,8 @@ import { mixpanelTrack } from "../../../utils";
 import { ContainerHeader } from "../containerHeader";
 import "draft-js/dist/Draft.css";
 import { CheckerStorefront } from "@components/CheckerStore";
+import { SetState } from "@utils/types";
+import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 // const PizZip = require("pizzip");
 // import Docxtemplater from "docxtemplater";
 // import PizZip from "pizzip";
@@ -47,6 +49,7 @@ export type TextboxContainerProps = {
     sort: (a: Suggestion, b: Suggestion) => number;
     editorRef: MutableRefObject<any>;
     storefront: CheckerStorefront;
+    setCheckDescObj: SetState<CheckDescObj>;
 };
 
 // const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
@@ -63,6 +66,7 @@ export const TextboxContainer = ({
     sort,
     editorRef,
     storefront,
+    setCheckDescObj,
 }: TextboxContainerProps): JSX.Element => {
     // {
     //     loading: boolean;
@@ -223,6 +227,7 @@ export const TextboxContainer = ({
                 updateRefs={updateRefs}
                 updateSuggestions={updateSuggestions}
                 storefront={storefront}
+                setCheckDescObj={setCheckDescObj}
             />
             <Editor
                 spellCheck={true}

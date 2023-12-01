@@ -9,7 +9,10 @@ import { EditorState } from "draft-js";
 import { TextButton } from "@components/Button";
 import { useRouter } from "next/router";
 import { useClientContext } from "@utils/ClientContext";
-import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
+import {
+    CheckDescObj,
+    CheckerStorefront,
+} from "@components/create-checker/CheckerTypes";
 import { Suggestion } from "@api/ApiTypes";
 
 interface Props {
@@ -22,6 +25,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const [editorState, setEditorState] = useState<EditorState>(
         EditorState.createEmpty(),
     );
+    const [checkDescObj, setCheckDescObj] = useState<CheckDescObj>({});
     const [sortIdx, setSortIdx] = useState(1);
     const router = useRouter();
     const { user } = useClientContext();
@@ -59,6 +63,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     sort={sorts[sortIdx]}
                     editorRef={domEditorRef}
                     storefront={storefront}
+                    setCheckDescObj={setCheckDescObj}
                 />
                 <SuggestionsContainer
                     suggestions={suggestions}
@@ -68,6 +73,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     editorState={editorState}
                     updateEditorState={setEditorState}
                     updateSortIdx={updateSortIdx}
+                    checkDescObj={checkDescObj}
                 />
                 <TextButton
                     className="fixed top-2 right-5"

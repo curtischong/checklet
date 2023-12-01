@@ -11,7 +11,11 @@ import { useRouter } from "next/router";
 import { SuggestionRefs } from "@components/editor/suggestions/suggestionsTypes";
 import { toast } from "react-toastify";
 import { Suggestion } from "@api/ApiTypes";
-import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
+import {
+    CheckDescObj,
+    CheckerStorefront,
+} from "@components/create-checker/CheckerTypes";
+import { SetState } from "@utils/types";
 
 export type ContainerHeaderProps = {
     editorState: EditorState;
@@ -21,6 +25,7 @@ export type ContainerHeaderProps = {
     decorator: () => CompositeDecorator;
     sort: (a: Suggestion, b: Suggestion) => number;
     storefront: CheckerStorefront;
+    setCheckDescObj: SetState<CheckDescObj>;
 };
 
 export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
@@ -31,6 +36,7 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
     updateSuggestions,
     updateRefs,
     storefront,
+    setCheckDescObj,
 }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
@@ -74,6 +80,7 @@ export const ContainerHeader: React.FC<ContainerHeaderProps> = ({
         const feedbackRefs: SuggestionRefs = {};
         suggestions.sort(sort);
 
+        setCheckDescObj(response.checkDescs);
         updateSuggestions(suggestions);
         updateRefs(feedbackRefs);
         let editor = editorState;
