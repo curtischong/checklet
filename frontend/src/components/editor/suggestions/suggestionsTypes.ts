@@ -37,22 +37,22 @@ export const FeedbackTypeOrder = {
     [FeedbackType.WARNING]: 1,
 };
 
-export type Suggestion = {
-    id: number;
-    feedbackCategory: string;
-    feedbackType: FeedbackType;
-    srcNautObj: string;
-    replacementText: string;
-    highlightRanges: Range[];
-    highlightRangesOnSelect: Range[];
-    shortDesc: string;
-    longDesc: string;
-    srcWord: {
-        id: number;
-        text: string;
-        startChar: number;
-        endChar: number;
-    };
-    color: string;
-    cardRef: RefObject<HTMLDivElement>;
-};
+// export type Suggestion = {
+//     id: number;
+//     feedbackCategory: string;
+//     feedbackType: FeedbackType;
+//     srcNautObj: string;
+//     replacementText: string;
+//     highlightRanges: Range[];
+//     highlightRangesOnSelect: Range[];
+//     shortDesc: string;
+//     longDesc: string;
+//     srcWord: {
+//         id: number;
+//         text: string;
+//         startChar: number;
+//         endChar: number;
+//     };
+//     color: string;
+//     cardRef: RefObject<HTMLDivElement>;
+// };

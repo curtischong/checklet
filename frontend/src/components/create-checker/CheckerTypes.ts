@@ -15,6 +15,14 @@ export type CheckBlueprint = {
     checkId: CheckId;
 };
 
+export type CheckDesc = {
+    name: string;
+    longDesc: string;
+    category: string; // optional
+    positiveExamples: PositiveCheckExample[];
+    checkId: CheckId;
+};
+
 // TODO: I think I should have a "creation Metadata object that is name, desc, creatorId, and id"
 export type CheckerBlueprint = {
     name: string;

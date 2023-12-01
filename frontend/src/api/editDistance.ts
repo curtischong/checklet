@@ -1,18 +1,4 @@
-import { DocRange } from "@api/ApiTypes";
-
-class EditOp {
-    range: DocRange;
-    newString: string;
-
-    constructor(range: DocRange, newString: string) {
-        this.range = range;
-        this.newString = newString;
-    }
-
-    toString() {
-        return `EditOperation(Range(${this.range.start}, ${this.range.end}), '${this.newString}')`;
-    }
-}
+import { DocRange, EditOp, newEditOp } from "@api/ApiTypes";
 
 export function editDistanceOperationsWithClasses(
     str1: string,
@@ -60,27 +46,27 @@ export function editDistanceOperationsWithClasses(
             j--;
         } else if (dp[i][j] == dp[i - 1][j - 1] + 1) {
             // Replace
-            operations.push(new EditOp(new DocRange(i - 1, i), str2[j - 1]));
+            operations.push(newEditOp(new DocRange(i - 1, i), str2[j - 1]));
             i--;
             j--;
         } else if (dp[i][j] == dp[i - 1][j] + 1) {
             // Delete
-            operations.push(new EditOp(new DocRange(i - 1, i), ""));
+            operations.push(newEditOp(new DocRange(i - 1, i), ""));
             i--;
         } else if (dp[i][j] == dp[i][j - 1] + 1) {
             // Insert
-            operations.push(new EditOp(new DocRange(j - 1, j), str2[j - 1]));
+            operations.push(newEditOp(new DocRange(j - 1, j), str2[j - 1]));
             j--;
         }
     }
 
     // Handle remaining characters in str1 (deletions) or str2 (insertions)
     while (i > 0) {
-        operations.push(new EditOp(new DocRange(i - 1, i), ""));
+        operations.push(newEditOp(new DocRange(i - 1, i), ""));
         i--;
     }
     while (j > 0) {
-        operations.push(new EditOp(new DocRange(j - 1, j), str2[j - 1]));
+        operations.push(newEditOp(new DocRange(j - 1, j), str2[j - 1]));
         j--;
     }
 
@@ -100,7 +86,7 @@ export function editDistanceOperationsWithClasses(
                 consolidated_operations.length - 1
             ].newString += op.newString;
         } else {
-            consolidated_operations.push(new EditOp(op.range, op.newString));
+            consolidated_operations.push(newEditOp(op.range, op.newString));
         }
     }
 

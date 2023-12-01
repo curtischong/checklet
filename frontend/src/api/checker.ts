@@ -1,21 +1,25 @@
-import { FeedbackResponse } from "@api/ApiTypes";
+import { FeedbackResponse, Suggestion } from "@api/ApiTypes";
 import { Check } from "@api/check";
-import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import {
+    CheckId,
+    CheckerBlueprint,
+} from "@components/create-checker/CheckerTypes";
 import * as fs from "fs";
 
 export type CheckerId = string; // TODO: make this 32 bytes?
 export class Checker {
     blueprint: CheckerBlueprint;
     id: string;
-    checks: Check[] = [];
+    checks: Map<CheckId, Check>;
 
     constructor(checkerBlueprint: CheckerBlueprint) {
         this.blueprint = checkerBlueprint;
         this.id = checkerBlueprint.id;
+        this.checks = new Map<CheckId, Check>();
 
         for (const checkBlueprint of checkerBlueprint.checkBlueprints) {
             const check = new Check(checkBlueprint);
-            this.checks.push(check);
+            this.checks.set(checkBlueprint.checkId, check);
         }
     }
 
@@ -26,13 +30,12 @@ export class Checker {
         return new Checker(checkerBlueprint);
     }
 
-    async checkDoc(doc: string): Promise<void> {
-        const results [] = [];
-        for (const check of this.checks) {
+    async checkDoc(doc: string): Promise<Suggestion[]> {
+        const results: Suggestion[] = [];
+        for (const check of this.checks.values()) {
             // todo: parallelize
-            results.push(await check.checkDoc(doc));
+            results.push(...(await check.checkDoc(doc)));
         }
-        console.log("results", results);
-        // return "dummy";
+        return results;
     }
 }

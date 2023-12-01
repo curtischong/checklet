@@ -1,3 +1,5 @@
+import { Suggestion } from "@api/ApiTypes";
+import { editDistanceOperationsWithClasses } from "@api/editDistance";
 import { Llm } from "@api/llm";
 import {
     CheckBlueprint,
@@ -7,7 +9,7 @@ import {
 export class Check {
     private llm;
 
-    constructor(private blueprint: CheckBlueprint) {
+    constructor(public blueprint: CheckBlueprint) {
         const systemPrompt = this.getSystemPrompt();
         console.log("systemPrompt", systemPrompt);
         this.llm = new Llm(systemPrompt, "gpt-3.5-turbo-0613", false);
@@ -32,7 +34,7 @@ ${positiveExamples}
         return `[Original Text]: ${positiveExample.originalText}\n[Edited Text]: ${positiveExample.editedText}`;
     }
 
-    async checkDoc(doc: string): Promise<string> {
+    async checkDoc(doc: string): Promise<Suggestion[]> {
         console.log("calling function with doc: ", doc);
         this.llm
             .callFunction({
@@ -67,7 +69,40 @@ ${positiveExamples}
                     return d;
                 },
             })
-            .then(() => {})
+            .then((args) => {
+                console.log("got result", args);
+                const argsObj = JSON.parse(args);
+                let startIdx = 0;
+
+                const suggestions: Suggestion[] = [];
+                for (let i = 0; i < argsObj.originalText.length; i++) {
+                    if (argsObj.editedText.length - 1 < i) {
+                        console.error("editedText is too short");
+                        break;
+                    }
+                    const originalEx = argsObj.originalText[i];
+                    const editedEx = argsObj.editedText[i];
+
+                    const editOps = editDistanceOperationsWithClasses(
+                        originalEx,
+                        editedEx,
+                    );
+
+                    const originalTextIdx = doc
+                        .substring(startIdx)
+                        .findIdx(originalEx);
+
+                    startIdx = originalTextIdx + originalEx.length; // update the startIdx, so for the next example, we don't include this text in the search space
+
+                    // now that we know where the original text is, we can create the suggestion
+                    suggestions.push({
+                        originalText: originalEx,
+                        editedText: editedEx,
+                        editOps,
+                        checkId: this.blueprint.checkId,
+                    });
+                }
+            })
             .catch(() => {});
         // return response.choices[0].message.content ?? "unknown result";
         return data;
