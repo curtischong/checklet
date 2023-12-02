@@ -34,6 +34,7 @@ export const newEditOp = (range: DocRange, newString: string): EditOp => {
 export type SuggestionId = string;
 
 export type Suggestion = {
+    range: DocRange; // range of the original text
     originalText: string;
     editedText: string;
     editOps: EditOp[];
