@@ -4,6 +4,7 @@ import React, {
     MutableRefObject,
     useCallback,
     useEffect,
+    useRef,
 } from "react";
 import {
     Editor,
@@ -11,11 +12,9 @@ import {
     CompositeDecorator,
     ContentState,
     ContentBlock,
-    SelectionState,
 } from "draft-js";
 import {
     RangeToSuggestion,
-    BlockLocToUnderlineRef,
     RangeToBlockLocation,
 } from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
@@ -42,6 +41,16 @@ import { Api } from "@api/apis";
 
 // need same version with worker and pdfjs for it to work properly
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+
+const useRefs = () => {
+    const refsByKey = useRef<Record<string, HTMLElement | null>>({});
+
+    const setRef = (element: HTMLElement | null, key: string) => {
+        refsByKey.current[key] = element;
+    };
+
+    return { refsByKey: refsByKey.current, setRef };
+};
 
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
@@ -80,7 +89,8 @@ export const TextboxContainer = ({
     const rangeToSuggestion = React.useRef<RangeToSuggestion>({}); // really useful when we need to map decorator to the curresponding
 
     const rangeBlockLoc = React.useRef<RangeToBlockLocation>({});
-    const underlineRef = React.useRef<BlockLocToUnderlineRef>({});
+    const { refsByKey: underlineRef, setRef: setUnderlineRef } = useRefs();
+    // const underlineRef = React.useRef<BlockLocToUnderlineRef>({});
 
     const router = useRouter();
     useEffect(() => {
@@ -102,14 +112,32 @@ export const TextboxContainer = ({
             // DO NOT change where the cursor is. cause if htey click on the underline to make the active suggestion, their cursor will be elsewhere
             // sometimes these refs are outdated????
             // HWOEVER, the scroll into view wrks!
-            const ref = underlineRef.current[blockLoc];
-            console.log("blockLoc", blockLoc, ref);
-            if (ref) {
+            // const ref = underlineRef[blockLoc];
+            const element = document.querySelector(
+                `[data-offset-key="${blockLoc}-0-0"]`,
+            );
+            console.log("element", element);
+
+            if (element) {
                 // TODO: scrolling into view doens't work?
                 console.log("scrolling into view");
-                ref.current?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center",
+                // const editorConRef = document.getElementsByClassName(
+                //     "public-DraftEditor-content",
+                //     // "DraftEditor-editorContainer",
+                //     // "DraftEditor-root",
+                // )[0].childNodes[0] as HTMLElement;
+                // editorConRef.scrollTop = ref.offsetTop - 100;
+                // console.log(editorConRef);
+                // editorRef.current.scrollTop = ref.offsetTop - 100;
+
+                // https://github.com/facebook/react/issues/23396
+                console.log(blockLoc);
+                window.requestAnimationFrame(() => {
+                    element?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                        inline: "start",
+                    });
                 });
             }
         }
@@ -150,7 +178,8 @@ export const TextboxContainer = ({
                     const endPos = range.end - start;
                     rangeBlockLoc.current[
                         range.start + "," + range.end
-                    ] = `${contentBlockKey},${startPos},${endPos}`;
+                        // ] = `${contentBlockKey},${startPos},${endPos}`;
+                    ] = `${contentBlockKey}`;
 
                     callback(
                         Math.max(startPos, 0),
@@ -168,17 +197,25 @@ export const TextboxContainer = ({
             getStyle: (p: any) => CSSProperties,
             onClick: (p: any) => void,
         ): JSX.Element => {
-            // how to get suggestionId
-            const ref = React.createRef<HTMLSpanElement>();
-            underlineRef.current[
-                props.blockKey + "," + props.start + "," + props.end
-            ] = ref;
+            // const ref = React.createRef<HTMLSpanElement>();
+            // underlineRef.current[
+            //     props.blockKey + "," + props.start + "," + props.end
+            // ] = ref;
             return (
                 <span
                     style={getStyle(props)}
                     data-offset-key={props.offsetKey}
                     onClick={() => onClick(props)}
-                    ref={ref}
+                    ref={(el) => {
+                        setUnderlineRef(
+                            el,
+                            props.blockKey +
+                                "," +
+                                props.start +
+                                "," +
+                                props.end,
+                        );
+                    }}
                 >
                     {props.children}
                 </span>
@@ -305,7 +342,7 @@ export const TextboxContainer = ({
             return;
         }
         setHasAnalyzedOnce(true);
-        underlineRef.current = {};
+        // underlineRef.current = {};
         console.log(response);
         // return;
 

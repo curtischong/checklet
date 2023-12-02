@@ -181,7 +181,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
             />
             <div
                 className="px-4"
-                style={{ maxHeight: "calc(100vh - 61px)", overflow: "auto" }}
+                style={{ maxHeight: "calc(85vh)", overflow: "auto" }}
             >
                 {renderSuggestions()}
             </div>
