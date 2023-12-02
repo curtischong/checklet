@@ -10,6 +10,7 @@ import {
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
 import { Suggestion } from "@api/ApiTypes";
+import { singleEditDistance } from "@components/editor/singleEditDistance";
 
 interface Props {
     storefront: CheckerStorefront;
@@ -40,10 +41,17 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const updateEditorState = (newState: EditorState) => {
         const currentContentState = editorState.getCurrentContent();
         const newContentState = newState.getCurrentContent();
+        const lastChange = newState.getLastChangeType();
+        const getSelection = newState.getSelection();
 
         if (currentContentState !== newContentState) {
             // There was a change in the content
-            console.log("content changed");
+            // console.log("content changed");
+            // console.log(newState.getCurrentContent().getPlainText());
+            singleEditDistance(
+                editorState.getCurrentContent().getPlainText(),
+                newState.getCurrentContent().getPlainText(),
+            );
         } else {
             // The change was triggered by a change in focus/selection
             console.log("focus changed");
