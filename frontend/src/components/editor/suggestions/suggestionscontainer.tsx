@@ -13,7 +13,6 @@ import { Tooltip } from "antd";
 import { pluralize } from "@utils/strings";
 import { Suggestion } from "@api/ApiTypes";
 import { SetState } from "@utils/types";
-// import { Tooltip } from "antd";
 
 export type SuggestionsContainerProps = {
     suggestions: Suggestion[];
@@ -62,7 +61,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
 
     const onReplaceClick = (s: Suggestion) => {
         const content = editorState.getCurrentContent();
-        let start = s.highlightRanges[0].startPos;
+        let start = s.range.start;
         let currBlock: ContentBlock | undefined = content.getFirstBlock();
         while (currBlock != null && currBlock.getLength() < start) {
             start -= currBlock.getLength() + 1;
@@ -76,16 +75,13 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
 
             const selection = selectionState.merge({
                 anchorOffset: start,
-                focusOffset:
-                    start +
-                    s.highlightRanges[0].endPos -
-                    s.highlightRanges[0].startPos,
+                focusOffset: start + s.range.end - s.range.start,
             });
 
             const newContent = Modifier.replaceText(
                 editorState.getCurrentContent(),
                 selection,
-                s.replacementText,
+                s.editedText,
             );
             updateEditorState(
                 EditorState.push(editorState, newContent, "remove-range"),

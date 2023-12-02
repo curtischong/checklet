@@ -1,4 +1,10 @@
-import { DocRange, EditOp, newEditOp } from "@api/ApiTypes";
+import {
+    EditOp,
+    isAdjacent,
+    merge,
+    newDocRange,
+    newEditOp,
+} from "@api/ApiTypes";
 
 // https://github.com/curtischong/yourwriterfriend/blob/68103728393eee11683b6268fa86a8c6a62ce7c9/oldbackend/edit_distance.py
 export function editDistanceOperationsWithClasses(
@@ -47,27 +53,27 @@ export function editDistanceOperationsWithClasses(
             j--;
         } else if (dp[i][j] === dp[i - 1][j - 1] + 1) {
             // Replace
-            operations.push(newEditOp(new DocRange(i - 1, i), str2[j - 1]));
+            operations.push(newEditOp(newDocRange(i - 1, i), str2[j - 1]));
             i--;
             j--;
         } else if (dp[i][j] === dp[i - 1][j] + 1) {
             // Delete
-            operations.push(newEditOp(new DocRange(i - 1, i), ""));
+            operations.push(newEditOp(newDocRange(i - 1, i), ""));
             i--;
         } else if (dp[i][j] === dp[i][j - 1] + 1) {
             // Insert
-            operations.push(newEditOp(new DocRange(j - 1, j), str2[j - 1]));
+            operations.push(newEditOp(newDocRange(j - 1, j), str2[j - 1]));
             j--;
         }
     }
 
     // Handle remaining characters in str1 (deletions) or str2 (insertions)
     while (i > 0) {
-        operations.push(newEditOp(new DocRange(i - 1, i), ""));
+        operations.push(newEditOp(newDocRange(i - 1, i), ""));
         i--;
     }
     while (j > 0) {
-        operations.push(newEditOp(new DocRange(j - 1, j), str2[j - 1]));
+        operations.push(newEditOp(newDocRange(j - 1, j), str2[j - 1]));
         j--;
     }
 
@@ -76,9 +82,9 @@ export function editDistanceOperationsWithClasses(
     for (const op of operations.reverse()) {
         if (
             merged_ops.length &&
-            merged_ops[merged_ops.length - 1].range.isAdjacent(op.range)
+            isAdjacent(merged_ops[merged_ops.length - 1].range, op.range)
         ) {
-            merged_ops[merged_ops.length - 1].range.merge(op.range);
+            merge(merged_ops[merged_ops.length - 1].range, op.range);
             merged_ops[merged_ops.length - 1].newString += op.newString;
         } else {
             merged_ops.push(newEditOp(op.range, op.newString));

@@ -9,7 +9,8 @@ import {
     CheckDescObj,
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
-import { Suggestion } from "@api/ApiTypes";
+import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
+import { singleEditDistance } from "@components/editor/singleEditDistance";
 
 interface Props {
     storefront: CheckerStorefront;
@@ -37,6 +38,38 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     };
     const domEditorRef = useRef<{ focus: () => void }>();
 
+    const updateEditorState = (newState: EditorState) => {
+        const currentContentState = editorState.getCurrentContent();
+        const newContentState = newState.getCurrentContent();
+        // const lastChange = newState.getLastChangeType(); // please leave this line here for documentation
+
+        // if the text changed, we need to shift all the suggestions.
+        if (currentContentState !== newContentState) {
+            // 1) calculate WHERE the text changed (and how many chars changed)
+            const { editedRange, numCharsAdded } = singleEditDistance(
+                editorState.getCurrentContent().getPlainText(),
+                newState.getCurrentContent().getPlainText(),
+            );
+
+            // 2) shift all the suggestions. Note: if the text changed WITHIN a suggestion, that suggestion is now invalid. so we remove it
+            const newSuggestions = [];
+            for (const suggestion of suggestions) {
+                if (isBefore(suggestion.range, editedRange)) {
+                    newSuggestions.push({ ...suggestion });
+                } else if (isIntersecting(suggestion.range, editedRange)) {
+                    // do nothing since the suggestion is now invalid
+                } else {
+                    newSuggestions.push({
+                        ...suggestion,
+                        range: shift(suggestion.range, numCharsAdded),
+                    });
+                }
+            }
+            setSuggestions(newSuggestions);
+        }
+        setEditorState(newState);
+    };
+
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
@@ -46,7 +79,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     suggestions={suggestions}
                     updateSuggestions={setSuggestions}
                     editorState={editorState}
-                    updateEditorState={setEditorState}
+                    updateEditorState={updateEditorState}
                     sort={sorts[sortIdx]}
                     editorRef={domEditorRef}
                     storefront={storefront}
