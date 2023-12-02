@@ -112,6 +112,7 @@ export const TextboxContainer = ({
             if (ref) {
                 // we need to request animation frame cause otherwise, scrollIntoView will sometimes fail
                 // https://github.com/facebook/react/issues/23396
+                // setTimeout(() => {
                 window.requestAnimationFrame(() => {
                     ref.current?.scrollIntoView({
                         behavior: "smooth",
@@ -119,6 +120,7 @@ export const TextboxContainer = ({
                         inline: "start",
                     });
                 });
+                // }, 1000);
             }
         }
     }, [activeSuggestion, underlineRef.current]);

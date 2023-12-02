@@ -89,6 +89,12 @@ ${positiveExamples}
                         const originalTextIdx = doc
                             .substring(startIdx)
                             .indexOf(originalEx);
+
+                        if (originalTextIdx === -1) {
+                            // the model generated extra suggestions that exceed the length of the doc. just ignore them
+                            console.error("originalText not found in doc");
+                            break;
+                        }
                         const originalTextIdxRelativeToDoc =
                             startIdx + originalTextIdx;
 
