@@ -41,17 +41,17 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const updateEditorState = (newState: EditorState) => {
         const currentContentState = editorState.getCurrentContent();
         const newContentState = newState.getCurrentContent();
-        const lastChange = newState.getLastChangeType();
-        const getSelection = newState.getSelection();
+        // const lastChange = newState.getLastChangeType(); // please leave this line here for documentation
 
+        // if the text changed, we need to shift all the suggestions.
         if (currentContentState !== newContentState) {
-            // There was a change in the content
-            // console.log("content changed");
-            // console.log(newState.getCurrentContent().getPlainText());
+            // 1) calculate WHERE the text changed (and how many chars changed)
             const { editedRange, numCharsAdded } = singleEditDistance(
                 editorState.getCurrentContent().getPlainText(),
                 newState.getCurrentContent().getPlainText(),
             );
+
+            // 2) shift all the suggestions. Note: if the text changed WITHIN a suggestion, that suggestion is now invalid. so we remove it
             const newSuggestions = [];
             for (const suggestion of suggestions) {
                 if (isBefore(suggestion.range, editedRange)) {
@@ -66,9 +66,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                 }
             }
             setSuggestions(newSuggestions);
-        } else {
-            // The change was triggered by a change in focus/selection
-            console.log("focus changed");
         }
         setEditorState(newState);
     };

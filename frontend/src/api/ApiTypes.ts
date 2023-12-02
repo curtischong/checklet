@@ -42,6 +42,7 @@ export type Suggestion = {
     suggestionId: SuggestionId;
 };
 
+// this is not a class because when it's serialized to JSON, we can easily deseralize it (and use all the helpful functions below)
 export type DocRange = {
     start: number;
     end: number;
@@ -68,8 +69,5 @@ export const shift = (r: DocRange, amount: number): DocRange => {
 };
 
 export const isIntersecting = (r1: DocRange, r2: DocRange): boolean => {
-    if (r1.start >= r2.end || r1.end <= r2.start) {
-        return false;
-    }
-    return true;
+    return r1.start < r2.end && r1.end > r2.start;
 };
