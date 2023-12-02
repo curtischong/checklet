@@ -76,9 +76,13 @@ export const TextboxContainer = ({
     const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
         React.useState(false);
 
-    // TODO: use a map? also TODO: reset this?
-    const rangeToSuggestion = React.useRef<RangeToSuggestion>({}); // really useful when we need to map decorator to the curresponding
+    const rangeToSuggestion = React.useRef<RangeToSuggestion>({}); // really useful when we need to map decorator to the curresponding suggestion
 
+    // these two are needed so we can scroll to the underline span when we click on a card
+    // we need two maps since we only know:
+    // 1) the blockLoc and the range together OR
+    // 2) the rangeBlockLoc and the ref to the span
+    // we don't know 1) and 2) at the same time. so we use two maps
     const rangeBlockLoc = React.useRef<RangeToBlockLocation>({});
     const underlineRef = React.useRef<BlockLocToUnderlineRef>({});
 
@@ -242,7 +246,6 @@ export const TextboxContainer = ({
                     );
                 });
             });
-            console.log("clicked suggestion", suggestion);
 
             if (!suggestion) {
                 toast.error("Could not find key corresponding suggestion");
@@ -306,6 +309,7 @@ export const TextboxContainer = ({
             return;
         }
         setHasAnalyzedOnce(true);
+        rangeToSuggestion.current = {};
         underlineRef.current = {};
         rangeBlockLoc.current = {};
         console.log(response);
@@ -328,7 +332,6 @@ export const TextboxContainer = ({
 
     useEffect(() => {
         const selectionState = editorState.getSelection();
-        // console.log("selecitonstate", selectionState.getAnchorOffset());
         const content = editorState.getCurrentContent();
 
         const newEditorState = EditorState.createWithContent(

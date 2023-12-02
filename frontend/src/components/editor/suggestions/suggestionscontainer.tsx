@@ -116,7 +116,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                         <SuggestionCollapse
                             key={index}
                             suggestion={s}
-                            activeKey={activeSuggestion}
+                            activeSuggestion={activeSuggestion}
                             onClick={() => onCollapseClick(s)}
                             onReplaceClick={() => onReplaceClick(s)}
                             checkDescObj={props.checkDescObj}
