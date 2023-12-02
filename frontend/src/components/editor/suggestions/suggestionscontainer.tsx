@@ -13,7 +13,6 @@ import { Tooltip } from "antd";
 import { pluralize } from "@utils/strings";
 import { Suggestion } from "@api/ApiTypes";
 import { SetState } from "@utils/types";
-// import { Tooltip } from "antd";
 
 export type SuggestionsContainerProps = {
     suggestions: Suggestion[];

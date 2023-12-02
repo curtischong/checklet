@@ -37,6 +37,20 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     };
     const domEditorRef = useRef<{ focus: () => void }>();
 
+    const updateEditorState = (newState: EditorState) => {
+        const currentContentState = editorState.getCurrentContent();
+        const newContentState = newState.getCurrentContent();
+
+        if (currentContentState !== newContentState) {
+            // There was a change in the content
+            console.log("content changed");
+        } else {
+            // The change was triggered by a change in focus/selection
+            console.log("focus changed");
+        }
+        setEditorState(newState);
+    };
+
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
@@ -46,7 +60,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     suggestions={suggestions}
                     updateSuggestions={setSuggestions}
                     editorState={editorState}
-                    updateEditorState={setEditorState}
+                    updateEditorState={updateEditorState}
                     sort={sorts[sortIdx]}
                     editorRef={domEditorRef}
                     storefront={storefront}

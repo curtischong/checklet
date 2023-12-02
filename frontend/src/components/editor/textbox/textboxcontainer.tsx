@@ -107,20 +107,17 @@ export const TextboxContainer = ({
             // sometimes these refs are outdated????
             // HWOEVER, the scroll into view wrks!
             const ref = underlineRef.current[blockLoc];
-            console.log(blockLoc, ref);
-
             if (ref) {
                 // we need to request animation frame cause otherwise, scrollIntoView will sometimes fail
                 // https://github.com/facebook/react/issues/23396
-                // setTimeout(() => {
                 window.requestAnimationFrame(() => {
-                    ref.current?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
-                        inline: "start",
-                    });
+                    if (ref.current) {
+                        ref.current.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                        });
+                    }
                 });
-                // }, 1000);
             }
         }
     }, [activeSuggestion, underlineRef.current]);
@@ -324,7 +321,6 @@ export const TextboxContainer = ({
         rangeToSuggestion.current = {};
         underlineRef.current = {};
         rangeBlockLoc.current = {};
-        console.log(response);
         // return;
 
         const newSuggestions = response.suggestions;
