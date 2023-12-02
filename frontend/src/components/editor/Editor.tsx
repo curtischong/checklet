@@ -39,19 +39,19 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const domEditorRef = useRef<{ focus: () => void }>();
 
     const updateEditorState = (newState: EditorState) => {
-        const oldText = editorState.getCurrentContent().getPlainText();
-        const newText = newState.getCurrentContent().getPlainText();
+        const oldContent = editorState.getCurrentContent();
+        const newContent = newState.getCurrentContent();
         // const lastChange = newState.getLastChangeType(); // please leave this line here for documentation
 
         // if the text changed, we need to shift all the suggestions.
         // console.log("oldText", oldText);
         // console.log("newText", newText);
-        if (oldText !== newText) {
+        if (oldContent !== newContent) {
             // console.log("text changed");
             // 1) calculate WHERE the text changed (and how many chars changed)
             const { editedRange, numCharsAdded } = singleEditDistance(
-                editorState.getCurrentContent().getPlainText(),
-                newState.getCurrentContent().getPlainText(),
+                oldContent.getPlainText(),
+                newContent.getPlainText(),
             );
 
             // 2) shift all the suggestions. Note: if the text changed WITHIN a suggestion, that suggestion is now invalid. so we remove it
