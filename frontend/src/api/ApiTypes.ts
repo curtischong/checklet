@@ -37,7 +37,7 @@ export type Suggestion = {
     range: DocRange; // range of the original text
     originalText: string;
     editedText: string;
-    editOps: EditOp[];
+    editOps: EditOp[]; // NOTE: these are relative to suggestion.range
     checkId: string;
     suggestionId: SuggestionId;
 };

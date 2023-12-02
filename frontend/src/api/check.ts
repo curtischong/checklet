@@ -101,12 +101,6 @@ ${positiveExamples}
                         startIdx =
                             originalTextIdxRelativeToDoc + originalEx.length; // update the startIdx, so for the next example, we don't include this text in the search space
 
-                        // fix the range to be relative to the entire doc
-                        for (const editOp of editOps) {
-                            editOp.range.start += originalTextIdxRelativeToDoc;
-                            editOp.range.end += originalTextIdxRelativeToDoc;
-                        }
-
                         // now that we know where the original text is, we can create the suggestion
                         suggestions.push({
                             range: newDocRange(
