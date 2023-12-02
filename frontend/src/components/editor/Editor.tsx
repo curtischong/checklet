@@ -1,10 +1,6 @@
 import React, { useRef, useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
-import {
-    FeedbackTypeOrder,
-    SuggestionRefs,
-} from "./suggestions/suggestionsTypes";
 import { EditorState } from "draft-js";
 import { TextButton } from "@components/Button";
 import { useRouter } from "next/router";
@@ -20,7 +16,6 @@ interface Props {
 }
 export const Editor = ({ storefront }: Props): JSX.Element => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-    const [suggestionsRefs, setSuggestionsRefs] = useState<SuggestionRefs>({});
     const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
     const [editorState, setEditorState] = useState<EditorState>(
         EditorState.createEmpty(),
@@ -42,23 +37,14 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     };
     const domEditorRef = useRef<{ focus: () => void }>();
 
-    const updateActiveSuggestion = (s: Suggestion | undefined) => {
-        setActiveSuggestion(s);
-
-        const selectionState = editorState.getSelection();
-
-        setEditorState(EditorState.forceSelection(editorState, selectionState));
-    };
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
                 <TextboxContainer
                     activeSuggestion={activeSuggestion}
-                    updateActiveSuggestion={updateActiveSuggestion}
+                    updateActiveSuggestion={setActiveSuggestion}
                     suggestions={suggestions}
                     updateSuggestions={setSuggestions}
-                    refs={suggestionsRefs}
-                    updateRefs={setSuggestionsRefs}
                     editorState={editorState}
                     updateEditorState={setEditorState}
                     sort={sorts[sortIdx]}
@@ -69,9 +55,8 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                 />
                 <SuggestionsContainer
                     suggestions={suggestions}
-                    refs={suggestionsRefs}
-                    activeKey={activeSuggestion}
-                    setActiveKey={updateActiveSuggestion}
+                    activeSuggestion={activeSuggestion}
+                    setActiveSuggestion={setActiveSuggestion}
                     editorState={editorState}
                     updateEditorState={setEditorState}
                     updateSortIdx={updateSortIdx}

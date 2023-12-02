@@ -10,7 +10,7 @@ import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 
 type SuggestionCollapseProps = {
     suggestion: Suggestion;
-    activeKey: Suggestion | undefined;
+    activeSuggestion: Suggestion | undefined;
     onClick: () => void;
     onReplaceClick: () => void;
     checkDescObj: CheckDescObj;
@@ -21,13 +21,13 @@ const isEqual = (...objects: Suggestion[]) =>
 
 export const SuggestionCollapse = forwardRef(
     (props: SuggestionCollapseProps, ref) => {
-        const { activeKey, onClick, onReplaceClick, suggestion } = props;
+        const { activeSuggestion, onClick, onReplaceClick, suggestion } = props;
         const isActive = useMemo(() => {
-            if (activeKey == null) {
+            if (activeSuggestion == null) {
                 return false;
             }
-            return isEqual(suggestion, activeKey);
-        }, [suggestion, activeKey]);
+            return isEqual(suggestion, activeSuggestion);
+        }, [suggestion, activeSuggestion]);
 
         // const srcNaut = useMemo(() => {
         //     return capitalizeFirstLetter(suggestion.srcNautObj);

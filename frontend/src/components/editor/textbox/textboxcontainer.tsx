@@ -4,6 +4,7 @@ import React, {
     MutableRefObject,
     useCallback,
     useEffect,
+    useRef,
 } from "react";
 import {
     Editor,
@@ -12,7 +13,11 @@ import {
     ContentState,
     ContentBlock,
 } from "draft-js";
-import { SuggestionRefs } from "../suggestions/suggestionsTypes";
+import {
+    RangeToSuggestion,
+    RangeToBlockLocation,
+    BlockLocToUnderlineRef,
+} from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
 import "draft-js/dist/Draft.css";
@@ -44,9 +49,7 @@ export type TextboxContainerProps = {
     activeSuggestion: Suggestion | undefined;
     updateEditorState: (e: EditorState) => void;
     updateSuggestions: (s: Suggestion[]) => void;
-    updateActiveSuggestion: (k: Suggestion | undefined) => void;
-    updateRefs: SetState<SuggestionRefs>;
-    refs: SuggestionRefs;
+    updateActiveSuggestion: SetState<Suggestion | undefined>;
     sort: (a: Suggestion, b: Suggestion) => number;
     editorRef: MutableRefObject<any>;
     storefront: CheckerStorefront;
@@ -63,8 +66,6 @@ export const TextboxContainer = ({
     updateEditorState,
     updateSuggestions,
     updateActiveSuggestion,
-    updateRefs,
-    refs,
     sort,
     editorRef,
     storefront,
@@ -74,7 +75,16 @@ export const TextboxContainer = ({
     const [isLoading, setIsLoading] = React.useState(false);
     const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
         React.useState(false);
-    const rangeToSuggestion = React.useRef<SuggestionRefs>({});
+
+    const rangeToSuggestion = React.useRef<RangeToSuggestion>({}); // really useful when we need to map decorator to the curresponding suggestion
+
+    // these two are needed so we can scroll to the underline span when we click on a card
+    // we need two maps since we only know:
+    // 1) the blockLoc and the range together OR
+    // 2) the rangeBlockLoc and the ref to the span
+    // we don't know 1) and 2) at the same time. so we use two maps
+    const rangeBlockLoc = React.useRef<RangeToBlockLocation>({});
+    const underlineRef = React.useRef<BlockLocToUnderlineRef>({});
 
     const router = useRouter();
     useEffect(() => {
@@ -84,6 +94,34 @@ export const TextboxContainer = ({
         );
         editorRef.current?.focus();
     }, []);
+
+    useEffect(() => {
+        if (activeSuggestion) {
+            const blockLoc =
+                rangeBlockLoc.current[
+                    activeSuggestion.editOps[0].range.start +
+                        "," +
+                        activeSuggestion.editOps[0].range.end
+                ];
+            // DO NOT change where the cursor is. cause if htey click on the underline to make the active suggestion, their cursor will be elsewhere
+            // sometimes these refs are outdated????
+            // HWOEVER, the scroll into view wrks!
+            const ref = underlineRef.current[blockLoc];
+            console.log(blockLoc, ref);
+
+            if (ref) {
+                // we need to request animation frame cause otherwise, scrollIntoView will sometimes fail
+                // https://github.com/facebook/react/issues/23396
+                window.requestAnimationFrame(() => {
+                    ref.current?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                        inline: "start",
+                    });
+                });
+            }
+        }
+    }, [activeSuggestion, underlineRef.current]);
 
     // handles decorating the text
     const handleStrategy = useCallback(
@@ -103,6 +141,7 @@ export const TextboxContainer = ({
                     start += currBlock.getLength() + 1;
                 }
             }
+            const contentBlockKey = contentBlock.getKey();
 
             const end = start + contentBlock.getLength();
             suggestions.forEach((suggestion: Suggestion) => {
@@ -111,11 +150,15 @@ export const TextboxContainer = ({
                     if (range.start > end || range.end < start) {
                         return;
                     }
+                    rangeToSuggestion.current[range.start + "," + range.end] =
+                        suggestion;
 
                     const startPos = range.start - start;
                     const endPos = range.end - start;
-                    rangeToSuggestion.current[range.start + "," + range.end] =
-                        suggestion;
+                    rangeBlockLoc.current[
+                        range.start + "," + range.end
+                    ] = `${contentBlockKey}`;
+
                     callback(
                         Math.max(startPos, 0),
                         Math.min(contentBlock.getLength(), endPos),
@@ -132,11 +175,15 @@ export const TextboxContainer = ({
             getStyle: (p: any) => CSSProperties,
             onClick: (p: any) => void,
         ): JSX.Element => {
+            const ref = React.createRef<HTMLSpanElement>();
+            underlineRef.current[props.blockKey] = ref; // it's ok to just use the blockKey since we are only using the underlineRef to scroll to the underline
+            // (so it's ok if we have multiple underlines with the same blockKey)
             return (
                 <span
                     style={getStyle(props)}
                     data-offset-key={props.offsetKey}
                     onClick={() => onClick(props)}
+                    ref={ref}
                 >
                     {props.children}
                 </span>
@@ -190,17 +237,13 @@ export const TextboxContainer = ({
 
             const startPos = props.start + start;
             const endPos = props.end + start;
-            const key = startPos + "," + endPos;
-
-            if (!(key in rangeToSuggestion.current)) {
-                toast.error("Could not find key corresponding suggestion");
-                return;
-            }
 
             const suggestion = suggestions.find((s) => {
                 return s.editOps.some((editOp) => {
-                    editOp.range.start === startPos &&
-                        editOp.range.end === endPos;
+                    return (
+                        editOp.range.start === startPos &&
+                        editOp.range.end === endPos
+                    );
                 });
             });
 
@@ -209,14 +252,7 @@ export const TextboxContainer = ({
                 return;
             }
 
-            // TODO: uncollapse the previous suggestion?
             updateActiveSuggestion(suggestion);
-            // setTimeout(() => {
-            //     refs[suggestion.checkId].current?.scrollIntoView({
-            //         behavior: "smooth",
-            //         block: "center",
-            //     });
-            // });
             mixpanelTrack("Underlined text selected", {
                 suggestion,
             });
@@ -233,9 +269,8 @@ export const TextboxContainer = ({
         return new CompositeDecorator([
             {
                 strategy: handleStrategy, // Tells DraftJS which ranges of text should be decorated (handles newlines in the ranges)
+                // tells DraftJS how to actually render the component
                 component: (props: any) => {
-                    // actually renders the component
-                    console.log("decorator props", props);
                     return HandleSpan(props, spanStyle, handleUnderlineClicked);
                 },
             },
@@ -274,18 +309,19 @@ export const TextboxContainer = ({
             return;
         }
         setHasAnalyzedOnce(true);
+        rangeToSuggestion.current = {};
+        underlineRef.current = {};
+        rangeBlockLoc.current = {};
         console.log(response);
         // return;
 
         const newSuggestions = response.suggestions;
-        const suggestionRefs: SuggestionRefs = {};
         newSuggestions.sort(sort);
 
         console.log("suggestions", newSuggestions);
         setCheckDescObj(response.checkDescs);
         updateSuggestions(newSuggestions);
         // TODO: update the suggestionRefs with the actual ref of the card
-        updateRefs(suggestionRefs);
 
         mixpanelTrack("Check Document Clicked", {
             "Number of suggestions generated": newSuggestions.length,
@@ -305,7 +341,7 @@ export const TextboxContainer = ({
         updateEditorState(
             EditorState.forceSelection(newEditorState, selectionState),
         );
-    }, [decorator]);
+    }, [decorator, activeSuggestion]);
 
     return (
         <div

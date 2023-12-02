@@ -1,5 +1,5 @@
-import React from "react";
-import { Suggestion, SuggestionRefs } from "./suggestionsTypes";
+import React, { useEffect, useRef } from "react";
+import { SuggestionIdToRef } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
 import { SuggestionCollapse } from "./suggestionCollapse";
 import ZeroImage from "./ZeroState.svg";
@@ -11,13 +11,14 @@ import { ContentBlock, EditorState, Modifier, SelectionState } from "draft-js";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import { Tooltip } from "antd";
 import { pluralize } from "@utils/strings";
+import { Suggestion } from "@api/ApiTypes";
+import { SetState } from "@utils/types";
 // import { Tooltip } from "antd";
 
 export type SuggestionsContainerProps = {
     suggestions: Suggestion[];
-    refs: SuggestionRefs;
-    activeKey: Suggestion | undefined;
-    setActiveKey: (k: Suggestion | undefined) => void;
+    activeSuggestion: Suggestion | undefined;
+    setActiveSuggestion: SetState<Suggestion | undefined>;
     editorState: EditorState;
     updateEditorState: (e: EditorState) => void;
     updateSortIdx: (idx: number) => void;
@@ -30,14 +31,15 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
 ) => {
     const {
         suggestions,
-        refs,
-        activeKey,
-        setActiveKey,
+        activeSuggestion,
+        setActiveSuggestion,
         editorState,
         updateEditorState,
         updateSortIdx,
         hasAnalyzedOnce,
     } = props;
+
+    const suggestionsRefs = useRef<SuggestionIdToRef>({});
 
     const editorHasText = React.useMemo(
         () => editorState.getCurrentContent().hasText(),
@@ -45,16 +47,16 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     );
 
     const onCollapseClick = (s: Suggestion) => {
-        if (activeKey === s) {
+        if (activeSuggestion === s) {
             mixpanelTrack("Suggestion closed", {
                 suggestion: s,
             });
-            setActiveKey(undefined);
+            setActiveSuggestion(undefined);
         } else {
             mixpanelTrack("Suggestion opened", {
                 suggestion: s,
             });
-            setActiveKey(s);
+            setActiveSuggestion(s);
         }
     };
 
@@ -91,19 +93,34 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
         }
     };
 
+    useEffect(() => {
+        if (activeSuggestion) {
+            const ref = suggestionsRefs.current[activeSuggestion.suggestionId];
+            if (ref?.current) {
+                ref.current.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+            }
+        }
+    }, [activeSuggestion]);
+
     const renderSuggestions = React.useCallback(() => {
+        suggestionsRefs.current = {}; // reset refs
         if (editorHasText) {
             if (suggestions.length > 0) {
                 return suggestions.map((s: Suggestion, index: number) => {
+                    const ref = React.createRef<HTMLDivElement>();
+                    suggestionsRefs.current[s.suggestionId] = ref;
                     return (
                         <SuggestionCollapse
                             key={index}
                             suggestion={s}
-                            activeKey={activeKey}
+                            activeSuggestion={activeSuggestion}
                             onClick={() => onCollapseClick(s)}
                             onReplaceClick={() => onReplaceClick(s)}
-                            ref={refs[s.id]}
                             checkDescObj={props.checkDescObj}
+                            ref={ref}
                         />
                     );
                 });
@@ -154,7 +171,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                 }
             />
         );
-    }, [editorHasText, suggestions, activeKey]);
+    }, [editorHasText, suggestions, activeSuggestion]);
 
     return (
         <div className="col-span-2">
@@ -164,7 +181,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
             />
             <div
                 className="px-4"
-                style={{ maxHeight: "calc(100vh - 61px)", overflow: "auto" }}
+                style={{ maxHeight: "calc(85vh)", overflow: "auto" }}
             >
                 {renderSuggestions()}
             </div>
