@@ -100,6 +100,8 @@ export const TextboxContainer = ({
                         activeSuggestion.editOps[0].range.end
                 ];
             // DO NOT change where the cursor is. cause if htey click on the underline to make the active suggestion, their cursor will be elsewhere
+            // sometimes these refs are outdated????
+            // HWOEVER, the scroll into view wrks!
             const ref = underlineRef.current[blockLoc];
             console.log("blockLoc", blockLoc, ref);
             if (ref) {
@@ -111,7 +113,7 @@ export const TextboxContainer = ({
                 });
             }
         }
-    }, [activeSuggestion]);
+    }, [activeSuggestion, underlineRef.current]);
 
     // handles decorating the text
     const handleStrategy = useCallback(
