@@ -99,9 +99,9 @@ export const TextboxContainer = ({
         if (activeSuggestion) {
             const blockLoc =
                 rangeBlockLoc.current[
-                    activeSuggestion.editOps[0].range.start +
+                    activeSuggestion.range.start +
                         "," +
-                        activeSuggestion.editOps[0].range.end
+                        activeSuggestion.range.end
                 ];
             // DO NOT change where the cursor is. cause if htey click on the underline to make the active suggestion, their cursor will be elsewhere
             // sometimes these refs are outdated????
@@ -145,25 +145,40 @@ export const TextboxContainer = ({
 
             const end = start + contentBlock.getLength();
             suggestions.forEach((suggestion: Suggestion) => {
-                suggestion.editOps.forEach((editOp) => {
-                    const range = editOp.range;
-                    if (range.start > end || range.end < start) {
-                        return;
-                    }
-                    rangeToSuggestion.current[range.start + "," + range.end] =
-                        suggestion;
+                const rangeStart = suggestion.range.start;
+                const rangeEnd = suggestion.range.end;
+                if (rangeStart > end || rangeEnd < start) {
+                    return;
+                }
+                const rangeKey = `${rangeStart},${rangeEnd}`;
+                rangeToSuggestion.current[rangeKey] = suggestion;
 
-                    const startPos = range.start - start;
-                    const endPos = range.end - start;
-                    rangeBlockLoc.current[
-                        range.start + "," + range.end
-                    ] = `${contentBlockKey}`;
+                const startPos = rangeStart - start;
+                const endPos = rangeEnd - start;
+                rangeBlockLoc.current[rangeKey] = `${contentBlockKey}`;
+                callback(
+                    Math.max(startPos, 0),
+                    Math.min(contentBlock.getLength(), endPos),
+                );
+                // suggestion.editOps.forEach((editOp) => {
+                //     const range = editOp.range;
+                //     if (range.start > end || range.end < start) {
+                //         return;
+                //     }
+                //     rangeToSuggestion.current[range.start + "," + range.end] =
+                //         suggestion;
 
-                    callback(
-                        Math.max(startPos, 0),
-                        Math.min(contentBlock.getLength(), endPos),
-                    );
-                });
+                //     const startPos = range.start - start;
+                //     const endPos = range.end - start;
+                //     rangeBlockLoc.current[
+                //         range.start + "," + range.end
+                //     ] = `${contentBlockKey}`;
+
+                //     callback(
+                //         Math.max(startPos, 0),
+                //         Math.min(contentBlock.getLength(), endPos),
+                //     );
+                // });
             });
         },
         [suggestions],
@@ -239,12 +254,7 @@ export const TextboxContainer = ({
             const endPos = props.end + start;
 
             const suggestion = suggestions.find((s) => {
-                return s.editOps.some((editOp) => {
-                    return (
-                        editOp.range.start === startPos &&
-                        editOp.range.end === endPos
-                    );
-                });
+                return s.range.start === startPos && s.range.end === endPos;
             });
 
             if (!suggestion) {

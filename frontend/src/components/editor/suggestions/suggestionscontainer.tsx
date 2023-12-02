@@ -96,12 +96,16 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     useEffect(() => {
         if (activeSuggestion) {
             const ref = suggestionsRefs.current[activeSuggestion.suggestionId];
-            if (ref?.current) {
-                ref.current.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center",
-                });
-            }
+            // we need to request animation frame cause otherwise, scrollIntoView will sometimes fail
+            // https://github.com/facebook/react/issues/23396
+            window.requestAnimationFrame(() => {
+                if (ref?.current) {
+                    ref.current.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                    });
+                }
+            });
         }
     }, [activeSuggestion]);
 
