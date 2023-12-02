@@ -48,10 +48,23 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
             // There was a change in the content
             // console.log("content changed");
             // console.log(newState.getCurrentContent().getPlainText());
-            singleEditDistance(
+            const { editedRange, numCharsAdded } = singleEditDistance(
                 editorState.getCurrentContent().getPlainText(),
                 newState.getCurrentContent().getPlainText(),
             );
+            const newSuggestions = [];
+            for (const suggestion of suggestions) {
+                if (suggestion.range.isBefore(editedRange)) {
+                    continue;
+                }
+                // suggestion.range.shift(numCharsAdded);
+                // newSuggestions.push(suggestion.shift(numCharsAdded));
+                newSuggestions.push({
+                    ...suggestion,
+                    range: suggestion.range.shift(numCharsAdded),
+                });
+            }
+            setSuggestions(newSuggestions);
         } else {
             // The change was triggered by a change in focus/selection
             console.log("focus changed");

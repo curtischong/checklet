@@ -1,4 +1,14 @@
-export const singleEditDistance = (s1: string, s2: string): void => {
+import { DocRange } from "@api/ApiTypes";
+
+export type SingleEditDistance = {
+    editedRange: DocRange;
+    numCharsAdded: number;
+};
+
+export const singleEditDistance = (
+    s1: string,
+    s2: string,
+): SingleEditDistance => {
     // O(n) solution. from both sides
     let l1 = 0;
     let l2 = 0;
@@ -17,7 +27,15 @@ export const singleEditDistance = (s1: string, s2: string): void => {
         r2--;
     }
 
-    const original = s1.substring(l1, r1 + 1);
-    const modified = s2.substring(l2, r2 + 1);
-    console.log("old", original, "new", modified);
+    // const original = s1.substring(l1, r1 + 1);
+    // const modified = s2.substring(l2, r2 + 1);
+    // console.log("old", original, "new", modified);
+
+    // PERF: remove the + 1
+    const numCharsInModified = r2 - l2 + 1;
+    const numCharsInOriginal = r1 - l1 + 1;
+    return {
+        editedRange: new DocRange(l1, r1 + 1),
+        numCharsAdded: numCharsInModified - numCharsInOriginal,
+    };
 };

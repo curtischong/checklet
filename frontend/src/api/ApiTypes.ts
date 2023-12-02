@@ -51,4 +51,18 @@ export class DocRange {
     merge(other: DocRange): void {
         this.end = other.end;
     }
+    // isIntersecting(other: DocRange): boolean {
+    //     if (this.start >= other.end || this.end <= other.start) {
+    //         return false;
+    //     }
+    //     return true;
+    // }
+    isBefore(other: DocRange): boolean {
+        return this.end <= other.start;
+    }
+    shift(amount: number): DocRange {
+        return new DocRange(this.start + amount, this.end + amount);
+        // this.start += amount;
+        // this.end += amount;
+    }
 }
