@@ -69,7 +69,6 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
         }
 
         if (currBlock != null) {
-            console.log("replaced");
             const selectionState = SelectionState.createEmpty(
                 currBlock.getKey(),
             );
@@ -85,7 +84,6 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                 s.editedText,
             );
             updateEditorState(
-                // EditorState.push(editorState, newContent, "remove-range"),
                 EditorState.push(editorState, newContent, "remove-range"),
             );
         }
