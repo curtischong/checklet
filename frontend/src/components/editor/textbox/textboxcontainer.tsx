@@ -390,6 +390,7 @@ export const TextboxContainer = ({
                 onChange={updateEditorState}
                 placeholder="Type or paste your resume here"
                 ref={editorRef}
+                stripPastedStyles={true}
             ></Editor>
         </div>
     );
