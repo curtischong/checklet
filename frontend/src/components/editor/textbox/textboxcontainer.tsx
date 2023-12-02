@@ -16,6 +16,7 @@ import {
 import {
     RangeToSuggestion,
     RangeToBlockLocation,
+    BlockLocToUnderlineRef,
 } from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
@@ -41,16 +42,6 @@ import { Api } from "@api/apis";
 
 // need same version with worker and pdfjs for it to work properly
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
-
-const useRefs = () => {
-    const refsByKey = useRef<Record<string, HTMLElement | null>>({});
-
-    const setRef = (element: HTMLElement | null, key: string) => {
-        refsByKey.current[key] = element;
-    };
-
-    return { refsByKey: refsByKey.current, setRef };
-};
 
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
@@ -89,8 +80,7 @@ export const TextboxContainer = ({
     const rangeToSuggestion = React.useRef<RangeToSuggestion>({}); // really useful when we need to map decorator to the curresponding
 
     const rangeBlockLoc = React.useRef<RangeToBlockLocation>({});
-    const { refsByKey: underlineRef, setRef: setUnderlineRef } = useRefs();
-    // const underlineRef = React.useRef<BlockLocToUnderlineRef>({});
+    const underlineRef = React.useRef<BlockLocToUnderlineRef>({});
 
     const router = useRouter();
     useEffect(() => {
@@ -112,28 +102,14 @@ export const TextboxContainer = ({
             // DO NOT change where the cursor is. cause if htey click on the underline to make the active suggestion, their cursor will be elsewhere
             // sometimes these refs are outdated????
             // HWOEVER, the scroll into view wrks!
-            // const ref = underlineRef[blockLoc];
-            const element = document.querySelector(
-                `[data-offset-key="${blockLoc}-0-0"]`,
-            );
-            console.log("element", element);
+            const ref = underlineRef.current[blockLoc];
+            console.log(blockLoc, ref);
 
-            if (element) {
-                // TODO: scrolling into view doens't work?
-                console.log("scrolling into view");
-                // const editorConRef = document.getElementsByClassName(
-                //     "public-DraftEditor-content",
-                //     // "DraftEditor-editorContainer",
-                //     // "DraftEditor-root",
-                // )[0].childNodes[0] as HTMLElement;
-                // editorConRef.scrollTop = ref.offsetTop - 100;
-                // console.log(editorConRef);
-                // editorRef.current.scrollTop = ref.offsetTop - 100;
-
+            if (ref) {
+                // we need to request animation frame cause otherwise, scrollIntoView will sometimes fail
                 // https://github.com/facebook/react/issues/23396
-                console.log(blockLoc);
                 window.requestAnimationFrame(() => {
-                    element?.scrollIntoView({
+                    ref.current?.scrollIntoView({
                         behavior: "smooth",
                         block: "center",
                         inline: "start",
@@ -162,7 +138,6 @@ export const TextboxContainer = ({
                 }
             }
             const contentBlockKey = contentBlock.getKey();
-            // console.log("currBlock", currBlock.findKey());
 
             const end = start + contentBlock.getLength();
             suggestions.forEach((suggestion: Suggestion) => {
@@ -178,7 +153,6 @@ export const TextboxContainer = ({
                     const endPos = range.end - start;
                     rangeBlockLoc.current[
                         range.start + "," + range.end
-                        // ] = `${contentBlockKey},${startPos},${endPos}`;
                     ] = `${contentBlockKey}`;
 
                     callback(
@@ -197,25 +171,15 @@ export const TextboxContainer = ({
             getStyle: (p: any) => CSSProperties,
             onClick: (p: any) => void,
         ): JSX.Element => {
-            // const ref = React.createRef<HTMLSpanElement>();
-            // underlineRef.current[
-            //     props.blockKey + "," + props.start + "," + props.end
-            // ] = ref;
+            const ref = React.createRef<HTMLSpanElement>();
+            underlineRef.current[props.blockKey] = ref; // it's ok to just use the blockKey since we are only using the underlineRef to scroll to the underline
+            // (so it's ok if we have multiple underlines with the same blockKey)
             return (
                 <span
                     style={getStyle(props)}
                     data-offset-key={props.offsetKey}
                     onClick={() => onClick(props)}
-                    ref={(el) => {
-                        setUnderlineRef(
-                            el,
-                            props.blockKey +
-                                "," +
-                                props.start +
-                                "," +
-                                props.end,
-                        );
-                    }}
+                    ref={ref}
                 >
                     {props.children}
                 </span>
@@ -342,7 +306,8 @@ export const TextboxContainer = ({
             return;
         }
         setHasAnalyzedOnce(true);
-        // underlineRef.current = {};
+        underlineRef.current = {};
+        rangeBlockLoc.current = {};
         console.log(response);
         // return;
 
