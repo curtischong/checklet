@@ -28,7 +28,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const { user } = useClientContext();
 
     const sorts: ((a: Suggestion, b: Suggestion) => number)[] = [
-        (a, b) => a.editOps[0].range.start - b.editOps[0].range.start,
+        (a, b) => a.range.start - b.range.start, // sort by order of appearance
         (a, b) => a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
     ];
 
