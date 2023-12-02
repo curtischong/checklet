@@ -1,4 +1,4 @@
-import { DocRange } from "@api/ApiTypes";
+import { DocRange, newDocRange } from "@api/ApiTypes";
 
 export type SingleEditDistance = {
     editedRange: DocRange;
@@ -35,7 +35,7 @@ export const singleEditDistance = (
     const numCharsInModified = r2 - l2 + 1;
     const numCharsInOriginal = r1 - l1 + 1;
     return {
-        editedRange: new DocRange(l1, r1 + 1),
+        editedRange: newDocRange(l1, r1 + 1),
         numCharsAdded: numCharsInModified - numCharsInOriginal,
     };
 };

@@ -1,4 +1,4 @@
-import { DocRange, Suggestion } from "@api/ApiTypes";
+import { Suggestion, newDocRange } from "@api/ApiTypes";
 import { editDistanceOperationsWithClasses } from "@api/editDistance";
 import { Llm } from "@api/llm";
 import {
@@ -109,7 +109,7 @@ ${positiveExamples}
 
                         // now that we know where the original text is, we can create the suggestion
                         suggestions.push({
-                            range: new DocRange(
+                            range: newDocRange(
                                 originalTextIdxRelativeToDoc,
                                 startIdx,
                             ),

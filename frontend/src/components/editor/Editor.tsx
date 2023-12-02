@@ -9,7 +9,7 @@ import {
     CheckDescObj,
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
-import { Suggestion } from "@api/ApiTypes";
+import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
 import { singleEditDistance } from "@components/editor/singleEditDistance";
 
 interface Props {
@@ -54,15 +54,16 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
             );
             const newSuggestions = [];
             for (const suggestion of suggestions) {
-                if (suggestion.range.isBefore(editedRange)) {
-                    continue;
+                if (isBefore(suggestion.range, editedRange)) {
+                    newSuggestions.push({ ...suggestion });
+                } else if (isIntersecting(suggestion.range, editedRange)) {
+                    // do nothing since the suggestion is now invalid
+                } else {
+                    newSuggestions.push({
+                        ...suggestion,
+                        range: shift(suggestion.range, numCharsAdded),
+                    });
                 }
-                // suggestion.range.shift(numCharsAdded);
-                // newSuggestions.push(suggestion.shift(numCharsAdded));
-                newSuggestions.push({
-                    ...suggestion,
-                    range: suggestion.range.shift(numCharsAdded),
-                });
             }
             setSuggestions(newSuggestions);
         } else {

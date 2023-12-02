@@ -42,27 +42,34 @@ export type Suggestion = {
     suggestionId: SuggestionId;
 };
 
-export class DocRange {
-    constructor(public start: number, public end: number) {}
+export type DocRange = {
+    start: number;
+    end: number;
+};
 
-    isAdjacent(other: DocRange): boolean {
-        return this.end === other.start;
+export const newDocRange = (start: number, end: number): DocRange => {
+    return { start, end };
+};
+
+export const isAdjacent = (r1: DocRange, r2: DocRange): boolean => {
+    return r1.end === r2.start;
+};
+
+export const merge = (r1: DocRange, r2: DocRange): void => {
+    r1.end = r2.end;
+};
+
+export const isBefore = (r1: DocRange, r2: DocRange): boolean => {
+    return r1.end <= r2.start;
+};
+
+export const shift = (r: DocRange, amount: number): DocRange => {
+    return newDocRange(r.start + amount, r.end + amount);
+};
+
+export const isIntersecting = (r1: DocRange, r2: DocRange): boolean => {
+    if (r1.start >= r2.end || r1.end <= r2.start) {
+        return false;
     }
-    merge(other: DocRange): void {
-        this.end = other.end;
-    }
-    // isIntersecting(other: DocRange): boolean {
-    //     if (this.start >= other.end || this.end <= other.start) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
-    isBefore(other: DocRange): boolean {
-        return this.end <= other.start;
-    }
-    shift(amount: number): DocRange {
-        return new DocRange(this.start + amount, this.end + amount);
-        // this.start += amount;
-        // this.end += amount;
-    }
-}
+    return true;
+};
