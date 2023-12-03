@@ -28,7 +28,6 @@ import {
 import { Suggestion } from "@api/ApiTypes";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { ExamplesModal } from "@components/editor/textbox/examplesModal";
 import { LoadingButton } from "@components/Button";
 import { Affix } from "antd";
 import { Api } from "@api/apis";
@@ -89,7 +88,8 @@ export const TextboxContainer = ({
     useEffect(() => {
         // TODO: load state from localstorage
         updateEditorState(
-            EditorState.moveFocusToEnd(EditorState.createEmpty(decorator())),
+            // no need to create the decorator at the start. cause there are no suggestions! (unless we load from localstorage)
+            EditorState.moveFocusToEnd(EditorState.createEmpty()),
         );
         editorRef.current?.focus();
     }, []);
@@ -120,183 +120,6 @@ export const TextboxContainer = ({
             }
         }
     }, [activeSuggestion, underlineRef.current]);
-
-    // handles decorating the text
-    const handleStrategy = useCallback(
-        (
-            contentBlock: ContentBlock,
-            callback: (start: number, end: number) => void,
-            contentState: ContentState,
-        ) => {
-            let currBlock = contentBlock;
-            let start = 0;
-            while (contentState.getBlockBefore(currBlock.getKey()) != null) {
-                const currBlockRaw = contentState.getBlockBefore(
-                    currBlock.getKey(),
-                );
-                if (currBlockRaw) {
-                    currBlock = currBlockRaw;
-                    start += currBlock.getLength() + 1;
-                }
-            }
-            const contentBlockKey = contentBlock.getKey();
-
-            const end = start + contentBlock.getLength();
-            suggestions.forEach((suggestion: Suggestion) => {
-                const rangeStart = suggestion.range.start;
-                const rangeEnd = suggestion.range.end;
-                if (rangeStart > end || rangeEnd < start) {
-                    return;
-                }
-                const rangeKey = `${rangeStart},${rangeEnd}`;
-                rangeToSuggestion.current[rangeKey] = suggestion;
-
-                const startPos = rangeStart - start;
-                const endPos = rangeEnd - start;
-                rangeBlockLoc.current[rangeKey] = `${contentBlockKey}`;
-                callback(
-                    Math.max(startPos, 0),
-                    Math.min(contentBlock.getLength(), endPos),
-                );
-                // suggestion.editOps.forEach((editOp) => {
-                //     const range = editOp.range;
-                //     if (range.start > end || range.end < start) {
-                //         return;
-                //     }
-                //     rangeToSuggestion.current[range.start + "," + range.end] =
-                //         suggestion;
-
-                //     const startPos = range.start - start;
-                //     const endPos = range.end - start;
-                //     rangeBlockLoc.current[
-                //         range.start + "," + range.end
-                //     ] = `${contentBlockKey}`;
-
-                //     callback(
-                //         Math.max(startPos, 0),
-                //         Math.min(contentBlock.getLength(), endPos),
-                //     );
-                // });
-            });
-        },
-        [suggestions],
-    );
-
-    const HandleSpan = useCallback(
-        (
-            props: any,
-            getStyle: (p: any) => CSSProperties,
-            onClick: (p: any) => void,
-        ): JSX.Element => {
-            const ref = React.createRef<HTMLSpanElement>();
-            underlineRef.current[props.blockKey] = ref; // it's ok to just use the blockKey since we are only using the underlineRef to scroll to the underline
-            // (so it's ok if we have multiple underlines with the same blockKey)
-            return (
-                <span
-                    style={getStyle(props)}
-                    data-offset-key={props.offsetKey}
-                    onClick={() => onClick(props)}
-                    ref={ref}
-                >
-                    {props.children}
-                </span>
-            );
-        },
-        [],
-    );
-
-    const spanStyle = useCallback(
-        (props: any): CSSProperties => {
-            const style: CSSProperties = {
-                borderBottom: "2px solid #189bf2",
-            };
-            const contentState: ContentState = props.contentState;
-
-            let currBlock = contentState.getBlockForKey(props.blockKey);
-            let start = 0;
-
-            let rawCurrBlock = contentState.getBlockBefore(currBlock.getKey());
-            while (rawCurrBlock !== undefined) {
-                currBlock = rawCurrBlock;
-                start += currBlock.getLength() + 1;
-                rawCurrBlock = contentState.getBlockBefore(currBlock.getKey());
-            }
-            const startPos = props.start + start;
-            const endPos = props.end + start;
-            const suggestion =
-                rangeToSuggestion.current[startPos + "," + endPos];
-
-            if (suggestion?.suggestionId === activeSuggestion?.suggestionId) {
-                style.backgroundColor = "#DBEBFF";
-                style.padding = "1.5px 0 1px";
-                style.backgroundPosition = "center calc(100% + 2px)";
-                style.backgroundClip = "text";
-            }
-            return style;
-        },
-        [activeSuggestion, rangeToSuggestion.current],
-    );
-
-    const handleUnderlineClicked = useCallback(
-        (props: any) => {
-            const contentState = props.contentState;
-            let currBlock = contentState.getBlockForKey(props.blockKey);
-            let start = 0;
-
-            while (contentState.getBlockBefore(currBlock.getKey()) != null) {
-                currBlock = contentState.getBlockBefore(currBlock.getKey());
-                start += currBlock.getLength() + 1;
-            }
-
-            const startPos = props.start + start;
-            const endPos = props.end + start;
-
-            const suggestion = suggestions.find((s) => {
-                return s.range.start === startPos && s.range.end === endPos;
-            });
-
-            if (!suggestion) {
-                toast.error("Could not find key corresponding suggestion");
-                return;
-            }
-
-            updateActiveSuggestion(suggestion);
-            mixpanelTrack("Underlined text selected", {
-                suggestion,
-            });
-        },
-        [suggestions],
-    );
-
-    // damn. decorator NEEDs to be udpated everytime the suggestions are updated
-    // cause:
-    // handleStrategy - needs to update the ranges to update
-    // spanStyle - needs to know which suggestion we clicked on (is currently active)
-    // handleUnderlineClicked - needs to know all the suggestions so it knows which suggestion to select
-    const decorator = useCallback(() => {
-        return new CompositeDecorator([
-            {
-                strategy: handleStrategy, // Tells DraftJS which ranges of text should be decorated (handles newlines in the ranges)
-                // tells DraftJS how to actually render the component
-                component: (props: any) => {
-                    return HandleSpan(props, spanStyle, handleUnderlineClicked);
-                },
-            },
-        ]);
-    }, [handleStrategy, spanStyle, handleUnderlineClicked]);
-
-    // used when we want to insert an example into the editor
-    const handleExampleClicked = (text: string) => {
-        updateEditorState(
-            EditorState.moveFocusToEnd(
-                EditorState.createWithContent(
-                    ContentState.createFromText(text),
-                    decorator(),
-                ),
-            ),
-        );
-        setIsExampleCodeModalVisible(false);
-    };
 
     const checkDocument = useCallback(async (): Promise<
         EditorState | undefined
@@ -338,19 +161,6 @@ export const TextboxContainer = ({
         });
     }, [editorState, isLoading]);
 
-    useEffect(() => {
-        const selectionState = editorState.getSelection();
-        const content = editorState.getCurrentContent();
-
-        const newEditorState = EditorState.createWithContent(
-            content,
-            decorator(),
-        );
-        updateEditorState(
-            EditorState.forceSelection(newEditorState, selectionState),
-        );
-    }, [decorator, activeSuggestion]);
-
     return (
         <div
             className="textbox col-span-3"
@@ -367,11 +177,11 @@ export const TextboxContainer = ({
                             {storefront.objInfo.desc}
                         </div>
 
-                        <ExamplesModal
+                        {/* <ExamplesModal
                             onClose={() => setIsExampleCodeModalVisible(false)}
                             visible={isExampleCodeModalVisible}
                             onClick={handleExampleClicked}
-                        />
+                        /> */}
 
                         <LoadingButton
                             onClick={checkDocument}

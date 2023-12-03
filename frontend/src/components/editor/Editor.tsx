@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
 import { EditorState } from "draft-js";
@@ -11,6 +11,7 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
 import { singleEditDistance } from "@components/editor/singleEditDistance";
+import { getDecorator } from "@components/editor/textbox/decorateUnderlines";
 
 interface Props {
     storefront: CheckerStorefront;
@@ -42,11 +43,13 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
         const oldContent = editorState.getCurrentContent();
         const newContent = newState.getCurrentContent();
         // const lastChange = newState.getLastChangeType(); // please leave this line here for documentation
+        console.log("update editor state");
 
         // if the text changed, we need to shift all the suggestions.
         // console.log("oldText", oldText);
         // console.log("newText", newText);
         if (oldContent !== newContent) {
+            console.log("content changed");
             // console.log("text changed");
             // 1) calculate WHERE the text changed (and how many chars changed)
             const { editedRange, numCharsAdded } = singleEditDistance(
@@ -68,9 +71,46 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     });
                 }
             }
+            const newDecorator = getDecorator(
+                newSuggestions,
+                setActiveSuggestion,
+                activeSuggestion,
+            );
             setSuggestions(newSuggestions);
+            newState = EditorState.createWithContent(newContent, newDecorator);
         }
         setEditorState(newState);
+    };
+
+    useEffect(() => {
+        console.log("active suggestion changed");
+        const selectionState = editorState.getSelection();
+        const content = editorState.getCurrentContent();
+
+        const newEditorState = EditorState.createWithContent(
+            content,
+            getDecorator(suggestions, setActiveSuggestion, activeSuggestion),
+        );
+        updateEditorState(
+            EditorState.forceSelection(newEditorState, selectionState),
+        );
+    }, [activeSuggestion]);
+
+    const updateSuggestions = (newSuggestions: Suggestion[]) => {
+        console.log("update suggestons");
+        const selectionState = editorState.getSelection();
+        const content = editorState.getCurrentContent();
+
+        const newEditorState = EditorState.createWithContent(
+            content,
+            getDecorator(newSuggestions, setActiveSuggestion, activeSuggestion),
+        );
+        // I need to pass in suggestions
+        setEditorState(
+            // newEditorState,
+            EditorState.forceSelection(newEditorState, selectionState),
+        );
+        setSuggestions(newSuggestions);
     };
 
     return (
@@ -80,7 +120,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     activeSuggestion={activeSuggestion}
                     updateActiveSuggestion={setActiveSuggestion}
                     suggestions={suggestions}
-                    updateSuggestions={setSuggestions}
+                    updateSuggestions={updateSuggestions}
                     editorState={editorState}
                     updateEditorState={updateEditorState}
                     sort={sorts[sortIdx]}
