@@ -12,12 +12,6 @@ interface Props {
 }
 
 export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
-    // <SuggestionCollapse suggestion={}
-    //    activeSuggestion={undefined}
-    //    onClick: () => void;
-    //    onReplaceClick: () => void;
-    //    checkDescObj: CheckDescObj;
-    // />
     const checkId = "checkId";
     const suggestion: Suggestion = {
         checkId,
