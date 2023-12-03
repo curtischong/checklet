@@ -8,8 +8,16 @@ export interface PositiveCheckExample {
     editedText: string;
 }
 
+export enum CheckType {
+    highlight = "highlight",
+    rephrase = "rephrase",
+    rephraseMultiple = "rephrase multiple",
+    proposal = "proposal",
+}
+
 export type CheckBlueprint = {
     name: string;
+    checkType: CheckType;
     instruction: string;
     longDesc: string;
     category: string; // optional

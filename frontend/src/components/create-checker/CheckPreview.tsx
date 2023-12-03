@@ -49,8 +49,14 @@ export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
     };
 
     return (
-        <div className="flex flex-col flex-grow justify-center items-center ">
-            <div className="w-[30vw] mx-auto my-auto">
+        <div
+            className="flex-grow min-w-0"
+            // flex basis isn't supported in this version of tailwind
+            style={{
+                flexBasis: "0",
+            }}
+        >
+            <div className="fixed mx-auto w-[30vw] left-[50%] right-0 mt-10">
                 <SuggestionCollapse
                     suggestion={suggestion}
                     activeSuggestion={suggestion}

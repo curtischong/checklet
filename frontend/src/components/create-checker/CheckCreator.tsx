@@ -1,10 +1,12 @@
 import { DeleteButton, NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
+import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import { TextArea } from "@components/TextArea";
 import { CheckPreview } from "@components/create-checker/CheckPreview";
 import { Page } from "@components/create-checker/CheckerCreator";
 import {
     CheckBlueprint,
+    CheckType,
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
 import { PositiveCheckExampleCreator } from "@components/create-checker/PositiveCheckExampleCreator";
@@ -12,6 +14,7 @@ import { HelpIcon } from "@components/icons/HelpIcon";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
 import { createUniqueId } from "@utils/strings";
+import { SetState } from "@utils/types";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 
@@ -33,6 +36,9 @@ export const CheckCreator = ({
         PositiveCheckExample[]
     >([]);
     const [checkId, setCheckId] = React.useState<string>(createUniqueId());
+    const [checkType, setCheckType] = React.useState<CheckType>(
+        CheckType.highlight,
+    );
 
     useEffect(() => {
         const rawInitialCheckBlueprint = (pageData as any)
@@ -76,8 +82,13 @@ export const CheckCreator = ({
 
     // TODO: we should have a demo card that appears as you fill in the fields (it'll be on the right side)
     return (
-        <div className="flex flex-row mt-4">
-            <div className="flex flex-col">
+        <div className="flex flex-row mt-4 ">
+            <div
+                className="flex flex-col flex-grow"
+                style={{
+                    flexBasis: "0",
+                }}
+            >
                 <div className="flex flex-row items-center">
                     <p
                         className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
@@ -107,6 +118,18 @@ export const CheckCreator = ({
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Shorten Month"
                 />
+                <label className="text-md mt-4">Check Type</label>
+                <SlidingRadioButton
+                    options={[
+                        CheckType.highlight,
+                        CheckType.rephrase,
+                        CheckType.rephraseMultiple,
+                        CheckType.proposal,
+                    ]}
+                    selected={checkType}
+                    setSelected={setCheckType as SetState<string>}
+                />
+
                 <div className="flex flex-row mt-2">
                     <label>Model Instructions</label>
                     <HelpIcon
