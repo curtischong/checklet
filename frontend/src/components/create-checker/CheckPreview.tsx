@@ -28,11 +28,11 @@ export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
         originalText:
             checkBlueprint.positiveExamples.length > 0
                 ? checkBlueprint.positiveExamples[0].originalText
-                : "",
+                : "January",
         editedText:
             checkBlueprint.positiveExamples.length > 0
                 ? checkBlueprint.positiveExamples[0].editedText
-                : "",
+                : "Jan",
         suggestionId: "suggestionId",
         editOps: [],
     };
