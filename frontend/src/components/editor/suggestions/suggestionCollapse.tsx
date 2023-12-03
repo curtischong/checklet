@@ -96,7 +96,7 @@ export const SuggestionCollapse = forwardRef(
                                 </>
                             )}
                         </div>
-                        {/* <div className={css.longDesc}>
+                        <div className={css.longDesc}>
                             {" "}
                             <ReactMarkdown
                                 children={`${
@@ -104,19 +104,26 @@ export const SuggestionCollapse = forwardRef(
                                 }`}
                                 remarkPlugins={[remarkGfm]}
                             />{" "}
-                        </div> */}
-                        {/* <div className={css.suggestion}>
-                            {originalText && (
-                                <div className={css.remove}>{originalText}</div>
-                            )}
-
+                        </div>
+                        {/* <div className={"mt-4"}>
+                            <div className="font-bold">Examples:</div>
                             {getCheckDesc(suggestion).positiveExamples.map(
                                 (example, idx) => {
+                                            // text decoration colors aren't supported?https://github.com/tailwindlabs/tailwindcss/discussions/2050 
                                     return (
                                         <div
+                                            className="flex flex-row"
                                             key={`positiveExample-${suggestion.checkId}-${idx}`}
                                         >
-                                            <div>{example.originalText}</div>
+                                            <div
+                                                className="line-through"
+                                                style={{
+                                                    textDecorationColor:
+                                                        "#DC5262",
+                                                }}
+                                            >
+                                                {example.originalText}
+                                            </div>
                                             <AiOutlineArrowRight
                                                 className={css.arrow}
                                             />
