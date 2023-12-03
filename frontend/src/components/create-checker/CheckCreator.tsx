@@ -118,12 +118,15 @@ export const CheckCreator = ({
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Shorten Month"
                 />
-                <label className="text-md mt-4">Check Type</label>
+                <LabelWithHelp
+                    label="Check Type"
+                    helpText="This determines the type of feedback your check generates."
+                />
                 <SlidingRadioButton
                     options={[
                         CheckType.highlight,
                         CheckType.rephrase,
-                        CheckType.rephraseMultiple,
+                        // CheckType.rephraseMultiple,
                         CheckType.proposal,
                     ]}
                     selected={checkType}
@@ -210,6 +213,7 @@ export const CheckCreator = ({
 
                             const checkBlueprint: CheckBlueprint = {
                                 name,
+                                checkType,
                                 instruction,
                                 longDesc,
                                 category,
@@ -225,6 +229,7 @@ export const CheckCreator = ({
             </div>
             <CheckPreview
                 checkBlueprint={{
+                    checkType,
                     name,
                     instruction,
                     longDesc,

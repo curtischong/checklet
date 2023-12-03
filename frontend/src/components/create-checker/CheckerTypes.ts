@@ -9,10 +9,10 @@ export interface PositiveCheckExample {
 }
 
 export enum CheckType {
-    highlight = "highlight",
-    rephrase = "rephrase",
-    rephraseMultiple = "rephrase multiple",
-    proposal = "proposal",
+    highlight = "Highlight",
+    rephrase = "Rephrase",
+    // rephraseMultiple = "Rephrase Multiple",
+    proposal = "Proposal",
 }
 
 export type CheckBlueprint = {
