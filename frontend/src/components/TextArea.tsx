@@ -1,17 +1,22 @@
+import classNames from "classnames";
 import { useEffect, useRef } from "react";
 
 export type ITextArea = React.DetailedHTMLProps<
-    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+        minHeight?: number;
+    },
     HTMLTextAreaElement
 >;
 
 export const TextArea: React.FC<ITextArea> = ({
     className = "",
     children,
+    minHeight,
     ...rest
 }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const MIN_HEIGHT = 120;
+    const MIN_HEIGHT = minHeight ?? 120;
+    console.log(MIN_HEIGHT);
     useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = "auto";
@@ -22,7 +27,13 @@ export const TextArea: React.FC<ITextArea> = ({
     }, [rest.value]);
     return (
         <textarea
-            className={`bg-white p-1 my-1 text-gray-600 border border-gray-400 py-2 px-4 rounded resize-none ${className}`}
+            className={classNames(
+                `bg-white p-1 my-1 text-gray-600 border border-gray-400 py-2 px-4 rounded resize-none`,
+                className,
+                {
+                    "cursor-not-allowed bg-[#f1f1f1]": rest.disabled,
+                },
+            )}
             {...rest}
             ref={textareaRef}
         >
