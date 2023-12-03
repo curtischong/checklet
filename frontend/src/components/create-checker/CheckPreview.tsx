@@ -145,91 +145,19 @@ export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
         checkId,
     };
 
-    const feedbackTypeDesc = useMemo(() => {
-        switch (checkBlueprint.checkType) {
-            case CheckType.highlight:
-                return (
-                    <div>
-                        <div>
-                            Highlight feedbacks are used to highlight a section
-                            of text. They're useful for pointing out flaws, but
-                            don't offer a specific suggestion to fix it.
-                        </div>
-                        <br />
-                        <div>
-                            This is useful if you know there's an error, but
-                            don't have enough information to suggest a fix.
-                        </div>
-                    </div>
-                );
-            case CheckType.rephrase:
-                return (
-                    <div>
-                        <div>
-                            Rephrase feedbacks suggest alternative ways to
-                            change the text.
-                        </div>
-                        <br />
-                        <div>
-                            This is useful if you know alternative rephrasings
-                            of the text. This card is also useful if you want to
-                            delete text.
-                        </div>
-                    </div>
-                );
-            case CheckType.proposal:
-                // return (<div><div>Proposal feedbacks allows the model to propose information to the user. They aren't rephrase feedbacks because the proposals presented don't change the text. </div></br><div>This is useful for complex suggestions that can't be easily expressed as a rephrase.</div><div>);
-                return (
-                    <div>
-                        <div>
-                            Proposal feedbacks allows the model to propose
-                            information to the user. They aren't rephrase
-                            feedbacks because the proposals presented don't
-                            change the text.
-                        </div>
-                        <br />
-                        <div>
-                            This is useful for complex suggestions that can't be
-                            easily expressed as a rephrase.
-                        </div>
-                    </div>
-                );
-            default:
-                throw new Error("unknown feedback type");
-        }
-    }, [checkBlueprint.checkType]);
-
     return (
-        <div
-            className="flex-grow min-w-0"
-            // flex basis isn't supported in this version of tailwind
-            style={{
-                flexBasis: "0",
+        <SuggestionCollapse
+            suggestion={suggestion}
+            activeSuggestion={suggestion}
+            onClick={() => {
+                return;
             }}
-        >
-            <div className="fixed mx-auto w-[30vw] left-[50%] right-0 mt-10">
-                <div className="flex flex-col mb-10 ml-1">
-                    <div className=" flex flex-row">
-                        <div className="font-bold text-lg">
-                            {checkBlueprint.checkType} Feedback
-                        </div>
-                    </div>
-                    <div className="mt-2">{feedbackTypeDesc}</div>
-                </div>
-                <SuggestionCollapse
-                    suggestion={suggestion}
-                    activeSuggestion={suggestion}
-                    onClick={() => {
-                        return;
-                    }}
-                    onReplaceClick={() => {
-                        return;
-                    }}
-                    checkDescObj={{
-                        [checkId]: checkDesc,
-                    }}
-                />
-            </div>
-        </div>
+            onReplaceClick={() => {
+                return;
+            }}
+            checkDescObj={{
+                [checkId]: checkDesc,
+            }}
+        />
     );
 };

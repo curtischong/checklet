@@ -1,4 +1,4 @@
-import { DeleteButton, NormalButton } from "@components/Button";
+import { DeleteButton, NormalButton, SubmitButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
@@ -16,7 +16,7 @@ import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon
 import { createUniqueId } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 
 interface Props {
     onCreate: (check: CheckBlueprint) => void;
@@ -36,8 +36,8 @@ export const CheckCreator = ({
         PositiveCheckExample[]
     >([]);
     const [checkId, setCheckId] = React.useState<string>(createUniqueId());
-    const [checkType, setCheckType] = React.useState<CheckType>(
-        CheckType.highlight,
+    const [checkType, setCheckType] = React.useState<CheckType | undefined>(
+        undefined,
     );
 
     useEffect(() => {
@@ -80,7 +80,12 @@ export const CheckCreator = ({
         setErr(getIncompleteFormErr());
     }, [getIncompleteFormErr, clickedSubmit]);
 
-    // TODO: we should have a demo card that appears as you fill in the fields (it'll be on the right side)
+    if (checkType === undefined) {
+        return (
+            <SelectCheckType setCheckType={setCheckType} setPage={setPage} />
+        );
+    }
+
     return (
         <div className="flex flex-row mt-4 ">
             <div
@@ -89,48 +94,13 @@ export const CheckCreator = ({
                     flexBasis: "0",
                 }}
             >
-                <div className="flex flex-row items-center">
-                    <p
-                        className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
-                        onClick={() => {
-                            router.push("/dashboard");
-                        }}
-                    >
-                        Dashboard
-                    </p>
-                    <RightArrowIcon className="mx-2 w-[14px]" />
-                    <p
-                        className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
-                        onClick={() => {
-                            setPage(Page.Main);
-                        }}
-                    >
-                        Create checker
-                    </p>
-                    <RightArrowIcon className="mx-2 w-[14px]" />
-                    <p className="font-bold text-gray-600">Create check</p>
-                </div>
-
+                <CreateCheckerNavigationPath setPage={setPage} />
                 <h1 className=" text-xl font-bold">Create Check</h1>
                 <label className="text-md mt-4">Name</label>
                 <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Shorten Month"
-                />
-                <LabelWithHelp
-                    label="Check Type"
-                    helpText="This determines the type of feedback your check generates."
-                />
-                <SlidingRadioButton
-                    options={[
-                        CheckType.highlight,
-                        CheckType.rephrase,
-                        // CheckType.rephraseMultiple,
-                        // CheckType.proposal,
-                    ]}
-                    selected={checkType}
-                    setSelected={setCheckType as SetState<string>}
                 />
 
                 <LabelWithHelp
@@ -227,17 +197,169 @@ export const CheckCreator = ({
                     </NormalButton>
                 </div>
             </div>
-            <CheckPreview
-                checkBlueprint={{
-                    checkType,
-                    name,
-                    instruction,
-                    longDesc,
-                    category,
-                    positiveExamples,
-                    checkId,
+
+            <div
+                className="flex-grow min-w-0"
+                // flex basis isn't supported in this version of tailwind
+                style={{
+                    flexBasis: "0",
                 }}
-            />
+            >
+                <div className="fixed mx-auto w-[30vw] left-[50%] right-0 mt-10">
+                    <div className="text-xl font-bold ml-1 mb-4">
+                        {checkType} Check
+                    </div>
+                    <CheckPreview
+                        checkBlueprint={{
+                            checkType,
+                            name,
+                            instruction,
+                            longDesc,
+                            category,
+                            positiveExamples,
+                            checkId,
+                        }}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+interface CreateCheckerNavigationPathProps {
+    setPage: (page: Page, pageData?: unknown) => void;
+}
+
+const CreateCheckerNavigationPath = ({
+    setPage,
+}: CreateCheckerNavigationPathProps): JSX.Element => {
+    const router = useRouter();
+    return (
+        <div className="flex flex-row items-center">
+            <p
+                className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
+                onClick={() => {
+                    router.push("/dashboard");
+                }}
+            >
+                Dashboard
+            </p>
+            <RightArrowIcon className="mx-2 w-[14px]" />
+            <p
+                className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
+                onClick={() => {
+                    setPage(Page.Main);
+                }}
+            >
+                Create checker
+            </p>
+            <RightArrowIcon className="mx-2 w-[14px]" />
+            <p className="font-bold text-gray-600">Create check</p>
+        </div>
+    );
+};
+
+interface SelectCheckTypeProps {
+    setCheckType: SetState<CheckType | undefined>;
+    setPage: (page: Page, pageData?: unknown) => void;
+}
+
+const SelectCheckType = ({
+    setCheckType,
+    setPage,
+}: SelectCheckTypeProps): JSX.Element => {
+    const [tmpCheckType, setTmpCheckType] = React.useState<CheckType>(
+        CheckType.highlight,
+    );
+
+    const checkBlueprint: CheckBlueprint = {
+        checkType: tmpCheckType,
+        positiveExamples: [],
+    };
+
+    const feedbackTypeDesc = useMemo(() => {
+        switch (checkBlueprint.checkType) {
+            case CheckType.highlight:
+                return (
+                    <div>
+                        <div>
+                            Highlight checks are used to highlight a section of
+                            text. They're useful for pointing out flaws, but
+                            don't offer a specific suggestion to fix it.
+                        </div>
+                        <br />
+                        <div>
+                            This is useful if you know there's an error, but
+                            don't have enough information to suggest a fix.
+                        </div>
+                    </div>
+                );
+            case CheckType.rephrase:
+                return (
+                    <div>
+                        <div>
+                            Rephrase checks suggest alternative ways to change
+                            the text.
+                        </div>
+                        <br />
+                        <div>
+                            This is useful if you know alternative rephrasings
+                            of the text. This card is also useful if you want to
+                            delete text.
+                        </div>
+                    </div>
+                );
+            case CheckType.proposal:
+                // return (<div><div>Proposal feedbacks allows the model to propose information to the user. They aren't rephrase feedbacks because the proposals presented don't change the text. </div></br><div>This is useful for complex suggestions that can't be easily expressed as a rephrase.</div><div>);
+                return (
+                    <div>
+                        <div>
+                            Proposal feedbacks allows the model to propose
+                            information to the user. They aren't rephrase
+                            feedbacks because the proposals presented don't
+                            change the text.
+                        </div>
+                        <br />
+                        <div>
+                            This is useful for complex suggestions that can't be
+                            easily expressed as a rephrase.
+                        </div>
+                    </div>
+                );
+            default:
+                throw new Error("unknown feedback type");
+        }
+    }, [checkBlueprint.checkType]);
+
+    return (
+        <div className="flex flex-col">
+            <CreateCheckerNavigationPath setPage={setPage} />
+            <div className="w-[50vw] mx-auto flex flex-col">
+                <div className="mt-16 font-bold text-xl">Select Check Type</div>
+                <SlidingRadioButton
+                    options={[CheckType.highlight, CheckType.rephrase]}
+                    selected={tmpCheckType}
+                    setSelected={setTmpCheckType as SetState<string>}
+                    className="mt-10 mx-auto border border-1 border-gray-600 rounded-lg"
+                />
+                <div className="w-[500px] mx-auto mt-8 h-48">
+                    <CheckPreview checkBlueprint={checkBlueprint} />
+                </div>
+                <div className="flex flex-col mb-10 ml-1">
+                    <div className=" flex flex-row">
+                        <div className="font-bold text-lg">
+                            {checkBlueprint.checkType} Check
+                        </div>
+                    </div>
+                    <div className="mt-2">{feedbackTypeDesc}</div>
+                </div>
+                <SubmitButton
+                    onClick={() => setCheckType(tmpCheckType)}
+                    className="w-[300px] mx-auto"
+                >
+                    Create {checkBlueprint.checkType} Check
+                </SubmitButton>
+            </div>
         </div>
     );
 };
