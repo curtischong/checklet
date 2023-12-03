@@ -6,7 +6,11 @@ import classnames from "classnames";
 
 import css from "./suggestioncollapse.module.scss";
 import { Suggestion } from "@api/ApiTypes";
-import { CheckDescObj } from "@components/create-checker/CheckerTypes";
+import {
+    CheckDescObj,
+    CheckType,
+} from "@components/create-checker/CheckerTypes";
+import classNames from "classnames";
 
 type SuggestionCollapseProps = {
     suggestion: Suggestion;
@@ -30,20 +34,14 @@ export const SuggestionCollapse = forwardRef(
             return isEqual(suggestion, activeSuggestion);
         }, [suggestion, activeSuggestion]);
 
-        // const srcNaut = useMemo(() => {
-        //     return capitalizeFirstLetter(suggestion.srcNautObj);
-        // }, [suggestion.srcNautObj]);
-
-        // const replacementText = useMemo(() => {
-        //     return capitalizeFirstLetter(suggestion.replacementText);
-        // }, [suggestion.replacementText]);
-
         const originalText = suggestion.originalText;
         const replacementText = suggestion.editedText;
 
         const getCheckDesc = (suggestion: Suggestion) => {
             return props.checkDescObj[suggestion.checkId];
         };
+
+        const checkType = getCheckDesc(suggestion).checkType;
 
         return (
             <div
@@ -80,9 +78,24 @@ export const SuggestionCollapse = forwardRef(
                     <div className={css.cardBody}>
                         <div className={css.suggestion}>
                             {originalText && (
-                                <div className={css.remove}>{originalText}</div>
+                                <div
+                                    className={classNames({
+                                        "line-through":
+                                            checkType === CheckType.rephrase,
+                                    })}
+                                    style={
+                                        checkType === CheckType.rephrase
+                                            ? {
+                                                  textDecorationColor:
+                                                      "#DC5262",
+                                              }
+                                            : {}
+                                    }
+                                >
+                                    {originalText}
+                                </div>
                             )}
-                            {suggestion.editOps.length > 0 && (
+                            {suggestion.editedText.length > 0 && (
                                 <>
                                     <AiOutlineArrowRight
                                         className={css.arrow}

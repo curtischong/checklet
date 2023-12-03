@@ -14,6 +14,37 @@ interface Props {
 
 export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
     const checkId = "checkId";
+
+    const defaultOriginalTextForCheckType = useMemo(() => {
+        switch (checkBlueprint.checkType) {
+            case CheckType.highlight:
+                return "FSD";
+            case CheckType.rephrase:
+                return "January";
+            // case CheckType.proposal:
+            //     return "January";
+            default:
+                throw new Error(
+                    `Unknown feedback type ${checkBlueprint.checkType}`,
+                );
+        }
+    }, [checkBlueprint.checkType]);
+
+    const defaultEditedTextForCheckType = useMemo(() => {
+        switch (checkBlueprint.checkType) {
+            case CheckType.highlight:
+                return "";
+            case CheckType.rephrase:
+                return "Jan";
+            // case CheckType.proposal:
+            //     return "Jan";
+            default:
+                throw new Error(
+                    `Unknown feedback type ${checkBlueprint.checkType}`,
+                );
+        }
+    }, [checkBlueprint.checkType]);
+
     const suggestion: Suggestion = {
         checkId,
         range: {
@@ -23,29 +54,94 @@ export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
         originalText:
             checkBlueprint.positiveExamples.length > 0
                 ? checkBlueprint.positiveExamples[0].originalText
-                : "January",
+                : defaultOriginalTextForCheckType,
         editedText:
             checkBlueprint.positiveExamples.length > 0
                 ? checkBlueprint.positiveExamples[0].editedText
-                : "Jan",
+                : defaultEditedTextForCheckType,
         suggestionId: "suggestionId",
         editOps: [],
     };
 
+    const defaultNameForCheckType = useMemo(() => {
+        switch (checkBlueprint.checkType) {
+            case CheckType.highlight:
+                return "Unknown Acronym";
+            case CheckType.rephrase:
+                return "Shorten Month";
+            // case CheckType.proposal:
+            //     return "Proposal";
+            default:
+                throw new Error(
+                    `Unknown feedback type ${checkBlueprint.checkType}`,
+                );
+        }
+    }, [checkBlueprint.checkType]);
+
+    const defaultLongDescForCheckType = useMemo(() => {
+        switch (checkBlueprint.checkType) {
+            case CheckType.highlight:
+                return "Recruiters may not understand this acronym. Consider expanding it, removing it, or adding a definition.";
+            case CheckType.rephrase:
+                return "Shorter months create more whitespace.";
+            // case CheckType.proposal:
+            //     return "Proposal";
+            default:
+                throw new Error(
+                    `Unknown feedback type ${checkBlueprint.checkType}`,
+                );
+        }
+    }, [checkBlueprint.checkType]);
+
+    const defaultCategoryForCheckType = useMemo(() => {
+        switch (checkBlueprint.checkType) {
+            case CheckType.highlight:
+                return "Clarity";
+            case CheckType.rephrase:
+                return "Whitespace";
+            // case CheckType.proposal:
+            //     return "Proposal";
+            default:
+                throw new Error("unknown feedback type");
+        }
+    }, [checkBlueprint.checkType]);
+
+    const defaultPositiveExamplesForCheckType = useMemo(() => {
+        switch (checkBlueprint.checkType) {
+            case CheckType.highlight:
+                return [
+                    {
+                        originalText: "FSD",
+                    } as PositiveCheckExample,
+                ];
+            case CheckType.rephrase:
+                return [
+                    {
+                        originalText: "January",
+                        editedText: "Jan",
+                    } as PositiveCheckExample,
+                ];
+            // case CheckType.proposal:
+            //     return [
+            //         {
+            //             originalText: "January",
+            //             editedText: "Jan",
+            //         } as PositiveCheckExample,
+            //     ];
+            default:
+                throw new Error("unknown feedback type");
+        }
+    }, [checkBlueprint.checkType]);
+
     const checkDesc: CheckDesc = {
-        name: checkBlueprint.name || "Shorten Month",
-        longDesc:
-            checkBlueprint.longDesc || "Shorter months create more whitespace.",
-        category: checkBlueprint.category || "Whitespace",
+        name: checkBlueprint.name || defaultNameForCheckType,
+        longDesc: checkBlueprint.longDesc || defaultLongDescForCheckType,
+        category: checkBlueprint.category || defaultCategoryForCheckType,
         positiveExamples:
             checkBlueprint.positiveExamples.length > 0
                 ? checkBlueprint.positiveExamples
-                : [
-                      {
-                          originalText: "January",
-                          editedText: "Jan",
-                      } as PositiveCheckExample,
-                  ],
+                : defaultPositiveExamplesForCheckType,
+        checkType: checkBlueprint.checkType,
         checkId,
     };
 
@@ -80,8 +176,6 @@ export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
                         </div>
                     </div>
                 );
-            // case CheckType.rephraseMultiple:
-            //     return <p>"Rephrase multiple feedbacks are like rephrase feedbacks, but they offer multiple suggestions to change the text."</p>;
             case CheckType.proposal:
                 // return (<div><div>Proposal feedbacks allows the model to propose information to the user. They aren't rephrase feedbacks because the proposals presented don't change the text. </div></br><div>This is useful for complex suggestions that can't be easily expressed as a rephrase.</div><div>);
                 return (

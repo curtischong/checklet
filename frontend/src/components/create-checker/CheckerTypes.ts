@@ -32,6 +32,7 @@ export type CheckDescObj = {
 
 export type CheckDesc = {
     name: string;
+    checkType: CheckType;
     longDesc: string;
     category: string; // optional
     positiveExamples: PositiveCheckExample[];

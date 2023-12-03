@@ -127,7 +127,7 @@ export const CheckCreator = ({
                         CheckType.highlight,
                         CheckType.rephrase,
                         // CheckType.rephraseMultiple,
-                        CheckType.proposal,
+                        // CheckType.proposal,
                     ]}
                     selected={checkType}
                     setSelected={setCheckType as SetState<string>}
