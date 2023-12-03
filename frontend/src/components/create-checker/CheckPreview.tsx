@@ -172,7 +172,8 @@ export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
                         <br />
                         <div>
                             This is useful if you know alternative rephrasings
-                            of the text.
+                            of the text. This card is also useful if you want to
+                            delete text.
                         </div>
                     </div>
                 );
