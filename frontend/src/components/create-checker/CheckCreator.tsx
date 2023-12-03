@@ -1,5 +1,6 @@
 import { DeleteButton, NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
+import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import { TextArea } from "@components/TextArea";
 import { CheckPreview } from "@components/create-checker/CheckPreview";
@@ -10,7 +11,6 @@ import {
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
 import { PositiveCheckExampleCreator } from "@components/create-checker/PositiveCheckExampleCreator";
-import { HelpIcon } from "@components/icons/HelpIcon";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
 import { createUniqueId } from "@utils/strings";
@@ -130,43 +130,28 @@ export const CheckCreator = ({
                     setSelected={setCheckType as SetState<string>}
                 />
 
-                <div className="flex flex-row mt-2">
-                    <label>Model Instructions</label>
-                    <HelpIcon
-                        className="mt-[3px] ml-1"
-                        text={
-                            "Here is where you tell the model how to edit the text."
-                        }
-                    />
-                </div>
+                <LabelWithHelp
+                    label="Model Instructions"
+                    helpText="Here is where you tell the model how to edit the text."
+                />
                 <TextArea
                     value={instruction}
                     onChange={(e) => setInstruction(e.target.value)}
                     placeholder={`If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period.`}
                 />
-                <div className="flex flex-row mt-2">
-                    <label>Suggestion Reason</label>
-                    <HelpIcon
-                        className="mt-[3px] ml-1"
-                        text={
-                            "This is a great place to explain your suggestion. Users will see this when they expand the card."
-                        }
-                    />
-                </div>
+                <LabelWithHelp
+                    label="Suggestion Reason"
+                    helpText="This is a great place to explain your suggestion. Users will see this when they expand the card."
+                />
                 <TextArea
                     value={longDesc}
                     onChange={(e) => setLongDesc(e.target.value)}
                     placeholder={`Shorter months create more whitespace.`}
                 />
-                <div className="flex flex-row mt-2">
-                    <label>Category (optional)</label>
-                    <HelpIcon
-                        className="mt-[3px] ml-1"
-                        text={
-                            "If you want to organize your cards by category, you can add a category here."
-                        }
-                    />
-                </div>
+                <LabelWithHelp
+                    label="Category (optional)"
+                    helpText="If you want to organize your cards by category, you can add a category here."
+                />
                 <Input
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
@@ -174,15 +159,10 @@ export const CheckCreator = ({
                 />
 
                 <div className="mt-4">
-                    <div className="flex flex-row mt-2">
-                        <label>Positive Examples</label>
-                        <HelpIcon
-                            className="mt-[3px] ml-1"
-                            text={
-                                "Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
-                            }
-                        />
-                    </div>
+                    <LabelWithHelp
+                        label="Positive Examples"
+                        helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
+                    />
                     <div className="flex flex-col">
                         {positiveExamples.map((example, idx) => (
                             <div
