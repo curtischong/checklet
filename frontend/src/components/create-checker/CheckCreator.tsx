@@ -156,7 +156,7 @@ export const CheckCreator = ({
                         <HelpIcon
                             className="mt-[3px] ml-1"
                             text={
-                                "Positive examples help the model understand when to apply your check"
+                                "Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
                             }
                         />
                     </div>
@@ -197,7 +197,7 @@ export const CheckCreator = ({
 
                 <div className="text-[#ff0000] mt-4 ">{err}</div>
 
-                <div className="mt-4">
+                <div className="mt-4 mb-20">
                     <NormalButton
                         onClick={() => {
                             setClickedSubmit(true);
