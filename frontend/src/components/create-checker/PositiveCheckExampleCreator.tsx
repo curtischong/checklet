@@ -1,5 +1,7 @@
 import { TextButton } from "@components/Button";
 import { SmallInput } from "@components/Input";
+import { TextArea } from "@components/TextArea";
+import ThinLine from "@components/ThinLine";
 import { PositiveCheckExample } from "@components/create-checker/CheckerTypes";
 import React from "react";
 
@@ -14,23 +16,25 @@ export const PositiveCheckExampleCreator = ({
     const [originalText, setOriginalText] = React.useState("");
     const [editedText, setEditedText] = React.useState("");
     return (
-        <div className="flex flex-row space-x-2">
-            <div className="flex items-center">
+        <div className="flex flex-col ">
+            <ThinLine className="mt-4" />
+            <div className="flex items-center ">
                 <label className="text-md">Original Text</label>
             </div>
-            <SmallInput
+            <TextArea
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
                 placeholder="January"
-                className="py-[2px] px-2"
+                minHeight={10}
             />
             <div className="flex items-center">
                 <label>Edited Text</label>
             </div>
-            <SmallInput
+            <TextArea
                 value={editedText}
                 onChange={(e) => setEditedText(e.target.value)}
                 placeholder="Jan"
+                minHeight={40}
             />
             <TextButton
                 disabled={originalText === "" || editedText === ""}

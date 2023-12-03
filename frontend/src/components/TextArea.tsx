@@ -1,17 +1,21 @@
 import { useEffect, useRef } from "react";
 
 export type ITextArea = React.DetailedHTMLProps<
-    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+        minHeight?: number;
+    },
     HTMLTextAreaElement
 >;
 
 export const TextArea: React.FC<ITextArea> = ({
     className = "",
     children,
+    minHeight,
     ...rest
 }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const MIN_HEIGHT = 120;
+    const MIN_HEIGHT = minHeight ?? 120;
+    console.log(MIN_HEIGHT);
     useEffect(() => {
         if (textareaRef.current) {
             textareaRef.current.style.height = "auto";
