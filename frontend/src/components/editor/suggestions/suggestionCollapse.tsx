@@ -14,6 +14,7 @@ type SuggestionCollapseProps = {
     onClick: () => void;
     onReplaceClick: () => void;
     checkDescObj: CheckDescObj;
+    classNames?: string;
 };
 
 const isEqual = (...objects: Suggestion[]) =>
@@ -37,7 +38,7 @@ export const SuggestionCollapse = forwardRef(
         //     return capitalizeFirstLetter(suggestion.replacementText);
         // }, [suggestion.replacementText]);
 
-        const srcNaut = suggestion.originalText;
+        const originalText = suggestion.originalText;
         const replacementText = suggestion.editedText;
 
         const getCheckDesc = (suggestion: Suggestion) => {
@@ -49,6 +50,7 @@ export const SuggestionCollapse = forwardRef(
                 ref={ref as React.RefObject<HTMLDivElement>}
                 className={classnames(
                     isActive ? css.containerActive : css.container,
+                    props.classNames,
                 )}
             >
                 <div className={css.header} onClick={onClick}>
@@ -65,7 +67,7 @@ export const SuggestionCollapse = forwardRef(
                         </div>
                     ) : (
                         <>
-                            <div className={css.srcNautObj}>{srcNaut}</div>
+                            <div className={css.srcNautObj}>{originalText}</div>
                             <span className={css.smallDot} />
                             <div className={css.shortDesc}>
                                 {getCheckDesc(suggestion).name}
@@ -73,11 +75,12 @@ export const SuggestionCollapse = forwardRef(
                         </>
                     )}
                 </div>
+                {/* This is the card details when you open up the card */}
                 {isActive && (
                     <div className={css.cardBody}>
                         <div className={css.suggestion}>
-                            {srcNaut && (
-                                <div className={css.remove}>{srcNaut}</div>
+                            {originalText && (
+                                <div className={css.remove}>{originalText}</div>
                             )}
                             {suggestion.editOps.length > 0 && (
                                 <>
@@ -102,6 +105,39 @@ export const SuggestionCollapse = forwardRef(
                                 remarkPlugins={[remarkGfm]}
                             />{" "}
                         </div>
+                        {/* <div className={"mt-4"}>
+                            <div className="font-bold">Examples:</div>
+                            {getCheckDesc(suggestion).positiveExamples.map(
+                                (example, idx) => {
+                                            // text decoration colors aren't supported?https://github.com/tailwindlabs/tailwindcss/discussions/2050 
+                                    return (
+                                        <div
+                                            className="flex flex-row"
+                                            key={`positiveExample-${suggestion.checkId}-${idx}`}
+                                        >
+                                            <div
+                                                className="line-through"
+                                                style={{
+                                                    textDecorationColor:
+                                                        "#DC5262",
+                                                }}
+                                            >
+                                                {example.originalText}
+                                            </div>
+                                            <AiOutlineArrowRight
+                                                className={css.arrow}
+                                            />
+                                            <div
+                                                onClick={onReplaceClick}
+                                                className={css.replace}
+                                            >
+                                                {example.editedText}
+                                            </div>
+                                        </div>
+                                    );
+                                },
+                            )}
+                        </div> */}
                     </div>
                 )}
             </div>
