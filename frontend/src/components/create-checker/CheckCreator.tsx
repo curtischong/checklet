@@ -1,6 +1,7 @@
 import { DeleteButton, NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { TextArea } from "@components/TextArea";
+import { CheckPreview } from "@components/create-checker/CheckPreview";
 import { Page } from "@components/create-checker/CheckerCreator";
 import {
     CheckBlueprint,
@@ -219,9 +220,16 @@ export const CheckCreator = ({
                     </NormalButton>
                 </div>
             </div>
-            <div>
-                <h1>todo: preview card</h1>
-            </div>
+            <CheckPreview
+                checkBlueprint={{
+                    name,
+                    instruction,
+                    longDesc,
+                    category,
+                    positiveExamples,
+                    checkId,
+                }}
+            />
         </div>
     );
 };
