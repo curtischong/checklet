@@ -5,6 +5,7 @@ import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
 import { Popconfirm } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -19,27 +20,18 @@ export const DashboardChecker = ({
     const { user } = useClientContext();
     const [tmpChecked, setTmpChecked] = useState<boolean>(blueprint.isPublic);
 
+    // display: flex;
+    // width: 100%;
+    // border-radius: 5px;
+    // box-shadow: 0px 10px 36px rgba(0, 0, 0, 0.08);
+    // padding: 10px 10px;
+    // margin-bottom: 20px;
+    // animation: closed 0.075s linear 0.3s forwards;
+
     return (
-        <div className="w-32 flex flex-row">
-            <Popconfirm title={"Confirm Delete"}>
-                <DeleteButton
-                    onClick={async () => {
-                        if (!user) {
-                            toast.error(
-                                "You must be logged in to delete a checker",
-                            );
-                            return;
-                        }
-                        Api.deleteChecker(
-                            blueprint.id,
-                            await user.getIdToken(),
-                        ).then(() => {
-                            fetchCheckerBlueprints();
-                        });
-                    }}
-                />
-            </Popconfirm>
+        <div className=" flex flex-col shadow-around rounded-md px-6 pt-4 pb-3 mb-10">
             <Link
+                className="font-bold text-xl"
                 href={{
                     pathname: "/create-checker",
                     query: {
@@ -49,29 +41,51 @@ export const DashboardChecker = ({
             >
                 {blueprint.name}
             </Link>
-            <LabelWithSwitch
-                text="isPublic"
-                isChecked={tmpChecked}
-                setChecked={(newIsChecked: boolean) => {
-                    (async () => {
-                        if (!user) {
-                            toast.error(
-                                "You must be logged in to change a checker's privacy",
+            <div>{blueprint.desc}</div>
+            <div className="flex flex-row mt-4 cursor-default space-x-2">
+                <LabelWithSwitch
+                    text="Is Public:"
+                    helpText="If a checker is public, anyone discover and use it. If it's private, only you can know about it and use it."
+                    isChecked={tmpChecked}
+                    setChecked={(newIsChecked: boolean) => {
+                        (async () => {
+                            if (!user) {
+                                toast.error(
+                                    "You must be logged in to change a checker's privacy",
+                                );
+                                return;
+                            }
+                            setTmpChecked(newIsChecked); // if we don't set this initially, the switch wont' change state
+                            const success = await Api.setCheckerIsPublic(
+                                blueprint.id,
+                                newIsChecked,
+                                await user.getIdToken(),
                             );
-                            return;
-                        }
-                        setTmpChecked(newIsChecked); // if we don't set this initially, the switch wont' change state
-                        const success = await Api.setCheckerIsPublic(
-                            blueprint.id,
-                            newIsChecked,
-                            await user.getIdToken(),
-                        );
-                        if (!success) {
-                            setTmpChecked(!newIsChecked);
-                        }
-                    })();
-                }}
-            />
+                            if (!success) {
+                                setTmpChecked(!newIsChecked);
+                            }
+                        })();
+                    }}
+                />
+                <Popconfirm title={"Confirm Delete"}>
+                    <DeleteButton
+                        onClick={async () => {
+                            if (!user) {
+                                toast.error(
+                                    "You must be logged in to delete a checker",
+                                );
+                                return;
+                            }
+                            Api.deleteChecker(
+                                blueprint.id,
+                                await user.getIdToken(),
+                            ).then(() => {
+                                fetchCheckerBlueprints();
+                            });
+                        }}
+                    />
+                </Popconfirm>
+            </div>
         </div>
     );
 };

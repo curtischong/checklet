@@ -211,6 +211,7 @@ export const CheckCreator = ({
                 <LabelWithHelp
                     label="Suggestion Reason"
                     helpText="This is a great place to explain your suggestion. Users will see this when they expand the card."
+                    className="mt-2"
                 />
                 <NormalTextArea
                     value={longDesc}
@@ -221,6 +222,7 @@ export const CheckCreator = ({
                 <LabelWithHelp
                     label="Model Instructions"
                     helpText="Here is where you tell the model how to edit the text."
+                    className="mt-2"
                 />
                 <NormalTextArea
                     value={instruction}
@@ -231,6 +233,7 @@ export const CheckCreator = ({
                 <LabelWithHelp
                     label="Category (optional)"
                     helpText="If you want to organize your cards by category, you can add a category here."
+                    className="mt-2"
                 />
                 <Input
                     value={category}
@@ -242,6 +245,7 @@ export const CheckCreator = ({
                     <LabelWithHelp
                         label="Positive Examples"
                         helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
+                        className="mt-2"
                     />
                     <div className="flex flex-col">
                         {positiveExamples.map((example, idx) => (

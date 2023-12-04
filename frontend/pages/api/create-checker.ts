@@ -69,10 +69,10 @@ const validateCheck = (blueprint: CheckBlueprint): string => {
         return "Check description cannot be empty";
     } else if (blueprint.instruction === "") {
         return "Check instruction cannot be empty";
-    } else if (validCheckTypes.includes(blueprint.checkType)) {
-        return `Check type must be one of ${validCheckTypes.join(", ")}. Got ${
-            blueprint.checkType
-        }`;
+    } else if (!validCheckTypes.includes(blueprint.checkType)) {
+        return `Check type must be one of [${validCheckTypes.join(
+            ", ",
+        )}]. Got ${blueprint.checkType}`;
     } else if (blueprint.positiveExamples.length === 0) {
         return "Check must have at least one positive example";
     }
