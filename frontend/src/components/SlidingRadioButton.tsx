@@ -5,14 +5,18 @@ interface Props<Option = string> {
     options: Option[];
     selected: Option;
     setSelected: SetState<Option>;
+    className?: string;
 }
 export const SlidingRadioButton = ({
     options,
     selected,
     setSelected,
+    className,
 }: Props): JSX.Element => {
     return (
-        <div className="flex flex-row space-x-1 p-1">
+        <div
+            className={`flex flex-row space-x-1 p-1 mx-auto border border-1 border-gray-600 rounded-lg ${className}`}
+        >
             {options.map((option, idx) => {
                 return (
                     <div

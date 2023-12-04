@@ -4,7 +4,7 @@ export const HelpIcon = ({
     text,
     className = "",
 }: {
-    text: string;
+    text: string | JSX.Element;
     className?: string;
 }): JSX.Element => {
     return (
