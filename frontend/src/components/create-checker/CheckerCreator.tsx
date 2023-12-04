@@ -1,4 +1,9 @@
-import { NormalButton, SubmitButton } from "@components/Button";
+import {
+    LoadingButton,
+    LoadingButtonSubmit,
+    NormalButton,
+    SubmitButton,
+} from "@components/Button";
 import { CheckOverview } from "@components/create-checker/Check";
 import { CheckCreator } from "@components/create-checker/CheckCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
@@ -132,6 +137,18 @@ interface Props {
     setPage: (page: Page, pageData?: unknown) => void;
 }
 
+enum SubmittingState {
+    NotSubmitting,
+    Submitting,
+    Submitted,
+}
+
+const SubmitButtonText = {
+    [SubmittingState.NotSubmitting]: "Create Checker",
+    [SubmittingState.Submitting]: "Creating Checker",
+    [SubmittingState.Submitted]: "Checker Created!",
+};
+
 const MainCheckerPage = ({
     name,
     setName,
@@ -144,6 +161,10 @@ const MainCheckerPage = ({
 }: Props) => {
     const [err, setErr] = React.useState("");
     const [clickedSubmit, setClickedSubmit] = React.useState(false);
+    const [submittingState, setSubmittingState] = React.useState(
+        SubmittingState.NotSubmitting,
+    );
+
     const { user } = useClientContext();
     const router = useRouter();
 
@@ -165,6 +186,40 @@ const MainCheckerPage = ({
         }
         setErr(getIncompleteFormErr());
     }, [getIncompleteFormErr, clickedSubmit]);
+
+    const submitChecker = useCallback(() => {
+        setClickedSubmit(true);
+        if (getIncompleteFormErr() !== "") {
+            return;
+        }
+        if (!user) {
+            toast.error("You must be logged in to create a checker");
+            return;
+        }
+
+        const checker = {
+            name,
+            desc,
+            checkBlueprints,
+            // id: crypto.randomBytes(32).toString("hex"), // TODO: I can save spacei f I don't storethis
+            creatorId: user.uid,
+        } as CheckerBlueprint;
+
+        // const checkerId =
+        //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
+        setSubmittingState(SubmittingState.Submitting);
+        (async () => {
+            await Api.createChecker(
+                checker,
+                checkerId,
+                await user.getIdToken(),
+            );
+            setSubmittingState(SubmittingState.Submitted);
+            setTimeout(() => {
+                setSubmittingState(SubmittingState.NotSubmitting);
+            }, 3000);
+        })();
+    }, [name, desc, checkBlueprints, user, checkerId]);
 
     return (
         <div className="flex flex-col">
@@ -239,42 +294,14 @@ const MainCheckerPage = ({
                 Create Check
             </NormalButton>
 
-            <div className="text-[#ff0000]  mt-4 ">{err}</div>
-            <SubmitButton
-                onClick={() => {
-                    setClickedSubmit(true);
-                    if (getIncompleteFormErr() !== "") {
-                        return;
-                    }
-                    if (!user) {
-                        toast.error(
-                            "You must be logged in to create a checker",
-                        );
-                        return;
-                    }
-
-                    const checker = {
-                        name,
-                        desc,
-                        checkBlueprints,
-                        // id: crypto.randomBytes(32).toString("hex"), // TODO: I can save spacei f I don't storethis
-                        creatorId: user.uid,
-                    } as CheckerBlueprint;
-
-                    // const checkerId =
-                    //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
-                    (async () => {
-                        Api.createChecker(
-                            checker,
-                            checkerId,
-                            await user.getIdToken(),
-                        );
-                    })();
-                }}
-                className="mt-4 w-80"
+            <div className="text-[#ff0000] mt-4 ">{err}</div>
+            <LoadingButtonSubmit
+                loading={submittingState === SubmittingState.Submitting}
+                onClick={submitChecker}
+                className="mt-4 w-80 h-10"
             >
-                Create Checker
-            </SubmitButton>
+                {SubmitButtonText[submittingState]}
+            </LoadingButtonSubmit>
             <div className="h-10"></div>
         </div>
     );
