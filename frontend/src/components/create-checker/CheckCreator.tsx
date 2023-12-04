@@ -11,6 +11,7 @@ import {
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
 import { PositiveCheckExampleCreator } from "@components/create-checker/PositiveCheckExampleCreator";
+import { HelpIcon } from "@components/icons/HelpIcon";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
 import { createUniqueId } from "@utils/strings";
@@ -219,8 +220,14 @@ export const CheckCreator = ({
                             className="mx-auto mb-4"
                         />
                     </div>
-                    <div className="text-xl font-bold ml-1 mb-4">
-                        {checkType} Check
+                    <div className="flex flex-row">
+                        <div className="text-xl font-bold ml-1 mb-4">
+                            {checkType} Check
+                        </div>
+                        <HelpIcon
+                            className="ml-2 mt-[6px]"
+                            text={feedbackTypeDesc(checkType)}
+                        />
                     </div>
                     <CheckPreview
                         checkBlueprint={{
@@ -316,6 +323,59 @@ const CreateCheckName = ({ setCheckName, setPage }: CreateCheckNameProps) => {
     );
 };
 
+const feedbackTypeDesc = (checkType: CheckType) => {
+    switch (checkType) {
+        case CheckType.highlight:
+            return (
+                <div>
+                    <div>
+                        Highlight checks are used to highlight a section of
+                        text. They're useful for pointing out flaws, but don't
+                        offer a specific suggestion to fix it.
+                    </div>
+                    <br />
+                    <div>
+                        This is useful if you know there's an error, but don't
+                        have enough information to suggest a fix.
+                    </div>
+                </div>
+            );
+        case CheckType.rephrase:
+            return (
+                <div>
+                    <div>
+                        Rephrase checks suggest alternative ways to change the
+                        text.
+                    </div>
+                    <br />
+                    <div>
+                        This is useful if you know alternative rephrasings of
+                        the text. This card is also useful if you want to delete
+                        text.
+                    </div>
+                </div>
+            );
+        case CheckType.proposal:
+            // return (<div><div>Proposal feedbacks allows the model to propose information to the user. They aren't rephrase feedbacks because the proposals presented don't change the text. </div></br><div>This is useful for complex suggestions that can't be easily expressed as a rephrase.</div><div>);
+            return (
+                <div>
+                    <div>
+                        Proposal feedbacks allows the model to propose
+                        information to the user. They aren't rephrase feedbacks
+                        because the proposals presented don't change the text.
+                    </div>
+                    <br />
+                    <div>
+                        This is useful for complex suggestions that can't be
+                        easily expressed as a rephrase.
+                    </div>
+                </div>
+            );
+        default:
+            throw new Error("unknown feedback type");
+    }
+};
+
 interface SelectCheckTypeProps {
     setCheckType: SetState<CheckType | undefined>;
     setPage: (page: Page, pageData?: unknown) => void;
@@ -329,65 +389,6 @@ const SelectCheckType = ({
         CheckType.highlight,
     );
 
-    const checkBlueprint: CheckBlueprint = {
-        checkType: tmpCheckType,
-        positiveExamples: [],
-    };
-
-    const feedbackTypeDesc = useMemo(() => {
-        switch (checkBlueprint.checkType) {
-            case CheckType.highlight:
-                return (
-                    <div>
-                        <div>
-                            Highlight checks are used to highlight a section of
-                            text. They're useful for pointing out flaws, but
-                            don't offer a specific suggestion to fix it.
-                        </div>
-                        <br />
-                        <div>
-                            This is useful if you know there's an error, but
-                            don't have enough information to suggest a fix.
-                        </div>
-                    </div>
-                );
-            case CheckType.rephrase:
-                return (
-                    <div>
-                        <div>
-                            Rephrase checks suggest alternative ways to change
-                            the text.
-                        </div>
-                        <br />
-                        <div>
-                            This is useful if you know alternative rephrasings
-                            of the text. This card is also useful if you want to
-                            delete text.
-                        </div>
-                    </div>
-                );
-            case CheckType.proposal:
-                // return (<div><div>Proposal feedbacks allows the model to propose information to the user. They aren't rephrase feedbacks because the proposals presented don't change the text. </div></br><div>This is useful for complex suggestions that can't be easily expressed as a rephrase.</div><div>);
-                return (
-                    <div>
-                        <div>
-                            Proposal feedbacks allows the model to propose
-                            information to the user. They aren't rephrase
-                            feedbacks because the proposals presented don't
-                            change the text.
-                        </div>
-                        <br />
-                        <div>
-                            This is useful for complex suggestions that can't be
-                            easily expressed as a rephrase.
-                        </div>
-                    </div>
-                );
-            default:
-                throw new Error("unknown feedback type");
-        }
-    }, [checkBlueprint.checkType]);
-
     return (
         <div className="flex flex-col">
             <CreateCheckerNavigationPath setPage={setPage} />
@@ -400,21 +401,31 @@ const SelectCheckType = ({
                     className="mt-10 mx-auto "
                 />
                 <div className="w-[400px] mx-auto mt-8 h-48">
-                    <CheckPreview checkBlueprint={checkBlueprint} />
+                    <CheckPreview
+                        checkBlueprint={{
+                            name: "",
+                            longDesc: "",
+                            instruction: "",
+                            category: "",
+                            checkId: "",
+                            checkType: tmpCheckType,
+                            positiveExamples: [],
+                        }}
+                    />
                 </div>
                 <div className="flex flex-col mb-10 ml-1">
                     <div className=" flex flex-row">
                         <div className="font-bold text-lg">
-                            {checkBlueprint.checkType} Check
+                            {tmpCheckType} Check
                         </div>
                     </div>
-                    <div className="mt-2">{feedbackTypeDesc}</div>
+                    <div className="mt-2">{feedbackTypeDesc(tmpCheckType)}</div>
                 </div>
                 <SubmitButton
                     onClick={() => setCheckType(tmpCheckType)}
                     className="w-[300px] mx-auto"
                 >
-                    Create {checkBlueprint.checkType} Check
+                    Create {tmpCheckType} Check
                 </SubmitButton>
             </div>
         </div>

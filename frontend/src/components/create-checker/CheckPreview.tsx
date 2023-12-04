@@ -6,7 +6,7 @@ import {
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
 import { SuggestionCollapse } from "@components/editor/suggestions/suggestionCollapse";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 interface Props {
     checkBlueprint: CheckBlueprint;
