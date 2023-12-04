@@ -112,31 +112,34 @@ export const CheckerCreator: React.FC = () => {
                             const existingCheckIdx = checkBlueprints.findIndex(
                                 (c) => c.checkId === check.checkId,
                             );
+                            const newCheckBlueprints = [...checkBlueprints];
                             if (existingCheckIdx !== -1) {
                                 // this check already exists. So we find its index, and replace it
-                                const newChecks = [...checkBlueprints];
-                                newChecks[existingCheckIdx] = check;
-                                setCheckBlueprints(newChecks);
+                                newCheckBlueprints[existingCheckIdx] = check;
                             } else {
-                                setCheckBlueprints([...checkBlueprints, check]);
+                                newCheckBlueprints.push(check);
                             }
+                            setCheckBlueprints(newCheckBlueprints);
                             if (!user) {
                                 toast.error(
                                     "You must be logged in to create/update a check",
+                                );
+                                setSubmittingState(
+                                    SubmittingState.NotSubmitting,
                                 );
                                 return;
                             }
                             const checker = {
                                 name,
                                 desc,
-                                checkBlueprints,
+                                checkBlueprints: newCheckBlueprints,
                                 creatorId: user.uid,
                             } as CheckerBlueprint;
 
                             // const checkerId =
                             //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
                             setSubmittingState(SubmittingState.Submitting);
-                            async () => {
+                            (async () => {
                                 await Api.createChecker(
                                     checker,
                                     checkerId,
@@ -148,7 +151,7 @@ export const CheckerCreator: React.FC = () => {
                                         SubmittingState.NotSubmitting,
                                     );
                                 }, 3000);
-                            };
+                            })();
                         }}
                         setPage={setPage}
                         pageData={pageData}
