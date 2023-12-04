@@ -36,6 +36,9 @@ export const CheckerCreator: React.FC = () => {
     >([]);
     const [checkerId, setCheckerId] = React.useState<string>(createUniqueId());
     const [pageData, setPageData] = React.useState<unknown>(null);
+    const [submittingState, setSubmittingState] = React.useState(
+        SubmittingState.NotSubmitting,
+    );
     const { user } = useClientContext();
 
     // https://stackoverflow.com/questions/60036703/is-it-possible-to-define-hash-route-in-next-js
@@ -104,6 +107,7 @@ export const CheckerCreator: React.FC = () => {
                     />
                 ) : (
                     <CheckCreator
+                        submittingState={submittingState}
                         onCreate={(check) => {
                             const existingCheckIdx = checkBlueprints.findIndex(
                                 (c) => c.checkId === check.checkId,
@@ -116,8 +120,35 @@ export const CheckerCreator: React.FC = () => {
                             } else {
                                 setCheckBlueprints([...checkBlueprints, check]);
                             }
-                            Api.createChecker();
-                            // setPage(Page.Main);
+                            if (!user) {
+                                toast.error(
+                                    "You must be logged in to create/update a check",
+                                );
+                                return;
+                            }
+                            const checker = {
+                                name,
+                                desc,
+                                checkBlueprints,
+                                creatorId: user.uid,
+                            } as CheckerBlueprint;
+
+                            // const checkerId =
+                            //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
+                            setSubmittingState(SubmittingState.Submitting);
+                            async () => {
+                                await Api.createChecker(
+                                    checker,
+                                    checkerId,
+                                    await user.getIdToken(),
+                                );
+                                setSubmittingState(SubmittingState.Submitted);
+                                setTimeout(() => {
+                                    setSubmittingState(
+                                        SubmittingState.NotSubmitting,
+                                    );
+                                }, 3000);
+                            };
                         }}
                         setPage={setPage}
                         pageData={pageData}

@@ -32,11 +32,13 @@ interface Props {
     onCreate: (check: CheckBlueprint) => void;
     setPage: (page: Page, pageData?: unknown) => void;
     pageData?: unknown;
+    submittingState: SubmittingState;
 }
 export const CheckCreator = ({
     onCreate,
     setPage,
     pageData,
+    submittingState,
 }: Props): JSX.Element => {
     const [name, setName] = React.useState<string | undefined>(undefined);
     const [longDesc, setLongDesc] = React.useState("");
@@ -51,10 +53,6 @@ export const CheckCreator = ({
     );
     const [originalText, setOriginalText] = React.useState("");
     const [editedText, setEditedText] = React.useState("");
-
-    const [submittingState, setSubmittingState] = React.useState(
-        SubmittingState.NotSubmitting,
-    );
 
     // the pageData is just an optimization we do so we don't need to fetch it from the server
     // if the previous page already had information about the check
@@ -134,7 +132,6 @@ export const CheckCreator = ({
 
     const createCheck = useCallback(() => {
         setClickedSubmit(true);
-        setSubmittingState(SubmittingState.Submitting);
         if (getIncompleteFormErr() !== "") {
             return;
         }
@@ -290,12 +287,13 @@ export const CheckCreator = ({
 
                 <div className="text-[#ff0000] mt-4 ">{err}</div>
 
-                <div className="mt-4 mb-20">
+                <div className="mt-4 flex flex-row space-x-4">
                     <LoadingButtonSubmit
                         isLoading={
                             submittingState === SubmittingState.Submitting
                         }
                         onClick={createCheck}
+                        className="w-40"
                     >
                         {
                             SubmitCheckText[
@@ -307,7 +305,16 @@ export const CheckCreator = ({
                             ]
                         }
                     </LoadingButtonSubmit>
+                    <NormalButton
+                        className="w-56 py-[4px]"
+                        onClick={() => {
+                            setPage(Page.Main);
+                        }}
+                    >
+                        Return to Create Checker
+                    </NormalButton>
                 </div>
+                <div className="h-20"></div>
             </div>
 
             <div
