@@ -77,26 +77,18 @@ export const SuggestionCollapse = forwardRef(
                 {isActive && (
                     <div className={css.cardBody}>
                         <div className={css.suggestion}>
-                            {originalText && (
-                                <div
-                                    className={classNames({
-                                        "line-through":
-                                            checkType === CheckType.rephrase,
-                                    })}
-                                    style={
-                                        checkType === CheckType.rephrase
-                                            ? {
-                                                  textDecorationColor:
-                                                      "#DC5262",
-                                              }
-                                            : {}
-                                    }
-                                >
-                                    {originalText}
-                                </div>
-                            )}
-                            {suggestion.editedText.length > 0 && (
-                                <>
+                            {checkType === CheckType.highlight ? (
+                                <div>{suggestion.originalText}</div>
+                            ) : (
+                                <div className="flex flex-row">
+                                    <div
+                                        className={classNames("line-through")}
+                                        style={{
+                                            textDecorationColor: "#DC5262",
+                                        }}
+                                    >
+                                        {originalText}
+                                    </div>
                                     <AiOutlineArrowRight
                                         className={css.arrow}
                                     />
@@ -106,7 +98,7 @@ export const SuggestionCollapse = forwardRef(
                                     >
                                         {replacementText}
                                     </div>
-                                </>
+                                </div>
                             )}
                         </div>
                         <div className={css.longDesc}>

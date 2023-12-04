@@ -45,14 +45,6 @@ export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
         }
     }, [checkBlueprint.checkType]);
 
-    const editedText = useMemo(() => {
-        if (checkBlueprint.positiveExamples.length > 0) {
-            return checkBlueprint.positiveExamples[0].editedText;
-        } else {
-            return defaultEditedTextForCheckType;
-        }
-    }, [checkBlueprint.checkType, checkBlueprint.positiveExamples]);
-
     const suggestion: Suggestion = {
         checkId,
         range: {
@@ -63,7 +55,10 @@ export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
             checkBlueprint.positiveExamples.length > 0
                 ? checkBlueprint.positiveExamples[0].originalText
                 : defaultOriginalTextForCheckType,
-        editedText,
+        editedText:
+            checkBlueprint.positiveExamples.length > 0
+                ? checkBlueprint.positiveExamples[0].editedText ?? ""
+                : defaultEditedTextForCheckType,
         suggestionId: "suggestionId",
         editOps: [],
     };
