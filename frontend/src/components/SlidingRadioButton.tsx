@@ -4,7 +4,7 @@ import classNames from "classnames";
 interface Props<Option = string> {
     options: Option[];
     selected: Option;
-    setSelected: SetState<Option>;
+    setSelected: SetState<Option> | ((option: Option) => void);
     className?: string;
 }
 export const SlidingRadioButton = ({

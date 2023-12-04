@@ -17,7 +17,8 @@ import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon
 import { createUniqueId } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
+import { Modal } from "antd";
 
 interface Props {
     onCreate: (check: CheckBlueprint) => void;
@@ -159,14 +160,19 @@ export const CheckCreator = ({
                                 <div className="flex flex-col">
                                     <div>{example.originalText}</div>
                                 </div>
-                                <RightArrowWithTailIcon className="mx-4" />
-                                <div className="flex flex-col">
-                                    <div>{example.editedText}</div>
-                                </div>
+                                {checkType === CheckType.rephrase && (
+                                    <>
+                                        <RightArrowWithTailIcon className="mx-4" />
+                                        <div className="flex flex-col">
+                                            <div>{example.editedText}</div>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         ))}
                     </div>
                     <PositiveCheckExampleCreator
+                        checkType={checkType}
                         onCreate={(newExample) => {
                             setPositiveExamples([
                                 ...positiveExamples,
@@ -216,7 +222,25 @@ export const CheckCreator = ({
                         <SlidingRadioButton
                             options={[CheckType.highlight, CheckType.rephrase]}
                             selected={checkType}
-                            setSelected={setCheckType as SetState<string>}
+                            setSelected={(selectedType: string) => {
+                                // if (
+                                //     checkType === CheckType.rephrase &&
+                                //     selectedType !== CheckType.rephrase
+                                // ) {
+                                //     Modal.confirm({
+                                //         title: "This will delete your progress",
+                                //         content:
+                                //             "You have a positive example that has rephrased text. If you switch to a highlight check, you will lose your rephrased text. Are you sure you want to switch?",
+                                //         onOk: () => {
+                                //             setCheckType(
+                                //                 selectedType as CheckType,
+                                //             );
+                                //         },
+                                //     });
+                                // } else {
+                                setCheckType(selectedType as CheckType);
+                                // }
+                            }}
                             className="mx-auto mb-4"
                         />
                     </div>
