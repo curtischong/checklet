@@ -1,10 +1,8 @@
 import { Api } from "@api/apis";
-import { DeleteButton, NormalButton, TextButton } from "@components/Button";
-import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
-import { TrashIcon } from "@components/icons/TrashIcon";
+import { NormalButton, TextButton } from "@components/Button";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import { DashboardChecker } from "@components/create-checker/DashboardChecker";
 import { useClientContext } from "@utils/ClientContext";
-import { Popconfirm } from "antd";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback } from "react";
 import { useEffect } from "react";
@@ -68,40 +66,15 @@ const Dashboard: React.FC = () => {
                 {user ? user.email : <></>}
                 <p className="text-xl font-bold">Your Checkers</p>
                 <div className="ml-4 w-80 mx-auto">
-                    {checkers.map((checker, idx) => {
+                    {checkers.map((checkerBlueprint, idx) => {
                         return (
-                            <div
-                                className="w-32 flex flex-row"
-                                key={`checker-${idx}`}
-                            >
-                                <Popconfirm title={"Confirm Delete"}>
-                                    <DeleteButton
-                                        onClick={async () => {
-                                            if (!user) {
-                                                toast.error(
-                                                    "You must be logged in to delete a checker",
-                                                );
-                                                return;
-                                            }
-                                            Api.deleteChecker(
-                                                checker.id,
-                                                await user.getIdToken(),
-                                            ).then(() => {
-                                                fetchCheckerBlueprints();
-                                            });
-                                        }}
-                                    />
-                                </Popconfirm>
-                                <Link
-                                    href={{
-                                        pathname: "/create-checker",
-                                        query: {
-                                            checkerId: checker.id,
-                                        },
-                                    }}
-                                >
-                                    {checker.name}
-                                </Link>
+                            <div key={`checker-${idx}`}>
+                                <DashboardChecker
+                                    blueprint={checkerBlueprint}
+                                    fetchCheckerBlueprints={
+                                        fetchCheckerBlueprints
+                                    }
+                                />
                             </div>
                         );
                     })}
