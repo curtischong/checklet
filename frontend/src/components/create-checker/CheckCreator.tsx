@@ -46,6 +46,8 @@ export const CheckCreator = ({
     const [originalText, setOriginalText] = React.useState("");
     const [editedText, setEditedText] = React.useState("");
 
+    // the pageData is just an optimization we do so we don't need to fetch it from the server
+    // if the previous page already had information about the check
     const rawInitialCheckBlueprint = (pageData as any)?.initialCheckBlueprint;
     const router = useRouter();
     const { user } = useClientContext();

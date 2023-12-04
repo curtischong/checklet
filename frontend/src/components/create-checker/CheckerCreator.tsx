@@ -44,24 +44,21 @@ export const CheckerCreator: React.FC = () => {
             router.push({
                 pathname: "",
                 query: {
-                    ...Object.fromEntries(urlParams),
+                    checkerId: Object.fromEntries(urlParams).checkerId,
                 },
             });
         } else {
-            // TODO: cleanup
+            let query = {};
             if (pageData?.initialCheckBlueprint?.checkId) {
-                router.push({
-                    hash: "check",
-                    query: {
-                        checkerId: checkerId,
-                        checkId: pageData.initialCheckBlueprint.checkId,
-                    },
-                });
-            } else {
-                router.push({
-                    hash: "check",
-                });
+                query = {
+                    checkerId: checkerId,
+                    checkId: pageData.initialCheckBlueprint.checkId,
+                };
             }
+            router.push({
+                hash: "check",
+                query,
+            });
         }
     };
 
