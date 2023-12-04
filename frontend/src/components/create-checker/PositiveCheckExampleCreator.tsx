@@ -1,7 +1,6 @@
 import { TextButton } from "@components/Button";
-import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
-import { TextArea } from "@components/TextArea";
+import { NormalTextArea } from "@components/TextArea";
 import ThinLine from "@components/ThinLine";
 import {
     CheckType,
@@ -40,7 +39,7 @@ export const PositiveCheckExampleCreator = ({
                     className="ml-2 "
                 />
             </div>
-            <Input
+            <NormalTextArea
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
                 placeholder="January"
@@ -51,7 +50,7 @@ export const PositiveCheckExampleCreator = ({
                         label="Rephrase into"
                         helpText="If you want to rephrase something, this will teach the model how to rephrase it"
                     />
-                    <Input
+                    <NormalTextArea
                         value={editedText}
                         onChange={(e) => setEditedText(e.target.value)}
                         placeholder="Jan"

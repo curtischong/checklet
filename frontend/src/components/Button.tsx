@@ -47,6 +47,40 @@ export const LoadingButton: React.FC<IButton & { loading: boolean }> = ({
     );
 };
 
+export enum SubmittingState {
+    NotSubmitting,
+    Submitting,
+    Submitted,
+}
+
+export const LoadingButtonSubmit: React.FC<
+    IButton & { isLoading: boolean }
+> = ({ className = "", children, isLoading, ...rest }) => {
+    delete rest.type;
+    return (
+        <>
+            <Button
+                className={classNames(
+                    `  text-white hover:text-white px-4 rounded transition duration-300 ${className}`,
+                    {
+                        // we need to specify these focus styles because antd's styles makes the button transparent
+                        "bg-[#43b56c] hover:bg-[#3a9e5e] focus:bg-[#43b56c] focus:text-white":
+                            !rest.disabled,
+                        "bg-[#999999] focus:bg-[#999999] cursor-not-allowed":
+                            rest.disabled,
+                    },
+                )}
+                {...rest}
+                loading={isLoading}
+                ref={undefined}
+                type="text"
+            >
+                {children}
+            </Button>
+        </>
+    );
+};
+
 export const SubmitButton: React.FC<IButton> = ({
     className = "",
     children,

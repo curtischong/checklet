@@ -1,9 +1,15 @@
 import { Api } from "@api/apis";
-import { DeleteButton, NormalButton, SubmitButton } from "@components/Button";
+import {
+    DeleteButton,
+    LoadingButtonSubmit,
+    NormalButton,
+    SubmitButton,
+    SubmittingState,
+} from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
-import { TextArea } from "@components/TextArea";
+import { NormalTextArea } from "@components/TextArea";
 import { CheckPreview } from "@components/create-checker/CheckPreview";
 import { Page } from "@components/create-checker/CheckerCreator";
 import {
@@ -26,11 +32,13 @@ interface Props {
     onCreate: (check: CheckBlueprint) => void;
     setPage: (page: Page, pageData?: unknown) => void;
     pageData?: unknown;
+    submittingState: SubmittingState;
 }
 export const CheckCreator = ({
     onCreate,
     setPage,
     pageData,
+    submittingState,
 }: Props): JSX.Element => {
     const [name, setName] = React.useState<string | undefined>(undefined);
     const [longDesc, setLongDesc] = React.useState("");
@@ -122,6 +130,46 @@ export const CheckCreator = ({
         setErr(getIncompleteFormErr());
     }, [getIncompleteFormErr, clickedSubmit]);
 
+    const createCheck = useCallback(() => {
+        setClickedSubmit(true);
+        if (getIncompleteFormErr() !== "") {
+            return;
+        }
+        let newPositiveExamples = positiveExamples;
+        if (checkType === CheckType.highlight) {
+            // remove all of the editedText in the positive examples
+            newPositiveExamples = positiveExamples.map((example) => {
+                return {
+                    originalText: example.originalText,
+                };
+            });
+        }
+        if (!name || !checkType) {
+            toast("name or checkType is undefined. Let Curtis know!");
+            return;
+        }
+
+        const checkBlueprint: CheckBlueprint = {
+            name,
+            checkType,
+            instruction,
+            longDesc,
+            category,
+            positiveExamples: newPositiveExamples,
+            checkId,
+        };
+        onCreate(checkBlueprint);
+    }, [
+        name,
+        checkType,
+        instruction,
+        longDesc,
+        category,
+        positiveExamples,
+        checkId,
+        getIncompleteFormErr,
+    ]);
+
     if (name === undefined) {
         return <CreateCheckName setCheckName={setName} setPage={setPage} />;
     }
@@ -131,6 +179,15 @@ export const CheckCreator = ({
             <SelectCheckType setCheckType={setCheckType} setPage={setPage} />
         );
     }
+
+    const SubmitCheckText = {
+        [`${SubmittingState.NotSubmitting}-create`]: "Create Check",
+        [`${SubmittingState.Submitting}-create`]: "Creating Check",
+        [`${SubmittingState.Submitted}-create`]: "Check Created!",
+        [`${SubmittingState.NotSubmitting}-update`]: "Update Check",
+        [`${SubmittingState.Submitting}-update`]: "Updating Check",
+        [`${SubmittingState.Submitted}-update`]: "Check Updated!",
+    };
 
     return (
         <div className="flex flex-row mt-4 ">
@@ -153,19 +210,21 @@ export const CheckCreator = ({
                     label="Suggestion Reason"
                     helpText="This is a great place to explain your suggestion. Users will see this when they expand the card."
                 />
-                <TextArea
+                <NormalTextArea
                     value={longDesc}
                     onChange={(e) => setLongDesc(e.target.value)}
                     placeholder={`Shorter months create more whitespace.`}
+                    minRows={3}
                 />
                 <LabelWithHelp
                     label="Model Instructions"
                     helpText="Here is where you tell the model how to edit the text."
                 />
-                <TextArea
+                <NormalTextArea
                     value={instruction}
                     onChange={(e) => setInstruction(e.target.value)}
                     placeholder={`If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period.`}
+                    minRows={4}
                 />
                 <LabelWithHelp
                     label="Category (optional)"
@@ -228,42 +287,34 @@ export const CheckCreator = ({
 
                 <div className="text-[#ff0000] mt-4 ">{err}</div>
 
-                <div className="mt-4 mb-20">
+                <div className="mt-4 flex flex-row space-x-4">
+                    <LoadingButtonSubmit
+                        isLoading={
+                            submittingState === SubmittingState.Submitting
+                        }
+                        onClick={createCheck}
+                        className="w-40"
+                    >
+                        {
+                            SubmitCheckText[
+                                `${submittingState}-${
+                                    rawInitialCheckBlueprint
+                                        ? "update"
+                                        : "create"
+                                }`
+                            ]
+                        }
+                    </LoadingButtonSubmit>
                     <NormalButton
+                        className="w-56 py-[4px]"
                         onClick={() => {
-                            setClickedSubmit(true);
-                            if (getIncompleteFormErr() !== "") {
-                                return;
-                            }
-                            let newPositiveExamples = positiveExamples;
-                            if (checkType === CheckType.highlight) {
-                                // remove all of the editedText in the positive examples
-                                newPositiveExamples = positiveExamples.map(
-                                    (example) => {
-                                        return {
-                                            originalText: example.originalText,
-                                        };
-                                    },
-                                );
-                            }
-
-                            const checkBlueprint: CheckBlueprint = {
-                                name,
-                                checkType,
-                                instruction,
-                                longDesc,
-                                category,
-                                positiveExamples: newPositiveExamples,
-                                checkId,
-                            };
-                            onCreate(checkBlueprint);
+                            setPage(Page.Main);
                         }}
                     >
-                        {rawInitialCheckBlueprint
-                            ? "Update Check"
-                            : "Create Check"}
+                        Return to Create Checker
                     </NormalButton>
                 </div>
+                <div className="h-20"></div>
             </div>
 
             <div
