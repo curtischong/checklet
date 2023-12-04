@@ -1,6 +1,10 @@
 import { CheckerId } from "@api/checker";
 import { NextApiRequest, NextApiResponse } from "next";
-import { requestMiddleware, sendBadRequest } from "pages/api/common";
+import {
+    isUserCheckerOwner,
+    requestMiddleware,
+    sendBadRequest,
+} from "pages/api/common";
 import { createClient } from "redis";
 
 export default async function deleteChecker(
@@ -14,19 +18,11 @@ export default async function deleteChecker(
 
     const redisClient = createClient();
     await redisClient.connect();
-    if (
-        !(await redisClient.sIsMember(
-            `users/${userId}/checkerIds`,
-            req.body.checkerId,
-        ))
-    ) {
-        sendBadRequest(
-            res,
-            "You did not create this checker. You cannot delete it",
-        );
+    const checkerId = req.body.checkerId;
+    if (!(await isUserCheckerOwner(redisClient, res, userId, checkerId))) {
         return;
     }
-    await redisClient.sRem(`users/${userId}/checkerIds`, req.body.checkerId);
+    await redisClient.sRem(`users/${userId}/checkerIds`, checkerId);
     // https://redis.io/commands/srem/ This should be O(1)
     await redisClient.sRem("publicCheckerIds", req.body.checkerId);
 

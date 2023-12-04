@@ -2,6 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "firebase-admin/auth";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { firebaseConfig } from "@utils/ClientContext";
+import { createClient } from "redis";
+import { CheckerId } from "@api/checker";
+
+export type RedisClient = ReturnType<typeof createClient>;
 
 // returns if the request is valid or not
 export const isUnauthenticatedRequestValid = (
@@ -52,4 +56,22 @@ export const sendBadRequest = (res: NextApiResponse, msg: string): void => {
     console.error(msg);
     res.status(400).send({ errorMsg: msg });
     res.end();
+};
+
+export const isUserCheckerOwner = async (
+    redisClient: RedisClient,
+    res: NextApiResponse,
+    userId: string,
+    checkerId: CheckerId,
+): Promise<boolean> => {
+    if (
+        !(await redisClient.sIsMember(`users/${userId}/checkerIds`, checkerId))
+    ) {
+        sendBadRequest(
+            res,
+            "You did not create this checker. You cannot edit it",
+        );
+        return false;
+    }
+    return true;
 };

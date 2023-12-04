@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { requestMiddleware, sendBadRequest } from "pages/api/common";
+import {
+    isUserCheckerOwner,
+    requestMiddleware,
+    sendBadRequest,
+} from "pages/api/common";
 import { createClient } from "redis";
 
 export default async function setCheckerIsPublic(
@@ -14,13 +18,7 @@ export default async function setCheckerIsPublic(
     const checkerId = req.body.checkerId;
     const redisClient = createClient();
     await redisClient.connect();
-    if (
-        !(await redisClient.sIsMember(`users/${userId}/checkerIds`, checkerId))
-    ) {
-        sendBadRequest(
-            res,
-            "You did not create this checker. You cannot change its public setting",
-        );
+    if (!(await isUserCheckerOwner(redisClient, res, userId, checkerId))) {
         return;
     }
     const isPublic = req.body.isPublic;
