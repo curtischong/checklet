@@ -191,6 +191,17 @@ export const CheckCreator = ({
                             if (getIncompleteFormErr() !== "") {
                                 return;
                             }
+                            let newPositiveExamples = positiveExamples;
+                            if (checkType === CheckType.highlight) {
+                                // remove all of the editedText in the positive examples
+                                newPositiveExamples = positiveExamples.map(
+                                    (example) => {
+                                        return {
+                                            originalText: example.originalText,
+                                        };
+                                    },
+                                );
+                            }
 
                             const checkBlueprint: CheckBlueprint = {
                                 name,
@@ -198,7 +209,7 @@ export const CheckCreator = ({
                                 instruction,
                                 longDesc,
                                 category,
-                                positiveExamples,
+                                positiveExamples: newPositiveExamples,
                                 checkId,
                             };
                             onCreate(checkBlueprint);
@@ -222,25 +233,7 @@ export const CheckCreator = ({
                         <SlidingRadioButton
                             options={[CheckType.highlight, CheckType.rephrase]}
                             selected={checkType}
-                            setSelected={(selectedType: string) => {
-                                // if (
-                                //     checkType === CheckType.rephrase &&
-                                //     selectedType !== CheckType.rephrase
-                                // ) {
-                                //     Modal.confirm({
-                                //         title: "This will delete your progress",
-                                //         content:
-                                //             "You have a positive example that has rephrased text. If you switch to a highlight check, you will lose your rephrased text. Are you sure you want to switch?",
-                                //         onOk: () => {
-                                //             setCheckType(
-                                //                 selectedType as CheckType,
-                                //             );
-                                //         },
-                                //     });
-                                // } else {
-                                setCheckType(selectedType as CheckType);
-                                // }
-                            }}
+                            setSelected={setCheckType as SetState<string>}
                             className="mx-auto mb-4"
                         />
                     </div>
