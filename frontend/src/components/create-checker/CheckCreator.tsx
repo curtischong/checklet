@@ -43,9 +43,8 @@ export const CheckCreator = ({
     const [originalText, setOriginalText] = React.useState("");
     const [editedText, setEditedText] = React.useState("");
 
+    const rawInitialCheckBlueprint = (pageData as any)?.initialCheckBlueprint;
     useEffect(() => {
-        const rawInitialCheckBlueprint = (pageData as any)
-            ?.initialCheckBlueprint;
         if (rawInitialCheckBlueprint) {
             const initialCheckBlueprint =
                 rawInitialCheckBlueprint as CheckBlueprint;
@@ -220,7 +219,9 @@ export const CheckCreator = ({
                             onCreate(checkBlueprint);
                         }}
                     >
-                        Create Check
+                        {rawInitialCheckBlueprint
+                            ? "Update Check"
+                            : "Create Check"}
                     </NormalButton>
                 </div>
             </div>

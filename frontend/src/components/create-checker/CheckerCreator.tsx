@@ -39,7 +39,14 @@ export const CheckerCreator: React.FC = () => {
     const setPage = (page: Page, pageData?: unknown) => {
         setPageData(pageData);
         if (page === Page.Main) {
-            router.push("");
+            // forward the url params to persist the checkerId in the url
+            const urlParams = new URLSearchParams(window.location.search);
+            router.push({
+                pathname: "",
+                query: {
+                    ...Object.fromEntries(urlParams),
+                },
+            });
         } else {
             router.push("#check");
         }
