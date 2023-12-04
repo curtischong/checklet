@@ -1,6 +1,9 @@
 import { Api } from "@api/apis";
 import { NormalButton } from "@components/Button";
-import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import {
+    CheckType,
+    CheckerBlueprint,
+} from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
 import { createUniqueId } from "@utils/strings";
 import { useCallback } from "react";
@@ -18,6 +21,7 @@ const AdminPage: React.FC = () => {
             checkBlueprints: [
                 {
                     name: "Shorten Month",
+                    checkType: CheckType.rephrase,
                     instruction: `If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period.`,
                     longDesc: `Shorter months create more whitespace.`,
                     category: "Whitespace",

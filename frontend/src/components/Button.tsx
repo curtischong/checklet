@@ -3,6 +3,7 @@ import { Button, Upload } from "antd";
 import classnames from "classnames";
 import React, { useCallback } from "react";
 import { UploadIcon } from "@components/icons/UploadIcon";
+import classNames from "classnames";
 
 export type IButton = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -54,7 +55,13 @@ export const SubmitButton: React.FC<IButton> = ({
     return (
         <button
             // className={`py-2 px-4 rounded duration-300 bg-white transition-transform transform hover:bg-blue-500 focus:outline-none ring-opacity-75 ring-blue-300 focus:ring text-black text-lg ${className}`}
-            className={`bg-[#43b56c] hover:bg-[#3a9e5e] text-white py-2 px-4 rounded transition duration-300 ${className}`}
+            className={classNames(
+                `  text-white py-2 px-4 rounded transition duration-300 ${className}`,
+                {
+                    "bg-[#43b56c] hover:bg-[#3a9e5e]": !rest.disabled,
+                    "bg-[#999999] cursor-not-allowed": rest.disabled,
+                },
+            )}
             {...rest}
         >
             {children}

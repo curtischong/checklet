@@ -4,8 +4,7 @@ export type CheckId = string;
 
 export interface PositiveCheckExample {
     originalText: string;
-    isRephrasing: boolean;
-    editedText: string;
+    editedText?: string;
 }
 
 export enum CheckType {

@@ -28,7 +28,7 @@ export const CheckCreator = ({
     setPage,
     pageData,
 }: Props): JSX.Element => {
-    const [name, setName] = React.useState("");
+    const [name, setName] = React.useState<string | undefined>(undefined);
     const [longDesc, setLongDesc] = React.useState("");
     const [instruction, setInstruction] = React.useState("");
     const [category, setCategory] = React.useState("");
@@ -48,6 +48,7 @@ export const CheckCreator = ({
                 rawInitialCheckBlueprint as CheckBlueprint;
             setName(initialCheckBlueprint.name);
             setLongDesc(initialCheckBlueprint.longDesc);
+            setCheckType(initialCheckBlueprint.checkType);
             setInstruction(initialCheckBlueprint.instruction);
             setCategory(initialCheckBlueprint.category);
             setPositiveExamples(initialCheckBlueprint.positiveExamples);
@@ -57,7 +58,6 @@ export const CheckCreator = ({
 
     const [clickedSubmit, setClickedSubmit] = React.useState(false);
     const [err, setErr] = React.useState("");
-    const router = useRouter();
 
     const getIncompleteFormErr = useCallback(() => {
         if (name === "") {
@@ -79,6 +79,10 @@ export const CheckCreator = ({
         }
         setErr(getIncompleteFormErr());
     }, [getIncompleteFormErr, clickedSubmit]);
+
+    if (name === undefined) {
+        return <CreateCheckName setCheckName={setName} setPage={setPage} />;
+    }
 
     if (checkType === undefined) {
         return (
@@ -104,15 +108,6 @@ export const CheckCreator = ({
                 />
 
                 <LabelWithHelp
-                    label="Model Instructions"
-                    helpText="Here is where you tell the model how to edit the text."
-                />
-                <TextArea
-                    value={instruction}
-                    onChange={(e) => setInstruction(e.target.value)}
-                    placeholder={`If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period.`}
-                />
-                <LabelWithHelp
                     label="Suggestion Reason"
                     helpText="This is a great place to explain your suggestion. Users will see this when they expand the card."
                 />
@@ -120,6 +115,15 @@ export const CheckCreator = ({
                     value={longDesc}
                     onChange={(e) => setLongDesc(e.target.value)}
                     placeholder={`Shorter months create more whitespace.`}
+                />
+                <LabelWithHelp
+                    label="Model Instructions"
+                    helpText="Here is where you tell the model how to edit the text."
+                />
+                <TextArea
+                    value={instruction}
+                    onChange={(e) => setInstruction(e.target.value)}
+                    placeholder={`If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period.`}
                 />
                 <LabelWithHelp
                     label="Category (optional)"
@@ -255,6 +259,50 @@ const CreateCheckerNavigationPath = ({
             </p>
             <RightArrowIcon className="mx-2 w-[14px]" />
             <p className="font-bold text-gray-600">Create check</p>
+        </div>
+    );
+};
+
+interface CreateCheckNameProps {
+    setCheckName: SetState<string | undefined>;
+    setPage: (page: Page, pageData?: unknown) => void;
+}
+
+const CreateCheckName = ({ setCheckName, setPage }: CreateCheckNameProps) => {
+    const [tmpName, setTmpName] = React.useState("");
+    return (
+        <div>
+            <CreateCheckerNavigationPath setPage={setPage} />
+            <div className="w-[500px] mx-auto flex flex-col justify-center h-[80vh]">
+                <div className="text-xl font-bold">Define your Check</div>
+                <div className="mt-4 text-xl">Check Name</div>
+                <div>
+                    Great names are simple, succinct, and describe what you are
+                    checking
+                </div>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        if (tmpName !== "") {
+                            setCheckName(tmpName);
+                        }
+                    }}
+                >
+                    <Input
+                        placeholder="Shorten Months"
+                        value={tmpName}
+                        onChange={(e) => setTmpName(e.target.value)}
+                        className="mt-4"
+                    />
+                </form>
+                <SubmitButton
+                    onClick={() => setCheckName(tmpName)}
+                    className="mt-4 w-40"
+                    disabled={tmpName === ""}
+                >
+                    Continue
+                </SubmitButton>
+            </div>
         </div>
     );
 };
