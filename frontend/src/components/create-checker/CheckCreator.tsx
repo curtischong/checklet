@@ -1,3 +1,4 @@
+import { Api } from "@api/apis";
 import { DeleteButton, NormalButton, SubmitButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
@@ -14,10 +15,12 @@ import { PositiveCheckExampleCreator } from "@components/create-checker/Positive
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
+import { useClientContext } from "@utils/ClientContext";
 import { createUniqueId } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
     onCreate: (check: CheckBlueprint) => void;
@@ -44,10 +47,11 @@ export const CheckCreator = ({
     const [editedText, setEditedText] = React.useState("");
 
     const rawInitialCheckBlueprint = (pageData as any)?.initialCheckBlueprint;
-    useEffect(() => {
-        if (rawInitialCheckBlueprint) {
-            const initialCheckBlueprint =
-                rawInitialCheckBlueprint as CheckBlueprint;
+    const router = useRouter();
+    const { user } = useClientContext();
+
+    const setInitialCheckBlueprint = useCallback(
+        (initialCheckBlueprint: CheckBlueprint) => {
             setName(initialCheckBlueprint.name);
             setLongDesc(initialCheckBlueprint.longDesc);
             setCheckType(initialCheckBlueprint.checkType);
@@ -55,6 +59,40 @@ export const CheckCreator = ({
             setCategory(initialCheckBlueprint.category);
             setPositiveExamples(initialCheckBlueprint.positiveExamples);
             setCheckId(initialCheckBlueprint.checkId);
+        },
+        [],
+    );
+    useEffect(() => {
+        const routerCheckerId = router.query.checkerId as string;
+        const routerCheckId = router.query.checkId as string;
+        if (rawInitialCheckBlueprint) {
+            setInitialCheckBlueprint(rawInitialCheckBlueprint);
+        } else if (routerCheckerId && routerCheckId) {
+            (async () => {
+                if (!user) {
+                    toast.error("Please log in to edit your check");
+                    return;
+                }
+                const checkerBlueprint = await Api.fetchCheckerBlueprint(
+                    await user.getIdToken(),
+                    routerCheckerId as string,
+                );
+                if (!checkerBlueprint) {
+                    console.warn(
+                        `checker blueprint not found for checkerId=${routerCheckerId}`,
+                    );
+                    return;
+                }
+                for (const checkBlueprint of checkerBlueprint.checkBlueprints) {
+                    if (checkBlueprint.checkId === routerCheckId) {
+                        setInitialCheckBlueprint(checkBlueprint);
+                        return;
+                    }
+                }
+                console.warn(
+                    `check blueprint with id=${routerCheckId} not found in checker blueprint with id=${routerCheckerId}`,
+                );
+            })();
         }
     }, []);
 
