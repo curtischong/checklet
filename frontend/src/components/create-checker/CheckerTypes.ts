@@ -13,6 +13,7 @@ export enum CheckType {
     // rephraseMultiple = "Rephrase Multiple",
     proposal = "Proposal",
 }
+export const validCheckTypes = [CheckType.highlight, CheckType.rephrase];
 
 export type CheckBlueprint = {
     name: string;
@@ -45,6 +46,7 @@ export type CheckerBlueprint = {
     checkBlueprints: CheckBlueprint[];
     creatorId: string;
     id: string;
+    isPublic: boolean;
 };
 
 export interface CheckerStorefront {

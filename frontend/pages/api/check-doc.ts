@@ -71,6 +71,7 @@ const getCheckDescForCheckIds = (
         }
         checkDescObj[checkId] = {
             name: checkBlueprint.name,
+            checkType: checkBlueprint.checkType,
             longDesc: checkBlueprint.longDesc,
             category: checkBlueprint.category,
             positiveExamples: checkBlueprint.positiveExamples,

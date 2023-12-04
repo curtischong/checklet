@@ -16,6 +16,7 @@ import {
     CheckBlueprint,
     CheckType,
     PositiveCheckExample,
+    validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
 import { PositiveCheckExampleCreator } from "@components/create-checker/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
@@ -328,7 +329,7 @@ export const CheckCreator = ({
                     {/* use flex-col to prevent thsi radio buttonf rom taking up the full width */}
                     <div className="flex flex-col">
                         <SlidingRadioButton
-                            options={[CheckType.highlight, CheckType.rephrase]}
+                            options={validCheckTypes}
                             selected={checkType}
                             setSelected={setCheckType as SetState<string>}
                             className="mx-auto mb-4"
@@ -511,7 +512,7 @@ const SelectCheckType = ({
             <div className="w-[50vw] mx-auto flex flex-col">
                 <div className="mt-16 font-bold text-xl">Select Check Type</div>
                 <SlidingRadioButton
-                    options={[CheckType.highlight, CheckType.rephrase]}
+                    options={validCheckTypes}
                     selected={tmpCheckType}
                     setSelected={setTmpCheckType as SetState<string>}
                     className="mt-10 mx-auto "

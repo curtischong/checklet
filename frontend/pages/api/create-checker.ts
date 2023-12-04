@@ -1,4 +1,9 @@
-import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
+import {
+    CheckBlueprint,
+    CheckType,
+    CheckerBlueprint,
+    validCheckTypes,
+} from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { requestMiddleware, sendBadRequest } from "pages/api/common";
 import { createClient } from "redis";
@@ -17,7 +22,7 @@ export default async function handler(
     const checkerBlueprint: CheckerBlueprint = req.body.blueprint;
     const checkerId = req.body.checkerId;
 
-    const validationErr = isBlueprintValid(checkerBlueprint, checkerId);
+    const validationErr = validateChecker(checkerBlueprint, checkerId);
     if (validationErr !== "") {
         sendBadRequest(res, validationErr);
         return;
@@ -58,7 +63,24 @@ export default async function handler(
     res.status(204);
 }
 
-const isBlueprintValid = (
+const validateCheck = (blueprint: CheckBlueprint): string => {
+    if (blueprint.name === "") {
+        return "Check name cannot be empty";
+    } else if (blueprint.longDesc === "") {
+        return "Check description cannot be empty";
+    } else if (blueprint.instruction === "") {
+        return "Check instruction cannot be empty";
+    } else if (validCheckTypes.includes(blueprint.checkType)) {
+        return `Check type must be one of ${validCheckTypes.join(", ")}. Got ${
+            blueprint.checkType
+        }`;
+    } else if (blueprint.positiveExamples.length === 0) {
+        return "Check must have at least one positive example";
+    }
+    return "";
+};
+
+const validateChecker = (
     blueprint: CheckerBlueprint,
     checkerId: string,
 ): string => {
@@ -71,7 +93,14 @@ const isBlueprintValid = (
     } else if (checkerId.length !== 64) {
         return `Checker id=${checkerId} must be 64 characters long`;
     }
-    // TODO: validate checkBlueprints
+
+    // validate checks
+    for (const check of blueprint.checkBlueprints) {
+        const checkValidationErr = validateCheck(check);
+        if (checkValidationErr !== "") {
+            return checkValidationErr;
+        }
+    }
 
     return "";
 };
