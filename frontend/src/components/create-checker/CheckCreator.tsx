@@ -210,6 +210,15 @@ export const CheckCreator = ({
                 }}
             >
                 <div className="fixed mx-auto w-[30vw] left-[50%] right-0 mt-10">
+                    {/* use flex-col to prevent thsi radio buttonf rom taking up the full width */}
+                    <div className="flex flex-col">
+                        <SlidingRadioButton
+                            options={[CheckType.highlight, CheckType.rephrase]}
+                            selected={checkType}
+                            setSelected={setCheckType as SetState<string>}
+                            className="mx-auto mb-4"
+                        />
+                    </div>
                     <div className="text-xl font-bold ml-1 mb-4">
                         {checkType} Check
                     </div>
@@ -388,9 +397,9 @@ const SelectCheckType = ({
                     options={[CheckType.highlight, CheckType.rephrase]}
                     selected={tmpCheckType}
                     setSelected={setTmpCheckType as SetState<string>}
-                    className="mt-10 mx-auto border border-1 border-gray-600 rounded-lg"
+                    className="mt-10 mx-auto "
                 />
-                <div className="w-[500px] mx-auto mt-8 h-48">
+                <div className="w-[400px] mx-auto mt-8 h-48">
                     <CheckPreview checkBlueprint={checkBlueprint} />
                 </div>
                 <div className="flex flex-col mb-10 ml-1">
