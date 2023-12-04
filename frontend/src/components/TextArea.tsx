@@ -1,32 +1,24 @@
+import TextArea from "antd/lib/input/TextArea";
 import classNames from "classnames";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 export type ITextArea = React.DetailedHTMLProps<
     React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-        minHeight?: number;
+        minRows?: number;
     },
     HTMLTextAreaElement
 >;
 
-export const TextArea: React.FC<ITextArea> = ({
+export const NormalTextArea: React.FC<ITextArea> = ({
     className = "",
     children,
-    minHeight,
+    minRows,
     ...rest
 }) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const MIN_HEIGHT = minHeight ?? 120;
-    console.log(MIN_HEIGHT);
-    useEffect(() => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = "auto";
-            textareaRef.current.style.height =
-                Math.max(textareaRef.current.scrollHeight + 20, MIN_HEIGHT) +
-                "px";
-        }
-    }, [rest.value]);
+    const { onResize, ...otherProps } = rest;
     return (
-        <textarea
+        <TextArea
             className={classNames(
                 `bg-white p-1 my-1 text-gray-600 border border-gray-400 py-2 px-4 rounded resize-none`,
                 className,
@@ -34,10 +26,17 @@ export const TextArea: React.FC<ITextArea> = ({
                     "cursor-not-allowed bg-[#f1f1f1]": rest.disabled,
                 },
             )}
-            {...rest}
+            {...otherProps}
             ref={textareaRef}
+            autoSize={
+                minRows
+                    ? {
+                          minRows,
+                      }
+                    : true
+            }
         >
             {children}
-        </textarea>
+        </TextArea>
     );
 };

@@ -9,7 +9,7 @@ import {
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
-import { TextArea } from "@components/TextArea";
+import { NormalTextArea } from "@components/TextArea";
 import { CheckPreview } from "@components/create-checker/CheckPreview";
 import { Page } from "@components/create-checker/CheckerCreator";
 import {
@@ -213,19 +213,21 @@ export const CheckCreator = ({
                     label="Suggestion Reason"
                     helpText="This is a great place to explain your suggestion. Users will see this when they expand the card."
                 />
-                <TextArea
+                <NormalTextArea
                     value={longDesc}
                     onChange={(e) => setLongDesc(e.target.value)}
                     placeholder={`Shorter months create more whitespace.`}
+                    minRows={3}
                 />
                 <LabelWithHelp
                     label="Model Instructions"
                     helpText="Here is where you tell the model how to edit the text."
                 />
-                <TextArea
+                <NormalTextArea
                     value={instruction}
                     onChange={(e) => setInstruction(e.target.value)}
                     placeholder={`If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period.`}
+                    minRows={4}
                 />
                 <LabelWithHelp
                     label="Category (optional)"

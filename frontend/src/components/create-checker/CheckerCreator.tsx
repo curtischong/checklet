@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import { useClientContext } from "@utils/ClientContext";
 import { Api } from "@api/apis";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
-import { TextArea } from "@components/TextArea";
+import { NormalTextArea } from "@components/TextArea";
 import { createUniqueId } from "@utils/strings";
 import {
     CheckBlueprint,
@@ -245,13 +245,14 @@ const MainCheckerPage = ({
             />
 
             <label className="text-lg">Description</label>
-            <TextArea
+            <NormalTextArea
                 className="w-80"
                 placeholder="Rizzume will rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive."
                 onChange={(e) => {
                     setDesc(e.target.value);
                 }}
                 value={desc}
+                minRows={3}
             />
 
             <div className="flex flex-row mt-2">
