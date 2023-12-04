@@ -36,12 +36,29 @@ export const CheckerCreator: React.FC = () => {
     const router = useRouter();
     const hash = router.asPath.split("#")[1] || "";
     const page = hash === "check" ? Page.CheckCreator : Page.Main;
-    const setPage = (page: Page, pageData?: unknown) => {
+    const setPage = (page: Page, pageData?: any) => {
         setPageData(pageData);
         if (page === Page.Main) {
-            router.push("");
+            // forward the url params to persist the checkerId in the url
+            const urlParams = new URLSearchParams(window.location.search);
+            router.push({
+                pathname: "",
+                query: {
+                    checkerId: Object.fromEntries(urlParams).checkerId,
+                },
+            });
         } else {
-            router.push("#check");
+            let query = {};
+            if (pageData?.initialCheckBlueprint?.checkId) {
+                query = {
+                    checkerId: checkerId,
+                    checkId: pageData.initialCheckBlueprint.checkId,
+                };
+            }
+            router.push({
+                hash: "check",
+                query,
+            });
         }
     };
 
