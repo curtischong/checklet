@@ -1,5 +1,11 @@
 import { Api } from "@api/apis";
-import { DeleteButton, NormalButton, SubmitButton } from "@components/Button";
+import {
+    DeleteButton,
+    LoadingButtonSubmit,
+    NormalButton,
+    SubmitButton,
+    SubmittingState,
+} from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
@@ -45,6 +51,10 @@ export const CheckCreator = ({
     );
     const [originalText, setOriginalText] = React.useState("");
     const [editedText, setEditedText] = React.useState("");
+
+    const [submittingState, setSubmittingState] = React.useState(
+        SubmittingState.NotSubmitting,
+    );
 
     // the pageData is just an optimization we do so we don't need to fetch it from the server
     // if the previous page already had information about the check
@@ -122,6 +132,47 @@ export const CheckCreator = ({
         setErr(getIncompleteFormErr());
     }, [getIncompleteFormErr, clickedSubmit]);
 
+    const createCheck = useCallback(() => {
+        setClickedSubmit(true);
+        setSubmittingState(SubmittingState.Submitting);
+        if (getIncompleteFormErr() !== "") {
+            return;
+        }
+        let newPositiveExamples = positiveExamples;
+        if (checkType === CheckType.highlight) {
+            // remove all of the editedText in the positive examples
+            newPositiveExamples = positiveExamples.map((example) => {
+                return {
+                    originalText: example.originalText,
+                };
+            });
+        }
+        if (!name || !checkType) {
+            toast("name or checkType is undefined. Let Curtis know!");
+            return;
+        }
+
+        const checkBlueprint: CheckBlueprint = {
+            name,
+            checkType,
+            instruction,
+            longDesc,
+            category,
+            positiveExamples: newPositiveExamples,
+            checkId,
+        };
+        onCreate(checkBlueprint);
+    }, [
+        name,
+        checkType,
+        instruction,
+        longDesc,
+        category,
+        positiveExamples,
+        checkId,
+        getIncompleteFormErr,
+    ]);
+
     if (name === undefined) {
         return <CreateCheckName setCheckName={setName} setPage={setPage} />;
     }
@@ -131,6 +182,15 @@ export const CheckCreator = ({
             <SelectCheckType setCheckType={setCheckType} setPage={setPage} />
         );
     }
+
+    const SubmitCheckText = {
+        [`${SubmittingState.NotSubmitting}-create`]: "Create Check",
+        [`${SubmittingState.Submitting}-create`]: "Creating Check",
+        [`${SubmittingState.Submitted}-create`]: "Check Created!",
+        [`${SubmittingState.NotSubmitting}-update`]: "Update Check",
+        [`${SubmittingState.Submitting}-update`]: "Updating Check",
+        [`${SubmittingState.Submitted}-update`]: "Check Updated!",
+    };
 
     return (
         <div className="flex flex-row mt-4 ">
@@ -229,40 +289,22 @@ export const CheckCreator = ({
                 <div className="text-[#ff0000] mt-4 ">{err}</div>
 
                 <div className="mt-4 mb-20">
-                    <NormalButton
-                        onClick={() => {
-                            setClickedSubmit(true);
-                            if (getIncompleteFormErr() !== "") {
-                                return;
-                            }
-                            let newPositiveExamples = positiveExamples;
-                            if (checkType === CheckType.highlight) {
-                                // remove all of the editedText in the positive examples
-                                newPositiveExamples = positiveExamples.map(
-                                    (example) => {
-                                        return {
-                                            originalText: example.originalText,
-                                        };
-                                    },
-                                );
-                            }
-
-                            const checkBlueprint: CheckBlueprint = {
-                                name,
-                                checkType,
-                                instruction,
-                                longDesc,
-                                category,
-                                positiveExamples: newPositiveExamples,
-                                checkId,
-                            };
-                            onCreate(checkBlueprint);
-                        }}
+                    <LoadingButtonSubmit
+                        isLoading={
+                            submittingState === SubmittingState.Submitting
+                        }
+                        onClick={createCheck}
                     >
-                        {rawInitialCheckBlueprint
-                            ? "Update Check"
-                            : "Create Check"}
-                    </NormalButton>
+                        {
+                            SubmitCheckText[
+                                `${submittingState}-${
+                                    rawInitialCheckBlueprint
+                                        ? "update"
+                                        : "create"
+                                }`
+                            ]
+                        }
+                    </LoadingButtonSubmit>
                 </div>
             </div>
 

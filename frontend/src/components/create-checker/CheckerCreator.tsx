@@ -3,6 +3,7 @@ import {
     LoadingButtonSubmit,
     NormalButton,
     SubmitButton,
+    SubmittingState,
 } from "@components/Button";
 import { CheckOverview } from "@components/create-checker/Check";
 import { CheckCreator } from "@components/create-checker/CheckCreator";
@@ -115,7 +116,8 @@ export const CheckerCreator: React.FC = () => {
                             } else {
                                 setCheckBlueprints([...checkBlueprints, check]);
                             }
-                            setPage(Page.Main);
+                            Api.createChecker();
+                            // setPage(Page.Main);
                         }}
                         setPage={setPage}
                         pageData={pageData}
@@ -135,12 +137,6 @@ interface Props {
     checkBlueprints: CheckBlueprint[];
     setCheckBlueprints: SetState<CheckBlueprint[]>;
     setPage: (page: Page, pageData?: unknown) => void;
-}
-
-enum SubmittingState {
-    NotSubmitting,
-    Submitting,
-    Submitted,
 }
 
 const SubmitButtonText = {
@@ -296,7 +292,7 @@ const MainCheckerPage = ({
 
             <div className="text-[#ff0000] mt-4 ">{err}</div>
             <LoadingButtonSubmit
-                loading={submittingState === SubmittingState.Submitting}
+                isLoading={submittingState === SubmittingState.Submitting}
                 onClick={submitChecker}
                 className="mt-4 w-80 h-10"
             >

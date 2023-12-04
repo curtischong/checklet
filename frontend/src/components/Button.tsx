@@ -47,12 +47,15 @@ export const LoadingButton: React.FC<IButton & { loading: boolean }> = ({
     );
 };
 
-export const LoadingButtonSubmit: React.FC<IButton & { loading: boolean }> = ({
-    className = "",
-    children,
-    loading,
-    ...rest
-}) => {
+export enum SubmittingState {
+    NotSubmitting,
+    Submitting,
+    Submitted,
+}
+
+export const LoadingButtonSubmit: React.FC<
+    IButton & { isLoading: boolean }
+> = ({ className = "", children, isLoading, ...rest }) => {
     delete rest.type;
     return (
         <>
@@ -68,7 +71,7 @@ export const LoadingButtonSubmit: React.FC<IButton & { loading: boolean }> = ({
                     },
                 )}
                 {...rest}
-                loading={loading}
+                loading={isLoading}
                 ref={undefined}
                 type="text"
             >
