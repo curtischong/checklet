@@ -131,6 +131,7 @@ export class Api {
             "api/set-checker-is-public",
             "POST",
             {
+                idToken,
                 checkerId,
                 isPublic,
             },

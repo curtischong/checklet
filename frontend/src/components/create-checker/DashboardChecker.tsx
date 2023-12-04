@@ -5,6 +5,7 @@ import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
 import { Popconfirm } from "antd";
 import Link from "next/link";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 interface Props {
@@ -16,6 +17,7 @@ export const DashboardChecker = ({
     fetchCheckerBlueprints,
 }: Props): JSX.Element => {
     const { user } = useClientContext();
+    const [tmpChecked, setTmpChecked] = useState<boolean>(blueprint.isPublic);
 
     return (
         <div className="w-32 flex flex-row">
@@ -49,7 +51,7 @@ export const DashboardChecker = ({
             </Link>
             <LabelWithSwitch
                 text="isPublic"
-                isChecked={blueprint.isPublic}
+                isChecked={tmpChecked}
                 setChecked={(newIsChecked: boolean) => {
                     (async () => {
                         if (!user) {
@@ -58,11 +60,15 @@ export const DashboardChecker = ({
                             );
                             return;
                         }
-                        Api.setCheckerIsPublic(
+                        setTmpChecked(newIsChecked); // if we don't set this initially, the switch wont' change state
+                        const success = await Api.setCheckerIsPublic(
                             blueprint.id,
                             newIsChecked,
                             await user.getIdToken(),
                         );
+                        if (!success) {
+                            setTmpChecked(!newIsChecked);
+                        }
                     })();
                 }}
             />
