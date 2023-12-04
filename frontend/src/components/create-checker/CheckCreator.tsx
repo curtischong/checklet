@@ -18,7 +18,6 @@ import { createUniqueId } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
-import { Modal } from "antd";
 
 interface Props {
     onCreate: (check: CheckBlueprint) => void;
@@ -41,6 +40,8 @@ export const CheckCreator = ({
     const [checkType, setCheckType] = React.useState<CheckType | undefined>(
         undefined,
     );
+    const [originalText, setOriginalText] = React.useState("");
+    const [editedText, setEditedText] = React.useState("");
 
     useEffect(() => {
         const rawInitialCheckBlueprint = (pageData as any)
@@ -179,6 +180,10 @@ export const CheckCreator = ({
                                 newExample,
                             ]);
                         }}
+                        originalText={originalText}
+                        setOriginalText={setOriginalText}
+                        editedText={editedText}
+                        setEditedText={setEditedText}
                     />
                 </div>
 
@@ -256,6 +261,8 @@ export const CheckCreator = ({
                             positiveExamples,
                             checkId,
                         }}
+                        originalText={originalText}
+                        editedText={editedText}
                     />
                 </div>
             </div>
@@ -428,6 +435,8 @@ const SelectCheckType = ({
                             checkType: tmpCheckType,
                             positiveExamples: [],
                         }}
+                        originalText=""
+                        editedText=""
                     />
                 </div>
                 <div className="flex flex-col mb-10 ml-1">

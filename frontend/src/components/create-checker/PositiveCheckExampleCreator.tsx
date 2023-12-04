@@ -1,4 +1,5 @@
 import { TextButton } from "@components/Button";
+import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { TextArea } from "@components/TextArea";
 import ThinLine from "@components/ThinLine";
@@ -7,35 +8,42 @@ import {
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
 import { HelpIcon } from "@components/icons/HelpIcon";
+import { SetState } from "@utils/types";
 import React from "react";
 
 interface Props {
     checkType: CheckType;
     onCreate: (example: PositiveCheckExample) => void;
+    originalText: string;
+    setOriginalText: SetState<string>;
+    editedText: string;
+    setEditedText: SetState<string>;
 }
 
 // TODO: add negative check example creator
 export const PositiveCheckExampleCreator = ({
     checkType,
     onCreate,
+    originalText,
+    setOriginalText,
+    editedText,
+    setEditedText,
 }: Props): JSX.Element => {
-    const [originalText, setOriginalText] = React.useState("");
-    const [editedText, setEditedText] = React.useState("");
     return (
         <div className="flex flex-col ">
             <ThinLine className="mt-4" />
-            <div className="flex items-center ">
+            <div>Create Positive Example</div>
+            <div className="flex items-center mt-2">
                 <label className="text-md">Original Text</label>
                 <HelpIcon
                     text="The model should follow your instructions when it sees this text"
                     className="ml-2 "
                 />
             </div>
-            <TextArea
+            <Input
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
                 placeholder="January"
-                minHeight={10}
             />
             {checkType === CheckType.rephrase && (
                 <>
@@ -43,11 +51,10 @@ export const PositiveCheckExampleCreator = ({
                         label="Rephrase into"
                         helpText="If you want to rephrase something, this will teach the model how to rephrase it"
                     />
-                    <TextArea
+                    <Input
                         value={editedText}
                         onChange={(e) => setEditedText(e.target.value)}
                         placeholder="Jan"
-                        minHeight={40}
                     />
                 </>
             )}

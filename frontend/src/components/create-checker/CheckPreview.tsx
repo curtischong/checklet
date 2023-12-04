@@ -10,9 +10,15 @@ import { useMemo } from "react";
 
 interface Props {
     checkBlueprint: CheckBlueprint;
+    originalText: string; // This is the input boxes the user is using to create the positive example. It's here so users can easily understand what part of the check they're changing
+    editedText: string;
 }
 
-export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
+export const CheckPreview = ({
+    checkBlueprint,
+    originalText,
+    editedText,
+}: Props): JSX.Element => {
     const checkId = "checkId";
 
     const defaultOriginalTextForCheckType = useMemo(() => {
@@ -45,20 +51,34 @@ export const CheckPreview = ({ checkBlueprint }: Props): JSX.Element => {
         }
     }, [checkBlueprint.checkType]);
 
+    const originalTextToUse = useMemo(() => {
+        if (originalText !== "" || editedText !== "") {
+            return originalText;
+        } else if (checkBlueprint.positiveExamples.length > 0) {
+            return checkBlueprint.positiveExamples[0].originalText;
+        } else {
+            return defaultOriginalTextForCheckType;
+        }
+    }, [originalText, editedText, checkBlueprint.positiveExamples]);
+
+    const editedTextToUse = useMemo(() => {
+        if (editedText !== "" || originalText !== "") {
+            return editedText;
+        } else if (checkBlueprint.positiveExamples.length > 0) {
+            return checkBlueprint.positiveExamples[0].editedText;
+        } else {
+            return defaultEditedTextForCheckType;
+        }
+    }, [originalText, editedText, checkBlueprint.positiveExamples]);
+
     const suggestion: Suggestion = {
         checkId,
         range: {
             start: 0,
             end: 0,
         },
-        originalText:
-            checkBlueprint.positiveExamples.length > 0
-                ? checkBlueprint.positiveExamples[0].originalText
-                : defaultOriginalTextForCheckType,
-        editedText:
-            checkBlueprint.positiveExamples.length > 0
-                ? checkBlueprint.positiveExamples[0].editedText ?? ""
-                : defaultEditedTextForCheckType,
+        originalText: originalTextToUse,
+        editedText: editedTextToUse,
         suggestionId: "suggestionId",
         editOps: [],
     };
