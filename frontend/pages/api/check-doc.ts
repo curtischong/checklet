@@ -1,8 +1,5 @@
 import { Checker } from "@api/checker";
-import {
-    CheckDesc,
-    CheckDescObj,
-} from "@components/create-checker/CheckerTypes";
+import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
     isUnauthenticatedRequestValid,

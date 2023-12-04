@@ -57,6 +57,7 @@ export const CheckCreator = ({
 
     // the pageData is just an optimization we do so we don't need to fetch it from the server
     // if the previous page already had information about the check
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const rawInitialCheckBlueprint = (pageData as any)?.initialCheckBlueprint;
     const router = useRouter();
     const { user } = useClientContext();

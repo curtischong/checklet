@@ -1,6 +1,5 @@
 import {
     CheckBlueprint,
-    CheckType,
     CheckerBlueprint,
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
