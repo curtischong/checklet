@@ -33,7 +33,12 @@ ${positiveExamples}
     private getPositiveCheckExamplePrompt(
         positiveExample: PositiveCheckExample,
     ): string {
-        return `[Original Text]: ${positiveExample.originalText}\n[Edited Text]: ${positiveExample.editedText}`;
+        // defence in depth. We only want the editedText to be something if it's a rephrase check
+        const editedText =
+            this.blueprint.checkType === CheckType.rephrase
+                ? positiveExample.editedText
+                : "";
+        return `[Original Text]: ${positiveExample.originalText}\n[Edited Text]: ${editedText}`;
     }
 
     async checkDoc(doc: string): Promise<Suggestion[]> {
