@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { SuggestionIdToRef } from "./suggestionsTypes";
 import css from "./suggestions.module.scss";
-import { SuggestionCollapse } from "./suggestionCollapse";
+import { SuggestionCard } from "./SuggestionCard";
 import ZeroImage from "./ZeroState.svg";
 import { BsSortDownAlt } from "react-icons/bs";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
@@ -113,7 +113,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                     const ref = React.createRef<HTMLDivElement>();
                     suggestionsRefs.current[s.suggestionId] = ref;
                     return (
-                        <SuggestionCollapse
+                        <SuggestionCard
                             key={index}
                             suggestion={s}
                             activeSuggestion={activeSuggestion}

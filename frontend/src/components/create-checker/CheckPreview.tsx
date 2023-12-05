@@ -5,7 +5,7 @@ import {
     CheckType,
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
-import { SuggestionCollapse } from "@components/editor/suggestions/suggestionCollapse";
+import { SuggestionCard } from "@components/editor/suggestions/SuggestionCard";
 import { useMemo } from "react";
 
 interface Props {
@@ -166,7 +166,7 @@ export const CheckPreview = ({
     };
 
     return (
-        <SuggestionCollapse
+        <SuggestionCard
             suggestion={suggestion}
             activeSuggestion={suggestion}
             onClick={() => {
