@@ -1,16 +1,13 @@
 import React, { forwardRef, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { AiOutlineArrowRight } from "react-icons/ai";
 import classnames from "classnames";
 
 import css from "./suggestionCard.module.scss";
 import { Suggestion } from "@api/ApiTypes";
-import {
-    CheckDescObj,
-    CheckType,
-} from "@components/create-checker/CheckerTypes";
+import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import classNames from "classnames";
+import { SuggestionChange } from "@components/editor/suggestions/SuggestionChange";
 
 type SuggestionCard = {
     suggestion: Suggestion;
@@ -34,7 +31,6 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
     }, [suggestion, activeSuggestion]);
 
     const originalText = suggestion.originalText;
-    const replacementText = suggestion.editedText;
 
     const getCheckDesc = (suggestion: Suggestion) => {
         return props.checkDescObj[suggestion.checkId];
@@ -90,30 +86,11 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
             {isActive && (
                 <div className={css.cardBody}>
                     <div className={css.suggestion}>
-                        {checkType === CheckType.highlight ? (
-                            <div>{suggestion.originalText}</div>
-                        ) : (
-                            <div className="flex flex-row">
-                                <div
-                                    className={classNames("line-through")}
-                                    style={{
-                                        textDecorationColor: "#DC5262",
-                                    }}
-                                >
-                                    {originalText}
-                                </div>
-                                <AiOutlineArrowRight className={css.arrow} />
-                                <div
-                                    onClick={onReplaceClick}
-                                    className={classNames(
-                                        css.replace,
-                                        "cursor-pointer",
-                                    )}
-                                >
-                                    {replacementText}
-                                </div>
-                            </div>
-                        )}
+                        <SuggestionChange
+                            suggestion={suggestion}
+                            checkType={checkType}
+                            onReplaceClick={onReplaceClick}
+                        />
                     </div>
                     <div className={css.longDesc}>
                         {" "}

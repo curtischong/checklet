@@ -58,6 +58,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
         }
     };
 
+    // TODO: figure out if it's highlight or a replacement
     const onReplaceClick = (s: Suggestion) => {
         const content = editorState.getCurrentContent();
         let start = s.range.start;
