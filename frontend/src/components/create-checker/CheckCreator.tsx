@@ -343,7 +343,7 @@ export const CheckCreator = ({
                         />
                     </div>
                     <CheckPreview
-                        checkBlueprint={{
+                        blueprint={{
                             checkType,
                             name,
                             instruction,
@@ -517,7 +517,7 @@ const SelectCheckType = ({
                 />
                 <div className="w-[400px] mx-auto mt-8 h-48">
                     <CheckPreview
-                        checkBlueprint={{
+                        blueprint={{
                             name: "",
                             desc: "",
                             instruction: "",
