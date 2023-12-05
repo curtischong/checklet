@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { isUserCheckerOwner, requestMiddleware } from "pages/api/common";
+import {
+    isUserCheckerOwner,
+    requestMiddleware,
+    return204Status,
+} from "pages/api/common";
 import { createClient } from "redis";
 
 export default async function deleteChecker(
@@ -22,5 +26,5 @@ export default async function deleteChecker(
     await redisClient.sRem("publicCheckerIds", req.body.checkerId);
 
     await redisClient.del(`checkers/${req.body.checkerId}`);
-    res.status(204);
+    return204Status(res);
 }

@@ -104,3 +104,9 @@ export const checkerBlueprintToCheckerStorefront = (
         creatorId: blueprint.creatorId,
     };
 };
+
+export const return204Status = (res: NextApiResponse): void => {
+    // we cannot use a real 204 status since nextjs doesn't support it (it'll also confuse it, thinking no response was sent)
+    // https://github.com/vercel/next.js/discussions/51475
+    res.status(200).json({ success: true });
+};

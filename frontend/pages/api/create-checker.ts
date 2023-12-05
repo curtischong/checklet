@@ -4,7 +4,11 @@ import {
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { requestMiddleware, sendBadRequest } from "pages/api/common";
+import {
+    requestMiddleware,
+    return204Status,
+    sendBadRequest,
+} from "pages/api/common";
 import { createClient } from "redis";
 
 export default async function handler(
@@ -59,7 +63,7 @@ export default async function handler(
     await redisClient.sAdd(checkerIdsKey, checkerId);
     await redisClient.sAdd("publicCheckerIds", checkerId);
 
-    res.status(204);
+    return204Status(res);
 }
 
 const validateCheck = (blueprint: CheckBlueprint): string => {
