@@ -4,6 +4,10 @@ import { initializeApp, getApps } from "firebase-admin/app";
 import { firebaseConfig } from "@utils/ClientContext";
 import { createClient } from "redis";
 import { CheckerId } from "@api/checker";
+import {
+    CheckerBlueprint,
+    CheckerStorefront,
+} from "@components/create-checker/CheckerTypes";
 
 export type RedisClient = ReturnType<typeof createClient>;
 
@@ -88,4 +92,15 @@ export const isUserCheckerOwner = async (
         return false;
     }
     return true;
+};
+
+export const checkerBlueprintToCheckerStorefront = (
+    blueprint: CheckerBlueprint,
+): CheckerStorefront => {
+    return {
+        id: blueprint.id,
+        name: blueprint.name,
+        desc: blueprint.desc,
+        creatorId: blueprint.creatorId,
+    };
 };

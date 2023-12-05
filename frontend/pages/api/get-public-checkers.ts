@@ -2,7 +2,11 @@ import { CheckerStorefront } from "@components/CheckerStore";
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { UserIdentifier } from "firebase-admin/auth";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isUnauthenticatedRequestValid, tryGetUserId } from "pages/api/common";
+import {
+    checkerBlueprintToCheckerStorefront,
+    isUnauthenticatedRequestValid,
+    tryGetUserId,
+} from "pages/api/common";
 import { getCheckerBlueprints } from "pages/api/user-checkers";
 import { createClient } from "redis";
 
@@ -39,14 +43,3 @@ export default async function handler(
     });
     return;
 }
-
-export const checkerBlueprintToCheckerStorefront = (
-    blueprint: CheckerBlueprint,
-): CheckerStorefront => {
-    return {
-        id: blueprint.id,
-        name: blueprint.name,
-        desc: blueprint.desc,
-        creatorId: blueprint.creatorId,
-    };
-};

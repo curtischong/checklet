@@ -1,10 +1,5 @@
-import { CheckerId } from "@api/checker";
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-    isUserCheckerOwner,
-    requestMiddleware,
-    sendBadRequest,
-} from "pages/api/common";
+import { isUserCheckerOwner, requestMiddleware } from "pages/api/common";
 import { createClient } from "redis";
 
 export default async function deleteChecker(
