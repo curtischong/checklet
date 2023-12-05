@@ -98,7 +98,7 @@ export const CheckPreview = ({
         }
     }, [checkBlueprint.checkType]);
 
-    const defaultLongDescForCheckType = useMemo(() => {
+    const defaultDescForCheckType = useMemo(() => {
         switch (checkBlueprint.checkType) {
             case CheckType.highlight:
                 return "Recruiters may not understand this acronym. Consider expanding it, removing it, or adding a definition.";
@@ -155,7 +155,7 @@ export const CheckPreview = ({
 
     const checkDesc: CheckDesc = {
         name: checkBlueprint.name || defaultNameForCheckType,
-        longDesc: checkBlueprint.longDesc || defaultLongDescForCheckType,
+        desc: checkBlueprint.desc || defaultDescForCheckType,
         category: checkBlueprint.category || defaultCategoryForCheckType,
         positiveExamples:
             checkBlueprint.positiveExamples.length > 0
