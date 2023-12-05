@@ -49,12 +49,25 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
                 "bg-white",
                 isActive ? css.containerActive : css.container,
                 props.classNames,
+                {
+                    "cursor-pointer": !isActive,
+                },
             )}
+            onClick={() => {
+                if (!isActive) {
+                    onClick();
+                }
+            }}
         >
             <div className={css.header} onClick={onClick}>
                 <span className={css.bigDot} />
                 {isActive ? (
-                    <div className={css.activeCategory}>
+                    <div
+                        className={classNames(
+                            css.activeCategory,
+                            "cursor-pointer",
+                        )}
+                    >
                         {getCheckDesc(suggestion).name}
                         {/* <span
                                 className={"p-[3px] rounded-xl bg-red-800 mx-8"}
