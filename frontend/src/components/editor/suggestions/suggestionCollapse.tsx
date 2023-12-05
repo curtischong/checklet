@@ -95,7 +95,10 @@ export const SuggestionCollapse = forwardRef(
                                     />
                                     <div
                                         onClick={onReplaceClick}
-                                        className={css.replace}
+                                        className={classNames(
+                                            css.replace,
+                                            "cursor-pointer",
+                                        )}
                                     >
                                         {replacementText}
                                     </div>
