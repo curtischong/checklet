@@ -29,11 +29,16 @@ export class Llm {
         this.cache = new SimpleCache(cacheDir + "/cache");
     }
 
-    async prompt(
-        message: OpenAI.ChatCompletionMessageParam,
-    ): Promise<OpenAI.ChatCompletion> {
+    private cacheGet(prompt: string): string | undefined {
+        return this.cache.get(`${this.systemPromptMessage.content}-${prompt}`);
+    }
+    private cacheSet(prompt: string, value: string): void {
+        this.cache.set(`${this.systemPromptMessage.content}-${prompt}`, value);
+    }
+
+    async prompt(message: string): Promise<string> {
         if (this.useCache) {
-            const cachedValue = this.cache.get(message);
+            const cachedValue = this.cacheGet(message);
             if (cachedValue) {
                 return cachedValue;
             }
@@ -41,10 +46,19 @@ export class Llm {
 
         const value = await this.client.chat.completions.create({
             model: this.model,
-            messages: [this.systemPromptMessage, message],
+            messages: [
+                this.systemPromptMessage,
+                {
+                    role: "user",
+                    content: message,
+                },
+            ],
         });
-        this.cache.set(message, value);
-        return value;
+        const result =
+            value.choices[0].message.content ??
+            "no message returned. please investigate. this was untested";
+        this.cacheSet(message, result);
+        return result;
     }
 
     // returns params for the function call (these params are a json obj)
@@ -55,7 +69,7 @@ export class Llm {
         functionParams: JSONSchema;
     }): Promise<string> {
         if (this.useCache) {
-            const cachedArgStr = this.cache.get(callData.prompt);
+            const cachedArgStr = this.cacheGet(callData.prompt);
             if (cachedArgStr) {
                 // console.log("cache success");
                 return cachedArgStr;
@@ -101,7 +115,7 @@ export class Llm {
                     clearTimeout(timeoutId);
                     if (message.function_call) {
                         const args = message.function_call.arguments;
-                        this.cache.set(callData.prompt, args);
+                        this.cacheSet(callData.prompt, args);
                         resolve(args);
                     } else {
                         reject(
