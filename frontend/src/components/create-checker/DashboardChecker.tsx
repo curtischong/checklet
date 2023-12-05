@@ -76,9 +76,7 @@ export const DashboardChecker = ({
                         Api.deleteChecker(
                             blueprint.id,
                             await user.getIdToken(),
-                        ).then(() => {
-                            fetchCheckerBlueprints();
-                        });
+                        ).then(fetchCheckerBlueprints);
                     }}
                 />
             </div>

@@ -96,7 +96,7 @@ export class Api {
         checkerId: CheckerId,
         idToken: string,
     ): Promise<void> => {
-        Api.createRequest("api/delete-checker", "POST", {
+        return Api.createRequest("api/delete-checker", "POST", {
             checkerId,
             idToken,
         });
