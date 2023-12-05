@@ -115,12 +115,14 @@ export class Api {
 
     static getCheckerStorefront = async (
         checkerId: CheckerId,
+        idToken: string | undefined,
     ): Promise<CheckerStorefront | undefined> => {
         const data = await Api.createRequest(
             "api/get-checker-storefront",
             "POST",
             {
                 checkerId,
+                idToken,
             },
         );
         return data?.checkerStorefront;
