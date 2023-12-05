@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import {
     isUnauthenticatedRequestValid,
     sendBadRequest,
-} from "pages/api/common";
+} from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
 export default async function handler(

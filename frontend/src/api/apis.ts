@@ -1,7 +1,10 @@
 import { CheckerId } from "@api/checker";
 import {
+    CheckId,
     CheckerBlueprint,
     CheckerStorefront,
+    CreateCheckReq,
+    CreateCheckerReq,
     FeedbackResponse,
 } from "@components/create-checker/CheckerTypes";
 import { toast } from "react-toastify";
@@ -79,14 +82,34 @@ export class Api {
         return data.checkerBlueprints;
     };
 
+    static createCheck = async (
+        createCheckReq: CreateCheckReq,
+        idToken: string,
+    ): Promise<boolean> => {
+        const res = Api.createRequest("api/create-check", "POST", {
+            createCheckReq,
+            idToken,
+        });
+        return res !== undefined;
+    };
+
     static createChecker = async (
-        blueprint: CheckerBlueprint,
-        checkerId: CheckerId,
+        createCheckerReq: CreateCheckerReq,
         idToken: string,
     ): Promise<boolean> => {
         const res = Api.createRequest("api/create-checker", "POST", {
-            blueprint,
-            checkerId,
+            createCheckerReq,
+            idToken,
+        });
+        return res !== undefined;
+    };
+
+    static deleteCheck = async (
+        checkId: CheckId,
+        idToken: string,
+    ): Promise<boolean> => {
+        const res = Api.createRequest("api/delete-check", "POST", {
+            checkId,
             idToken,
         });
         return res !== undefined;

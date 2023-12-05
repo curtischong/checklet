@@ -1,5 +1,16 @@
 import { Suggestion } from "@api/ApiTypes";
 
+export type BaseObjInfo = {
+    name: string;
+    desc: string;
+};
+
+// this is the type AFTER the obj has been created
+export type ObjInfo = BaseObjInfo & {
+    creatorId: string;
+    id: string;
+};
+
 export type CheckId = string;
 
 export interface PositiveCheckExample {
@@ -15,16 +26,23 @@ export enum CheckType {
 }
 export const validCheckTypes = [CheckType.highlight, CheckType.rephrase];
 
-export type CheckBlueprint = {
-    name: string;
+type BaseCheck = {
     checkType: CheckType;
     instruction: string;
-    desc: string;
     category: string; // optional
     positiveExamples: PositiveCheckExample[];
     // negativeExamples: NegativeCheckExample[]; // TODO
-    checkId: CheckId;
+    isEnabled: boolean;
 };
+
+export type CreateCheckReq = {
+    baseObjInfo: BaseObjInfo;
+    checkerId: string; // the checkerId it belongs to
+} & BaseCheck;
+
+export type CheckBlueprint = {
+    objInfo: ObjInfo;
+} & BaseCheck;
 
 export type CheckDescObj = {
     [CheckId: string]: CheckDesc;
@@ -39,13 +57,21 @@ export type CheckDesc = {
     checkId: CheckId;
 };
 
-// TODO: I think I should have a "creation Metadata object that is name, desc, creatorId, and id"
+export type CreateCheckerReq = {
+    baseObjInfo: BaseObjInfo;
+    checkIds: CheckId[];
+    isPublic: boolean;
+};
+
+export type CheckStatus = {
+    checkId: CheckId;
+    isEnabled: boolean;
+};
+
+// we need a way to determine if a check is enabled or nto
 export type CheckerBlueprint = {
-    name: string;
-    desc: string;
-    checkBlueprints: CheckBlueprint[];
-    creatorId: string;
-    id: string;
+    objInfo: ObjInfo;
+    checkStatuses: CheckStatus[];
     isPublic: boolean;
 };
 

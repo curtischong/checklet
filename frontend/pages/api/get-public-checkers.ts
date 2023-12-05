@@ -3,7 +3,7 @@ import {
     checkerBlueprintToCheckerStorefront,
     isUnauthenticatedRequestValid,
     tryGetUserId,
-} from "pages/api/common";
+} from "pages/api/commonNetworking";
 import { getCheckerBlueprints } from "pages/api/user-checkers";
 import { createClient } from "redis";
 

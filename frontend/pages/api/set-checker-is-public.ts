@@ -4,7 +4,7 @@ import {
     requestMiddleware,
     return204Status,
     sendBadRequest,
-} from "pages/api/common";
+} from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
 export default async function setCheckerIsPublic(

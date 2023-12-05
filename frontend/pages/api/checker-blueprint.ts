@@ -1,6 +1,6 @@
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
 import { NextApiRequest, NextApiResponse } from "next";
-import { requestMiddleware, sendBadRequest } from "pages/api/common";
+import { requestMiddleware, sendBadRequest } from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
 export default async function handler(

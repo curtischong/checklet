@@ -2,14 +2,17 @@ import {
     CheckBlueprint,
     CheckType,
     CheckerBlueprint,
+    CreateCheckerReq,
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
+import { validateBaseObjInfo } from "pages/api/common";
 import {
+    RedisClient,
     requestMiddleware,
     return204Status,
     sendBadRequest,
-} from "pages/api/common";
+} from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
 export default async function handler(
@@ -23,10 +26,10 @@ export default async function handler(
     // https://redis.io/docs/connect/clients/nodejs/
     const redisClient = createClient();
     await redisClient.connect();
-    const checkerBlueprint: CheckerBlueprint = req.body.blueprint;
-    const checkerId = req.body.checkerId;
 
-    const validationErr = validateChecker(checkerBlueprint, checkerId);
+    const createCheckerReq: CreateCheckerReq = req.body.createCheckerReq;
+
+    const validationErr = validateChecker(createCheckerReq, checkerId);
     if (validationErr !== "") {
         sendBadRequest(res, validationErr);
         return;
@@ -93,22 +96,35 @@ const validateCheck = (blueprint: CheckBlueprint): string => {
     return "";
 };
 
-const validateChecker = (
-    blueprint: CheckerBlueprint,
-    checkerId: string,
-): string => {
-    if (blueprint.name === "") {
-        return "Checker description cannot be empty";
-    } else if (blueprint.desc === "") {
-        return "Checker description cannot be empty";
-    } else if (blueprint.checkBlueprints.length === 0) {
+const validateChecker = async (
+    redisClient: RedisClient,
+    userId: string,
+    createCheckerReq: CreateCheckerReq,
+): Promise<string> => {
+    const baseObjInfoErr = validateBaseObjInfo(createCheckerReq.baseObjInfo);
+    if (baseObjInfoErr !== "") {
+        return baseObjInfoErr;
+    }
+
+    if (createCheckerReq.checkIds.length === 0) {
         return "Checker must have at least one check";
-    } else if (checkerId.length !== 64) {
-        return `Checker id=${checkerId} must be 64 characters long`;
+    }
+
+    for (const checkId of createCheckerReq.checkIds) {
+        if (
+            !(await redisClient.sIsMember(`users/${userId}/checkIds`, checkId))
+        ) {
+            return `You do not own the check with id ${checkId}`;
+        }
     }
 
     // validate checks
-    for (const check of blueprint.checkBlueprints) {
+    for (const checkId of createCheckerReq.checkIds) {
+        const rawCheck = await redisClient.get(`checks/${checkId}`);
+        if (rawCheck === null) {
+            return `Check with id ${checkId} does not exist`;
+        }
+        const check = JSON.parse(rawCheck);
         const checkValidationErr = validateCheck(check);
         if (checkValidationErr !== "") {
             return checkValidationErr;
