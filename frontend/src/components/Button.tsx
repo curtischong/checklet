@@ -4,6 +4,7 @@ import classnames from "classnames";
 import React, { useCallback } from "react";
 import { UploadIcon } from "@components/icons/UploadIcon";
 import classNames from "classnames";
+import { EditIcon } from "@components/icons/EditIcon";
 
 export type IButton = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -116,6 +117,19 @@ export const TextButton: React.FC<IButton> = ({
         >
             {children}
         </button>
+    );
+};
+
+export const EditButton: React.FC<IButton> = ({ className = "", ...rest }) => {
+    return (
+        <div className="flex items-center">
+            <button
+                className={` hover:bg-blue-600 text-gray hover:text-white px-[4px] py-[0px] mx-[2px] rounded transition duration-300 ${className}`}
+                {...rest}
+            >
+                <EditIcon className="w-[18px] py-0" />
+            </button>
+        </div>
     );
 };
 

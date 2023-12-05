@@ -1,4 +1,8 @@
-import { DeleteButtonWithConfirm, TextButton } from "@components/Button";
+import {
+    DeleteButtonWithConfirm,
+    EditButton,
+    TextButton,
+} from "@components/Button";
 import { PositiveExamplePreview } from "@components/create-checker/CheckCreator";
 import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
 
@@ -19,9 +23,7 @@ export const CheckOverview = ({
                 <div className="text-lg font-bold">{checkBlueprint.name}</div>
                 <div className="ml-4 mb-[2px]">{checkBlueprint.category}</div>
                 <div className="ml-auto flex flex-row between-x-0">
-                    <TextButton className="px-0" onClick={onEdit}>
-                        Edit
-                    </TextButton>
+                    <EditButton className="px-2" onClick={onEdit} />
                     <DeleteButtonWithConfirm
                         className="px-2 mr-[-10px]"
                         onDelete={onDelete}
