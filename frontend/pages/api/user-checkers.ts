@@ -1,7 +1,7 @@
 import { CheckerId } from "@api/checker";
-import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { requestMiddleware } from "pages/api/common";
+import { RedisClient, requestMiddleware } from "pages/api/common";
 import { createClient } from "redis";
 
 export default async function handler(
@@ -27,7 +27,6 @@ export default async function handler(
     });
 }
 
-type RedisClient = ReturnType<typeof createClient>;
 export const getCheckerBlueprints = async (
     redisClient: RedisClient,
     checkerIds: CheckerId[],

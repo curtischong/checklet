@@ -2,6 +2,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getAuth } from "firebase-admin/auth";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { firebaseConfig } from "@utils/ClientContext";
+import { createClient } from "redis";
+import { CheckerId } from "@api/checker";
+import {
+    CheckerBlueprint,
+    CheckerStorefront,
+} from "@components/create-checker/CheckerTypes";
+
+export type RedisClient = ReturnType<typeof createClient>;
 
 // returns if the request is valid or not
 export const isUnauthenticatedRequestValid = (
@@ -19,16 +27,10 @@ export const isUnauthenticatedRequestValid = (
     return true;
 };
 
-// returns the uid for the authenticated user.
-// If the user is not authenticated, or their headers are weird, it returns null
-export const requestMiddleware = async (
+export const tryGetUserId = async (
     req: NextApiRequest,
     res: NextApiResponse,
 ): Promise<string | null> => {
-    if (!isUnauthenticatedRequestValid(req, res)) {
-        return null;
-    }
-
     // if we already initialized app, don't do it more than once:
     // https://github.com/firebase/firebase-admin-node/issues/2111
     const alreadyCreatedAps = getApps();
@@ -48,8 +50,57 @@ export const requestMiddleware = async (
     return decodedToken.uid;
 };
 
+// returns the uid for the authenticated user.
+// If the user is not authenticated, or their headers are weird, it returns null
+export const requestMiddleware = async (
+    req: NextApiRequest,
+    res: NextApiResponse,
+): Promise<string | null> => {
+    if (!isUnauthenticatedRequestValid(req, res)) {
+        return null;
+    }
+    if (req.body.idToken === undefined) {
+        res.status(400).end("idToken is undefined");
+        return null;
+    }
+    const uid = await tryGetUserId(req, res);
+    if (uid === null) {
+        return null;
+    }
+    return uid;
+};
+
 export const sendBadRequest = (res: NextApiResponse, msg: string): void => {
     console.error(msg);
     res.status(400).send({ errorMsg: msg });
     res.end();
+};
+
+export const isUserCheckerOwner = async (
+    redisClient: RedisClient,
+    res: NextApiResponse,
+    userId: string,
+    checkerId: CheckerId,
+): Promise<boolean> => {
+    if (
+        !(await redisClient.sIsMember(`users/${userId}/checkerIds`, checkerId))
+    ) {
+        sendBadRequest(
+            res,
+            "You did not create this checker. You cannot edit it",
+        );
+        return false;
+    }
+    return true;
+};
+
+export const checkerBlueprintToCheckerStorefront = (
+    blueprint: CheckerBlueprint,
+): CheckerStorefront => {
+    return {
+        id: blueprint.id,
+        name: blueprint.name,
+        desc: blueprint.desc,
+        creatorId: blueprint.creatorId,
+    };
 };

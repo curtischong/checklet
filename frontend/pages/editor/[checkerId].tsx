@@ -19,6 +19,7 @@ const EditorPage: React.FC = () => {
         (async () => {
             const storefront = await Api.getCheckerStorefront(
                 checkerId as string,
+                (await user?.getIdToken()) ?? undefined, // if you're not logged in, then don't pass in an ID token! The token is just used so you can see your private checkers
             );
             if (!storefront) {
                 setStorefront("not found");

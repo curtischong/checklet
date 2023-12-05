@@ -49,6 +49,7 @@ export const PositiveCheckExampleCreator = ({
                     <LabelWithHelp
                         label="Rephrase into"
                         helpText="If you want to rephrase something, this will teach the model how to rephrase it"
+                        className="mt-2"
                     />
                     <NormalTextArea
                         value={editedText}

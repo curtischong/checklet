@@ -1,7 +1,12 @@
 import { CheckerStorefront } from "@components/CheckerStore";
 import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
+import { UserIdentifier } from "firebase-admin/auth";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isUnauthenticatedRequestValid } from "pages/api/common";
+import {
+    checkerBlueprintToCheckerStorefront,
+    isUnauthenticatedRequestValid,
+    tryGetUserId,
+} from "pages/api/common";
 import { getCheckerBlueprints } from "pages/api/user-checkers";
 import { createClient } from "redis";
 
@@ -11,6 +16,10 @@ export default async function handler(
 ): Promise<void> {
     if (!isUnauthenticatedRequestValid(req, res)) {
         return;
+    }
+    let uid: string | null = null;
+    if (req.body.idToken !== undefined) {
+        uid = await tryGetUserId(req, res);
     }
 
     // https://redis.io/docs/connect/clients/nodejs/
@@ -22,22 +31,15 @@ export default async function handler(
         redisClient,
         checkerIds,
     );
+    console.log(uid);
 
     res.status(200).json({
-        checkerStorefronts: checkerBlueprints.map(
-            checkerBlueprintToCheckerStorefront,
-        ),
+        checkerStorefronts: checkerBlueprints
+            .filter(
+                (blueprint) =>
+                    blueprint.isPublic || uid === blueprint.creatorId,
+            )
+            .map(checkerBlueprintToCheckerStorefront),
     });
     return;
 }
-
-export const checkerBlueprintToCheckerStorefront = (
-    blueprint: CheckerBlueprint,
-): CheckerStorefront => {
-    return {
-        id: blueprint.id,
-        name: blueprint.name,
-        desc: blueprint.desc,
-        creatorId: blueprint.creatorId,
-    };
-};

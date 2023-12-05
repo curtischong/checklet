@@ -13,6 +13,7 @@ export class Api {
         endpoint: string,
         requestType: string,
         payload = {},
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<any> => {
         let response;
         try {
@@ -23,7 +24,8 @@ export class Api {
                 },
                 body: JSON.stringify(payload),
             });
-        } catch (err) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
             toast.error(err.toString());
             return undefined;
         }
@@ -43,7 +45,7 @@ export class Api {
         if (response.status !== 204) {
             return response.json();
         }
-        return undefined;
+        return { success: true };
     };
 
     static checkDoc = async (
@@ -81,12 +83,13 @@ export class Api {
         blueprint: CheckerBlueprint,
         checkerId: CheckerId,
         idToken: string,
-    ): Promise<void> => {
-        Api.createRequest("api/create-checker", "POST", {
+    ): Promise<boolean> => {
+        const res = Api.createRequest("api/create-checker", "POST", {
             blueprint,
             checkerId,
             idToken,
         });
+        return res !== undefined;
     };
 
     static deleteChecker = async (
@@ -99,23 +102,46 @@ export class Api {
         });
     };
 
-    static publicChecks = async (): Promise<
-        CheckerStorefront[] | undefined
-    > => {
-        const data = await Api.createRequest("api/public-checks", "POST", {});
+    static getPublicCheckers = async (
+        idToken: string | undefined,
+    ): Promise<CheckerStorefront[] | undefined> => {
+        const data = await Api.createRequest(
+            "api/get-public-checkers",
+            "POST",
+            { idToken },
+        );
         return data?.checkerStorefronts;
     };
 
     static getCheckerStorefront = async (
         checkerId: CheckerId,
+        idToken: string | undefined,
     ): Promise<CheckerStorefront | undefined> => {
         const data = await Api.createRequest(
             "api/get-checker-storefront",
             "POST",
             {
                 checkerId,
+                idToken,
             },
         );
         return data?.checkerStorefront;
+    };
+
+    static setCheckerIsPublic = async (
+        checkerId: CheckerId,
+        isPublic: boolean,
+        idToken: string,
+    ): Promise<boolean> => {
+        const res = await Api.createRequest(
+            "api/set-checker-is-public",
+            "POST",
+            {
+                idToken,
+                checkerId,
+                isPublic,
+            },
+        );
+        return res !== undefined;
     };
 }

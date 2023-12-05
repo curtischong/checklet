@@ -16,6 +16,7 @@ import {
     CheckBlueprint,
     CheckType,
     PositiveCheckExample,
+    validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
 import { PositiveCheckExampleCreator } from "@components/create-checker/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
@@ -56,6 +57,7 @@ export const CheckCreator = ({
 
     // the pageData is just an optimization we do so we don't need to fetch it from the server
     // if the previous page already had information about the check
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const rawInitialCheckBlueprint = (pageData as any)?.initialCheckBlueprint;
     const router = useRouter();
     const { user } = useClientContext();
@@ -209,6 +211,7 @@ export const CheckCreator = ({
                 <LabelWithHelp
                     label="Suggestion Reason"
                     helpText="This is a great place to explain your suggestion. Users will see this when they expand the card."
+                    className="mt-2"
                 />
                 <NormalTextArea
                     value={longDesc}
@@ -219,6 +222,7 @@ export const CheckCreator = ({
                 <LabelWithHelp
                     label="Model Instructions"
                     helpText="Here is where you tell the model how to edit the text."
+                    className="mt-2"
                 />
                 <NormalTextArea
                     value={instruction}
@@ -229,6 +233,7 @@ export const CheckCreator = ({
                 <LabelWithHelp
                     label="Category (optional)"
                     helpText="If you want to organize your cards by category, you can add a category here."
+                    className="mt-2"
                 />
                 <Input
                     value={category}
@@ -240,6 +245,7 @@ export const CheckCreator = ({
                     <LabelWithHelp
                         label="Positive Examples"
                         helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
+                        className="mt-2"
                     />
                     <div className="flex flex-col">
                         {positiveExamples.map((example, idx) => (
@@ -328,7 +334,7 @@ export const CheckCreator = ({
                     {/* use flex-col to prevent thsi radio buttonf rom taking up the full width */}
                     <div className="flex flex-col">
                         <SlidingRadioButton
-                            options={[CheckType.highlight, CheckType.rephrase]}
+                            options={validCheckTypes}
                             selected={checkType}
                             setSelected={setCheckType as SetState<string>}
                             className="mx-auto mb-4"
@@ -511,7 +517,7 @@ const SelectCheckType = ({
             <div className="w-[50vw] mx-auto flex flex-col">
                 <div className="mt-16 font-bold text-xl">Select Check Type</div>
                 <SlidingRadioButton
-                    options={[CheckType.highlight, CheckType.rephrase]}
+                    options={validCheckTypes}
                     selected={tmpCheckType}
                     setSelected={setTmpCheckType as SetState<string>}
                     className="mt-10 mx-auto "
