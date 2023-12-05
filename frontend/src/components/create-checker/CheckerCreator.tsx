@@ -294,7 +294,7 @@ const MainCheckerPage = ({
                     }
                 />
             </div>
-            <div>
+            <div className="mt-4">
                 {checkBlueprints.map((checkBlueprint, idx) => (
                     <CheckOverview
                         key={`check-${idx}`}
@@ -313,7 +313,7 @@ const MainCheckerPage = ({
                 ))}
             </div>
             <NormalButton
-                className="mt-4 w-80"
+                className="mt-8 w-80"
                 onClick={() => {
                     setPage(Page.CheckCreator);
                 }}

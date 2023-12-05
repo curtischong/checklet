@@ -28,7 +28,7 @@ export const DashboardChecker = ({
     // animation: closed 0.075s linear 0.3s forwards;
 
     return (
-        <div className=" flex flex-col shadow-around rounded-md px-6 pt-4 pb-3 mb-10 bg-white">
+        <div className=" flex flex-col shadow-around rounded-md px-6 pt-4 pb-3 mb-10 bg-white ">
             <div className="flex flex-row">
                 <div className="font-bold text-xl">{blueprint.name}</div>
                 <div className="ml-auto flex flex-row between-x-0">

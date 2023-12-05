@@ -323,7 +323,7 @@ export const CheckCreator = ({
                     flexBasis: "0",
                 }}
             >
-                <div className="fixed mx-auto w-[30vw] left-[50%] right-0 mt-10">
+                <div className="fixed mx-auto w-[350px] left-[50%] right-0 mt-10">
                     {/* use flex-col to prevent thsi radio buttonf rom taking up the full width */}
                     <div className="flex flex-col">
                         <SlidingRadioButton

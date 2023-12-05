@@ -15,7 +15,7 @@ export const CheckOverview = ({
     onEdit,
 }: Props): JSX.Element => {
     return (
-        <div className="border bg-white rounded-md shadow-around py-3 px-6">
+        <div className="border bg-white rounded-md shadow-around py-3 px-6 w-[400px]">
             <div className="flex flex-row items-end">
                 <div className="text-lg font-bold">{checkBlueprint.name}</div>
                 <div className="ml-4 mb-[2px]">{checkBlueprint.category}</div>
