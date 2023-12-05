@@ -1,5 +1,6 @@
 import {
     CheckBlueprint,
+    CheckType,
     CheckerBlueprint,
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
@@ -41,7 +42,16 @@ export default async function handler(
         }
     }
 
+    // modify the checkerBlueprint so users don't pass in bad data that could be security vulnerabilities
     checkerBlueprint.creatorId = userId; // override just for security purposes
+    for (const check of checkerBlueprint.checkBlueprints) {
+        if (check.checkType !== CheckType.rephrase) {
+            for (const example of check.positiveExamples) {
+                example.editedText = ""; // clear, so users can't pass in bad data
+            }
+        }
+    }
+
     await redisClient.set(
         `checkers/${checkerId}`,
         JSON.stringify(checkerBlueprint), // TODO: compress this
