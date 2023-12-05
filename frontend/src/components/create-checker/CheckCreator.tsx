@@ -262,17 +262,10 @@ export const CheckCreator = ({
                                         );
                                     }}
                                 />
-                                <div className="flex flex-col">
-                                    <div>{example.originalText}</div>
-                                </div>
-                                {checkType === CheckType.rephrase && (
-                                    <>
-                                        <RightArrowWithTailIcon className="mx-4" />
-                                        <div className="flex flex-col">
-                                            <div>{example.editedText}</div>
-                                        </div>
-                                    </>
-                                )}
+                                <PositiveExamplePreview
+                                    example={example}
+                                    checkType={checkType}
+                                />
                             </div>
                         ))}
                     </div>
@@ -552,6 +545,30 @@ const SelectCheckType = ({
                     Create {tmpCheckType} Check
                 </SubmitButton>
             </div>
+        </div>
+    );
+};
+
+export const PositiveExamplePreview = ({
+    example,
+    checkType,
+}: {
+    example: PositiveCheckExample;
+    checkType: CheckType;
+}): JSX.Element => {
+    return (
+        <div className="flex flex-row">
+            <div className="flex flex-col">
+                <div>{example.originalText}</div>
+            </div>
+            {checkType === CheckType.rephrase && (
+                <>
+                    <RightArrowWithTailIcon className="mx-4" />
+                    <div className="flex flex-col">
+                        <div>{example.editedText}</div>
+                    </div>
+                </>
+            )}
         </div>
     );
 };

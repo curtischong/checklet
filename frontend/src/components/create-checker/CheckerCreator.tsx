@@ -252,7 +252,7 @@ const MainCheckerPage = ({
     }, [name, desc, checkBlueprints, user, checkerId]);
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col w-[450px]">
             <div className="flex flex-row items-center">
                 <p
                     className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
@@ -270,7 +270,6 @@ const MainCheckerPage = ({
 
             <label className="text-lg">Name</label>
             <Input
-                className="w-40"
                 placeholder="Rizzume"
                 onChange={(e) => {
                     setName(e.target.value);
@@ -280,7 +279,6 @@ const MainCheckerPage = ({
 
             <label className="text-lg">Description</label>
             <NormalTextArea
-                className="w-80"
                 placeholder="Rizzume will rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive."
                 onChange={(e) => {
                     setDesc(e.target.value);

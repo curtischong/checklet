@@ -1,5 +1,5 @@
 import { TrashIcon } from "@components/icons/TrashIcon";
-import { Button, Upload } from "antd";
+import { Button, Popconfirm, Upload } from "antd";
 import classnames from "classnames";
 import React, { useCallback } from "react";
 import { UploadIcon } from "@components/icons/UploadIcon";
@@ -132,6 +132,18 @@ export const DeleteButton: React.FC<IButton> = ({
                 <TrashIcon />
             </button>
         </div>
+    );
+};
+
+export const DeleteButtonWithConfirm: React.FC<
+    IButton & {
+        onDelete: () => void;
+    }
+> = ({ onDelete, ...rest }) => {
+    return (
+        <Popconfirm title="Confirm Delete" onConfirm={onDelete}>
+            <DeleteButton {...rest} />
+        </Popconfirm>
     );
 };
 
