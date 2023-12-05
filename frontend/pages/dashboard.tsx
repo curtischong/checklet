@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
             <div className="container mx-auto mt-20">
                 {user ? user.email : <></>}
                 <p className="text-xl font-bold">Your Checkers</p>
-                <div className="ml-4 w-80 mx-auto mt-4">
+                <div className="ml-4 w-[450px] mx-auto mt-4">
                     {checkers.map((checkerBlueprint, idx) => {
                         return (
                             <div key={`checker-${idx}`}>

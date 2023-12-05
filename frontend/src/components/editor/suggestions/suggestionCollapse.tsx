@@ -47,6 +47,7 @@ export const SuggestionCollapse = forwardRef(
             <div
                 ref={ref as React.RefObject<HTMLDivElement>}
                 className={classnames(
+                    "bg-white",
                     isActive ? css.containerActive : css.container,
                     props.classNames,
                 )}
