@@ -1,9 +1,18 @@
 import { Api } from "@api/apis";
 import { NormalButton } from "@components/Button";
 import {
+    CheckBlueprint,
     CheckType,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
+import {
+    defaultCategory,
+    defaultDesc,
+    defaultEditedText,
+    defaultInstructions,
+    defaultName,
+    defaultOriginalText,
+} from "@components/create-checker/DefaultTextForCheckType";
 import { useClientContext } from "@utils/ClientContext";
 import { createUniqueId } from "@utils/strings";
 import { useCallback } from "react";
@@ -14,28 +23,37 @@ const AdminPage: React.FC = () => {
         return <div>Not logged in as an admin</div>;
     }
 
+    const createDefaultCheck = useCallback(
+        (checkType: CheckType): CheckBlueprint => {
+            return {
+                name: defaultName[checkType],
+                checkType: checkType,
+                instruction: defaultInstructions[checkType],
+                desc: defaultDesc[checkType],
+                category: defaultCategory[checkType],
+                positiveExamples: [
+                    {
+                        originalText: defaultOriginalText[checkType],
+                        editedText: defaultEditedText[checkType],
+                    },
+                ],
+                checkId: createUniqueId(),
+            };
+        },
+        [],
+    );
+
     const createRizzume = useCallback(async () => {
         const checkerBlueprint: CheckerBlueprint = {
             name: "Rizzume",
             desc: "Rizz up your resume",
             checkBlueprints: [
-                {
-                    name: "Shorten Month",
-                    checkType: CheckType.rephrase,
-                    instruction: `If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period.`,
-                    desc: `Shorter months create more whitespace.`,
-                    category: "Whitespace",
-                    positiveExamples: [
-                        {
-                            originalText: "January",
-                            editedText: "Jan",
-                        },
-                    ],
-                    checkId: createUniqueId(),
-                },
+                createDefaultCheck(CheckType.highlight),
+                createDefaultCheck(CheckType.rephrase),
             ],
             id: createUniqueId(),
             creatorId: user.uid,
+            isPublic: true,
         };
         Api.createChecker(
             checkerBlueprint,
