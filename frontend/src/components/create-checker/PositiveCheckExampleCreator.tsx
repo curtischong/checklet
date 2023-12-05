@@ -59,7 +59,7 @@ export const PositiveCheckExampleCreator = ({
                 </>
             )}
             <NormalButton
-                disabled={originalText === "" || editedText === ""}
+                disabled={originalText === ""}
                 className="px-10 py-[6px] w-[240px] mt-4"
                 onClick={() => {
                     onCreate({
