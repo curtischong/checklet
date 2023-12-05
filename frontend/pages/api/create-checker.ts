@@ -14,7 +14,7 @@ import { createClient } from "redis";
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse,
-): Promise<undefined> {
+): Promise<void> {
     const userId = await requestMiddleware(req, res);
     if (userId === null) {
         return;
