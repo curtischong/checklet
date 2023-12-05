@@ -3,6 +3,7 @@ import { editDistanceOperationsWithClasses } from "@api/editDistance";
 import { Llm } from "@api/llm";
 import {
     CheckBlueprint,
+    CheckType,
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
 import { createUniqueId } from "@utils/strings";
@@ -36,6 +37,19 @@ ${positiveExamples}
     }
 
     async checkDoc(doc: string): Promise<Suggestion[]> {
+        switch (this.blueprint.checkType) {
+            case CheckType.rephrase:
+                return await this.doRephraseCheck(doc);
+            case CheckType.highlight:
+                return await this.doHighlightCheck(doc);
+
+            default:
+                throw new Error(
+                    `unknown checkType ${this.blueprint.checkType}`,
+                );
+        }
+    }
+    private async doRephraseCheck(doc: string): Promise<Suggestion[]> {
         console.log("calling function with doc: ", doc);
         return new Promise<Suggestion[]>((resolve, _reject) => {
             this.llm
@@ -123,5 +137,93 @@ ${positiveExamples}
                 });
         });
         // return response.choices[0].message.content ?? "unknown result";
+    }
+
+    private async doHighlightCheck(doc: string): Promise<Suggestion[]> {
+        return new Promise<Suggestion[]>((resolve, _reject) => {
+            this.llm
+                .callFunction({
+                    prompt: `Fix this text:\n${doc}`,
+                    functionName: "fix_text",
+                    functionDesc:
+                        "Applies the change on the original text to get the edited text.",
+                    functionParams: {
+                        type: "object",
+                        // https://community.openai.com/t/function-call-complex-arrays-as-parameters/295648/2
+                        properties: {
+                            originalText: {
+                                type: "array",
+                                description:
+                                    "The texts you found the issue in.",
+                                items: {
+                                    type: "string",
+                                },
+                            },
+                            editedText: {
+                                type: "array",
+                                description: "The fixed texts",
+                                items: {
+                                    type: "string",
+                                },
+                            },
+                        },
+                        required: ["originalText", "editedText"],
+                    },
+                })
+                .then((args) => {
+                    console.log("got result", args);
+                    const argsObj = JSON.parse(args);
+                    let startIdx = 0;
+
+                    const suggestions: Suggestion[] = [];
+                    for (let i = 0; i < argsObj.originalText.length; i++) {
+                        if (argsObj.editedText.length - 1 < i) {
+                            console.error("editedText is too short");
+                            break;
+                        }
+                        const originalEx = argsObj.originalText[i];
+                        const editedEx = argsObj.editedText[i];
+
+                        const editOps = editDistanceOperationsWithClasses(
+                            originalEx,
+                            editedEx,
+                        );
+
+                        const originalTextIdx = doc
+                            .substring(startIdx)
+                            .indexOf(originalEx);
+
+                        if (originalTextIdx === -1) {
+                            // the model generated extra suggestions that exceed the length of the doc. just ignore them
+                            console.error("originalText not found in doc");
+                            break;
+                        }
+                        const originalTextIdxRelativeToDoc =
+                            startIdx + originalTextIdx;
+
+                        startIdx =
+                            originalTextIdxRelativeToDoc + originalEx.length; // update the startIdx, so for the next example, we don't include this text in the search space
+
+                        // now that we know where the original text is, we can create the suggestion
+                        suggestions.push({
+                            range: newDocRange(
+                                originalTextIdxRelativeToDoc,
+                                startIdx,
+                            ),
+                            originalText: originalEx,
+                            editedText: editedEx,
+                            editOps,
+                            checkId: this.blueprint.checkId,
+                            suggestionId: createUniqueId(),
+                        });
+                    }
+                    resolve(suggestions);
+                })
+                .catch((err) => {
+                    // the function call errored out. it's ok, just return no suggestions
+                    console.error(`function call failed. err=${err}`);
+                    resolve([]);
+                });
+        });
     }
 }
