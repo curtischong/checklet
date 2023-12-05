@@ -42,7 +42,7 @@ export const CheckCreator = ({
     submittingState,
 }: Props): JSX.Element => {
     const [name, setName] = React.useState<string | undefined>(undefined);
-    const [longDesc, setLongDesc] = React.useState("");
+    const [desc, setDesc] = React.useState("");
     const [instruction, setInstruction] = React.useState("");
     const [category, setCategory] = React.useState("");
     const [positiveExamples, setPositiveExamples] = React.useState<
@@ -65,7 +65,7 @@ export const CheckCreator = ({
     const setInitialCheckBlueprint = useCallback(
         (initialCheckBlueprint: CheckBlueprint) => {
             setName(initialCheckBlueprint.name);
-            setLongDesc(initialCheckBlueprint.longDesc);
+            setDesc(initialCheckBlueprint.desc);
             setCheckType(initialCheckBlueprint.checkType);
             setInstruction(initialCheckBlueprint.instruction);
             setCategory(initialCheckBlueprint.category);
@@ -116,14 +116,14 @@ export const CheckCreator = ({
             return "Please enter a name";
         } else if (instruction === "") {
             return "Please enter a model instruction";
-        } else if (longDesc === "") {
+        } else if (desc === "") {
             return "Please enter a long description";
         } else if (positiveExamples.length === 0) {
             return "Please enter at least one positive example";
         } else {
             return "";
         }
-    }, [name, instruction, longDesc, positiveExamples]);
+    }, [name, instruction, desc, positiveExamples]);
 
     useEffect(() => {
         if (!clickedSubmit) {
@@ -155,7 +155,7 @@ export const CheckCreator = ({
             name,
             checkType,
             instruction,
-            longDesc,
+            desc,
             category,
             positiveExamples: newPositiveExamples,
             checkId,
@@ -165,7 +165,7 @@ export const CheckCreator = ({
         name,
         checkType,
         instruction,
-        longDesc,
+        desc,
         category,
         positiveExamples,
         checkId,
@@ -214,8 +214,8 @@ export const CheckCreator = ({
                     className="mt-2"
                 />
                 <NormalTextArea
-                    value={longDesc}
-                    onChange={(e) => setLongDesc(e.target.value)}
+                    value={desc}
+                    onChange={(e) => setDesc(e.target.value)}
                     placeholder={`Shorter months create more whitespace.`}
                     minRows={3}
                 />
@@ -347,7 +347,7 @@ export const CheckCreator = ({
                             checkType,
                             name,
                             instruction,
-                            longDesc,
+                            desc,
                             category,
                             positiveExamples,
                             checkId,
@@ -519,7 +519,7 @@ const SelectCheckType = ({
                     <CheckPreview
                         checkBlueprint={{
                             name: "",
-                            longDesc: "",
+                            desc: "",
                             instruction: "",
                             category: "",
                             checkId: "",

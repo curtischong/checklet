@@ -69,7 +69,7 @@ export default async function handler(
 const validateCheck = (blueprint: CheckBlueprint): string => {
     if (blueprint.name === "") {
         return "Check name cannot be empty";
-    } else if (blueprint.longDesc === "") {
+    } else if (blueprint.desc === "") {
         return "Check description cannot be empty";
     } else if (blueprint.instruction === "") {
         return "Check instruction cannot be empty";

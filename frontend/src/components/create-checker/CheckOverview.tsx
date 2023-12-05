@@ -28,7 +28,7 @@ export const CheckOverview = ({
                 </div>
             </div>
             {/* <h2>{checkBlueprint.instruction}</h2> */}
-            <h2>{checkBlueprint.longDesc}</h2>
+            <h2>{checkBlueprint.desc}</h2>
             <h2 className="font-bold mt-4">Positive Examples</h2>
             <div className="flex flex-col">
                 {/* TODO: do a diff, so we see the red deletion / green insertion */}

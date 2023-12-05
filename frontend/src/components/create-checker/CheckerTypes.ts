@@ -19,7 +19,7 @@ export type CheckBlueprint = {
     name: string;
     checkType: CheckType;
     instruction: string;
-    longDesc: string;
+    desc: string;
     category: string; // optional
     positiveExamples: PositiveCheckExample[];
     // negativeExamples: NegativeCheckExample[]; // TODO
@@ -33,7 +33,7 @@ export type CheckDescObj = {
 export type CheckDesc = {
     name: string;
     checkType: CheckType;
-    longDesc: string;
+    desc: string;
     category: string; // optional
     positiveExamples: PositiveCheckExample[];
     checkId: CheckId;

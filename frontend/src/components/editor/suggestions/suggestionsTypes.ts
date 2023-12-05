@@ -53,7 +53,7 @@ export const FeedbackTypeOrder = {
 //     highlightRanges: Range[];
 //     highlightRangesOnSelect: Range[];
 //     shortDesc: string;
-//     longDesc: string;
+//     desc: string;
 //     srcWord: {
 //         id: number;
 //         text: string;

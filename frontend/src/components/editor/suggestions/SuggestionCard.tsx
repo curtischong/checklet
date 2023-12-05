@@ -92,10 +92,10 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
                             onReplaceClick={onReplaceClick}
                         />
                     </div>
-                    <div className={css.longDesc}>
+                    <div className={css.desc}>
                         {" "}
                         <ReactMarkdown
-                            children={`${getCheckDesc(suggestion).longDesc}`}
+                            children={`${getCheckDesc(suggestion).desc}`}
                             remarkPlugins={[remarkGfm]}
                         />{" "}
                     </div>

@@ -23,7 +23,7 @@ const AdminPage: React.FC = () => {
                     name: "Shorten Month",
                     checkType: CheckType.rephrase,
                     instruction: `If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period.`,
-                    longDesc: `Shorter months create more whitespace.`,
+                    desc: `Shorter months create more whitespace.`,
                     category: "Whitespace",
                     positiveExamples: [
                         {
