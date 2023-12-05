@@ -1,8 +1,4 @@
-import {
-    DeleteButtonWithConfirm,
-    EditButton,
-    TextButton,
-} from "@components/Button";
+import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
 import { PositiveExamplePreview } from "@components/create-checker/CheckCreator";
 import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
 
@@ -12,6 +8,7 @@ interface Props {
     onEdit: () => void;
 }
 
+// This is what you see when you see your checks underneath your checker when you're creating the checker
 export const CheckOverview = ({
     checkBlueprint,
     onDelete,
@@ -32,7 +29,7 @@ export const CheckOverview = ({
             </div>
             {/* <h2>{checkBlueprint.instruction}</h2> */}
             <h2>{checkBlueprint.longDesc}</h2>
-            <h2 className="font-bold mt-2">Positive Examples</h2>
+            <h2 className="font-bold mt-4">Positive Examples</h2>
             <div className="flex flex-col">
                 {/* TODO: do a diff, so we see the red deletion / green insertion */}
                 {checkBlueprint.positiveExamples.map((example, idx) => (

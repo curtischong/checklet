@@ -1,11 +1,8 @@
 import {
-    LoadingButton,
     LoadingButtonSubmit,
     NormalButton,
-    SubmitButton,
     SubmittingState,
 } from "@components/Button";
-import { CheckOverview } from "@components/create-checker/Check";
 import { CheckCreator } from "@components/create-checker/CheckCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { SetState } from "@utils/types";
@@ -22,6 +19,7 @@ import {
     CheckBlueprint,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
+import { CheckOverview } from "@components/create-checker/CheckOverview";
 
 export enum Page {
     Main,
