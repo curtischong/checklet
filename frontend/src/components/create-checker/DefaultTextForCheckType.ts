@@ -29,6 +29,14 @@ export const defaultDesc: DefaultTextForCheckType = {
     [CheckType.proposal]: "Proposal",
 };
 
+export const defaultInstructions: DefaultTextForCheckType = {
+    [CheckType.highlight]:
+        "Highlight any acronyms, abbreviations, or jargon that may be unclear to a recruiter. Do not highlight common abbreviations like GPA or SAT.",
+    [CheckType.rephrase]:
+        "If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period.",
+    [CheckType.proposal]: "Proposal",
+};
+
 export const defaultCategory: DefaultTextForCheckType = {
     [CheckType.highlight]: "Clarity",
     [CheckType.rephrase]: "Whitespace",
