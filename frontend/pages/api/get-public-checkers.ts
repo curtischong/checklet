@@ -1,6 +1,3 @@
-import { CheckerStorefront } from "@components/CheckerStore";
-import { CheckerBlueprint } from "@components/create-checker/CheckerCreator";
-import { UserIdentifier } from "firebase-admin/auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
     checkerBlueprintToCheckerStorefront,
@@ -31,7 +28,6 @@ export default async function handler(
         redisClient,
         checkerIds,
     );
-    console.log(uid);
 
     res.status(200).json({
         checkerStorefronts: checkerBlueprints

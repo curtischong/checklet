@@ -27,19 +27,23 @@ export default async function handler(
 
     const rawCheckerBlueprint = await redisClient.get(`checkers/${checkerId}`);
     if (rawCheckerBlueprint === null) {
-        sendBadRequest(res, "Checker does not exist");
+        // do not send bad request since we already know it errored out. we don't want to show the error toast
+        res.status(200).json({
+            checkerStorefront: undefined,
+        });
         return;
     }
     const checkerBlueprint = JSON.parse(rawCheckerBlueprint);
     if (!checkerBlueprint.isPublic && checkerBlueprint.creatorId !== uid) {
-        // send the same error as if the checker doesn't exist for security reasons
-        sendBadRequest(res, "Checker does not exist");
+        // do not send bad request since we already know it errored out. we don't want to show the error toast
+        res.status(200).json({
+            checkerStorefront: undefined,
+        });
         return;
     }
 
-    const checkerStorefront = checkerBlueprintToCheckerStorefront(
-        JSON.parse(checkerBlueprint),
-    );
+    const checkerStorefront =
+        checkerBlueprintToCheckerStorefront(checkerBlueprint);
 
     res.status(200).json({
         checkerStorefront,
