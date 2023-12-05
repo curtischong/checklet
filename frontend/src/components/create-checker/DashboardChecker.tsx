@@ -1,11 +1,9 @@
 import { Api } from "@api/apis";
-import { DeleteButton } from "@components/Button";
+import { DeleteButtonWithConfirm } from "@components/Button";
 import { LabelWithSwitch } from "@components/Switch";
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
-import { Popconfirm } from "antd";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -67,24 +65,22 @@ export const DashboardChecker = ({
                         })();
                     }}
                 />
-                <Popconfirm title={"Confirm Delete"}>
-                    <DeleteButton
-                        onClick={async () => {
-                            if (!user) {
-                                toast.error(
-                                    "You must be logged in to delete a checker",
-                                );
-                                return;
-                            }
-                            Api.deleteChecker(
-                                blueprint.id,
-                                await user.getIdToken(),
-                            ).then(() => {
-                                fetchCheckerBlueprints();
-                            });
-                        }}
-                    />
-                </Popconfirm>
+                <DeleteButtonWithConfirm
+                    onDelete={async () => {
+                        if (!user) {
+                            toast.error(
+                                "You must be logged in to delete a checker",
+                            );
+                            return;
+                        }
+                        Api.deleteChecker(
+                            blueprint.id,
+                            await user.getIdToken(),
+                        ).then(() => {
+                            fetchCheckerBlueprints();
+                        });
+                    }}
+                />
             </div>
         </div>
     );

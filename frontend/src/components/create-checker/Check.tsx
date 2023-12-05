@@ -1,4 +1,5 @@
-import { TextButton } from "@components/Button";
+import { DeleteButtonWithConfirm, TextButton } from "@components/Button";
+import { PositiveExamplePreview } from "@components/create-checker/CheckCreator";
 import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
 
 interface Props {
@@ -13,25 +14,34 @@ export const CheckOverview = ({
     onEdit,
 }: Props): JSX.Element => {
     return (
-        <div className="border bg-white rounded-md w-60">
+        <div className="border bg-white rounded-md shadow-around py-3 px-6">
             <div className="flex flex-row items-end">
                 <div className="text-lg font-bold">{checkBlueprint.name}</div>
-                <div className="ml-2">{checkBlueprint.category}</div>
+                <div className="ml-4 mb-[2px]">{checkBlueprint.category}</div>
+                <div className="ml-auto flex flex-row between-x-0">
+                    <TextButton className="px-0" onClick={onEdit}>
+                        Edit
+                    </TextButton>
+                    <DeleteButtonWithConfirm
+                        className="px-2 mr-[-10px]"
+                        onDelete={onDelete}
+                    />
+                </div>
             </div>
-            <h2>{checkBlueprint.instruction}</h2>
+            {/* <h2>{checkBlueprint.instruction}</h2> */}
             <h2>{checkBlueprint.longDesc}</h2>
-            <h2>Positive Examples</h2>
+            <h2 className="font-bold mt-2">Positive Examples</h2>
             <div className="flex flex-col">
                 {/* TODO: do a diff, so we see the red deletion / green insertion */}
                 {checkBlueprint.positiveExamples.map((example, idx) => (
                     <div className="flex flex-row" key={`example-${idx}`}>
-                        <h6>{example.originalText}</h6>
-                        <h6>{example.editedText}</h6>
+                        <PositiveExamplePreview
+                            example={example}
+                            checkType={checkBlueprint.checkType}
+                        />
                     </div>
                 ))}
             </div>
-            <TextButton onClick={onEdit}>Edit</TextButton>
-            <TextButton onClick={onDelete}>Delete</TextButton>
         </div>
     );
 };
