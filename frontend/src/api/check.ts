@@ -93,7 +93,7 @@ ${positiveExamples}
                         type: "object",
                         // https://community.openai.com/t/function-call-complex-arrays-as-parameters/295648/2
                         properties: {
-                            originalText: {
+                            originalTexts: {
                                 type: "array",
                                 description:
                                     "The texts you found the issue in.",
@@ -101,7 +101,7 @@ ${positiveExamples}
                                     type: "string",
                                 },
                             },
-                            editedText: {
+                            editedTexts: {
                                 type: "array",
                                 description: "The fixed texts",
                                 items: {
@@ -109,7 +109,7 @@ ${positiveExamples}
                                 },
                             },
                         },
-                        required: ["originalText", "editedText"],
+                        required: ["originalTexts", "editedTexts"],
                     },
                 })
                 .then((args) => {
@@ -118,13 +118,13 @@ ${positiveExamples}
                     let startIdx = 0;
 
                     const suggestions: Suggestion[] = [];
-                    for (let i = 0; i < argsObj.originalText.length; i++) {
-                        if (argsObj.editedText.length - 1 < i) {
+                    for (let i = 0; i < argsObj.originalTexts.length; i++) {
+                        if (argsObj.editedTexts.length - 1 < i) {
                             console.error("editedText is too short");
                             break;
                         }
-                        const originalEx = argsObj.originalText[i];
-                        const editedEx = argsObj.editedText[i];
+                        const originalEx = argsObj.originalTexts[i];
+                        const editedEx = argsObj.editedTexts[i];
 
                         const editOps = editDistanceOperationsWithClasses(
                             originalEx,
@@ -175,31 +175,22 @@ ${positiveExamples}
         return new Promise<Suggestion[]>((resolve, _reject) => {
             this.llm
                 .callFunction({
-                    prompt: `Fix this text:\n${doc}`,
-                    functionName: "fix_text",
-                    functionDesc:
-                        "Applies the change on the original text to get the edited text.",
+                    prompt: `Find the text to highlight:\n${doc}`,
+                    functionName: "highlight_text",
+                    functionDesc: "Accepts highlighted text",
                     functionParams: {
                         type: "object",
                         // https://community.openai.com/t/function-call-complex-arrays-as-parameters/295648/2
                         properties: {
-                            originalText: {
+                            highlightedTexts: {
                                 type: "array",
-                                description:
-                                    "The texts you found the issue in.",
-                                items: {
-                                    type: "string",
-                                },
-                            },
-                            editedText: {
-                                type: "array",
-                                description: "The fixed texts",
+                                description: "The highlighted texts",
                                 items: {
                                     type: "string",
                                 },
                             },
                         },
-                        required: ["originalText", "editedText"],
+                        required: ["highlightedTexts"],
                     },
                 })
                 .then((args) => {
@@ -208,13 +199,13 @@ ${positiveExamples}
                     let startIdx = 0;
 
                     const suggestions: Suggestion[] = [];
-                    for (let i = 0; i < argsObj.originalText.length; i++) {
-                        if (argsObj.editedText.length - 1 < i) {
+                    for (let i = 0; i < argsObj.originalTexts.length; i++) {
+                        if (argsObj.editedTexts.length - 1 < i) {
                             console.error("editedText is too short");
                             break;
                         }
-                        const originalEx = argsObj.originalText[i];
-                        const editedEx = argsObj.editedText[i];
+                        const originalEx = argsObj.originalTexts[i];
+                        const editedEx = argsObj.editedTexts[i];
 
                         const editOps = editDistanceOperationsWithClasses(
                             originalEx,
