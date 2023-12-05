@@ -5,7 +5,7 @@ const client = new OpenAI();
 async function main() {
     const runner = client.beta.chat.completions
         .runFunctions({
-            model: "gpt-3.5-turbo-0613",
+            model: "gpt-3.5-turbo",
             messages: [
                 { role: "user", content: "How is the weather this week?" },
             ],

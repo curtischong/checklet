@@ -13,7 +13,7 @@ export class Llm {
 
     constructor(
         systemPrompt: string,
-        model = "gpt-3.5-turbo-0613",
+        model = "gpt-3.5-turbo",
         useCache = false,
     ) {
         this.useCache = useCache;

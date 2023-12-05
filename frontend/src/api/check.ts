@@ -14,7 +14,7 @@ export class Check {
     constructor(public blueprint: CheckBlueprint) {
         const systemPrompt = this.getSystemPrompt();
         console.log("systemPrompt", systemPrompt);
-        this.llm = new Llm(systemPrompt, "gpt-3.5-turbo-0613", true);
+        this.llm = new Llm(systemPrompt, "gpt-3.5-turbo", true);
     }
 
     private getSystemPrompt(): string {
