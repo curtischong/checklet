@@ -1,4 +1,4 @@
-import { TextButton } from "@components/Button";
+import { NormalButton, TextButton } from "@components/Button";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { NormalTextArea } from "@components/TextArea";
 import ThinLine from "@components/ThinLine";
@@ -58,8 +58,9 @@ export const PositiveCheckExampleCreator = ({
                     />
                 </>
             )}
-            <TextButton
+            <NormalButton
                 disabled={originalText === "" || editedText === ""}
+                className="px-10 py-[6px] w-[240px] mt-4"
                 onClick={() => {
                     onCreate({
                         originalText,
@@ -69,8 +70,8 @@ export const PositiveCheckExampleCreator = ({
                     setEditedText("");
                 }}
             >
-                Create
-            </TextButton>
+                Create Positive Example
+            </NormalButton>
         </div>
     );
 };

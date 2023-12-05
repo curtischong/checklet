@@ -18,7 +18,16 @@ export const NormalButton: React.FC<IButton> = ({
 }) => {
     return (
         <button
-            className={`bg-white hover:bg-[#5384d4] text-gray-600 border border-gray-300 hover:text-white py-2 px-4 rounded transition duration-300 ${className}`}
+            className={classNames(
+                `bg-white  text-gray-600 border border-gray-300 py-2 px-4 rounded transition duration-300 ${className}`,
+                {
+                    // we need to specify these focus styles because antd's styles makes the button transparent
+                    " hover:bg-[#5384d4] hover:text-white focus:bg-[#43b56c] focus:text-white":
+                        !rest.disabled,
+                    " bg-[#dddddd] focus:bg-[#999999] cursor-not-allowed":
+                        rest.disabled,
+                },
+            )}
             {...rest}
         >
             {children}
