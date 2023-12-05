@@ -102,10 +102,14 @@ export class Api {
         });
     };
 
-    static publicChecks = async (): Promise<
-        CheckerStorefront[] | undefined
-    > => {
-        const data = await Api.createRequest("api/public-checks", "POST", {});
+    static getPublicCheckers = async (
+        idToken: string | undefined,
+    ): Promise<CheckerStorefront[] | undefined> => {
+        const data = await Api.createRequest(
+            "api/get-public-checkers",
+            "POST",
+            { idToken },
+        );
         return data?.checkerStorefronts;
     };
 

@@ -23,16 +23,10 @@ export const isUnauthenticatedRequestValid = (
     return true;
 };
 
-// returns the uid for the authenticated user.
-// If the user is not authenticated, or their headers are weird, it returns null
-export const requestMiddleware = async (
+export const tryGetUserId = async (
     req: NextApiRequest,
     res: NextApiResponse,
 ): Promise<string | null> => {
-    if (!isUnauthenticatedRequestValid(req, res)) {
-        return null;
-    }
-
     // if we already initialized app, don't do it more than once:
     // https://github.com/firebase/firebase-admin-node/issues/2111
     const alreadyCreatedAps = getApps();
@@ -50,6 +44,26 @@ export const requestMiddleware = async (
         return null;
     }
     return decodedToken.uid;
+};
+
+// returns the uid for the authenticated user.
+// If the user is not authenticated, or their headers are weird, it returns null
+export const requestMiddleware = async (
+    req: NextApiRequest,
+    res: NextApiResponse,
+): Promise<string | null> => {
+    if (!isUnauthenticatedRequestValid(req, res)) {
+        return null;
+    }
+    if (req.body.idToken === undefined) {
+        res.status(400).end("idToken is undefined");
+        return null;
+    }
+    const uid = await tryGetUserId(req, res);
+    if (uid === null) {
+        return null;
+    }
+    return uid;
 };
 
 export const sendBadRequest = (res: NextApiResponse, msg: string): void => {
