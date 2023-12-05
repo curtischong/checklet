@@ -20,21 +20,40 @@ export const SuggestionChange = ({
                 <div>{suggestion.originalText}</div>
             ) : (
                 <div className="flex flex-row">
-                    <div
-                        className={classNames("line-through")}
-                        style={{
-                            textDecorationColor: "#DC5262",
-                        }}
-                    >
-                        {suggestion.originalText}
-                    </div>
-                    <AiOutlineArrowRight className={"mx-auto md:mx-2"} />
-                    <div
-                        onClick={onReplaceClick}
-                        className="text-white bg-blue-600 rounded md:py-0 md:px-2 cursor-pointer"
-                    >
-                        {suggestion.editedText}
-                    </div>
+                    {suggestion.editedText ? (
+                        <div
+                            className={classNames(
+                                "line-through text-[#DC5262]",
+                            )}
+                            style={{
+                                textDecorationColor: "#DC5262",
+                            }}
+                        >
+                            {suggestion.originalText}
+                        </div>
+                    ) : (
+                        <div
+                            className={classNames(
+                                "bg-[#f35769] hover:bg-[#DC5262] text-white rounded md:py-0 md:px-2 cursor-pointer",
+                            )}
+                            style={{
+                                textDecorationColor: "#DC5262",
+                            }}
+                        >
+                            {suggestion.originalText}
+                        </div>
+                    )}
+                    {suggestion.editedText && (
+                        <>
+                            <AiOutlineArrowRight className={"mx-3 mt-[5px]"} />
+                            <div
+                                onClick={onReplaceClick}
+                                className="text-white hover:bg-[#1d8fdb] bg-[#189bf2] rounded md:py-0 md:px-2 cursor-pointer"
+                            >
+                                {suggestion.editedText}
+                            </div>
+                        </>
+                    )}
                 </div>
             )}
         </>
