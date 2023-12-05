@@ -2,74 +2,54 @@ import { Suggestion } from "@api/ApiTypes";
 import {
     CheckBlueprint,
     CheckDesc,
-    CheckType,
-    PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
+import {
+    defaultCategory,
+    defaultDesc,
+    defaultEditedText,
+    defaultName,
+    defaultOriginalText,
+} from "@components/create-checker/DefaultTextForCheckType";
 import { SuggestionCard } from "@components/editor/suggestions/SuggestionCard";
 import { useMemo } from "react";
 
 interface Props {
-    checkBlueprint: CheckBlueprint;
+    blueprint: CheckBlueprint;
     originalText: string; // This is the input boxes the user is using to create the positive example. It's here so users can easily understand what part of the check they're changing
     editedText: string;
 }
 
 export const CheckPreview = ({
-    checkBlueprint,
+    blueprint,
     originalText,
     editedText,
 }: Props): JSX.Element => {
     const checkId = "checkId";
 
-    const defaultOriginalTextForCheckType = useMemo(() => {
-        switch (checkBlueprint.checkType) {
-            case CheckType.highlight:
-                return "FSD";
-            case CheckType.rephrase:
-                return "January";
-            // case CheckType.proposal:
-            //     return "January";
-            default:
-                throw new Error(
-                    `Unknown feedback type ${checkBlueprint.checkType}`,
-                );
-        }
-    }, [checkBlueprint.checkType]);
-
-    const defaultEditedTextForCheckType = useMemo(() => {
-        switch (checkBlueprint.checkType) {
-            case CheckType.highlight:
-                return "";
-            case CheckType.rephrase:
-                return "Jan";
-            // case CheckType.proposal:
-            //     return "Jan";
-            default:
-                throw new Error(
-                    `Unknown feedback type ${checkBlueprint.checkType}`,
-                );
-        }
-    }, [checkBlueprint.checkType]);
-
     const originalTextToUse = useMemo(() => {
         if (originalText !== "" || editedText !== "") {
             return originalText;
-        } else if (checkBlueprint.positiveExamples.length > 0) {
-            return checkBlueprint.positiveExamples[0].originalText;
+        } else if (blueprint.positiveExamples.length > 0) {
+            return blueprint.positiveExamples[0].originalText;
         } else {
-            return defaultOriginalTextForCheckType;
+            return defaultOriginalText[blueprint.checkType];
         }
-    }, [originalText, editedText, checkBlueprint.positiveExamples]);
+    }, [
+        originalText,
+        editedText,
+        blueprint.positiveExamples,
+        blueprint.checkType,
+    ]);
 
     const editedTextToUse = useMemo(() => {
         if (editedText !== "" || originalText !== "") {
             return editedText;
-        } else if (checkBlueprint.positiveExamples.length > 0) {
-            return checkBlueprint.positiveExamples[0].editedText;
+        } else if (blueprint.positiveExamples.length > 0) {
+            return blueprint.positiveExamples[0].editedText;
         } else {
-            return defaultEditedTextForCheckType;
+            return defaultEditedText[blueprint.checkType];
         }
-    }, [originalText, editedText, checkBlueprint.positiveExamples]);
+    }, [originalText, editedText, blueprint.positiveExamples]);
 
     const suggestion: Suggestion = {
         checkId,
@@ -83,85 +63,24 @@ export const CheckPreview = ({
         editOps: [],
     };
 
-    const defaultNameForCheckType = useMemo(() => {
-        switch (checkBlueprint.checkType) {
-            case CheckType.highlight:
-                return "Unknown Acronym";
-            case CheckType.rephrase:
-                return "Shorten Month";
-            // case CheckType.proposal:
-            //     return "Proposal";
-            default:
-                throw new Error(
-                    `Unknown feedback type ${checkBlueprint.checkType}`,
-                );
-        }
-    }, [checkBlueprint.checkType]);
-
-    const defaultDescForCheckType = useMemo(() => {
-        switch (checkBlueprint.checkType) {
-            case CheckType.highlight:
-                return "Recruiters may not understand this acronym. Consider expanding it, removing it, or adding a definition.";
-            case CheckType.rephrase:
-                return "Shorter months create more whitespace.";
-            // case CheckType.proposal:
-            //     return "Proposal";
-            default:
-                throw new Error(
-                    `Unknown feedback type ${checkBlueprint.checkType}`,
-                );
-        }
-    }, [checkBlueprint.checkType]);
-
-    const defaultCategoryForCheckType = useMemo(() => {
-        switch (checkBlueprint.checkType) {
-            case CheckType.highlight:
-                return "Clarity";
-            case CheckType.rephrase:
-                return "Whitespace";
-            // case CheckType.proposal:
-            //     return "Proposal";
-            default:
-                throw new Error("unknown feedback type");
-        }
-    }, [checkBlueprint.checkType]);
-
     const defaultPositiveExamplesForCheckType = useMemo(() => {
-        switch (checkBlueprint.checkType) {
-            case CheckType.highlight:
-                return [
-                    {
-                        originalText: "FSD",
-                    } as PositiveCheckExample,
-                ];
-            case CheckType.rephrase:
-                return [
-                    {
-                        originalText: "January",
-                        editedText: "Jan",
-                    } as PositiveCheckExample,
-                ];
-            // case CheckType.proposal:
-            //     return [
-            //         {
-            //             originalText: "January",
-            //             editedText: "Jan",
-            //         } as PositiveCheckExample,
-            //     ];
-            default:
-                throw new Error("unknown feedback type");
-        }
-    }, [checkBlueprint.checkType]);
+        return [
+            {
+                originalText: defaultOriginalText[blueprint.checkType],
+                editedText: defaultEditedText[blueprint.checkType],
+            },
+        ];
+    }, [blueprint.checkType]);
 
     const checkDesc: CheckDesc = {
-        name: checkBlueprint.name || defaultNameForCheckType,
-        desc: checkBlueprint.desc || defaultDescForCheckType,
-        category: checkBlueprint.category || defaultCategoryForCheckType,
+        name: blueprint.name || defaultName[blueprint.checkType],
+        desc: blueprint.desc || defaultDesc[blueprint.checkType],
+        category: blueprint.category || defaultCategory[blueprint.checkType],
         positiveExamples:
-            checkBlueprint.positiveExamples.length > 0
-                ? checkBlueprint.positiveExamples
+            blueprint.positiveExamples.length > 0
+                ? blueprint.positiveExamples
                 : defaultPositiveExamplesForCheckType,
-        checkType: checkBlueprint.checkType,
+        checkType: blueprint.checkType,
         checkId,
     };
 

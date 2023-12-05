@@ -18,6 +18,12 @@ import {
     PositiveCheckExample,
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
+import {
+    defaultCategory,
+    defaultDesc,
+    defaultInstructions,
+    defaultName,
+} from "@components/create-checker/DefaultTextForCheckType";
 import { PositiveCheckExampleCreator } from "@components/create-checker/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
@@ -205,7 +211,7 @@ export const CheckCreator = ({
                 <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Shorten Month"
+                    placeholder={defaultName[checkType]}
                 />
 
                 <LabelWithHelp
@@ -216,7 +222,7 @@ export const CheckCreator = ({
                 <NormalTextArea
                     value={desc}
                     onChange={(e) => setDesc(e.target.value)}
-                    placeholder={`Shorter months create more whitespace.`}
+                    placeholder={defaultDesc[checkType]}
                     minRows={3}
                 />
                 <LabelWithHelp
@@ -227,7 +233,7 @@ export const CheckCreator = ({
                 <NormalTextArea
                     value={instruction}
                     onChange={(e) => setInstruction(e.target.value)}
-                    placeholder={`If you see the name of the month, shorten it to only three characters. Do not end these shortened months with a period.`}
+                    placeholder={defaultInstructions[checkType]}
                     minRows={4}
                 />
                 <LabelWithHelp
@@ -238,7 +244,7 @@ export const CheckCreator = ({
                 <Input
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    placeholder={`Whitespace`}
+                    placeholder={defaultCategory[checkType]}
                 />
 
                 <div className="mt-4">
@@ -343,7 +349,7 @@ export const CheckCreator = ({
                         />
                     </div>
                     <CheckPreview
-                        checkBlueprint={{
+                        blueprint={{
                             checkType,
                             name,
                             instruction,
@@ -517,7 +523,7 @@ const SelectCheckType = ({
                 />
                 <div className="w-[400px] mx-auto mt-8 h-48">
                     <CheckPreview
-                        checkBlueprint={{
+                        blueprint={{
                             name: "",
                             desc: "",
                             instruction: "",

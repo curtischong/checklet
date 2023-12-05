@@ -6,6 +6,7 @@ import {
     CheckType,
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
+import { defaultOriginalText } from "@components/create-checker/DefaultTextForCheckType";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { SetState } from "@utils/types";
 import React from "react";
@@ -42,7 +43,7 @@ export const PositiveCheckExampleCreator = ({
             <NormalTextArea
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
-                placeholder="January"
+                placeholder={defaultOriginalText[checkType]}
             />
             {checkType === CheckType.rephrase && (
                 <>
