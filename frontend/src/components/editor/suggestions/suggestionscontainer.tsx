@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { SuggestionIdToRef } from "./suggestionsTypes";
-import css from "./suggestions.module.scss";
 import { SuggestionCard } from "./SuggestionCard";
 import ZeroImage from "./ZeroState.svg";
 import { BsSortDownAlt } from "react-icons/bs";
@@ -133,7 +132,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                         header={"No issues found"}
                         content={
                             <>
-                                <div className={css.noSuggestContent}>
+                                <div className={"w-3/4"}>
                                     We checked your text and found no issues
                                     &#10084;
                                 </div>
@@ -148,7 +147,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                         header={"Ready to check?"}
                         content={
                             <>
-                                <div className={css.noSuggestContent}>
+                                <div className={"w-3/4"}>
                                     Click 'Check Document' to check for mistakes
                                     &#128640;
                                 </div>
@@ -164,7 +163,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                 imageSrc={ZeroImage.src}
                 header={"Nothing to check yet"}
                 content={
-                    <div className={css.zeroContent}>
+                    <div className={"w-[70%]"}>
                         Start writing or paste your resume to see Nautilus's
                         feedback.
                     </div>
