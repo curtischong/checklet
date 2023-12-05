@@ -199,33 +199,25 @@ ${positiveExamples}
                     let startIdx = 0;
 
                     const suggestions: Suggestion[] = [];
-                    for (let i = 0; i < argsObj.originalTexts.length; i++) {
-                        if (argsObj.editedTexts.length - 1 < i) {
-                            console.error("editedText is too short");
-                            break;
-                        }
-                        const originalEx = argsObj.originalTexts[i];
-                        const editedEx = argsObj.editedTexts[i];
+                    for (let i = 0; i < argsObj.highlightedTexts.length; i++) {
+                        const highlightedText = argsObj.highlightedTexts[i];
 
-                        const editOps = editDistanceOperationsWithClasses(
-                            originalEx,
-                            editedEx,
-                        );
-
-                        const originalTextIdx = doc
+                        // this makes the loop O(n^2). there's probably a faster algorithm
+                        const highlightedTextIdx = doc
                             .substring(startIdx)
-                            .indexOf(originalEx);
+                            .indexOf(highlightedText);
 
-                        if (originalTextIdx === -1) {
+                        if (highlightedTextIdx === -1) {
                             // the model generated extra suggestions that exceed the length of the doc. just ignore them
                             console.error("originalText not found in doc");
                             break;
                         }
                         const originalTextIdxRelativeToDoc =
-                            startIdx + originalTextIdx;
+                            startIdx + highlightedTextIdx;
 
                         startIdx =
-                            originalTextIdxRelativeToDoc + originalEx.length; // update the startIdx, so for the next example, we don't include this text in the search space
+                            originalTextIdxRelativeToDoc +
+                            highlightedText.length; // update the startIdx, so for the next example, we don't include this text in the search space
 
                         // now that we know where the original text is, we can create the suggestion
                         suggestions.push({
@@ -233,9 +225,8 @@ ${positiveExamples}
                                 originalTextIdxRelativeToDoc,
                                 startIdx,
                             ),
-                            originalText: originalEx,
-                            editedText: editedEx,
-                            editOps,
+                            originalText: highlightedText,
+                            editOps: [],
                             checkId: this.blueprint.checkId,
                             suggestionId: createUniqueId(),
                         });
@@ -248,6 +239,5 @@ ${positiveExamples}
                     resolve([]);
                 });
         });
-        // return response.choices[0].message.content ?? "unknown result";
     }
 }
