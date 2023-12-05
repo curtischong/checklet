@@ -209,7 +209,7 @@ export const TextboxContainer = ({
     const spanStyle = useCallback(
         (props: any): CSSProperties => {
             const style: CSSProperties = {
-                borderBottom: "2px solid #4F71D9",
+                borderBottom: "2px solid #189bf2",
             };
             const contentState: ContentState = props.contentState;
 

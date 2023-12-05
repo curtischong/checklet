@@ -14,7 +14,7 @@
     font-size: 12px;
 
     .smallDot {
-        background-color: #6E758B;
+        background-color: #6e758b;
         border-radius: 50%;
         height: 2px;
         width: 2px;
@@ -24,7 +24,7 @@
 
     .bigDot {
         display: flex;
-        background-color: #D7343F;
+        background-color: #d7343f;
         border-radius: 50%;
         height: 5px;
         width: 5px;
@@ -34,21 +34,19 @@
 
     .shortDesc {
         overflow: hidden;
-        color: #6E758B;
+        color: #6e758b;
         font-weight: 400;
     }
 
     .activeCategory {
-
-        color: #6E758B;
-
+        color: #6e758b;
     }
 
     .srcNautObj {
         overflow: hidden;
-        white-space:nowrap;
-        text-overflow:ellipsis;
-        max-width:40%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 40%;
     }
 }
 
@@ -62,18 +60,17 @@
 }
 
 @keyframes open {
-    0%{
-        opacity:0;
-        transform:scaleY(.2) translateY(-50%)
+    0% {
+        opacity: 0;
+        transform: scaleY(0.2) translateY(-50%);
     }
-    100%{
-        opacity:1;
-        transform:scaleY(1)
+    100% {
+        opacity: 1;
+        transform: scaleY(1);
     }
-    80%{
-        opacity:1;
-        transform:scaleY(.8)
-        translateY(0%)
+    80% {
+        opacity: 1;
+        transform: scaleY(0.8) translateY(0%);
     }
 }
 
@@ -82,7 +79,7 @@
         opacity: 0;
     }
     100% {
-       opacity: 1;
+        opacity: 1;
     }
 }
 
@@ -98,19 +95,8 @@
         padding-bottom: 10px;
         display: flex;
 
-        .arrow {
-            margin: auto 10px;
-        }
-
         .remove {
-            text-decoration: line-through #DC5262;
-        }
-
-        .replace {
-            color: white;
-            background-color: #4F71D9;
-            border-radius: 5px;
-            padding: 0 10px;
+            text-decoration: line-through #dc5262;
         }
     }
 }
