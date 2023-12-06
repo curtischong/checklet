@@ -1,34 +1,35 @@
 import { Suggestion } from "@api/ApiTypes";
 import { Check } from "@api/check";
 import {
+    CheckBlueprint,
     CheckId,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
-import * as fs from "fs";
 
 export type CheckerId = string; // TODO: make this 32 bytes?
 export class Checker {
     blueprint: CheckerBlueprint;
-    id: string;
     checks: Map<CheckId, Check>;
 
-    constructor(checkerBlueprint: CheckerBlueprint) {
+    constructor(
+        checkerBlueprint: CheckerBlueprint,
+        checkBlueprints: CheckBlueprint[],
+    ) {
         this.blueprint = checkerBlueprint;
-        this.id = checkerBlueprint.id;
         this.checks = new Map<CheckId, Check>();
 
-        for (const checkBlueprint of checkerBlueprint.checkBlueprints) {
+        for (const checkBlueprint of checkBlueprints) {
             const check = new Check(checkBlueprint);
-            this.checks.set(checkBlueprint.checkId, check);
+            this.checks.set(checkBlueprint.objInfo.id, check);
         }
     }
 
-    static fromFile(checkerPath: string): Checker {
-        const checkerBlueprint = JSON.parse(
-            fs.readFileSync(checkerPath, "utf-8"),
-        );
-        return new Checker(checkerBlueprint);
-    }
+    // static fromFile(checkerPath: string): Checker {
+    //     const checkerBlueprint = JSON.parse(
+    //         fs.readFileSync(checkerPath, "utf-8"),
+    //     );
+    //     return new Checker(checkerBlueprint);
+    // }
 
     async checkDoc(doc: string): Promise<Suggestion[]> {
         const results: Suggestion[] = [];

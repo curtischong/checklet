@@ -1,7 +1,12 @@
 import { Checker } from "@api/checker";
-import { CheckDescObj } from "@components/create-checker/CheckerTypes";
+import {
+    CheckBlueprint,
+    CheckDescObj,
+    CheckerBlueprint,
+} from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
+    RedisClient,
     isUnauthenticatedRequestValid,
     sendBadRequest,
 } from "pages/api/commonNetworking";
@@ -35,8 +40,13 @@ export default async function handler(
         sendBadRequest(res, "Checker does not exist");
         return;
     }
-    const checkerBlueprint = JSON.parse(rawCheckerBlueprint);
-    const checker = new Checker(checkerBlueprint);
+    const checkerBlueprint: CheckerBlueprint = JSON.parse(rawCheckerBlueprint);
+
+    const checkBlueprints = await getEnabledCheckBlueprints(
+        redisClient,
+        checkerBlueprint,
+    );
+    const checker = new Checker(checkerBlueprint, checkBlueprints);
 
     const suggestions = await checker.checkDoc(doc);
 
@@ -66,13 +76,35 @@ const getCheckDescForCheckIds = (
             continue;
         }
         checkDescObj[checkId] = {
-            name: checkBlueprint.name,
+            objInfo: checkBlueprint.objInfo,
             checkType: checkBlueprint.checkType,
-            desc: checkBlueprint.desc,
             category: checkBlueprint.category,
             positiveExamples: checkBlueprint.positiveExamples,
-            checkId,
         };
     }
     return checkDescObj;
+};
+
+const getEnabledCheckBlueprints = async (
+    redisClient: RedisClient,
+    checkerBlueprint: CheckerBlueprint,
+): Promise<CheckBlueprint[]> => {
+    const enabledCheckIds = Object.entries(checkerBlueprint.checkStatuses)
+        .filter(([_checkId, checkStatus]) => checkStatus.isEnabled)
+        .map(([checkId, _checkStatus]) => checkId);
+
+    const checkKeys = enabledCheckIds.map((checkId) => `checks/${checkId}`);
+    const rawCheckBlueprints: (string | null)[] = await redisClient.mGet(
+        checkKeys,
+    );
+    const checkBlueprints: CheckBlueprint[] = [];
+    for (let i = 0; i < checkKeys.length; i++) {
+        const rawCheckBlueprint = rawCheckBlueprints[i];
+        if (rawCheckBlueprint === null) {
+            console.error(`rawCheckBlueprint is null for ${checkKeys[i]}`);
+            continue;
+        }
+        checkBlueprints.push(JSON.parse(rawCheckBlueprint));
+    }
+    return checkBlueprints;
 };
