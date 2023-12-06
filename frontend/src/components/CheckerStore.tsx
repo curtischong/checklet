@@ -11,7 +11,7 @@ export const CheckerStore = (): JSX.Element => {
     useEffect(() => {
         (async () => {
             const newStorefronts = await Api.getPublicCheckers(
-                (await user?.getIdToken()) ?? undefined, // if you're not logged in, then don't pass in an ID token! The token is just used so you can see your private checkers
+                user, // if you're not logged in, then don't pass in an ID token! The token is just used so you can see your private checkers
             );
             if (newStorefronts) {
                 setStorefronts(newStorefronts);
@@ -42,11 +42,11 @@ const StoreFront = ({ storefront }: StorefrontProps) => {
         <div
             className="bg-white rounded-md w-60 px-4 py-4 cursor-pointer"
             onClick={() => {
-                router.push(`/editor/${storefront.id}`);
+                router.push(`/editor/${storefront.objInfo.id}`);
             }}
         >
-            <div className="text-xl font-bold">{storefront.name}</div>
-            <div>{storefront.desc}</div>
+            <div className="text-xl font-bold">{storefront.objInfo.name}</div>
+            <div>{storefront.objInfo.desc}</div>
         </div>
     );
 };

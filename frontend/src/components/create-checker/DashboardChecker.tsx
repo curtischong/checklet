@@ -11,6 +11,8 @@ interface Props {
     blueprint: CheckerBlueprint;
     fetchCheckerBlueprints: () => void;
 }
+
+// this is how your checker looks like in your dashboard page
 export const DashboardChecker = ({
     blueprint,
     fetchCheckerBlueprints,
@@ -30,15 +32,18 @@ export const DashboardChecker = ({
     return (
         <div className=" flex flex-col shadow-around rounded-md px-6 pt-4 pb-3 mb-10 bg-white ">
             <div className="flex flex-row">
-                <div className="font-bold text-xl">{blueprint.name}</div>
+                <div className="font-bold text-xl">
+                    {blueprint.objInfo.name}
+                </div>
                 <div className="ml-auto flex flex-row between-x-0">
                     <EditButton
                         className="px-2"
                         onClick={() => {
+                            const checkerId = blueprint.objInfo.id;
                             router.push({
-                                pathname: "/create-checker",
+                                pathname: `/create/checker/${checkerId}`,
                                 query: {
-                                    checkerId: blueprint.id,
+                                    checkerId,
                                 },
                             });
                         }}
@@ -51,15 +56,14 @@ export const DashboardChecker = ({
                                 );
                                 return;
                             }
-                            Api.deleteChecker(
-                                blueprint.id,
-                                await user.getIdToken(),
-                            ).then(fetchCheckerBlueprints);
+                            Api.deleteChecker(blueprint.objInfo.id, user).then(
+                                fetchCheckerBlueprints,
+                            );
                         }}
                     />
                 </div>
             </div>
-            <div>{blueprint.desc}</div>
+            <div>{blueprint.objInfo.desc}</div>
             <div className="flex flex-row mt-4 cursor-default space-x-2">
                 <LabelWithSwitch
                     text="Is Public:"
@@ -75,9 +79,9 @@ export const DashboardChecker = ({
                             }
                             setTmpChecked(newIsChecked); // if we don't set this initially, the switch wont' change state
                             const success = await Api.setCheckerIsPublic(
-                                blueprint.id,
+                                blueprint.objInfo.id,
                                 newIsChecked,
-                                await user.getIdToken(),
+                                user,
                             );
                             if (!success) {
                                 setTmpChecked(!newIsChecked);

@@ -1,5 +1,6 @@
 import { CheckerId } from "@api/checker";
 import {
+    CheckBlueprint,
     CheckType,
     CheckerBlueprint,
     CheckerStorefront,
@@ -100,4 +101,33 @@ export const validateChecker = async (
 
     // we don't need to validate checks. Since we validate them before they are enabled
     return "";
+};
+
+// this function assumes that the validation logic used to see if the user is the owner of the checker has passed
+export const getCheckBlueprints = async (
+    redisClient: RedisClient,
+    checkerBlueprint: CheckerBlueprint,
+    onlyGetIsEnabled: boolean,
+): Promise<CheckBlueprint[]> => {
+    const checkStatuses = Object.entries(checkerBlueprint.checkStatuses);
+    const filteredStatuses = onlyGetIsEnabled
+        ? checkStatuses.filter(([_, checkStatus]) => checkStatus.isEnabled)
+        : checkStatuses;
+    const enabledCheckIds = filteredStatuses.map(
+        ([checkId, _checkStatus]) => checkId,
+    );
+
+    const checkKeys = enabledCheckIds.map((checkId) => `checks/${checkId}`);
+    const rawCheckBlueprints: (string | null)[] =
+        checkKeys.length === 0 ? [] : await redisClient.mGet(checkKeys);
+    const checkBlueprints: CheckBlueprint[] = [];
+    for (let i = 0; i < checkKeys.length; i++) {
+        const rawCheckBlueprint = rawCheckBlueprints[i];
+        if (rawCheckBlueprint === null) {
+            console.error(`rawCheckBlueprint is null for ${checkKeys[i]}`);
+            continue;
+        }
+        checkBlueprints.push(JSON.parse(rawCheckBlueprint));
+    }
+    return checkBlueprints;
 };

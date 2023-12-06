@@ -49,6 +49,5 @@ export const shift = (r: DocRange, amount: number): DocRange => {
 };
 
 export const isIntersecting = (r1: DocRange, r2: DocRange): boolean => {
-    console.log(r1, r2);
     return r1.start < r2.end && r1.end > r2.start;
 };

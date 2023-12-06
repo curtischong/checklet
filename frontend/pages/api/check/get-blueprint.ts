@@ -1,6 +1,6 @@
-import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isUserCheckerOwner } from "pages/api/common";
+import { isUserCheckOwner } from "pages/api/common";
 import { requestMiddleware, sendBadRequest } from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
@@ -15,20 +15,21 @@ export default async function handler(
     // https://redis.io/docs/connect/clients/nodejs/
     const redisClient = createClient();
     await redisClient.connect();
-    const checkerId = req.body.checkerId;
+    const checkId = req.body.checkId;
 
-    if (!(await isUserCheckerOwner(redisClient, res, userId, checkerId))) {
+    if (!(await isUserCheckOwner(redisClient, res, userId, checkId))) {
         return;
     }
 
-    const rawCheckerBlueprint = await redisClient.get(`checkers/${checkerId}`);
-    if (!rawCheckerBlueprint) {
-        sendBadRequest(res, "CheckerBlueprint not found");
+    const rawCheckBlueprint = await redisClient.get(`checks/${checkId}`);
+    if (!rawCheckBlueprint) {
+        sendBadRequest(res, "CheckBlueprint not found");
         return;
     }
-    const checkerBlueprint: CheckerBlueprint = JSON.parse(rawCheckerBlueprint);
+
+    const checkBlueprint: CheckBlueprint = JSON.parse(rawCheckBlueprint);
 
     res.status(200).json({
-        checkerBlueprint,
+        checkBlueprint,
     });
 }

@@ -5,7 +5,7 @@ export const createUniqueId = (): string => {
 
 // TODO: update this when we update IDs
 export const isLegitId = (id: string): boolean => {
-    return id.length === 256;
+    return id.length === 64;
 };
 
 export const pluralize = (word: string, count: number): string => {

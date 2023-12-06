@@ -2,6 +2,7 @@ import { Api } from "@api/apis";
 import { NormalButton } from "@components/Button";
 import {
     CheckBlueprint,
+    CheckStatuses,
     CheckType,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
@@ -12,10 +13,12 @@ import {
     defaultInstructions,
     defaultName,
     defaultOriginalText,
-} from "@components/create-checker/DefaultTextForCheckType";
+} from "@components/create-check/DefaultTextForCheckType";
 import { useClientContext } from "@utils/ClientContext";
 import { createUniqueId } from "@utils/strings";
 import { useCallback } from "react";
+import { toast } from "react-toastify";
+import { CheckerId } from "@api/checker";
 
 const AdminPage: React.FC = () => {
     const { user } = useClientContext();
@@ -26,10 +29,14 @@ const AdminPage: React.FC = () => {
     const createDefaultCheck = useCallback(
         (checkType: CheckType): CheckBlueprint => {
             return {
-                name: defaultName[checkType],
+                objInfo: {
+                    name: defaultName[checkType],
+                    desc: defaultDesc[checkType],
+                    id: "fillerId",
+                    creatorId: user.uid,
+                },
                 checkType: checkType,
                 instruction: defaultInstructions[checkType],
-                desc: defaultDesc[checkType],
                 category: defaultCategory[checkType],
                 positiveExamples: [
                     {
@@ -37,29 +44,63 @@ const AdminPage: React.FC = () => {
                         editedText: defaultEditedText[checkType],
                     },
                 ],
-                checkId: createUniqueId(),
+                isEnabled: false,
             };
         },
         [],
     );
 
+    const createCheck = useCallback(
+        async (
+            checkType: CheckType,
+            checkerId: CheckerId,
+            checkStatuses: CheckStatuses,
+        ) => {
+            const check = createDefaultCheck(checkType);
+            const checkId = await Api.createCheck(
+                checkerId,
+                check.objInfo.name,
+                check.checkType,
+                user,
+            );
+            if (!checkId) {
+                toast.error("Failed to create check");
+                return;
+            }
+            check.objInfo.id = checkId;
+            if (!(await Api.editCheck(check, user))) {
+                toast.error("Failed to edit check");
+                return;
+            }
+            checkStatuses[checkId] = {
+                isEnabled: true,
+            };
+        },
+        [createDefaultCheck],
+    );
+
     const createRizzume = useCallback(async () => {
+        const checkerId = await Api.createChecker(user);
+        if (!checkerId) {
+            toast.error("Failed to create checker");
+            return;
+        }
+
+        const checkStatuses: CheckStatuses = {};
+        await createCheck(CheckType.highlight, checkerId, checkStatuses);
+        await createCheck(CheckType.rephrase, checkerId, checkStatuses);
+
         const checkerBlueprint: CheckerBlueprint = {
-            name: "Rizzume",
-            desc: "Rizz up your resume",
-            checkBlueprints: [
-                createDefaultCheck(CheckType.highlight),
-                createDefaultCheck(CheckType.rephrase),
-            ],
-            id: createUniqueId(),
-            creatorId: user.uid,
+            objInfo: {
+                name: "Rizzume",
+                desc: "Rizz up your resume",
+                id: checkerId,
+                creatorId: user.uid,
+            },
+            checkStatuses,
             isPublic: true,
         };
-        Api.createChecker(
-            checkerBlueprint,
-            checkerBlueprint.id,
-            await user.getIdToken(),
-        );
+        await Api.editChecker(checkerBlueprint, user);
     }, []);
     return (
         <div className="container mx-auto mt-10 flex flex-col px-32">

@@ -155,7 +155,7 @@ ${positiveExamples}
                             originalText: originalEx,
                             editedText: editedEx,
                             editOps,
-                            checkId: this.blueprint.checkId,
+                            checkId: this.blueprint.objInfo.id,
                             suggestionId: createUniqueId(),
                         });
                     }
@@ -227,7 +227,7 @@ ${positiveExamples}
                             ),
                             originalText: highlightedText,
                             editOps: [],
-                            checkId: this.blueprint.checkId,
+                            checkId: this.blueprint.objInfo.id,
                             suggestionId: createUniqueId(),
                         });
                     }

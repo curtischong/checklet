@@ -6,7 +6,7 @@ import {
     CheckType,
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
-import { defaultOriginalText } from "@components/create-checker/DefaultTextForCheckType";
+import { defaultOriginalText } from "@components/create-check/DefaultTextForCheckType";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { SetState } from "@utils/types";
 import React from "react";

@@ -1,5 +1,5 @@
 import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
-import { PositiveExamplePreview } from "@components/create-checker/CheckCreator";
+import { PositiveExamplePreview } from "@components/create-check/PositiveExamplePreview";
 import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
     onEdit: () => void;
 }
 
-// This is what you see when you see your checks underneath your checker when you're creating the checker
+// These are the checks you see when you're creating your checker
 export const CheckOverview = ({
     checkBlueprint,
     onDelete,
@@ -17,7 +17,9 @@ export const CheckOverview = ({
     return (
         <div className="border bg-white rounded-md shadow-around py-3 px-6 w-[400px]">
             <div className="flex flex-row items-end">
-                <div className="text-lg font-bold">{checkBlueprint.name}</div>
+                <div className="text-lg font-bold">
+                    {checkBlueprint.objInfo.name}
+                </div>
                 <div className="ml-4 mb-[2px]">{checkBlueprint.category}</div>
                 <div className="ml-auto flex flex-row between-x-0">
                     <EditButton className="px-2" onClick={onEdit} />
@@ -28,7 +30,7 @@ export const CheckOverview = ({
                 </div>
             </div>
             {/* <h2>{checkBlueprint.instruction}</h2> */}
-            <h2>{checkBlueprint.desc}</h2>
+            <h2>{checkBlueprint.objInfo.desc}</h2>
             <h2 className="font-bold mt-4">Positive Examples</h2>
             <div className="flex flex-col">
                 {/* TODO: do a diff, so we see the red deletion / green insertion */}

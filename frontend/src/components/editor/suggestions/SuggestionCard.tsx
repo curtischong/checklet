@@ -64,7 +64,7 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
                             "cursor-pointer",
                         )}
                     >
-                        {getCheckDesc(suggestion).name}
+                        {getCheckDesc(suggestion).objInfo.name}
                         {/* <span
                                 className={"p-[3px] rounded-xl bg-red-800 mx-8"}
                             /> */}
@@ -77,7 +77,7 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
                         <div className={css.srcNautObj}>{originalText}</div>
                         <span className={css.smallDot} />
                         <div className={css.shortDesc}>
-                            {getCheckDesc(suggestion).name}
+                            {getCheckDesc(suggestion).objInfo.name}
                         </div>
                     </>
                 )}
@@ -95,7 +95,9 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
                     <div className={css.desc}>
                         {" "}
                         <ReactMarkdown
-                            children={`${getCheckDesc(suggestion).desc}`}
+                            children={`${
+                                getCheckDesc(suggestion).objInfo.desc
+                            }`}
                             remarkPlugins={[remarkGfm]}
                         />{" "}
                     </div>
