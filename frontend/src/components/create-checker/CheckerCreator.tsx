@@ -128,7 +128,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     }, [name, desc, checkStatuses, user, checkerId]);
 
     return (
-        <div className="flex justify-center ">
+        <div className="flex justify-center mt-4">
             <div className="container">
                 <div className="flex flex-col w-[450px]">
                     <div className="flex flex-row items-center">
@@ -146,7 +146,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                         </p>
                     </div>
 
-                    <h1 className="text-xl font-bold mt-10">Create Checker</h1>
+                    <h1 className="text-xl font-bold mt-4">Create Checker</h1>
 
                     <label className="text-lg">Name</label>
                     <Input

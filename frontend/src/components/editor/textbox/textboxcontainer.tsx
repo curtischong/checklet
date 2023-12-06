@@ -323,6 +323,7 @@ export const TextboxContainer = ({
         // return;
 
         const newSuggestions = response.suggestions;
+        console.log("newSuggestions", newSuggestions);
         newSuggestions.sort(sort);
 
         console.log("suggestions", newSuggestions);
