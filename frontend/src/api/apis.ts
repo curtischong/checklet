@@ -67,17 +67,21 @@ export class Api {
         idToken: string,
         checkerId: CheckerId,
     ): Promise<CheckerBlueprint | undefined> => {
-        const data = await Api.createRequest("api/checker-blueprint", "POST", {
-            idToken,
-            checkerId,
-        });
+        const data = await Api.createRequest(
+            "api/checker/get-blueprint",
+            "POST",
+            {
+                idToken,
+                checkerId,
+            },
+        );
         return data?.checkerBlueprint;
     };
 
     static userCheckerBlueprints = async (
         idToken: string,
     ): Promise<CheckerBlueprint[]> => {
-        const data = await Api.createRequest("api/user-checkers", "POST", {
+        const data = await Api.createRequest("api/get-user-checkers", "POST", {
             idToken,
         });
         return data.checkerBlueprints;
@@ -144,7 +148,7 @@ export class Api {
         idToken: string | undefined,
     ): Promise<CheckerStorefront | undefined> => {
         const data = await Api.createRequest(
-            "api/get-checker-storefront",
+            "api/checker/get-storefront",
             "POST",
             {
                 checkerId,
@@ -160,7 +164,7 @@ export class Api {
         idToken: string,
     ): Promise<boolean> => {
         const res = await Api.createRequest(
-            "api/set-checker-is-public",
+            "api/checker/set-is-public",
             "POST",
             {
                 idToken,

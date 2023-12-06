@@ -4,7 +4,7 @@ import {
     isUnauthenticatedRequestValid,
     tryGetUserId,
 } from "pages/api/commonNetworking";
-import { getCheckerBlueprints } from "pages/api/user-checkers";
+import { getCheckerBlueprints } from "pages/api/get-user-checkers";
 import { createClient } from "redis";
 
 export default async function handler(
