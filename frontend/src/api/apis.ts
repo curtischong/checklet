@@ -110,8 +110,8 @@ export class Api {
         name: string,
         checkType: CheckType,
         user: User,
-    ): Promise<boolean> => {
-        const res = Api.createRequest(
+    ): Promise<CheckId> => {
+        const res = await Api.createRequest(
             "api/check/create",
             "POST",
             {
@@ -121,7 +121,7 @@ export class Api {
             },
             user,
         );
-        return res !== undefined;
+        return res?.checkId;
     };
 
     static createChecker = async (
