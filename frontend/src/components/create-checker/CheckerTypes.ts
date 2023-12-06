@@ -1,12 +1,8 @@
 import { Suggestion } from "@api/ApiTypes";
 
-export type BaseObjInfo = {
+export type ObjInfo = {
     name: string;
     desc: string;
-};
-
-// this is the type AFTER the obj has been created
-export type ObjInfo = BaseObjInfo & {
     creatorId: string;
     id: string;
 };
@@ -26,23 +22,16 @@ export enum CheckType {
 }
 export const validCheckTypes = [CheckType.highlight, CheckType.rephrase];
 
-type BaseCheck = {
+export type CheckBlueprint = {
+    objInfo: ObjInfo;
     checkType: CheckType;
     instruction: string;
     category: string; // optional
     positiveExamples: PositiveCheckExample[];
     // negativeExamples: NegativeCheckExample[]; // TODO
     isEnabled: boolean;
+    // Note: we don't track the checkerId here because it is the checker's job to figure out which checks it has
 };
-
-export type CreateCheckReq = {
-    baseObjInfo: BaseObjInfo;
-    checkerId: string; // the checkerId it belongs to
-} & BaseCheck;
-
-export type CheckBlueprint = {
-    objInfo: ObjInfo;
-} & BaseCheck;
 
 export type CheckDescObj = {
     [CheckId: string]: CheckDesc;

@@ -6,7 +6,7 @@ import {
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { validateBaseObjInfo } from "pages/api/common";
+import { validateObjInfo } from "pages/api/common";
 import {
     RedisClient,
     requestMiddleware,
@@ -101,7 +101,7 @@ const validateChecker = async (
     userId: string,
     createCheckerReq: CreateCheckerReq,
 ): Promise<string> => {
-    const baseObjInfoErr = validateBaseObjInfo(createCheckerReq.baseObjInfo);
+    const baseObjInfoErr = validateObjInfo(createCheckerReq.baseObjInfo);
     if (baseObjInfoErr !== "") {
         return baseObjInfoErr;
     }

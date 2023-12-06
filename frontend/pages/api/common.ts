@@ -4,8 +4,10 @@ import {
     CheckType,
     CheckerBlueprint,
     CheckerStorefront,
+    ObjInfo,
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
+import { isLegitId } from "@utils/strings";
 import { NextApiResponse } from "next";
 import { RedisClient, sendBadRequest } from "pages/api/commonNetworking";
 
@@ -54,12 +56,16 @@ export const checkerBlueprintToCheckerStorefront = (
     };
 };
 
-export const validateBaseObjInfo = (objInfo: BaseObjInfo): string => {
+export const validateObjInfo = (objInfo: ObjInfo): string => {
     if (objInfo.name === "") {
         return "Checker description cannot be empty";
     } else if (objInfo.desc === "") {
         return "Checker description cannot be empty";
+    } else if (!isLegitId(objInfo.id)) {
+        return "Checker id is not legit";
     }
+
+    // TODO: validate that the user exists
     return "";
 };
 

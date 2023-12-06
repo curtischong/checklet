@@ -11,7 +11,7 @@ import { createUniqueId } from "@utils/strings";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
     isUserCheckerOwner,
-    validateBaseObjInfo,
+    validateObjInfo,
     validateCheckType,
 } from "pages/api/common";
 import {
@@ -87,7 +87,7 @@ export default async function handler(
 
     await redisClient.sAdd(checkIdsKey, checkId);
 
-    return204Status(res);
+    res.status(200).json({ checkId });
 }
 
 // returns success
