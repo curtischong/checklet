@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const CheckerCreatorPage = (): JSX.Element => {
+const CreateCheckPage = (): JSX.Element => {
     const { user } = useClientContext();
     const [name, setName] = useState("");
     const [checkType, setCheckType] = useState<CheckType | undefined>(
@@ -48,8 +48,8 @@ const CheckerCreatorPage = (): JSX.Element => {
     }
 
     if (name === "") {
-        <CreateCheckName setCheckName={setName} />;
+        return <CreateCheckName setCheckName={setName} />;
     }
     return <SelectCheckType setCheckType={setCheckType} />;
 };
-export default CheckerCreatorPage;
+export default CreateCheckPage;

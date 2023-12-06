@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 
-const CreateCheckerPage: React.FC = () => {
+const CreateCheckWithIdPage: React.FC = () => {
     const router = useRouter();
     const checkId = router.query.checkId as string;
 
@@ -9,7 +9,7 @@ const CreateCheckerPage: React.FC = () => {
     //     (async () => {})();
     // }, [checkerId]); // if the checkerId changes, we need to re-fetch the storefront (this page technically doesn't reload, so we need to add it to the dep lsit)
 
-    return <CheckCreator checkerId={checker} />;
+    return <CheckCreator checkId={checker}/>;
 };
 
-export default CreateCheckerPage;
+export default CreateCheckWithIdPage;

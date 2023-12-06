@@ -2,7 +2,11 @@ import { SubmitButton } from "@components/Button";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import { CheckPreview } from "@components/create-check/CheckPreview";
 import { CreateCheckNavigationPath } from "@components/create-check/CreateCheckNavigationPath";
-import { CheckType } from "@components/create-checker/CheckerTypes";
+import { feedbackTypeDesc } from "@components/create-check/DefaultTextForCheckType";
+import {
+    CheckType,
+    validCheckTypes,
+} from "@components/create-checker/CheckerTypes";
 import { SetState } from "@utils/types";
 import React from "react";
 
@@ -31,13 +35,17 @@ export const SelectCheckType = ({
                 <div className="w-[400px] mx-auto mt-8 h-48">
                     <CheckPreview
                         blueprint={{
-                            name: "",
-                            desc: "",
+                            objInfo: {
+                                id: "",
+                                name: "",
+                                desc: "",
+                                creatorId: "",
+                            },
                             instruction: "",
                             category: "",
-                            checkId: "",
                             checkType: tmpCheckType,
                             positiveExamples: [],
+                            isEnabled: true,
                         }}
                         originalText=""
                         editedText=""

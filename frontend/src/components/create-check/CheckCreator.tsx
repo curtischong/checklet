@@ -27,7 +27,6 @@ import {
 import { PositiveCheckExampleCreator } from "@components/create-check/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { useClientContext } from "@utils/ClientContext";
-import { createUniqueId } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
@@ -97,58 +96,55 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
     const [originalText, setOriginalText] = React.useState("");
     const [editedText, setEditedText] = React.useState("");
 
-    // the pageData is just an optimization we do so we don't need to fetch it from the server
-    // if the previous page already had information about the check
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rawInitialCheckBlueprint = (pageData as any)?.initialCheckBlueprint;
     const router = useRouter();
+    const checkerId = router.query.checkerId as string;
     const { user } = useClientContext();
 
-    const setInitialCheckBlueprint = useCallback(
-        (initialCheckBlueprint: CheckBlueprint) => {
-            setName(initialCheckBlueprint.name);
-            setDesc(initialCheckBlueprint.desc);
-            setCheckType(initialCheckBlueprint.checkType);
-            setInstruction(initialCheckBlueprint.instruction);
-            setCategory(initialCheckBlueprint.category);
-            setPositiveExamples(initialCheckBlueprint.positiveExamples);
-            setCheckId(initialCheckBlueprint.checkId);
-        },
-        [],
-    );
+    // const setInitialCheckBlueprint = useCallback(
+    //     (initialCheckBlueprint: CheckBlueprint) => {
+    //         setName(initialCheckBlueprint.name);
+    //         setDesc(initialCheckBlueprint.desc);
+    //         setCheckType(initialCheckBlueprint.checkType);
+    //         setInstruction(initialCheckBlueprint.instruction);
+    //         setCategory(initialCheckBlueprint.category);
+    //         setPositiveExamples(initialCheckBlueprint.positiveExamples);
+    //         setCheckId(initialCheckBlueprint.checkId);
+    //     },
+    //     [],
+    // );
     useEffect(() => {
-        const routerCheckerId = router.query.checkerId as string;
-        const routerCheckId = router.query.checkId as string;
-        if (rawInitialCheckBlueprint) {
-            setInitialCheckBlueprint(rawInitialCheckBlueprint);
-        } else if (routerCheckerId && routerCheckId) {
-            (async () => {
-                if (!user) {
-                    toast.error("Please log in to edit your check");
-                    return;
-                }
-                // not needed. we just pas in the checkerId in the url
-                // const checkerBlueprint = await Api.fetchCheckerBlueprint(
-                //     routerCheckerId as string,
-                //     user,
-                // );
-                if (!checkerBlueprint) {
-                    console.warn(
-                        `checker blueprint not found for checkerId=${routerCheckerId}`,
-                    );
-                    return;
-                }
-                for (const checkBlueprint of checkerBlueprint.checkBlueprints) {
-                    if (checkBlueprint.checkId === routerCheckId) {
-                        setInitialCheckBlueprint(checkBlueprint);
-                        return;
-                    }
-                }
-                console.warn(
-                    `check blueprint with id=${routerCheckId} not found in checker blueprint with id=${routerCheckerId}`,
-                );
-            })();
+        if (!checkerId || !checkId) {
+            // TODO: we should just redirect them in the middleware if this is the case
+            toast.error("checkerId or checkId is undefined");
+            return;
         }
+
+        (async () => {
+            if (!user) {
+                toast.error("Please log in to edit your check");
+                return;
+            }
+            // not needed. we just pas in the checkerId in the url
+            // const checkerBlueprint = await Api.fetchCheckerBlueprint(
+            //     routerCheckerId as string,
+            //     user,
+            // );
+            if (!checkerBlueprint) {
+                console.warn(
+                    `checker blueprint not found for checkerId=${routerCheckerId}`,
+                );
+                return;
+            }
+            for (const checkBlueprint of checkerBlueprint.checkBlueprints) {
+                if (checkBlueprint.checkId === routerCheckId) {
+                    setInitialCheckBlueprint(checkBlueprint);
+                    return;
+                }
+            }
+            console.warn(
+                `check blueprint with id=${routerCheckId} not found in checker blueprint with id=${routerCheckerId}`,
+            );
+        })();
     }, []);
 
     const [clickedSubmit, setClickedSubmit] = React.useState(false);

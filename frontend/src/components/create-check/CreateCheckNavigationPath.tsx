@@ -19,12 +19,7 @@ export const CreateCheckNavigationPath = (): JSX.Element => {
                 className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
                 onClick={() => {
                     // TODO: we need to have a function that will rout to the right path, but iwll also consider al lthe right url params
-                    router.push({
-                        pathname: "/create/checker",
-                        query: {
-                            checkerId,
-                        },
-                    });
+                    router.push(`/create/checker/${checkerId}`);
                 }}
             >
                 Create checker
