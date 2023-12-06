@@ -8,12 +8,10 @@ import React from "react";
 
 interface SelectCheckTypeProps {
     setCheckType: SetState<CheckType | undefined>;
-    setPage: (page: Page, pageData?: unknown) => void;
 }
 
 export const SelectCheckType = ({
     setCheckType,
-    setPage,
 }: SelectCheckTypeProps): JSX.Element => {
     const [tmpCheckType, setTmpCheckType] = React.useState<CheckType>(
         CheckType.highlight,
@@ -21,7 +19,7 @@ export const SelectCheckType = ({
 
     return (
         <div className="flex flex-col">
-            <CreateCheckNavigationPath setPage={setPage} />
+            <CreateCheckNavigationPath />
             <div className="w-[50vw] mx-auto flex flex-col">
                 <div className="mt-16 font-bold text-xl">Select Check Type</div>
                 <SlidingRadioButton

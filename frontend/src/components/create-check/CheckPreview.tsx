@@ -73,15 +73,18 @@ export const CheckPreview = ({
     }, [blueprint.checkType]);
 
     const checkDesc: CheckDesc = {
-        name: blueprint.name || defaultName[blueprint.checkType],
-        desc: blueprint.desc || defaultDesc[blueprint.checkType],
+        objInfo: {
+            name: blueprint.objInfo.name || defaultName[blueprint.checkType],
+            desc: blueprint.objInfo.desc || defaultDesc[blueprint.checkType],
+            id: blueprint.objInfo.id,
+            creatorId: blueprint.objInfo.creatorId,
+        },
         category: blueprint.category || defaultCategory[blueprint.checkType],
         positiveExamples:
             blueprint.positiveExamples.length > 0
                 ? blueprint.positiveExamples
                 : defaultPositiveExamplesForCheckType,
         checkType: blueprint.checkType,
-        checkId,
     };
 
     return (

@@ -188,8 +188,11 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                     setCheckBlueprints(newChecks);
                                 }}
                                 onEdit={() => {
-                                    setPage(Page.CheckCreator, {
-                                        initialCheckBlueprint: checkBlueprint,
+                                    router.push({
+                                        pathname: `/create/check/${checkBlueprint.objInfo.id}`,
+                                        query: {
+                                            checkerId: checkerId,
+                                        },
                                     });
                                 }}
                             />
@@ -198,7 +201,14 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                     <NormalButton
                         className="mt-8 w-80"
                         onClick={() => {
-                            setPage(Page.CheckCreator);
+                            (async () => {
+                                router.push({
+                                    pathname: `/create/check`,
+                                    query: {
+                                        checkerId: checkerId,
+                                    },
+                                });
+                            })();
                         }}
                     >
                         Create Check

@@ -1,20 +1,18 @@
 import { SubmitButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { CreateCheckNavigationPath } from "@components/create-check/CreateCheckNavigationPath";
-import { Page } from "@components/create-checker/CheckerCreator";
 import { SetState } from "@utils/types";
 import React from "react";
 
 interface Props {
-    setCheckName: SetState<string | undefined>;
-    setPage: (page: Page, pageData?: unknown) => void;
+    setCheckName: SetState<string>;
 }
 
-export const CreateCheckName = ({ setCheckName, setPage }: Props) => {
+export const CreateCheckName = ({ setCheckName }: Props): JSX.Element => {
     const [tmpName, setTmpName] = React.useState("");
     return (
         <div>
-            <CreateCheckNavigationPath setPage={setPage} />
+            <CreateCheckNavigationPath />
             <div className="w-[500px] mx-auto flex flex-col justify-center h-[80vh]">
                 <div className="text-xl font-bold">Define your Check</div>
                 <div className="mt-4 text-xl">Check Name</div>

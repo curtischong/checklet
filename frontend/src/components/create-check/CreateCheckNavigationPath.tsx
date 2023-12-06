@@ -1,12 +1,9 @@
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { useRouter } from "next/router";
 
-interface Props {
-    setPage: (page: Page, pageData?: unknown) => void;
-}
-
-export const CreateCheckNavigationPath = ({ setPage }: Props): JSX.Element => {
+export const CreateCheckNavigationPath = (): JSX.Element => {
     const router = useRouter();
+    const checkerId = router.query.checkerId;
     return (
         <div className="flex flex-row items-center">
             <p
@@ -22,7 +19,12 @@ export const CreateCheckNavigationPath = ({ setPage }: Props): JSX.Element => {
                 className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
                 onClick={() => {
                     // TODO: we need to have a function that will rout to the right path, but iwll also consider al lthe right url params
-                    setPage(Page.Main);
+                    router.push({
+                        pathname: "/create/checker",
+                        query: {
+                            checkerId,
+                        },
+                    });
                 }}
             >
                 Create checker
