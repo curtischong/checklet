@@ -461,9 +461,13 @@ export const AuthBoxCss = (): JSX.Element => {
                     right: 0;
                 }
                 @supports (-webkit-appearance: none) {
-                    .mdl-progress:not(.mdl-progress--indeterminate):not(.mdl-progress--indeterminate)
+                    .mdl-progress:not(.mdl-progress--indeterminate):not(
+                            .mdl-progress--indeterminate
+                        )
                         > .auxbar,
-                    .mdl-progress:not(.mdl-progress__indeterminate):not(.mdl-progress__indeterminate)
+                    .mdl-progress:not(.mdl-progress__indeterminate):not(
+                            .mdl-progress__indeterminate
+                        )
                         > .auxbar {
                         background-image: linear-gradient(
                                 to right,
