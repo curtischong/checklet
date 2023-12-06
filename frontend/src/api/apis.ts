@@ -180,6 +180,7 @@ export class Api {
     };
 
     static deleteCheck = async (
+        checkerId: CheckerId,
         checkId: CheckId,
         user: User,
     ): Promise<boolean> => {
@@ -187,6 +188,7 @@ export class Api {
             "api/check/delete",
             "POST",
             {
+                checkerId,
                 checkId,
             },
             user,

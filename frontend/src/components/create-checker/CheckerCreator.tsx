@@ -181,7 +181,20 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                             <CheckOverview
                                 key={`check-${idx}`}
                                 checkBlueprint={checkBlueprint}
-                                onDelete={() => {
+                                onDelete={async () => {
+                                    if (!user) {
+                                        return;
+                                    }
+                                    const checkId = checkBlueprint.objInfo.id;
+                                    if (
+                                        !(await Api.deleteCheck(
+                                            checkerId,
+                                            checkId,
+                                            user,
+                                        ))
+                                    ) {
+                                        return;
+                                    }
                                     const newChecks = [...checkBlueprints];
                                     newChecks.splice(idx, 1);
                                     setCheckBlueprints(newChecks);
@@ -225,7 +238,6 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                     </LoadingButtonSubmit>
                     <div className="h-10"></div>
                 </div>
-                );
             </div>
         </div>
     );

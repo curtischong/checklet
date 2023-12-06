@@ -1,15 +1,6 @@
-import {
-    CheckBlueprint,
-    CheckType,
-    CheckerBlueprint,
-} from "@components/create-checker/CheckerTypes";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-    isUserCheckOwner,
-    isUserCheckerOwner,
-    validateCheckType,
-    validateObjInfo,
-} from "pages/api/common";
+import { isUserCheckOwner, isUserCheckerOwner } from "pages/api/common";
 import {
     requestMiddleware,
     return204Status,
@@ -29,8 +20,7 @@ export default async function handler(
     const redisClient = createClient();
     await redisClient.connect();
 
-    const checkBlueprint: CheckBlueprint = req.body.checkBlueprint;
-    const checkId = checkBlueprint.objInfo.id;
+    const checkId = req.body.checkId;
     const checkerId = req.body.checkerId;
 
     if (!(await isUserCheckOwner(redisClient, res, userId, checkId))) {
