@@ -13,6 +13,7 @@ import { Api } from "@api/apis";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { NormalTextArea } from "@components/TextArea";
 import {
+    CheckBlueprint,
     CheckStatuses,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
@@ -32,7 +33,7 @@ interface Props {
     checkerId: string;
 }
 
-export const CheckerCreator: React.FC = ({ checkerId }: Props) => {
+export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
     const [desc, setDesc] = React.useState("");
     const [checkStatuses, setCheckStatuses] = React.useState<CheckStatuses>({});
@@ -40,6 +41,9 @@ export const CheckerCreator: React.FC = ({ checkerId }: Props) => {
         SubmittingState.NotSubmitting,
     );
     const [isPublic, setIsPublic] = React.useState(false);
+    const [checkBlueprints, setCheckBlueprints] = React.useState<
+        CheckBlueprint[]
+    >([]);
     const { user } = useClientContext();
 
     const [err, setErr] = React.useState("");
@@ -53,18 +57,20 @@ export const CheckerCreator: React.FC = ({ checkerId }: Props) => {
             return;
         }
         (async () => {
-            const checkerBlueprint = await Api.fetchCheckerBlueprint(
+            const res = await Api.fetchCheckerBlueprint(
                 checkerId as string,
                 user,
             );
-            if (!checkerBlueprint) {
+            if (!res) {
                 toast.error("Failed to fetch checker");
                 return;
             }
+            const { checkerBlueprint, checkBlueprints } = res;
             setName(checkerBlueprint.objInfo.name);
             setDesc(checkerBlueprint.objInfo.desc);
             setCheckStatuses(checkerBlueprint.checkStatuses);
             setIsPublic(checkerBlueprint.isPublic);
+            setCheckBlueprints(checkBlueprints);
         })();
     }, [user]);
 

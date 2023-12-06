@@ -1,6 +1,9 @@
-import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import {
+    CheckBlueprint,
+    CheckerBlueprint,
+} from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isUserCheckerOwner } from "pages/api/common";
+import { getCheckBlueprints, isUserCheckerOwner } from "pages/api/common";
 import { requestMiddleware, sendBadRequest } from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
@@ -26,9 +29,16 @@ export default async function handler(
         sendBadRequest(res, "CheckerBlueprint not found");
         return;
     }
+
     const checkerBlueprint: CheckerBlueprint = JSON.parse(rawCheckerBlueprint);
+    const checkBlueprints: CheckBlueprint[] = await getCheckBlueprints(
+        redisClient,
+        checkerBlueprint,
+        false,
+    );
 
     res.status(200).json({
         checkerBlueprint,
+        checkBlueprints,
     });
 }

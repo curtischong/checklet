@@ -1,4 +1,3 @@
-import { Api } from "@api/apis";
 import {
     DeleteButton,
     LoadingButtonSubmit,
@@ -14,6 +13,7 @@ import { CreateCheckNavigationPath } from "@components/create-check/CreateCheckN
 import { Page } from "@components/create-checker/CheckerCreator";
 import {
     CheckBlueprint,
+    CheckId,
     CheckType,
     PositiveCheckExample,
     validCheckTypes,
@@ -81,17 +81,9 @@ import { toast } from "react-toastify";
 }
 
 interface Props {
-    onCreate: (check: CheckBlueprint) => void;
-    setPage: (page: Page, pageData?: unknown) => void;
-    pageData?: unknown;
-    submittingState: SubmittingState;
+    checkId: CheckId;
 }
-export const CheckCreator = ({
-    onCreate,
-    setPage,
-    pageData,
-    submittingState,
-}: Props): JSX.Element => {
+export const CheckCreator = ({ checkId }: Props): JSX.Element => {
     const [name, setName] = React.useState<string | undefined>(undefined);
     const [desc, setDesc] = React.useState("");
     const [instruction, setInstruction] = React.useState("");
@@ -99,7 +91,6 @@ export const CheckCreator = ({
     const [positiveExamples, setPositiveExamples] = React.useState<
         PositiveCheckExample[]
     >([]);
-    const [checkId, setCheckId] = React.useState<string>(createUniqueId());
     const [checkType, setCheckType] = React.useState<CheckType | undefined>(
         undefined,
     );
@@ -136,10 +127,11 @@ export const CheckCreator = ({
                     toast.error("Please log in to edit your check");
                     return;
                 }
-                const checkerBlueprint = await Api.fetchCheckerBlueprint(
-                    await user.getIdToken(),
-                    routerCheckerId as string,
-                );
+                // not needed. we just pas in the checkerId in the url
+                // const checkerBlueprint = await Api.fetchCheckerBlueprint(
+                //     routerCheckerId as string,
+                //     user,
+                // );
                 if (!checkerBlueprint) {
                     console.warn(
                         `checker blueprint not found for checkerId=${routerCheckerId}`,

@@ -1,5 +1,4 @@
 import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
-import { PositiveExamplePreview } from "@components/create-check/CheckCreator";
 import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
 
 interface Props {
@@ -8,7 +7,7 @@ interface Props {
     onEdit: () => void;
 }
 
-// This is what you see when you see your checks underneath your checker when you're creating the checker
+// These are the checks you see when you're creating your checker
 export const CheckOverview = ({
     checkBlueprint,
     onDelete,
