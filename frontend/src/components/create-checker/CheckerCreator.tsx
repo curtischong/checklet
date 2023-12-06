@@ -130,7 +130,6 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     return (
         <div className="flex justify-center ">
             <div className="container">
-                return (
                 <div className="flex flex-col w-[450px]">
                     <div className="flex flex-row items-center">
                         <p

@@ -39,10 +39,11 @@ export const DashboardChecker = ({
                     <EditButton
                         className="px-2"
                         onClick={() => {
+                            const checkerId = blueprint.objInfo.id;
                             router.push({
-                                pathname: "/create-checker",
+                                pathname: `/create/checker/${checkerId}`,
                                 query: {
-                                    checkerId: blueprint.objInfo.id,
+                                    checkerId,
                                 },
                             });
                         }}
