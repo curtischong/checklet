@@ -26,63 +26,28 @@ export enum Page {
     CheckCreator,
 }
 
-export const CheckerCreator: React.FC = () => {
+interface Props {
+    checkerId: string;
+}
+
+export const CheckerCreator: React.FC = ({ checkerId }: Props) => {
     const [name, setName] = React.useState("");
     const [desc, setDesc] = React.useState("");
     const [checkStatuses, setCheckStatuses] = React.useState<CheckStatuses>({});
-    const [checkerId, setCheckerId] = React.useState<string>("");
     const [pageData, setPageData] = React.useState<unknown>(null);
     const [submittingState, setSubmittingState] = React.useState(
         SubmittingState.NotSubmitting,
     );
     const { user } = useClientContext();
 
-    // https://stackoverflow.com/questions/60036703/is-it-possible-to-define-hash-route-in-next-js
     const router = useRouter();
-    const hash = router.asPath.split("#")[1] || "";
-    const page = hash === "check" ? Page.CheckCreator : Page.Main;
-    const setPage = (page: Page, pageData?: any) => {
-        setPageData(pageData);
-        if (page === Page.Main) {
-            // forward the url params to persist the checkerId in the url
-            const urlParams = new URLSearchParams(window.location.search);
-            router.push({
-                pathname: "",
-                query: {
-                    checkerId: Object.fromEntries(urlParams).checkerId,
-                },
-            });
-        } else {
-            let query = {};
-            if (pageData?.initialCheckBlueprint?.checkId) {
-                query = {
-                    checkerId: checkerId,
-                    checkId: pageData.initialCheckBlueprint.checkId,
-                };
-            }
-            router.push({
-                hash: "check",
-                query,
-            });
-        }
-    };
 
     useEffect(() => {
-        const data = router.query;
         if (!user) {
             return;
         }
-        const checkerId = data.checkerId;
         (async () => {
             if (!checkerId) {
-                // if no checkerId is provided, then we are creating a new checker
-                const checkerId = await Api.createChecker(user);
-                if (!checkerId) {
-                    toast.error("Failed to create checker");
-                    return;
-                }
-                setCheckerId(checkerId);
-                return;
             } else {
                 const checkerBlueprint = await Api.fetchCheckerBlueprint(
                     data.checkerId as string,

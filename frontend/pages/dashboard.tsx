@@ -25,9 +25,10 @@ const Dashboard: React.FC = () => {
             if (user === null) {
                 return;
             }
-            const checkerBlueprints = await Api.userCheckerBlueprints(
-                await user.getIdToken(),
-            );
+            const checkerBlueprints = await Api.userCheckerBlueprints(user);
+            if (!checkerBlueprints) {
+                return;
+            }
             setCheckers(checkerBlueprints);
         })();
     }, [user]);
@@ -35,6 +36,22 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         fetchCheckerBlueprints();
     }, [fetchCheckerBlueprints]);
+
+    const createChecker = useCallback(async () => {
+        if (!user) {
+            toast.error("You must be logged in to create a checker");
+            return;
+        }
+
+        // if no checkerId is provided, then we are creating a new checker
+        const checkerId = await Api.createChecker(user);
+        if (!checkerId) {
+            toast.error("Failed to create checker");
+            return;
+        }
+
+        router.push(`/create/checker/${checkerId}`);
+    }, [user]);
 
     return (
         <div className="flex">
@@ -79,11 +96,7 @@ const Dashboard: React.FC = () => {
                         );
                     })}
                 </div>
-                <NormalButton
-                    onClick={() => {
-                        router.push("/create-checker");
-                    }}
-                >
+                <NormalButton onClick={createChecker}>
                     Create Checker
                 </NormalButton>
             </div>

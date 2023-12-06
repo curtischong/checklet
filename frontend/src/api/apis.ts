@@ -86,14 +86,14 @@ export class Api {
 
     static userCheckerBlueprints = async (
         user: User,
-    ): Promise<CheckerBlueprint[]> => {
+    ): Promise<CheckerBlueprint[] | undefined> => {
         const data = await Api.createRequest(
             "api/get-user-checkers",
             "POST",
             {},
             user,
         );
-        return data.checkerBlueprints;
+        return data?.checkerBlueprints;
     };
 
     static createCheck = async (
