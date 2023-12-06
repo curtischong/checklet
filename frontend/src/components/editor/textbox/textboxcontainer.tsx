@@ -383,16 +383,14 @@ export const TextboxContainer = ({
                 </div>
             </Affix>
 
-            <>
-                <Editor
-                    spellCheck={true}
-                    editorState={editorState}
-                    onChange={updateEditorState}
-                    placeholder="Type or paste your resume here"
-                    ref={editorRef}
-                    stripPastedStyles={true}
-                />
-            </>
+            <Editor
+                spellCheck={true}
+                editorState={editorState}
+                onChange={updateEditorState}
+                placeholder="Type or paste your resume here"
+                ref={editorRef}
+                stripPastedStyles={true}
+            />
         </div>
     );
 };

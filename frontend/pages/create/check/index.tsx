@@ -29,7 +29,7 @@ const CreateCheckPage = (): JSX.Element => {
                     return;
                 }
                 router.push({
-                    pathname: `/create/check/${checkerId}`,
+                    pathname: `/create/check/${checkId}`,
                     query: {
                         checkerId,
                         isNew: true,
