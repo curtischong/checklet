@@ -69,5 +69,5 @@ export default async function handler(
 
     await redisClient.sAdd(userCheckerIdsKey, checkerId);
 
-    return204Status(res);
+    res.status(200).json({ checkerId });
 }

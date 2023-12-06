@@ -43,6 +43,8 @@ export default async function handler(
         }
     }
 
+    checkBlueprint.objInfo.creatorId = userId; // override just for security purposes
+
     const positiveExamples = checkBlueprint.positiveExamples;
     for (const example of positiveExamples) {
         if (checkBlueprint.checkType !== CheckType.rephrase) {

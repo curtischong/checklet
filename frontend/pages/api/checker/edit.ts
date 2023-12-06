@@ -6,7 +6,7 @@ import {
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { validateObjInfo } from "pages/api/common";
+import { isUserCheckerOwner, validateObjInfo } from "pages/api/common";
 import {
     RedisClient,
     requestMiddleware,
@@ -27,90 +27,53 @@ export default async function handler(
     const redisClient = createClient();
     await redisClient.connect();
 
-    const createCheckerReq: CreateCheckerReq = req.body.createCheckerReq;
+    const checkerBlueprint: CheckerBlueprint = req.body.checkerBlueprint;
+    const checkerId = checkerBlueprint.objInfo.id;
 
-    const validationErr = validateChecker(createCheckerReq, checkerId);
-    if (validationErr !== "") {
-        sendBadRequest(res, validationErr);
+    if (!(await isUserCheckerOwner(redisClient, res, userId, checkerId))) {
         return;
     }
-    const existingChecker = await redisClient.get(`checkers/${checkerId}`);
-    if (existingChecker !== null) {
-        if (JSON.parse(existingChecker).creatorId !== userId) {
-            sendBadRequest(
-                res,
-                `You are not the creator of this checker. You cannot edit it.`,
-            );
+
+    if (checkerBlueprint.isPublic) {
+        // validate that it's legit before we make it public
+        const validationErr = await validateChecker(
+            redisClient,
+            userId,
+            checkerBlueprint,
+        );
+        if (validationErr !== "") {
+            sendBadRequest(res, validationErr);
             return;
         }
     }
 
-    // modify the checkerBlueprint so users don't pass in bad data that could be security vulnerabilities
-    checkerBlueprint.creatorId = userId; // override just for security purposes
-    for (const check of checkerBlueprint.checkBlueprints) {
-        if (check.checkType !== CheckType.rephrase) {
-            for (const example of check.positiveExamples) {
-                example.editedText = ""; // clear, so users can't pass in bad data
-            }
-        }
-    }
+    checkerBlueprint.objInfo.creatorId = userId; // override just for security purposes
 
     await redisClient.set(
         `checkers/${checkerId}`,
         JSON.stringify(checkerBlueprint), // TODO: compress this
     );
 
-    // instead of json.stringifying an array, we use a set
-    // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis
-    const checkerIdsKey = `users/${userId}/checkerIds`;
-    const checkerIds = await redisClient.sMembers(checkerIdsKey);
-    if (checkerIds.includes(checkerId)) {
-        // The user is probably trying to edit an existing checker. this checker is already in checkerIds
-        res.status(200).json({ status: "success" });
-        return;
-    }
-    if (checkerIds.length >= 7) {
-        sendBadRequest(res, "You can only have 7 checkers");
-        return;
-    }
-    await redisClient.sAdd(checkerIdsKey, checkerId);
-    await redisClient.sAdd("publicCheckerIds", checkerId);
-
     return204Status(res);
 }
-
-const validateCheck = (blueprint: CheckBlueprint): string => {
-    if (blueprint.name === "") {
-        return "Check name cannot be empty";
-    } else if (blueprint.desc === "") {
-        return "Check description cannot be empty";
-    } else if (blueprint.instruction === "") {
-        return "Check instruction cannot be empty";
-    } else if (!validCheckTypes.includes(blueprint.checkType)) {
-        return `Check type must be one of [${validCheckTypes.join(
-            ", ",
-        )}]. Got ${blueprint.checkType}`;
-    } else if (blueprint.positiveExamples.length === 0) {
-        return "Check must have at least one positive example";
-    }
-    return "";
-};
 
 const validateChecker = async (
     redisClient: RedisClient,
     userId: string,
-    createCheckerReq: CreateCheckerReq,
+    checkerBlueprint: CheckerBlueprint,
 ): Promise<string> => {
-    const baseObjInfoErr = validateObjInfo(createCheckerReq.baseObjInfo);
-    if (baseObjInfoErr !== "") {
-        return baseObjInfoErr;
+    const objInfoErr = validateObjInfo(checkerBlueprint.objInfo);
+    if (objInfoErr !== "") {
+        return objInfoErr;
     }
 
-    if (createCheckerReq.checkIds.length === 0) {
+    const checkIds = Object.keys(checkerBlueprint.checkStatuses);
+    if (checkIds.length === 0) {
         return "Checker must have at least one check";
     }
 
-    for (const checkId of createCheckerReq.checkIds) {
+    // PERF: batch this
+    for (const checkId of checkIds) {
         if (
             !(await redisClient.sIsMember(`users/${userId}/checkIds`, checkId))
         ) {
@@ -118,18 +81,6 @@ const validateChecker = async (
         }
     }
 
-    // validate checks
-    for (const checkId of createCheckerReq.checkIds) {
-        const rawCheck = await redisClient.get(`checks/${checkId}`);
-        if (rawCheck === null) {
-            return `Check with id ${checkId} does not exist`;
-        }
-        const check = JSON.parse(rawCheck);
-        const checkValidationErr = validateCheck(check);
-        if (checkValidationErr !== "") {
-            return checkValidationErr;
-        }
-    }
-
+    // we don't need to validate checks. Since we validate them before they are enabled
     return "";
 };

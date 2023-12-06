@@ -1,6 +1,5 @@
 import { CheckerId } from "@api/checker";
 import {
-    BaseObjInfo,
     CheckType,
     CheckerBlueprint,
     CheckerStorefront,
