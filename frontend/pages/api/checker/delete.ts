@@ -31,10 +31,10 @@ export default async function deleteChecker(
         return;
     }
     const checkerBlueprint = JSON.parse(rawCheckerBlueprint);
-    for (const checkId of Object.keys(checkerBlueprint.statuses)) {
-        await redisClient.del(`checks/${checkId}`);
-        await redisClient.sRem(`users/${userId}/checkIds`, checkId);
-    }
+    const checkIds = Object.keys(checkerBlueprint.statuses);
+    const checkKeys = checkIds.map((checkId) => `checks/${checkId}`);
+    await redisClient.del(checkKeys);
+    await redisClient.sRem(`users/${userId}/checkIds`, checkIds);
 
     // now delete the checker
     await redisClient.sRem(`users/${userId}/checkerIds`, checkerId);
