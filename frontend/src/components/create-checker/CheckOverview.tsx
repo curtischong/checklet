@@ -1,5 +1,5 @@
 import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
-import { PositiveExamplePreview } from "@components/create-checker/CheckCreator";
+import { PositiveExamplePreview } from "@components/create-check/CheckCreator";
 import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
 
 interface Props {

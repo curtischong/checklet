@@ -12,7 +12,7 @@ import {
     defaultInstructions,
     defaultName,
     defaultOriginalText,
-} from "@components/create-checker/DefaultTextForCheckType";
+} from "@components/create-check/DefaultTextForCheckType";
 import { useClientContext } from "@utils/ClientContext";
 import { createUniqueId } from "@utils/strings";
 import { useCallback } from "react";

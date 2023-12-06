@@ -9,7 +9,7 @@ import {
     defaultEditedText,
     defaultName,
     defaultOriginalText,
-} from "@components/create-checker/DefaultTextForCheckType";
+} from "@components/create-check/DefaultTextForCheckType";
 import { SuggestionCard } from "@components/editor/suggestions/SuggestionCard";
 import { useMemo } from "react";
 

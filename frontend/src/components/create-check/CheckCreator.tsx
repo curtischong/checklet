@@ -3,14 +3,14 @@ import {
     DeleteButton,
     LoadingButtonSubmit,
     NormalButton,
-    SubmitButton,
     SubmittingState,
 } from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import { NormalTextArea } from "@components/TextArea";
-import { CheckPreview } from "@components/create-checker/CheckPreview";
+import { CheckPreview } from "@components/create-check/CheckPreview";
+import { CreateCheckNavigationPath } from "@components/create-check/CreateCheckNavigationPath";
 import { Page } from "@components/create-checker/CheckerCreator";
 import {
     CheckBlueprint,
@@ -23,17 +23,62 @@ import {
     defaultDesc,
     defaultInstructions,
     defaultName,
-} from "@components/create-checker/DefaultTextForCheckType";
-import { PositiveCheckExampleCreator } from "@components/create-checker/PositiveCheckExampleCreator";
+} from "@components/create-check/DefaultTextForCheckType";
+import { PositiveCheckExampleCreator } from "@components/create-check/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
-import { RightArrowIcon } from "@components/icons/RightArrowIcon";
-import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
 import { useClientContext } from "@utils/ClientContext";
 import { createUniqueId } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
+
+{
+    /* <CheckCreator
+    submittingState={submittingState}
+    onCreate={(check) => {
+        const existingCheckIdx = checkBlueprints.findIndex(
+            (c) => c.checkId === check.checkId,
+        );
+        const newCheckBlueprints = [...checkBlueprints];
+        if (existingCheckIdx !== -1) {
+            // this check already exists. So we find its index, and replace it
+            newCheckBlueprints[existingCheckIdx] = check;
+        } else {
+            newCheckBlueprints.push(check);
+        }
+        setCheckBlueprints(newCheckBlueprints);
+        if (!user) {
+            toast.error("You must be logged in to create/update a check");
+            setSubmittingState(SubmittingState.NotSubmitting);
+            return;
+        }
+        const checker = {
+            name,
+            desc,
+            checkBlueprints: newCheckBlueprints,
+            creatorId: user.uid,
+        } as CheckerBlueprint;
+
+        // const checkerId =
+        //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
+        setSubmittingState(SubmittingState.Submitting);
+        (async () => {
+            await Api.createChecker(
+                checker,
+                checkerId,
+                await user.getIdToken(),
+            );
+            setSubmittingState(SubmittingState.Submitted);
+            setTimeout(() => {
+                setSubmittingState(SubmittingState.NotSubmitting);
+            }, 3000);
+        })();
+    }}
+    setPage={setPage}
+    pageData={pageData}
+/>; */
+}
 
 interface Props {
     onCreate: (check: CheckBlueprint) => void;
@@ -205,7 +250,7 @@ export const CheckCreator = ({
                     flexBasis: "0",
                 }}
             >
-                <CreateCheckerNavigationPath setPage={setPage} />
+                <CreateCheckNavigationPath setPage={setPage} />
                 <h1 className=" text-xl font-bold">Create Check</h1>
                 <label className="text-md mt-4">Name</label>
                 <Input
@@ -363,218 +408,6 @@ export const CheckCreator = ({
                     />
                 </div>
             </div>
-        </div>
-    );
-};
-
-interface CreateCheckerNavigationPathProps {
-    setPage: (page: Page, pageData?: unknown) => void;
-}
-
-const CreateCheckerNavigationPath = ({
-    setPage,
-}: CreateCheckerNavigationPathProps): JSX.Element => {
-    const router = useRouter();
-    return (
-        <div className="flex flex-row items-center">
-            <p
-                className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
-                onClick={() => {
-                    router.push("/dashboard");
-                }}
-            >
-                Dashboard
-            </p>
-            <RightArrowIcon className="mx-2 w-[14px]" />
-            <p
-                className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
-                onClick={() => {
-                    setPage(Page.Main);
-                }}
-            >
-                Create checker
-            </p>
-            <RightArrowIcon className="mx-2 w-[14px]" />
-            <p className="font-bold text-gray-600">Create check</p>
-        </div>
-    );
-};
-
-interface CreateCheckNameProps {
-    setCheckName: SetState<string | undefined>;
-    setPage: (page: Page, pageData?: unknown) => void;
-}
-
-const CreateCheckName = ({ setCheckName, setPage }: CreateCheckNameProps) => {
-    const [tmpName, setTmpName] = React.useState("");
-    return (
-        <div>
-            <CreateCheckerNavigationPath setPage={setPage} />
-            <div className="w-[500px] mx-auto flex flex-col justify-center h-[80vh]">
-                <div className="text-xl font-bold">Define your Check</div>
-                <div className="mt-4 text-xl">Check Name</div>
-                <div>
-                    Great names are simple, succinct, and describe what you are
-                    checking
-                </div>
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        if (tmpName !== "") {
-                            setCheckName(tmpName);
-                        }
-                    }}
-                >
-                    <Input
-                        placeholder="Shorten Months"
-                        value={tmpName}
-                        onChange={(e) => setTmpName(e.target.value)}
-                        className="mt-4"
-                    />
-                </form>
-                <SubmitButton
-                    onClick={() => setCheckName(tmpName)}
-                    className="mt-4 w-40"
-                    disabled={tmpName === ""}
-                >
-                    Continue
-                </SubmitButton>
-            </div>
-        </div>
-    );
-};
-
-const feedbackTypeDesc = (checkType: CheckType) => {
-    switch (checkType) {
-        case CheckType.highlight:
-            return (
-                <div>
-                    <div>
-                        Highlight checks are used to highlight a section of
-                        text. They're useful for pointing out flaws, but don't
-                        offer a specific suggestion to fix it.
-                    </div>
-                    <br />
-                    <div>
-                        This is useful if you know there's an error, but don't
-                        have enough information to suggest a fix.
-                    </div>
-                </div>
-            );
-        case CheckType.rephrase:
-            return (
-                <div>
-                    <div>
-                        Rephrase checks suggest alternative ways to change the
-                        text.
-                    </div>
-                    <br />
-                    <div>
-                        This is useful if you know alternative rephrasings of
-                        the text. This card is also useful if you want to delete
-                        text.
-                    </div>
-                </div>
-            );
-        case CheckType.proposal:
-            // return (<div><div>Proposal feedbacks allows the model to propose information to the user. They aren't rephrase feedbacks because the proposals presented don't change the text. </div></br><div>This is useful for complex suggestions that can't be easily expressed as a rephrase.</div><div>);
-            return (
-                <div>
-                    <div>
-                        Proposal feedbacks allows the model to propose
-                        information to the user. They aren't rephrase feedbacks
-                        because the proposals presented don't change the text.
-                    </div>
-                    <br />
-                    <div>
-                        This is useful for complex suggestions that can't be
-                        easily expressed as a rephrase.
-                    </div>
-                </div>
-            );
-        default:
-            throw new Error("unknown feedback type");
-    }
-};
-
-interface SelectCheckTypeProps {
-    setCheckType: SetState<CheckType | undefined>;
-    setPage: (page: Page, pageData?: unknown) => void;
-}
-
-const SelectCheckType = ({
-    setCheckType,
-    setPage,
-}: SelectCheckTypeProps): JSX.Element => {
-    const [tmpCheckType, setTmpCheckType] = React.useState<CheckType>(
-        CheckType.highlight,
-    );
-
-    return (
-        <div className="flex flex-col">
-            <CreateCheckerNavigationPath setPage={setPage} />
-            <div className="w-[50vw] mx-auto flex flex-col">
-                <div className="mt-16 font-bold text-xl">Select Check Type</div>
-                <SlidingRadioButton
-                    options={validCheckTypes}
-                    selected={tmpCheckType}
-                    setSelected={setTmpCheckType as SetState<string>}
-                    className="mt-10 mx-auto "
-                />
-                <div className="w-[400px] mx-auto mt-8 h-48">
-                    <CheckPreview
-                        blueprint={{
-                            name: "",
-                            desc: "",
-                            instruction: "",
-                            category: "",
-                            checkId: "",
-                            checkType: tmpCheckType,
-                            positiveExamples: [],
-                        }}
-                        originalText=""
-                        editedText=""
-                    />
-                </div>
-                <div className="flex flex-col mb-10 ml-1">
-                    <div className=" flex flex-row">
-                        <div className="font-bold text-lg">
-                            {tmpCheckType} Check
-                        </div>
-                    </div>
-                    <div className="mt-2">{feedbackTypeDesc(tmpCheckType)}</div>
-                </div>
-                <SubmitButton
-                    onClick={() => setCheckType(tmpCheckType)}
-                    className="w-[300px] mx-auto"
-                >
-                    Create {tmpCheckType} Check
-                </SubmitButton>
-            </div>
-        </div>
-    );
-};
-
-export const PositiveExamplePreview = ({
-    example,
-    checkType,
-}: {
-    example: PositiveCheckExample;
-    checkType: CheckType;
-}): JSX.Element => {
-    return (
-        <div className="flex flex-row">
-            <div className="flex flex-col">
-                <div>{example.originalText}</div>
-            </div>
-            {checkType === CheckType.rephrase && (
-                <>
-                    <RightArrowWithTailIcon className="mx-4" />
-                    <div className="flex flex-col">
-                        <div>{example.editedText}</div>
-                    </div>
-                </>
-            )}
         </div>
     );
 };

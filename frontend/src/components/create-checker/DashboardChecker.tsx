@@ -11,6 +11,8 @@ interface Props {
     blueprint: CheckerBlueprint;
     fetchCheckerBlueprints: () => void;
 }
+
+// this is how your checker looks like in your dashboard page
 export const DashboardChecker = ({
     blueprint,
     fetchCheckerBlueprints,
