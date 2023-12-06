@@ -1,8 +1,10 @@
 import { CheckerId } from "@api/checker";
 import {
     BaseObjInfo,
+    CheckType,
     CheckerBlueprint,
     CheckerStorefront,
+    validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
 import { NextApiResponse } from "next";
 import { RedisClient, sendBadRequest } from "pages/api/commonNetworking";
@@ -57,6 +59,15 @@ export const validateBaseObjInfo = (objInfo: BaseObjInfo): string => {
         return "Checker description cannot be empty";
     } else if (objInfo.desc === "") {
         return "Checker description cannot be empty";
+    }
+    return "";
+};
+
+export const validateCheckType = (checkType: CheckType): string => {
+    if (!validCheckTypes.includes(checkType)) {
+        return `Check type must be one of [${validCheckTypes.join(
+            ", ",
+        )}]. Got ${checkType}`;
     }
     return "";
 };

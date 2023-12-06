@@ -1,6 +1,7 @@
 import { CheckerId } from "@api/checker";
 import {
     CheckId,
+    CheckType,
     CheckerBlueprint,
     CheckerStorefront,
     CreateCheckReq,
@@ -83,11 +84,15 @@ export class Api {
     };
 
     static createCheck = async (
-        createCheckReq: CreateCheckReq,
+        checkerId: CheckerId,
+        name: string,
+        checkType: CheckType,
         idToken: string,
     ): Promise<boolean> => {
         const res = Api.createRequest("api/create-check", "POST", {
-            createCheckReq,
+            checkerId,
+            name,
+            checkType,
             idToken,
         });
         return res !== undefined;
