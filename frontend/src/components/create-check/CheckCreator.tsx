@@ -186,7 +186,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
     };
 
     return (
-        <div className="flex flex-row mt-4 ">
+        <div className="flex flex-row mt-4 container mx-auto">
             <div
                 className="flex flex-col flex-grow"
                 style={{

@@ -23,7 +23,7 @@ export const SuggestionChange = ({
                     {suggestion.editedText ? (
                         <div
                             className={classNames(
-                                "line-through text-[#DC5262]",
+                                "line-through text-[#DC5262] whitespace-pre",
                             )}
                             style={{
                                 textDecorationColor: "#DC5262",
@@ -34,7 +34,7 @@ export const SuggestionChange = ({
                     ) : (
                         <div
                             className={classNames(
-                                "bg-[#f35769] hover:bg-[#DC5262] text-white rounded md:py-0 md:px-2 cursor-pointer",
+                                "bg-[#f35769] hover:bg-[#DC5262] text-white rounded md:py-0 md:px-2 cursor-pointer whitespace-pre",
                             )}
                             style={{
                                 textDecorationColor: "#DC5262",
@@ -48,7 +48,7 @@ export const SuggestionChange = ({
                             <AiOutlineArrowRight className={"mx-3 mt-[5px]"} />
                             <div
                                 onClick={onReplaceClick}
-                                className="text-white hover:bg-[#1d8fdb] bg-[#189bf2] rounded md:py-0 md:px-2 cursor-pointer"
+                                className="text-white hover:bg-[#1d8fdb] bg-[#189bf2] rounded md:py-0 md:px-2 cursor-pointer whitespace-pre"
                             >
                                 {suggestion.editedText}
                             </div>
