@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { checkerBlueprintToCheckerStorefront } from "pages/api/common";
 import {
-    checkerBlueprintToCheckerStorefront,
     isUnauthenticatedRequestValid,
     tryGetUserId,
 } from "pages/api/commonNetworking";
@@ -33,7 +33,7 @@ export default async function handler(
         checkerStorefronts: checkerBlueprints
             .filter(
                 (blueprint) =>
-                    blueprint.isPublic || uid === blueprint.creatorId,
+                    blueprint.isPublic || uid === blueprint.objInfo.creatorId,
             )
             .map(checkerBlueprintToCheckerStorefront),
     });

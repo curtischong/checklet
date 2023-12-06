@@ -1,3 +1,4 @@
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isUserCheckerOwner } from "pages/api/common";
 import { requestMiddleware, sendBadRequest } from "pages/api/commonNetworking";

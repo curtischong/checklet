@@ -46,12 +46,6 @@ export type CheckDesc = {
     checkId: CheckId;
 };
 
-export type CreateCheckerReq = {
-    baseObjInfo: BaseObjInfo;
-    checkIds: CheckId[];
-    isPublic: boolean;
-};
-
 export type CheckStatus = {
     isEnabled: boolean;
 };
@@ -67,10 +61,7 @@ export type CheckerBlueprint = {
 };
 
 export interface CheckerStorefront {
-    id: string;
-    name: string;
-    desc: string;
-    creatorId: string;
+    objInfo: ObjInfo;
 }
 
 export interface FeedbackResponse {

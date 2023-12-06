@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { checkerBlueprintToCheckerStorefront } from "pages/api/common";
 import {
-    checkerBlueprintToCheckerStorefront,
     isUnauthenticatedRequestValid,
-    sendBadRequest,
     tryGetUserId,
 } from "pages/api/commonNetworking";
 import { createClient } from "redis";

@@ -1,10 +1,4 @@
-import {
-    CheckBlueprint,
-    CheckType,
-    CheckerBlueprint,
-    CreateCheckerReq,
-    validCheckTypes,
-} from "@components/create-checker/CheckerTypes";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isUserCheckerOwner, validateObjInfo } from "pages/api/common";
 import {

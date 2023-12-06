@@ -48,10 +48,7 @@ export const checkerBlueprintToCheckerStorefront = (
     blueprint: CheckerBlueprint,
 ): CheckerStorefront => {
     return {
-        id: blueprint.id,
-        name: blueprint.name,
-        desc: blueprint.desc,
-        creatorId: blueprint.creatorId,
+        objInfo: blueprint.objInfo,
     };
 };
 

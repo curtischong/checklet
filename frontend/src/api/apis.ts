@@ -4,8 +4,6 @@ import {
     CheckType,
     CheckerBlueprint,
     CheckerStorefront,
-    CreateCheckReq,
-    CreateCheckerReq,
     FeedbackResponse,
 } from "@components/create-checker/CheckerTypes";
 import { toast } from "react-toastify";
@@ -93,7 +91,7 @@ export class Api {
         checkType: CheckType,
         idToken: string,
     ): Promise<boolean> => {
-        const res = Api.createRequest("api/create-check", "POST", {
+        const res = Api.createRequest("api/check/create", "POST", {
             checkerId,
             name,
             checkType,

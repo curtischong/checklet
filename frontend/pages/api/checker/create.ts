@@ -1,20 +1,7 @@
-import {
-    CheckBlueprint,
-    CheckType,
-    CheckerBlueprint,
-    CreateCheckerReq,
-    validCheckTypes,
-} from "@components/create-checker/CheckerTypes";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { createUniqueId } from "@utils/strings";
-import { kMaxLength } from "buffer";
 import { NextApiRequest, NextApiResponse } from "next";
-import { validateObjInfo } from "pages/api/common";
-import {
-    RedisClient,
-    requestMiddleware,
-    return204Status,
-    sendBadRequest,
-} from "pages/api/commonNetworking";
+import { requestMiddleware, sendBadRequest } from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
 export default async function handler(
