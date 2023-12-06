@@ -1,3 +1,4 @@
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isUserCheckerOwner } from "pages/api/common";
 import {
@@ -30,11 +31,15 @@ export default async function deleteChecker(
         sendBadRequest(res, `Checker ${checkerId} does not exist`);
         return;
     }
-    const checkerBlueprint = JSON.parse(rawCheckerBlueprint);
-    const checkIds = Object.keys(checkerBlueprint.statuses);
+    const checkerBlueprint: CheckerBlueprint = JSON.parse(rawCheckerBlueprint);
+    const checkIds = checkerBlueprint.checkStatuses
+        ? Object.keys(checkerBlueprint.checkStatuses)
+        : [];
     const checkKeys = checkIds.map((checkId) => `checks/${checkId}`);
-    await redisClient.del(checkKeys);
-    await redisClient.sRem(`users/${userId}/checkIds`, checkIds);
+    if (checkIds.length > 0) {
+        await redisClient.del(checkKeys);
+        await redisClient.sRem(`users/${userId}/checkIds`, checkIds);
+    }
 
     // now delete the checker
     await redisClient.sRem(`users/${userId}/checkerIds`, checkerId);

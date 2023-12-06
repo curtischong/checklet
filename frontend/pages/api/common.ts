@@ -118,9 +118,8 @@ export const getCheckBlueprints = async (
     );
 
     const checkKeys = enabledCheckIds.map((checkId) => `checks/${checkId}`);
-    const rawCheckBlueprints: (string | null)[] = await redisClient.mGet(
-        checkKeys,
-    );
+    const rawCheckBlueprints: (string | null)[] =
+        checkKeys.length === 0 ? [] : await redisClient.mGet(checkKeys);
     const checkBlueprints: CheckBlueprint[] = [];
     for (let i = 0; i < checkKeys.length; i++) {
         const rawCheckBlueprint = rawCheckBlueprints[i];
