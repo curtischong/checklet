@@ -36,10 +36,13 @@ export default async function handler(
 
     // instead of json.stringifying an array, we use a set
     // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis
-    const checkIdsKey = `users/${userId}/checkIds`;
-    const checkIds = await redisClient.sMembers(checkIdsKey);
+    const userCheckIdsKey = `users/${userId}/checkIds`;
+    const checkIds = await redisClient.sMembers(userCheckIdsKey);
     if (checkIds.length >= 100) {
-        sendBadRequest(res, "You can only have 100 checks");
+        sendBadRequest(
+            res,
+            "You can only have 100 checks. Contact Curtis if you need more!",
+        );
         return;
     }
 
@@ -58,7 +61,15 @@ export default async function handler(
         return;
     }
 
-    const checkId = createUniqueId(); // TODO: validate that the id wasn't used before
+    const checkId = createUniqueId();
+    const checkIdKey = `checks/${checkerId}`;
+    if (await redisClient.exists(checkIdKey)) {
+        sendBadRequest(
+            res,
+            "generated the same check ID. Is the ID generator collision resistant?",
+        );
+        return;
+    }
 
     if (
         !(await addCheckToChecker(redisClient, res, checkerId, userId, checkId))
@@ -81,11 +92,11 @@ export default async function handler(
     };
 
     await redisClient.set(
-        `checks/${checkId}`,
+        checkIdKey,
         JSON.stringify(checkBlueprint), // TODO: compress this
     );
 
-    await redisClient.sAdd(checkIdsKey, checkId);
+    await redisClient.sAdd(userCheckIdsKey, checkId);
 
     res.status(200).json({ checkId });
 }
