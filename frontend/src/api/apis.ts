@@ -93,6 +93,21 @@ export class Api {
         return data;
     };
 
+    static fetchCheckBlueprint = async (
+        checkId: CheckId,
+        user: User,
+    ): Promise<CheckBlueprint | undefined> => {
+        const data = await Api.createRequest(
+            "api/check/get-blueprint",
+            "POST",
+            {
+                checkId,
+            },
+            user,
+        );
+        return data?.checkBlueprint;
+    };
+
     static userCheckerBlueprints = async (
         user: User,
     ): Promise<CheckerBlueprint[] | undefined> => {

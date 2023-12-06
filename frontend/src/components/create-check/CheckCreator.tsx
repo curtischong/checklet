@@ -23,6 +23,7 @@ import {
     defaultDesc,
     defaultInstructions,
     defaultName,
+    feedbackTypeDesc,
 } from "@components/create-check/DefaultTextForCheckType";
 import { PositiveCheckExampleCreator } from "@components/create-check/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
@@ -31,87 +32,48 @@ import { SetState } from "@utils/types";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
-
-{
-    /* <CheckCreator
-    submittingState={submittingState}
-    onCreate={(check) => {
-        const existingCheckIdx = checkBlueprints.findIndex(
-            (c) => c.checkId === check.checkId,
-        );
-        const newCheckBlueprints = [...checkBlueprints];
-        if (existingCheckIdx !== -1) {
-            // this check already exists. So we find its index, and replace it
-            newCheckBlueprints[existingCheckIdx] = check;
-        } else {
-            newCheckBlueprints.push(check);
-        }
-        setCheckBlueprints(newCheckBlueprints);
-        if (!user) {
-            toast.error("You must be logged in to create/update a check");
-            setSubmittingState(SubmittingState.NotSubmitting);
-            return;
-        }
-        const checker = {
-            name,
-            desc,
-            checkBlueprints: newCheckBlueprints,
-            creatorId: user.uid,
-        } as CheckerBlueprint;
-
-        // const checkerId =
-        //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
-        setSubmittingState(SubmittingState.Submitting);
-        (async () => {
-            await Api.createChecker(
-                checker,
-                checkerId,
-                await user.getIdToken(),
-            );
-            setSubmittingState(SubmittingState.Submitted);
-            setTimeout(() => {
-                setSubmittingState(SubmittingState.NotSubmitting);
-            }, 3000);
-        })();
-    }}
-    setPage={setPage}
-    pageData={pageData}
-/>; */
-}
+import { Api } from "@api/apis";
+import { PositiveExamplePreview } from "@components/create-check/PositiveExamplePreview";
 
 interface Props {
     checkId: CheckId;
 }
+
 export const CheckCreator = ({ checkId }: Props): JSX.Element => {
-    const [name, setName] = React.useState<string | undefined>(undefined);
+    const [name, setName] = React.useState<string>("");
     const [desc, setDesc] = React.useState("");
     const [instruction, setInstruction] = React.useState("");
     const [category, setCategory] = React.useState("");
     const [positiveExamples, setPositiveExamples] = React.useState<
         PositiveCheckExample[]
     >([]);
-    const [checkType, setCheckType] = React.useState<CheckType | undefined>(
-        undefined,
+    const [checkType, setCheckType] = React.useState<CheckType>(
+        CheckType.rephrase,
     );
     const [originalText, setOriginalText] = React.useState("");
     const [editedText, setEditedText] = React.useState("");
+    const [isEnabled, setIsEnabled] = React.useState(false);
 
     const router = useRouter();
     const checkerId = router.query.checkerId as string;
     const { user } = useClientContext();
 
-    // const setInitialCheckBlueprint = useCallback(
-    //     (initialCheckBlueprint: CheckBlueprint) => {
-    //         setName(initialCheckBlueprint.name);
-    //         setDesc(initialCheckBlueprint.desc);
-    //         setCheckType(initialCheckBlueprint.checkType);
-    //         setInstruction(initialCheckBlueprint.instruction);
-    //         setCategory(initialCheckBlueprint.category);
-    //         setPositiveExamples(initialCheckBlueprint.positiveExamples);
-    //         setCheckId(initialCheckBlueprint.checkId);
-    //     },
-    //     [],
-    // );
+    const [submittingState, setSubmittingState] = React.useState(
+        SubmittingState.NotSubmitting,
+    );
+
+    const setInitialCheckBlueprint = useCallback(
+        (initialCheckBlueprint: CheckBlueprint) => {
+            setName(initialCheckBlueprint.objInfo.name);
+            setDesc(initialCheckBlueprint.objInfo.desc);
+            setCheckType(initialCheckBlueprint.checkType);
+            setInstruction(initialCheckBlueprint.instruction);
+            setCategory(initialCheckBlueprint.category);
+            setPositiveExamples(initialCheckBlueprint.positiveExamples);
+            setIsEnabled(initialCheckBlueprint.isEnabled);
+        },
+        [],
+    );
     useEffect(() => {
         if (!checkerId || !checkId) {
             // TODO: we should just redirect them in the middleware if this is the case
@@ -124,26 +86,14 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 toast.error("Please log in to edit your check");
                 return;
             }
-            // not needed. we just pas in the checkerId in the url
-            // const checkerBlueprint = await Api.fetchCheckerBlueprint(
-            //     routerCheckerId as string,
-            //     user,
-            // );
-            if (!checkerBlueprint) {
+            const checkBlueprint = await Api.fetchCheckBlueprint(checkId, user);
+            if (!checkBlueprint) {
                 console.warn(
-                    `checker blueprint not found for checkerId=${routerCheckerId}`,
+                    `check blueprint not found for checkId=${checkId}`,
                 );
                 return;
             }
-            for (const checkBlueprint of checkerBlueprint.checkBlueprints) {
-                if (checkBlueprint.checkId === routerCheckId) {
-                    setInitialCheckBlueprint(checkBlueprint);
-                    return;
-                }
-            }
-            console.warn(
-                `check blueprint with id=${routerCheckId} not found in checker blueprint with id=${routerCheckerId}`,
-            );
+            setInitialCheckBlueprint(checkBlueprint);
         })();
     }, []);
 
@@ -171,8 +121,11 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
         setErr(getIncompleteFormErr());
     }, [getIncompleteFormErr, clickedSubmit]);
 
-    const createCheck = useCallback(() => {
+    const submitCheck = useCallback(() => {
         setClickedSubmit(true);
+        if (!user) {
+            return;
+        }
         if (getIncompleteFormErr() !== "") {
             return;
         }
@@ -191,15 +144,27 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
         }
 
         const checkBlueprint: CheckBlueprint = {
-            name,
+            objInfo: {
+                name,
+                desc,
+                id: checkId,
+                creatorId: user.uid,
+            },
             checkType,
             instruction,
-            desc,
             category,
             positiveExamples: newPositiveExamples,
-            checkId,
+            isEnabled,
         };
-        onCreate(checkBlueprint);
+
+        setSubmittingState(SubmittingState.Submitting);
+        (async () => {
+            await Api.editCheck(checkBlueprint, user);
+            setSubmittingState(SubmittingState.Submitted);
+            setTimeout(() => {
+                setSubmittingState(SubmittingState.NotSubmitting);
+            }, 3000);
+        })();
     }, [
         name,
         checkType,
@@ -210,16 +175,6 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
         checkId,
         getIncompleteFormErr,
     ]);
-
-    if (name === undefined) {
-        return <CreateCheckName setCheckName={setName} setPage={setPage} />;
-    }
-
-    if (checkType === undefined) {
-        return (
-            <SelectCheckType setCheckType={setCheckType} setPage={setPage} />
-        );
-    }
 
     const SubmitCheckText = {
         [`${SubmittingState.NotSubmitting}-create`]: "Create Check",
@@ -238,7 +193,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     flexBasis: "0",
                 }}
             >
-                <CreateCheckNavigationPath setPage={setPage} />
+                <CreateCheckNavigationPath />
                 <h1 className=" text-xl font-bold">Create Check</h1>
                 <label className="text-md mt-4">Name</label>
                 <Input
@@ -330,7 +285,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                         isLoading={
                             submittingState === SubmittingState.Submitting
                         }
-                        onClick={createCheck}
+                        onClick={submitCheck}
                         className="w-40"
                     >
                         {
@@ -346,7 +301,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     <NormalButton
                         className="w-56 py-[4px]"
                         onClick={() => {
-                            setPage(Page.Main);
+                            router.push(`/create/checker/${checkerId}`);
                         }}
                     >
                         Return to Create Checker
@@ -383,13 +338,17 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     </div>
                     <CheckPreview
                         blueprint={{
+                            objInfo: {
+                                name,
+                                desc,
+                                id: checkId,
+                                creatorId: user?.uid ?? "",
+                            },
                             checkType,
-                            name,
                             instruction,
-                            desc,
                             category,
                             positiveExamples,
-                            checkId,
+                            isEnabled,
                         }}
                         originalText={originalText}
                         editedText={editedText}
