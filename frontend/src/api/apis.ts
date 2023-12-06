@@ -99,21 +99,19 @@ export class Api {
     };
 
     static createChecker = async (
-        createCheckerReq: CreateCheckerReq,
         idToken: string,
-    ): Promise<boolean> => {
-        const res = Api.createRequest("api/create-checker", "POST", {
-            createCheckerReq,
+    ): Promise<CheckerId | undefined> => {
+        const res = await Api.createRequest("api/checker/create", "POST", {
             idToken,
         });
-        return res !== undefined;
+        return res?.checkerId;
     };
 
     static deleteCheck = async (
         checkId: CheckId,
         idToken: string,
     ): Promise<boolean> => {
-        const res = Api.createRequest("api/delete-check", "POST", {
+        const res = Api.createRequest("api/check/delete", "POST", {
             checkId,
             idToken,
         });
@@ -124,7 +122,7 @@ export class Api {
         checkerId: CheckerId,
         idToken: string,
     ): Promise<void> => {
-        return Api.createRequest("api/delete-checker", "POST", {
+        return Api.createRequest("api/checker/delete", "POST", {
             checkerId,
             idToken,
         });

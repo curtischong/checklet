@@ -46,6 +46,7 @@ export default async function handler(
             return;
         }
 
+        // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis
         await redisClient.sAdd("publicCheckerIds", req.body.checkerId);
     }
 

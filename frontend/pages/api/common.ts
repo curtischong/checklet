@@ -21,7 +21,7 @@ export const isUserCheckerOwner = async (
     ) {
         sendBadRequest(
             res,
-            "You did not create this checker. You cannot edit it",
+            "You did not create this checker. You cannot read/edit it",
         );
         return false;
     }
