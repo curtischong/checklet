@@ -14,9 +14,9 @@ import { useClientContext } from "@utils/ClientContext";
 import { Api } from "@api/apis";
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { NormalTextArea } from "@components/TextArea";
-import { createUniqueId } from "@utils/strings";
 import {
     CheckBlueprint,
+    CheckStatuses,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
 import { CheckOverview } from "@components/create-checker/CheckOverview";
@@ -29,10 +29,8 @@ export enum Page {
 export const CheckerCreator: React.FC = () => {
     const [name, setName] = React.useState("");
     const [desc, setDesc] = React.useState("");
-    const [checkBlueprints, setCheckBlueprints] = React.useState<
-        CheckBlueprint[]
-    >([]);
-    const [checkerId, setCheckerId] = React.useState<string>(createUniqueId());
+    const [checkStatuses, setCheckStatuses] = React.useState<CheckStatuses>({});
+    const [checkerId, setCheckerId] = React.useState<string>("");
     const [pageData, setPageData] = React.useState<unknown>(null);
     const [submittingState, setSubmittingState] = React.useState(
         SubmittingState.NotSubmitting,
@@ -71,21 +69,34 @@ export const CheckerCreator: React.FC = () => {
 
     useEffect(() => {
         const data = router.query;
+        if (!user) {
+            return;
+        }
+        const checkerId = data.checkerId;
         (async () => {
-            if (!data.checkerId || !user) {
+            if (!checkerId) {
+                // if no checkerId is provided, then we are creating a new checker
+                const checkerId = await Api.createChecker(user);
+                if (!checkerId) {
+                    toast.error("Failed to create checker");
+                    return;
+                }
+                setCheckerId(checkerId);
                 return;
+            } else {
+                const checkerBlueprint = await Api.fetchCheckerBlueprint(
+                    data.checkerId as string,
+                    user,
+                );
+                if (!checkerBlueprint) {
+                    toast.error("Failed to fetch checker");
+                    return;
+                }
+                setName(checkerBlueprint.objInfo.name);
+                setDesc(checkerBlueprint.objInfo.desc);
+                setCheckerId(checkerBlueprint.objInfo.id);
+                setCheckStatuses(checkerBlueprint.checkStatuses);
             }
-            const checkerBlueprint = await Api.fetchCheckerBlueprint(
-                await user.getIdToken(),
-                data.checkerId as string,
-            );
-            if (!checkerBlueprint) {
-                return;
-            }
-            setName(checkerBlueprint.name);
-            setDesc(checkerBlueprint.desc);
-            setCheckerId(checkerBlueprint.id);
-            setCheckBlueprints(checkerBlueprint.checkBlueprints);
         })();
     }, [user]);
 
@@ -98,7 +109,7 @@ export const CheckerCreator: React.FC = () => {
                         setName={setName}
                         desc={desc}
                         setDesc={setDesc}
-                        checkBlueprints={checkBlueprints}
+                        checkStatuses={checkStatuses}
                         setCheckBlueprints={setCheckBlueprints}
                         checkerId={checkerId}
                         setPage={setPage}
@@ -166,7 +177,7 @@ interface Props {
     desc: string;
     setDesc: SetState<string>;
     checkerId: string;
-    checkBlueprints: CheckBlueprint[];
+    checkStatuses: CheckStatuses;
     setCheckBlueprints: SetState<CheckBlueprint[]>;
     setPage: (page: Page, pageData?: unknown) => void;
 }
@@ -183,7 +194,7 @@ const MainCheckerPage = ({
     desc,
     setDesc,
     checkerId,
-    checkBlueprints,
+    checkStatuses,
     setCheckBlueprints,
     setPage,
 }: Props) => {
@@ -192,6 +203,7 @@ const MainCheckerPage = ({
     const [submittingState, setSubmittingState] = React.useState(
         SubmittingState.NotSubmitting,
     );
+    const [isPublic, setIsPublic] = React.useState(false);
 
     const { user } = useClientContext();
     const router = useRouter();
@@ -201,12 +213,12 @@ const MainCheckerPage = ({
             return "Please enter a name";
         } else if (desc === "") {
             return "Please enter a description";
-        } else if (checkBlueprints.length === 0) {
+        } else if (Object.keys(checkStatuses).length === 0) {
             return "Please enter at least one check";
         } else {
             return "";
         }
-    }, [name, desc, checkBlueprints]);
+    }, [name, desc, checkStatuses]);
 
     useEffect(() => {
         if (!clickedSubmit) {
@@ -215,7 +227,7 @@ const MainCheckerPage = ({
         setErr(getIncompleteFormErr());
     }, [getIncompleteFormErr, clickedSubmit]);
 
-    const submitChecker = useCallback(() => {
+    const editChecker = useCallback(() => {
         setClickedSubmit(true);
         if (getIncompleteFormErr() !== "") {
             return;
@@ -225,29 +237,28 @@ const MainCheckerPage = ({
             return;
         }
 
-        const checker = {
-            name,
-            desc,
-            checkBlueprints,
-            // id: crypto.randomBytes(32).toString("hex"), // TODO: I can save spacei f I don't storethis
-            creatorId: user.uid,
-        } as CheckerBlueprint;
+        const checker: CheckerBlueprint = {
+            objInfo: {
+                name,
+                desc,
+                creatorId: user.uid,
+                id: checkerId,
+            },
+            checkStatuses,
+            isPublic,
+        };
 
         // const checkerId =
         //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
         setSubmittingState(SubmittingState.Submitting);
         (async () => {
-            await Api.createChecker(
-                checker,
-                checkerId,
-                await user.getIdToken(),
-            );
+            await Api.editChecker(checker, user);
             setSubmittingState(SubmittingState.Submitted);
             setTimeout(() => {
                 setSubmittingState(SubmittingState.NotSubmitting);
             }, 3000);
         })();
-    }, [name, desc, checkBlueprints, user, checkerId]);
+    }, [name, desc, checkStatuses, user, checkerId]);
 
     return (
         <div className="flex flex-col w-[450px]">
@@ -324,7 +335,7 @@ const MainCheckerPage = ({
             <div className="text-[#ff0000] mt-4 ">{err}</div>
             <LoadingButtonSubmit
                 isLoading={submittingState === SubmittingState.Submitting}
-                onClick={submitChecker}
+                onClick={editChecker}
                 className="mt-4 w-80 h-10"
             >
                 {SubmitButtonText[submittingState]}

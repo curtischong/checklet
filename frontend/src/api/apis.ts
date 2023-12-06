@@ -1,11 +1,13 @@
 import { CheckerId } from "@api/checker";
 import {
+    CheckBlueprint,
     CheckId,
     CheckType,
     CheckerBlueprint,
     CheckerStorefront,
     FeedbackResponse,
 } from "@components/create-checker/CheckerTypes";
+import { User } from "firebase/auth";
 import { toast } from "react-toastify";
 const baseUrl = "http://localhost:3000/"; // TODO: replace with the proper url. we should inject it from the env
 export class Api {
@@ -14,9 +16,15 @@ export class Api {
     static createRequest = async (
         endpoint: string,
         requestType: string,
-        payload = {},
+        // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+        payload: any,
+        user?: User,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<any> => {
+        if (user) {
+            const idToken = await user.getIdToken();
+            payload.idToken = idToken;
+        }
         let response;
         try {
             response = await fetch(`${baseUrl}${endpoint}`, {
@@ -62,26 +70,29 @@ export class Api {
     };
 
     static fetchCheckerBlueprint = async (
-        idToken: string,
         checkerId: CheckerId,
+        user: User,
     ): Promise<CheckerBlueprint | undefined> => {
         const data = await Api.createRequest(
             "api/checker/get-blueprint",
             "POST",
             {
-                idToken,
                 checkerId,
             },
+            user,
         );
         return data?.checkerBlueprint;
     };
 
     static userCheckerBlueprints = async (
-        idToken: string,
+        user: User,
     ): Promise<CheckerBlueprint[]> => {
-        const data = await Api.createRequest("api/get-user-checkers", "POST", {
-            idToken,
-        });
+        const data = await Api.createRequest(
+            "api/get-user-checkers",
+            "POST",
+            {},
+            user,
+        );
         return data.checkerBlueprints;
     };
 
@@ -89,69 +100,113 @@ export class Api {
         checkerId: CheckerId,
         name: string,
         checkType: CheckType,
-        idToken: string,
+        user: User,
     ): Promise<boolean> => {
-        const res = Api.createRequest("api/check/create", "POST", {
-            checkerId,
-            name,
-            checkType,
-            idToken,
-        });
+        const res = Api.createRequest(
+            "api/check/create",
+            "POST",
+            {
+                checkerId,
+                name,
+                checkType,
+            },
+            user,
+        );
         return res !== undefined;
     };
 
     static createChecker = async (
-        idToken: string,
+        user: User,
     ): Promise<CheckerId | undefined> => {
-        const res = await Api.createRequest("api/checker/create", "POST", {
-            idToken,
-        });
+        const res = await Api.createRequest(
+            "api/checker/create",
+            "POST",
+            {},
+            user,
+        );
         return res?.checkerId;
+    };
+
+    static editCheck = async (
+        checkBlueprint: CheckBlueprint,
+        user: User,
+    ): Promise<boolean> => {
+        const res = await Api.createRequest(
+            "api/check/edit",
+            "POST",
+            {
+                checkBlueprint,
+            },
+            user,
+        );
+        return res !== undefined;
+    };
+
+    static editChecker = async (
+        checkerBlueprint: CheckerBlueprint,
+        user: User,
+    ): Promise<boolean> => {
+        const res = await Api.createRequest(
+            "api/checker/edit",
+            "POST",
+            { checkerBlueprint },
+            user,
+        );
+        return res !== undefined;
     };
 
     static deleteCheck = async (
         checkId: CheckId,
-        idToken: string,
+        user: User,
     ): Promise<boolean> => {
-        const res = Api.createRequest("api/check/delete", "POST", {
-            checkId,
-            idToken,
-        });
+        const res = Api.createRequest(
+            "api/check/delete",
+            "POST",
+            {
+                checkId,
+            },
+            user,
+        );
         return res !== undefined;
     };
 
     static deleteChecker = async (
         checkerId: CheckerId,
-        idToken: string,
+        user: User,
     ): Promise<void> => {
-        return Api.createRequest("api/checker/delete", "POST", {
-            checkerId,
-            idToken,
-        });
+        return Api.createRequest(
+            "api/checker/delete",
+            "POST",
+            {
+                checkerId,
+            },
+            user,
+        );
     };
 
     static getPublicCheckers = async (
-        idToken: string | undefined,
+        user: User | undefined,
     ): Promise<CheckerStorefront[] | undefined> => {
         const data = await Api.createRequest(
             "api/get-public-checkers",
             "POST",
-            { idToken },
+            {},
+            user,
         );
         return data?.checkerStorefronts;
     };
 
     static getCheckerStorefront = async (
         checkerId: CheckerId,
-        idToken: string | undefined,
+        user: User | undefined,
     ): Promise<CheckerStorefront | undefined> => {
         const data = await Api.createRequest(
             "api/checker/get-storefront",
             "POST",
             {
                 checkerId,
-                idToken,
             },
+            user,
         );
         return data?.checkerStorefront;
     };
@@ -159,16 +214,16 @@ export class Api {
     static setCheckerIsPublic = async (
         checkerId: CheckerId,
         isPublic: boolean,
-        idToken: string,
+        user: User,
     ): Promise<boolean> => {
         const res = await Api.createRequest(
             "api/checker/set-is-public",
             "POST",
             {
-                idToken,
                 checkerId,
                 isPublic,
             },
+            user,
         );
         return res !== undefined;
     };
