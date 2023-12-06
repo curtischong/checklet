@@ -45,6 +45,8 @@ export default async function handler(
             sendBadRequest(res, validationErr);
             return;
         }
+
+        await redisClient.sAdd("publicCheckerIds", req.body.checkerId);
     }
 
     checkerBlueprint.objInfo.creatorId = userId; // override just for security purposes
