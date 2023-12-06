@@ -2,6 +2,7 @@ import { CheckerId } from "@api/checker";
 import {
     CheckBlueprint,
     CheckId,
+    CheckStatus,
     CheckType,
     CheckerBlueprint,
     CreateCheckReq,
@@ -62,7 +63,7 @@ export default async function handler(
     }
 
     const checkId = createUniqueId();
-    const checkIdKey = `checks/${checkerId}`;
+    const checkIdKey = `checks/${checkId}`;
     if (await redisClient.exists(checkIdKey)) {
         sendBadRequest(
             res,
@@ -88,7 +89,7 @@ export default async function handler(
         instruction: "",
         category: "",
         positiveExamples: [],
-        isEnabled: true,
+        isEnabled: false,
     };
 
     await redisClient.set(
@@ -124,10 +125,10 @@ const addCheckToChecker = async (
     }
 
     const checkerBlueprint: CheckerBlueprint = JSON.parse(rawCheckerBlueprint);
-    checkerBlueprint.checkStatuses.push({
-        checkId,
+    const checkStatus: CheckStatus = {
         isEnabled: false,
-    });
+    };
+    checkerBlueprint.checkStatuses[checkId] = checkStatus;
     await redisClient.set(
         `checkers/${checkerId}`,
         JSON.stringify(checkerBlueprint),
