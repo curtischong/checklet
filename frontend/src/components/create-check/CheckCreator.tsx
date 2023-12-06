@@ -291,9 +291,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                         {
                             SubmitCheckText[
                                 `${submittingState}-${
-                                    rawInitialCheckBlueprint
-                                        ? "update"
-                                        : "create"
+                                    router.query.isNew ? "create" : "update"
                                 }`
                             ]
                         }

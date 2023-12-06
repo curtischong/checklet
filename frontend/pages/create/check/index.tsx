@@ -32,6 +32,7 @@ const CreateCheckPage = (): JSX.Element => {
                     pathname: `/create/check/${checkerId}`,
                     query: {
                         checkerId,
+                        isNew: true,
                     },
                 });
             }
