@@ -1,6 +1,7 @@
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
+import { isUserCheckerOwner, validateChecker } from "pages/api/common";
 import {
-    isUserCheckerOwner,
     requestMiddleware,
     return204Status,
     sendBadRequest,
@@ -28,7 +29,21 @@ export default async function setCheckerIsPublic(
         sendBadRequest(res, "Checker does not exist");
         return;
     }
-    const checkerBlueprint = JSON.parse(rawCheckerBlueprint);
+    const checkerBlueprint: CheckerBlueprint = JSON.parse(rawCheckerBlueprint);
+
+    if (isPublic) {
+        // validate that it's legit before we make it public
+        const validationErr = await validateChecker(
+            redisClient,
+            userId,
+            checkerBlueprint,
+        );
+        if (validationErr !== "") {
+            sendBadRequest(res, validationErr);
+            return;
+        }
+    }
+
     checkerBlueprint.isPublic = isPublic;
     await redisClient.set(
         `checkers/${checkerId}`,

@@ -1,8 +1,7 @@
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isUserCheckerOwner, validateObjInfo } from "pages/api/common";
+import { isUserCheckerOwner, validateChecker } from "pages/api/common";
 import {
-    RedisClient,
     requestMiddleware,
     return204Status,
     sendBadRequest,
@@ -53,31 +52,3 @@ export default async function handler(
 
     return204Status(res);
 }
-
-const validateChecker = async (
-    redisClient: RedisClient,
-    userId: string,
-    checkerBlueprint: CheckerBlueprint,
-): Promise<string> => {
-    const objInfoErr = validateObjInfo(checkerBlueprint.objInfo);
-    if (objInfoErr !== "") {
-        return objInfoErr;
-    }
-
-    const checkIds = Object.keys(checkerBlueprint.checkStatuses);
-    if (checkIds.length === 0) {
-        return "Checker must have at least one check";
-    }
-
-    // PERF: batch this
-    for (const checkId of checkIds) {
-        if (
-            !(await redisClient.sIsMember(`users/${userId}/checkIds`, checkId))
-        ) {
-            return `You do not own the check with id ${checkId}`;
-        }
-    }
-
-    // we don't need to validate checks. Since we validate them before they are enabled
-    return "";
-};

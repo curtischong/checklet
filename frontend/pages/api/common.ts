@@ -73,3 +73,31 @@ export const validateCheckType = (checkType: CheckType): string => {
     }
     return "";
 };
+
+export const validateChecker = async (
+    redisClient: RedisClient,
+    userId: string,
+    checkerBlueprint: CheckerBlueprint,
+): Promise<string> => {
+    const objInfoErr = validateObjInfo(checkerBlueprint.objInfo);
+    if (objInfoErr !== "") {
+        return objInfoErr;
+    }
+
+    const checkIds = Object.keys(checkerBlueprint.checkStatuses);
+    if (checkIds.length === 0) {
+        return "Checker must have at least one check";
+    }
+
+    // PERF: batch this
+    for (const checkId of checkIds) {
+        if (
+            !(await redisClient.sIsMember(`users/${userId}/checkIds`, checkId))
+        ) {
+            return `You do not own the check with id ${checkId}`;
+        }
+    }
+
+    // we don't need to validate checks. Since we validate them before they are enabled
+    return "";
+};
