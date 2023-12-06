@@ -1,10 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { checkerBlueprintToCheckerStorefront } from "pages/api/common";
 import {
-    checkerBlueprintToCheckerStorefront,
     isUnauthenticatedRequestValid,
-    sendBadRequest,
     tryGetUserId,
-} from "pages/api/common";
+} from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
 export default async function handler(

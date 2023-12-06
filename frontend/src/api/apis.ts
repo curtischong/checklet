@@ -1,5 +1,7 @@
 import { CheckerId } from "@api/checker";
 import {
+    CheckId,
+    CheckType,
     CheckerBlueprint,
     CheckerStorefront,
     FeedbackResponse,
@@ -63,30 +65,56 @@ export class Api {
         idToken: string,
         checkerId: CheckerId,
     ): Promise<CheckerBlueprint | undefined> => {
-        const data = await Api.createRequest("api/checker-blueprint", "POST", {
-            idToken,
-            checkerId,
-        });
+        const data = await Api.createRequest(
+            "api/checker/get-blueprint",
+            "POST",
+            {
+                idToken,
+                checkerId,
+            },
+        );
         return data?.checkerBlueprint;
     };
 
     static userCheckerBlueprints = async (
         idToken: string,
     ): Promise<CheckerBlueprint[]> => {
-        const data = await Api.createRequest("api/user-checkers", "POST", {
+        const data = await Api.createRequest("api/get-user-checkers", "POST", {
             idToken,
         });
         return data.checkerBlueprints;
     };
 
-    static createChecker = async (
-        blueprint: CheckerBlueprint,
+    static createCheck = async (
         checkerId: CheckerId,
+        name: string,
+        checkType: CheckType,
         idToken: string,
     ): Promise<boolean> => {
-        const res = Api.createRequest("api/create-checker", "POST", {
-            blueprint,
+        const res = Api.createRequest("api/check/create", "POST", {
             checkerId,
+            name,
+            checkType,
+            idToken,
+        });
+        return res !== undefined;
+    };
+
+    static createChecker = async (
+        idToken: string,
+    ): Promise<CheckerId | undefined> => {
+        const res = await Api.createRequest("api/checker/create", "POST", {
+            idToken,
+        });
+        return res?.checkerId;
+    };
+
+    static deleteCheck = async (
+        checkId: CheckId,
+        idToken: string,
+    ): Promise<boolean> => {
+        const res = Api.createRequest("api/check/delete", "POST", {
+            checkId,
             idToken,
         });
         return res !== undefined;
@@ -96,7 +124,7 @@ export class Api {
         checkerId: CheckerId,
         idToken: string,
     ): Promise<void> => {
-        return Api.createRequest("api/delete-checker", "POST", {
+        return Api.createRequest("api/checker/delete", "POST", {
             checkerId,
             idToken,
         });
@@ -118,7 +146,7 @@ export class Api {
         idToken: string | undefined,
     ): Promise<CheckerStorefront | undefined> => {
         const data = await Api.createRequest(
-            "api/get-checker-storefront",
+            "api/checker/get-storefront",
             "POST",
             {
                 checkerId,
@@ -134,7 +162,7 @@ export class Api {
         idToken: string,
     ): Promise<boolean> => {
         const res = await Api.createRequest(
-            "api/set-checker-is-public",
+            "api/checker/set-is-public",
             "POST",
             {
                 idToken,

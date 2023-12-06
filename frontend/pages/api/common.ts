@@ -1,80 +1,14 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { getAuth } from "firebase-admin/auth";
-import { initializeApp, getApps } from "firebase-admin/app";
-import { firebaseConfig } from "@utils/ClientContext";
-import { createClient } from "redis";
 import { CheckerId } from "@api/checker";
 import {
+    CheckType,
     CheckerBlueprint,
     CheckerStorefront,
+    ObjInfo,
+    validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
-
-export type RedisClient = ReturnType<typeof createClient>;
-
-// returns if the request is valid or not
-export const isUnauthenticatedRequestValid = (
-    req: NextApiRequest,
-    res: NextApiResponse,
-): boolean => {
-    if (req.method !== "POST") {
-        // Handle any non-POST requests
-        res.setHeader("Allow", ["POST"]);
-        res.status(405).end(
-            `Method ${req.method} Not Allowed. Only POST is allowed`,
-        );
-        return false;
-    }
-    return true;
-};
-
-export const tryGetUserId = async (
-    req: NextApiRequest,
-    res: NextApiResponse,
-): Promise<string | null> => {
-    // if we already initialized app, don't do it more than once:
-    // https://github.com/firebase/firebase-admin-node/issues/2111
-    const alreadyCreatedAps = getApps();
-    const app =
-        alreadyCreatedAps.length === 0
-            ? initializeApp(firebaseConfig)
-            : alreadyCreatedAps[0];
-
-    let decodedToken;
-    try {
-        decodedToken = await getAuth(app).verifyIdToken(req.body.idToken);
-    } catch (err) {
-        console.error(err);
-        res.status(401).end("Unauthorized");
-        return null;
-    }
-    return decodedToken.uid;
-};
-
-// returns the uid for the authenticated user.
-// If the user is not authenticated, or their headers are weird, it returns null
-export const requestMiddleware = async (
-    req: NextApiRequest,
-    res: NextApiResponse,
-): Promise<string | null> => {
-    if (!isUnauthenticatedRequestValid(req, res)) {
-        return null;
-    }
-    if (req.body.idToken === undefined) {
-        res.status(400).end("idToken is undefined");
-        return null;
-    }
-    const uid = await tryGetUserId(req, res);
-    if (uid === null) {
-        return null;
-    }
-    return uid;
-};
-
-export const sendBadRequest = (res: NextApiResponse, msg: string): void => {
-    console.error(msg);
-    res.status(400).send({ errorMsg: msg });
-    res.end();
-};
+import { isLegitId } from "@utils/strings";
+import { NextApiResponse } from "next";
+import { RedisClient, sendBadRequest } from "pages/api/commonNetworking";
 
 export const isUserCheckerOwner = async (
     redisClient: RedisClient,
@@ -87,7 +21,23 @@ export const isUserCheckerOwner = async (
     ) {
         sendBadRequest(
             res,
-            "You did not create this checker. You cannot edit it",
+            "You did not create this checker. You cannot read/edit it",
+        );
+        return false;
+    }
+    return true;
+};
+
+export const isUserCheckOwner = async (
+    redisClient: RedisClient,
+    res: NextApiResponse,
+    userId: string,
+    checkId: CheckerId,
+): Promise<boolean> => {
+    if (!(await redisClient.sIsMember(`users/${userId}/checkIds`, checkId))) {
+        sendBadRequest(
+            res,
+            "You did not create this check. You cannot edit it",
         );
         return false;
     }
@@ -98,15 +48,56 @@ export const checkerBlueprintToCheckerStorefront = (
     blueprint: CheckerBlueprint,
 ): CheckerStorefront => {
     return {
-        id: blueprint.id,
-        name: blueprint.name,
-        desc: blueprint.desc,
-        creatorId: blueprint.creatorId,
+        objInfo: blueprint.objInfo,
     };
 };
 
-export const return204Status = (res: NextApiResponse): void => {
-    // we cannot use a real 204 status since nextjs doesn't support it (it'll also confuse it, thinking no response was sent)
-    // https://github.com/vercel/next.js/discussions/51475
-    res.status(200).json({ success: true });
+export const validateObjInfo = (objInfo: ObjInfo): string => {
+    if (objInfo.name === "") {
+        return "Checker description cannot be empty";
+    } else if (objInfo.desc === "") {
+        return "Checker description cannot be empty";
+    } else if (!isLegitId(objInfo.id)) {
+        return "Checker id is not legit";
+    }
+
+    // TODO: validate that the user exists
+    return "";
+};
+
+export const validateCheckType = (checkType: CheckType): string => {
+    if (!validCheckTypes.includes(checkType)) {
+        return `Check type must be one of [${validCheckTypes.join(
+            ", ",
+        )}]. Got ${checkType}`;
+    }
+    return "";
+};
+
+export const validateChecker = async (
+    redisClient: RedisClient,
+    userId: string,
+    checkerBlueprint: CheckerBlueprint,
+): Promise<string> => {
+    const objInfoErr = validateObjInfo(checkerBlueprint.objInfo);
+    if (objInfoErr !== "") {
+        return objInfoErr;
+    }
+
+    const checkIds = Object.keys(checkerBlueprint.checkStatuses);
+    if (checkIds.length === 0) {
+        return "Checker must have at least one check";
+    }
+
+    // PERF: batch this
+    for (const checkId of checkIds) {
+        if (
+            !(await redisClient.sIsMember(`users/${userId}/checkIds`, checkId))
+        ) {
+            return `You do not own the check with id ${checkId}`;
+        }
+    }
+
+    // we don't need to validate checks. Since we validate them before they are enabled
+    return "";
 };

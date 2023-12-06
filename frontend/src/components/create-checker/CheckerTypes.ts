@@ -1,5 +1,12 @@
 import { Suggestion } from "@api/ApiTypes";
 
+export type ObjInfo = {
+    name: string;
+    desc: string;
+    creatorId: string;
+    id: string;
+};
+
 export type CheckId = string;
 
 export interface PositiveCheckExample {
@@ -16,14 +23,14 @@ export enum CheckType {
 export const validCheckTypes = [CheckType.highlight, CheckType.rephrase];
 
 export type CheckBlueprint = {
-    name: string;
+    objInfo: ObjInfo;
     checkType: CheckType;
     instruction: string;
-    desc: string;
     category: string; // optional
     positiveExamples: PositiveCheckExample[];
     // negativeExamples: NegativeCheckExample[]; // TODO
-    checkId: CheckId;
+    isEnabled: boolean;
+    // Note: we don't track the checkerId here because it is the checker's job to figure out which checks it has
 };
 
 export type CheckDescObj = {
@@ -39,21 +46,22 @@ export type CheckDesc = {
     checkId: CheckId;
 };
 
-// TODO: I think I should have a "creation Metadata object that is name, desc, creatorId, and id"
+export type CheckStatus = {
+    isEnabled: boolean;
+};
+
+export interface CheckStatuses {
+    [checkId: CheckId]: CheckStatus;
+}
+
 export type CheckerBlueprint = {
-    name: string;
-    desc: string;
-    checkBlueprints: CheckBlueprint[];
-    creatorId: string;
-    id: string;
+    objInfo: ObjInfo;
+    checkStatuses: CheckStatuses;
     isPublic: boolean;
 };
 
 export interface CheckerStorefront {
-    id: string;
-    name: string;
-    desc: string;
-    creatorId: string;
+    objInfo: ObjInfo;
 }
 
 export interface FeedbackResponse {
