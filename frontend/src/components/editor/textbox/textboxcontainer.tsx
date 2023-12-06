@@ -4,7 +4,6 @@ import React, {
     MutableRefObject,
     useCallback,
     useEffect,
-    useRef,
 } from "react";
 import {
     Editor,
@@ -361,10 +360,10 @@ export const TextboxContainer = ({
                     <div className="pb-6 flex flex-row">
                         {/* TODO: maybe put on the right side, above feedback */}
                         <div className="font-bold my-auto">
-                            {storefront.name}
+                            {storefront.objInfo.name}
                         </div>
                         <div className="font-bold my-auto ml-20">
-                            {storefront.desc}
+                            {storefront.objInfo.desc}
                         </div>
 
                         <ExamplesModal
@@ -384,14 +383,16 @@ export const TextboxContainer = ({
                 </div>
             </Affix>
 
-            <Editor
-                spellCheck={true}
-                editorState={editorState}
-                onChange={updateEditorState}
-                placeholder="Type or paste your resume here"
-                ref={editorRef}
-                stripPastedStyles={true}
-            ></Editor>
+            <>
+                <Editor
+                    spellCheck={true}
+                    editorState={editorState}
+                    onChange={updateEditorState}
+                    placeholder="Type or paste your resume here"
+                    ref={editorRef}
+                    stripPastedStyles={true}
+                />
+            </>
         </div>
     );
 };

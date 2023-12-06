@@ -18,7 +18,7 @@ export class Api {
         requestType: string,
         // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
         payload: any,
-        user?: User,
+        user?: User | null,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<any> => {
         if (user) {
@@ -211,7 +211,7 @@ export class Api {
     };
 
     static getPublicCheckers = async (
-        user: User | undefined,
+        user: User | null,
     ): Promise<CheckerStorefront[] | undefined> => {
         const data = await Api.createRequest(
             "api/get-public-checkers",
@@ -224,7 +224,7 @@ export class Api {
 
     static getCheckerStorefront = async (
         checkerId: CheckerId,
-        user: User | undefined,
+        user: User | null,
     ): Promise<CheckerStorefront | undefined> => {
         const data = await Api.createRequest(
             "api/checker/get-storefront",
