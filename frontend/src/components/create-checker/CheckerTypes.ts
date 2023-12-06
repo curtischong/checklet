@@ -38,12 +38,10 @@ export type CheckDescObj = {
 };
 
 export type CheckDesc = {
-    name: string;
+    objInfo: ObjInfo;
     checkType: CheckType;
-    desc: string;
     category: string; // optional
     positiveExamples: PositiveCheckExample[];
-    checkId: CheckId;
 };
 
 export type CheckStatus = {

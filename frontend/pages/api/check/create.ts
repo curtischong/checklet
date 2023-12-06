@@ -5,20 +5,13 @@ import {
     CheckStatus,
     CheckType,
     CheckerBlueprint,
-    CreateCheckReq,
-    validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
 import { createUniqueId } from "@utils/strings";
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-    isUserCheckerOwner,
-    validateObjInfo,
-    validateCheckType,
-} from "pages/api/common";
+import { isUserCheckerOwner, validateCheckType } from "pages/api/common";
 import {
     RedisClient,
     requestMiddleware,
-    return204Status,
     sendBadRequest,
 } from "pages/api/commonNetworking";
 import { createClient } from "redis";
