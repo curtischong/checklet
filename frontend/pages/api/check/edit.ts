@@ -28,16 +28,9 @@ export default async function handler(
     await redisClient.connect();
 
     const checkBlueprint: CheckBlueprint = req.body.checkBlueprint;
+    const checkId = checkBlueprint.objInfo.id;
 
-    // validate that you own the check
-    if (
-        !(await isUserCheckOwner(
-            redisClient,
-            res,
-            userId,
-            checkBlueprint.objInfo.id,
-        ))
-    ) {
+    if (!(await isUserCheckOwner(redisClient, res, userId, checkId))) {
         return;
     }
 
@@ -58,7 +51,7 @@ export default async function handler(
     }
 
     await redisClient.set(
-        `checks/${checkBlueprint.objInfo.id}`,
+        `checks/${checkId}`,
         JSON.stringify(checkBlueprint), // TODO: compress this
     );
 

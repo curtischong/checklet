@@ -53,14 +53,16 @@ export type CreateCheckerReq = {
 };
 
 export type CheckStatus = {
-    checkId: CheckId;
     isEnabled: boolean;
 };
 
-// we need a way to determine if a check is enabled or nto
+export interface CheckStatuses {
+    [checkId: CheckId]: CheckStatus;
+}
+
 export type CheckerBlueprint = {
     objInfo: ObjInfo;
-    checkStatuses: CheckStatus[];
+    checkStatuses: CheckStatuses;
     isPublic: boolean;
 };
 
