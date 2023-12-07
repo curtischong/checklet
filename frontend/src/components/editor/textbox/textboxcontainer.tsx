@@ -7,7 +7,6 @@ import React, {
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
 import { SetState } from "@utils/types";
-import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import { DocRange, Suggestion, isWithinRange } from "@api/ApiTypes";
 import { toast } from "react-toastify";
 import { RichTextarea, RichTextareaHandle } from "rich-textarea";
@@ -28,7 +27,6 @@ export type TextboxContainerProps = {
     activeSuggestion: Suggestion | undefined;
     updateEditorState: (e: string) => void;
     updateActiveSuggestion: SetState<Suggestion | undefined>;
-    setCheckDescObj: SetState<CheckDescObj>;
     isLoading: boolean;
 };
 

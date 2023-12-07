@@ -1,7 +1,10 @@
 import { Api } from "@api/apis";
 import { CheckerId } from "@api/checker";
 import { CheckOverview } from "@components/create-checker/CheckOverview";
-import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
+import {
+    CheckBlueprint,
+    CheckStatuses,
+} from "@components/create-checker/CheckerTypes";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { useClientContext } from "@utils/ClientContext";
 import { SetState } from "@utils/types";
@@ -11,11 +14,15 @@ interface Props {
     setCheckBlueprints: SetState<CheckBlueprint[]>;
     checkBlueprints: CheckBlueprint[];
     checkerId: CheckerId;
+    checkStatuses: CheckStatuses;
+    setCheckStatuses: SetState<CheckStatuses>;
 }
 export const YourChecks = ({
     setCheckBlueprints,
     checkBlueprints,
     checkerId,
+    checkStatuses,
+    setCheckStatuses,
 }: Props): JSX.Element => {
     const router = useRouter();
     const { user } = useClientContext();
@@ -40,7 +47,10 @@ export const YourChecks = ({
                     {checkBlueprints.map((checkBlueprint, idx) => (
                         <CheckOverview
                             key={`check-${idx}`}
+                            checkerId={checkerId}
                             checkBlueprint={checkBlueprint}
+                            checkStatuses={checkStatuses}
+                            setCheckStatuses={setCheckStatuses}
                             onDelete={async () => {
                                 if (!user) {
                                     return;

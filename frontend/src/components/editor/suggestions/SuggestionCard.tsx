@@ -32,11 +32,12 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
 
     const originalText = suggestion.originalText;
 
-    const getCheckDesc = (suggestion: Suggestion) => {
-        return props.checkDescObj[suggestion.checkId];
-    };
-
-    const checkType = getCheckDesc(suggestion).checkType;
+    const checkDesc = props.checkDescObj[suggestion.checkId];
+    if (!checkDesc) {
+        // if we pressed check document, then the author of the checker disabled a check, then we press check document again, we will be missing some checkDescs
+        // So we just don't render the card
+        return <></>;
+    }
 
     return (
         <div
@@ -64,12 +65,12 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
                             "cursor-pointer",
                         )}
                     >
-                        {getCheckDesc(suggestion).objInfo.name}
+                        {checkDesc.objInfo.name}
                         {/* <span
                                 className={"p-[3px] rounded-xl bg-red-800 mx-8"}
                             /> */}
                         <div className="absolute right-4 top-2">
-                            {getCheckDesc(suggestion).category}
+                            {checkDesc.category}
                         </div>
                     </div>
                 ) : (
@@ -77,7 +78,7 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
                         <div className={css.srcNautObj}>{originalText}</div>
                         <span className={css.smallDot} />
                         <div className={css.shortDesc}>
-                            {getCheckDesc(suggestion).objInfo.name}
+                            {checkDesc.objInfo.name}
                         </div>
                     </>
                 )}
@@ -88,16 +89,14 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
                     <div className={css.suggestion}>
                         <SuggestionChange
                             suggestion={suggestion}
-                            checkType={checkType}
+                            checkType={checkDesc.checkType}
                             onReplaceClick={onReplaceClick}
                         />
                     </div>
                     <div className={css.desc}>
                         {" "}
                         <ReactMarkdown
-                            children={`${
-                                getCheckDesc(suggestion).objInfo.desc
-                            }`}
+                            children={`${checkDesc.objInfo.desc}`}
                             remarkPlugins={[remarkGfm]}
                         />{" "}
                     </div>

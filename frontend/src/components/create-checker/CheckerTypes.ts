@@ -29,7 +29,6 @@ export type CheckBlueprint = {
     category: string; // optional
     positiveExamples: PositiveCheckExample[];
     // negativeExamples: NegativeCheckExample[]; // TODO
-    isEnabled: boolean;
     // Note: we don't track the checkerId here because it is the checker's job to figure out which checks it has
 };
 

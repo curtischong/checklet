@@ -45,7 +45,6 @@ export const SelectCheckType = ({
                             category: "",
                             checkType: tmpCheckType,
                             positiveExamples: [],
-                            isEnabled: true,
                         }}
                         originalText=""
                         editedText=""

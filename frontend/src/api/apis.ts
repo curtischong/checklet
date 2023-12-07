@@ -256,6 +256,7 @@ export class Api {
 
     static setCheckIsEnabled = async (
         checkId: CheckId,
+        checkerId: CheckerId,
         isEnabled: boolean,
         user: User,
     ): Promise<boolean> => {
@@ -264,6 +265,7 @@ export class Api {
             "POST",
             {
                 checkId,
+                checkerId,
                 isEnabled,
             },
             user,

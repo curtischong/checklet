@@ -3,7 +3,6 @@ import {
     NormalButton,
     SubmittingState,
 } from "@components/Button";
-import { HelpIcon } from "@components/icons/HelpIcon";
 import { Input } from "antd";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
@@ -17,7 +16,6 @@ import {
     CheckStatuses,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
-import { CheckOverview } from "@components/create-checker/CheckOverview";
 import { YourChecks } from "@components/create-checker/YourChecks";
 
 export enum Page {
@@ -154,7 +152,8 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                         </div>
 
                         <div className="w-[450px] mx-auto flex flex-col">
-                            <h1 className="text-3xl font-bold mt-4 mb-4">
+                            <h1 className="text-3xl mt-4 mb-4 font-bold">
+                                {/* <span className="border-b-2 border-blue-300"> */}
                                 Create Checker
                             </h1>
 
@@ -215,6 +214,8 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                         checkerId={checkerId}
                         checkBlueprints={checkBlueprints}
                         setCheckBlueprints={setCheckBlueprints}
+                        checkStatuses={checkStatuses}
+                        setCheckStatuses={setCheckStatuses}
                     />
                 </div>
             </div>
