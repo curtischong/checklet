@@ -109,7 +109,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                             updateEditorState(editorState, newText, suggestions)
                         }
                         isLoading={isLoading}
-                        setCheckDescObj={setCheckDescObj}
                     />
                 </div>
                 <SuggestionsContainer
