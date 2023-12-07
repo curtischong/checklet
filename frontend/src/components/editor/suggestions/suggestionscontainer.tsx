@@ -36,6 +36,8 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
         hasAnalyzedOnce,
     } = props;
 
+    const suggestionsContainerRef = useRef<HTMLDivElement>(null);
+
     const suggestionsRefs = useRef<SuggestionIdToRef>({});
 
     const onCollapseClick = useCallback(
@@ -71,14 +73,24 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
             const ref = suggestionsRefs.current[activeSuggestion.suggestionId];
             // we need to request animation frame cause otherwise, scrollIntoView will sometimes fail
             // https://github.com/facebook/react/issues/23396
-            window.requestAnimationFrame(() => {
-                if (ref?.current) {
-                    ref.current.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
-                    });
-                }
-            });
+            // window.requestAnimationFrame(() => {
+            //     if (ref?.current) {
+            //         ref.current.scrollIntoView({
+            //             behavior: "smooth",
+            //             block: "center",
+            //         });
+            //     }
+            // }
+            if (ref.current) {
+                const scrollHeight = ref.current.offsetTop;
+                suggestionsContainerRef.current?.scrollTo({
+                    left: 0,
+                    top:
+                        scrollHeight -
+                        suggestionsContainerRef.current.offsetHeight / 2,
+                    behavior: "smooth",
+                });
+            }
         }
     }, [activeSuggestion]);
 
@@ -159,6 +171,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
             <div
                 className="px-4"
                 style={{ maxHeight: "calc(85vh)", overflow: "auto" }}
+                ref={suggestionsContainerRef}
             >
                 {renderSuggestions()}
             </div>
