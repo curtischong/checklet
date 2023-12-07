@@ -36,7 +36,7 @@ export class Check {
 
         return `You are a text document fixer. When given text, follow these instructions. ${this.blueprint.instruction}
 
-Do not repeat back the entire text. Only output the edited text plus a bit of context around the edit for context. Here are some positive examples of how you should change the original text into the edited text:
+Call the function that converts the orginal text to the edited text. Be concise. Only output the edited text. Here are some positive examples of how you should change the original text into the edited text:
 
 ${positiveExamples}
 `;

@@ -110,6 +110,7 @@ export const getCheckBlueprints = async (
     onlyGetIsEnabled: boolean,
 ): Promise<CheckBlueprint[]> => {
     const checkStatuses = Object.entries(checkerBlueprint.checkStatuses);
+    console.log("checkstatuses", checkStatuses);
     const filteredStatuses = onlyGetIsEnabled
         ? checkStatuses.filter(([_, checkStatus]) => checkStatus.isEnabled)
         : checkStatuses;
