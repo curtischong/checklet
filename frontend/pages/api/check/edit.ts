@@ -59,31 +59,3 @@ export default async function handler(
 
     return204Status(res);
 }
-
-const validateCheckBlueprint = (checkBlueprint: CheckBlueprint): string => {
-    const validateObjInfoErr = validateObjInfo(checkBlueprint.objInfo);
-    if (validateObjInfoErr !== "") {
-        return validateObjInfoErr;
-    }
-
-    if (checkBlueprint.instruction === "") {
-        return "Check instruction cannot be empty";
-    } else if (checkBlueprint.positiveExamples.length === 0) {
-        return "Check must have at least one positive example";
-    }
-    const validateCheckTypeErr = validateCheckType(checkBlueprint.checkType);
-    if (validateCheckTypeErr !== "") {
-        return validateCheckTypeErr;
-    }
-
-    return validatePositiveExamples(checkBlueprint);
-};
-
-const validatePositiveExamples = (checkBlueprint: CheckBlueprint) => {
-    for (const example of checkBlueprint.positiveExamples) {
-        if (example.originalText === "") {
-            return "Positive example original text cannot be empty";
-        }
-    }
-    return "";
-};
