@@ -35,14 +35,7 @@ export const RichTextareaCore = (): JSX.Element => {
                     }
 
                     res.push(
-                        <span
-                            className="cursor-pointer py-[1px]  border-b-[2px] border-blue-500"
-                            // style={{
-                            //     backgroundColor: range.color,
-                            //     padding: "3px",
-                            //     // display: "inline-block",
-                            // }}
-                        >
+                        <span className="cursor-pointer py-[1px]  border-b-[2px] border-blue-500">
                             {v.substring(range.start, range.end)}
                         </span>,
                     );

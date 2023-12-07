@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { SuggestionIdToRef } from "./suggestionsTypes";
 import { SuggestionCard } from "./SuggestionCard";
 import ZeroImage from "./ZeroState.svg";
@@ -17,8 +17,8 @@ export type SuggestionsContainerProps = {
     suggestions: Suggestion[];
     activeSuggestion: Suggestion | undefined;
     setActiveSuggestion: SetState<Suggestion | undefined>;
-    editorState: EditorState;
-    updateEditorState: (e: EditorState) => void;
+    editorState: string;
+    updateEditorState: (e: string) => void;
     updateSortIdx: (idx: number) => void;
     checkDescObj: CheckDescObj;
     hasAnalyzedOnce: boolean;
@@ -39,55 +39,33 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
 
     const suggestionsRefs = useRef<SuggestionIdToRef>({});
 
-    const editorHasText = React.useMemo(
-        () => editorState.getCurrentContent().hasText(),
-        [editorState],
+    const onCollapseClick = useCallback(
+        (s: Suggestion) => {
+            if (activeSuggestion === s) {
+                mixpanelTrack("Suggestion closed", {
+                    suggestion: s,
+                });
+                setActiveSuggestion(undefined);
+            } else {
+                mixpanelTrack("Suggestion opened", {
+                    suggestion: s,
+                });
+                setActiveSuggestion(s);
+            }
+        },
+        [activeSuggestion, setActiveSuggestion],
     );
 
-    const onCollapseClick = (s: Suggestion) => {
-        if (activeSuggestion === s) {
-            mixpanelTrack("Suggestion closed", {
-                suggestion: s,
-            });
-            setActiveSuggestion(undefined);
-        } else {
-            mixpanelTrack("Suggestion opened", {
-                suggestion: s,
-            });
-            setActiveSuggestion(s);
-        }
-    };
-
-    // TODO: figure out if it's highlight or a replacement
-    const onReplaceClick = (s: Suggestion) => {
-        const content = editorState.getCurrentContent();
-        let start = s.range.start;
-        let currBlock: ContentBlock | undefined = content.getFirstBlock();
-        while (currBlock != null && currBlock.getLength() < start) {
-            start -= currBlock.getLength() + 1;
-            currBlock = content.getBlockAfter(currBlock.getKey());
-        }
-
-        if (currBlock != null) {
-            const selectionState = SelectionState.createEmpty(
-                currBlock.getKey(),
-            );
-
-            const selection = selectionState.merge({
-                anchorOffset: start,
-                focusOffset: start + s.range.end - s.range.start,
-            });
-
-            const newContent = Modifier.replaceText(
-                editorState.getCurrentContent(),
-                selection,
-                s.editedText,
-            );
-            updateEditorState(
-                EditorState.push(editorState, newContent, "remove-range"),
-            );
-        }
-    };
+    const onReplaceClick = useCallback(
+        (s: Suggestion) => {
+            const newEditorState =
+                editorState.slice(0, s.range.start) +
+                s.editedText +
+                editorState.slice(s.range.end);
+            updateEditorState(newEditorState);
+        },
+        [editorState, updateEditorState],
+    );
 
     useEffect(() => {
         if (activeSuggestion) {
@@ -107,7 +85,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
 
     const renderSuggestions = React.useCallback(() => {
         suggestionsRefs.current = {}; // reset refs
-        if (editorHasText) {
+        if (editorState !== "") {
             if (suggestions.length > 0) {
                 return suggestions.map((s: Suggestion, index: number) => {
                     const ref = React.createRef<HTMLDivElement>();
@@ -171,7 +149,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                 }
             />
         );
-    }, [editorHasText, suggestions, activeSuggestion]);
+    }, [editorState, suggestions, activeSuggestion]);
 
     return (
         <div className="col-span-2">

@@ -89,7 +89,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     setCheckDescObj={setCheckDescObj}
                     setHasAnalyzedOnce={setHasAnalyzedOnce}
                 />
-                {/* <SuggestionsContainer
+                <SuggestionsContainer
                     suggestions={suggestions}
                     activeSuggestion={activeSuggestion}
                     setActiveSuggestion={setActiveSuggestion}
@@ -98,7 +98,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     updateSortIdx={updateSortIdx}
                     checkDescObj={checkDescObj}
                     hasAnalyzedOnce={hasAnalyzedOnce}
-                /> */}
+                />
                 <TextButton
                     className="fixed top-2 right-5"
                     onClick={() => {
