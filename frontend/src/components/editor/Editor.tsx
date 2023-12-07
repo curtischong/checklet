@@ -53,35 +53,29 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     if (isBefore(suggestion.range, editedRange)) {
                         newSuggestions.push({ ...suggestion });
                     } else if (isIntersecting(suggestion.range, editedRange)) {
-                        const textWasAddedBeforeAndSuggestionIsUnchanged =
-                            editedRange.end < suggestion.range.end &&
-                            newText.substring(
-                                editedRange.end,
-                                editedRange.end +
-                                    suggestion.range.end -
-                                    suggestion.range.start,
-                            ) === suggestion.originalText;
-                        if (textWasAddedBeforeAndSuggestionIsUnchanged) {
+                        // console.log(suggestion.range, editedRange);
+                        if (
+                            editedRange.start === suggestion.range.start &&
+                            numCharsAdded === 1
+                        ) {
+                            // they added a character at the beginning of the suggestion
                             newSuggestions.push({
                                 ...suggestion,
-                                range: shift(suggestion.range, numCharsAdded),
+                                range: shift(suggestion.range, 1),
                             });
-                        } else {
-                            const textWasAddedAfterAndSuggestionIsUnchanged =
-                                editedRange.start > suggestion.range.start &&
-                                newText.substring(
-                                    editedRange.start -
-                                        (suggestion.range.end -
-                                            suggestion.range.start),
-                                    editedRange.start,
-                                ) === suggestion.originalText;
-                            if (textWasAddedAfterAndSuggestionIsUnchanged) {
-                                newSuggestions.push({
-                                    ...suggestion,
-                                });
-                            }
+                        } else if (
+                            editedRange.start === suggestion.range.start - 1 &&
+                            numCharsAdded === -1
+                        ) {
+                            // they deleted a character at the beginning of the suggestion
+                            newSuggestions.push({
+                                ...suggestion,
+                                range: shift(suggestion.range, -1),
+                            });
                         }
-                        // do nothing since the suggestion is now invalid
+
+                        // if they modified characters afterwards, there is no overlap! so we don't need to handle that case
+                        // otherwise, they modified characters WITHIN the suggestion, so do nothing since the suggestion is now invalid
                     } else {
                         newSuggestions.push({
                             ...suggestion,
