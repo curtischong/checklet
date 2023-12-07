@@ -45,6 +45,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
         // console.log("newText", newText);
         if (oldContent !== newContent) {
             // console.log("text changed");
+            // PERF: look into rich-textarea to see if we can get the diff of the text change so it's O(1) instead of O(n)
             // 1) calculate WHERE the text changed (and how many chars changed)
             const { editedRange, numCharsAdded } = singleEditDistance(
                 oldContent,

@@ -130,8 +130,6 @@ export const TextboxContainer = ({
             return;
         }
         setHasAnalyzedOnce(true);
-        suggestionIdToRef.current = {};
-        // return;
 
         const newSuggestions = response.suggestions;
         console.log("newSuggestions", newSuggestions);
@@ -187,6 +185,9 @@ export const TextboxContainer = ({
 
                     const res: JSX.Element[] = [];
                     let lastCharIdx = 0;
+
+                    // basically, every time we see a suggestion, we render it as an underline
+                    // the res array just tracks sections of text that are underlines and NOT underlined
                     for (const suggestion of suggestions) {
                         const range = suggestion.range;
                         if (lastCharIdx < range.start) {

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { RichTextarea } from "rich-textarea";
 
+// this is a demo file of richtextarea. it's not used in the app
+// we can use it to test how richtextarea works
 // https://github.com/inokawa/rich-textarea/tree/main
 
 export const RichTextareaCore = (): JSX.Element => {
