@@ -20,7 +20,8 @@ export const SuggestionChange = ({
     const showReplacementVertically =
         suggestion.originalText.includes("\n") ||
         suggestion.editedText?.includes("\n") ||
-        suggestion.originalText.length > 50;
+        suggestion.originalText.length > 50 ||
+        (suggestion.editedText && suggestion.editedText.length > 50);
     return (
         <div
             className={classNames("flex", {
@@ -31,10 +32,12 @@ export const SuggestionChange = ({
             {suggestion.editedText ? (
                 <div
                     className={classNames(
-                        "line-through text-[#DC5262] break-words whitespace-pre-wrap",
+                        "line-through text-[#DC5262] whitespace-pre-wrap",
                     )}
+                    // https://stackoverflow.com/questions/12699800/smarter-word-break-in-css
                     style={{
                         textDecorationColor: "#DC5262",
+                        wordBreak: "break-word",
                     }}
                 >
                     {suggestion.originalText}
@@ -46,6 +49,7 @@ export const SuggestionChange = ({
                     )}
                     style={{
                         textDecorationColor: "#DC5262",
+                        wordBreak: "break-word",
                     }}
                 >
                     {suggestion.originalText}
@@ -63,6 +67,9 @@ export const SuggestionChange = ({
                     <div
                         onClick={onReplaceClick}
                         className="text-white hover:bg-[#1d8fdb] bg-[#189bf2] rounded md:py-0 md:px-2 cursor-pointer whitespace-pre-wrap"
+                        style={{
+                            wordBreak: "break-word",
+                        }}
                     >
                         {suggestion.editedText}
                     </div>
