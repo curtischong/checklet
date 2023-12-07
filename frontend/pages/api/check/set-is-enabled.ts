@@ -54,7 +54,7 @@ export default async function setCheckIsEnabled(
         }
     }
 
-    const rawCheckerBlueprint = await redisClient.get(`checks/${checkerId}`);
+    const rawCheckerBlueprint = await redisClient.get(`checkers/${checkerId}`);
     if (rawCheckerBlueprint === null) {
         sendBadRequest(res, "Checker does not exist");
         return;
