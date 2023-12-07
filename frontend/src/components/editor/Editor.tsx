@@ -10,6 +10,7 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
 import { singleEditDistance } from "@components/editor/singleEditDistance";
+import { EditorHeader } from "@components/editor/EditorHeader";
 
 interface Props {
     storefront: CheckerStorefront;
@@ -19,21 +20,10 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
     const [editorState, setEditorState] = useState<string>("");
     const [checkDescObj, setCheckDescObj] = useState<CheckDescObj>({});
-    const [sortIdx, setSortIdx] = useState(1);
     const [hasAnalyzedOnce, setHasAnalyzedOnce] = useState(false);
     const router = useRouter();
     const { user } = useClientContext();
-
-    const sorts: ((a: Suggestion, b: Suggestion) => number)[] = [
-        (a, b) => a.range.start - b.range.start, // sort by order of appearance
-        (a, b) => a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
-    ];
-
-    const updateSortIdx = (idx: number) => {
-        setSortIdx(idx);
-        setSuggestions((prevSuggestions) => prevSuggestions.sort(sorts[idx]));
-    };
-    const domEditorRef = useRef<{ focus: () => void }>();
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const updateEditorState = useCallback(
         (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
@@ -94,21 +84,34 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
-                <TextboxContainer
-                    activeSuggestion={activeSuggestion}
-                    updateActiveSuggestion={setActiveSuggestion}
-                    suggestions={suggestions}
-                    updateSuggestions={setSuggestions}
-                    editorState={editorState}
-                    updateEditorState={(newText) =>
-                        updateEditorState(editorState, newText, suggestions)
-                    }
-                    sort={sorts[sortIdx]}
-                    editorRef={domEditorRef}
-                    storefront={storefront}
-                    setCheckDescObj={setCheckDescObj}
-                    setHasAnalyzedOnce={setHasAnalyzedOnce}
-                />
+                <div
+                    className="textbox col-span-3"
+                    style={{
+                        maxHeight: "100vh",
+                        overflow: "auto",
+                    }}
+                >
+                    <EditorHeader
+                        isLoading={isLoading}
+                        editorState={editorState}
+                        setHasAnalyzedOnce={setHasAnalyzedOnce}
+                        setSuggestions={setSuggestions}
+                        storefront={storefront}
+                        setIsLoading={setIsLoading}
+                        setCheckDescObj={setCheckDescObj}
+                    />
+                    <TextboxContainer
+                        activeSuggestion={activeSuggestion}
+                        updateActiveSuggestion={setActiveSuggestion}
+                        suggestions={suggestions}
+                        editorState={editorState}
+                        updateEditorState={(newText) =>
+                            updateEditorState(editorState, newText, suggestions)
+                        }
+                        isLoading={isLoading}
+                        setCheckDescObj={setCheckDescObj}
+                    />
+                </div>
                 <SuggestionsContainer
                     suggestions={suggestions}
                     activeSuggestion={activeSuggestion}
@@ -117,7 +120,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     updateEditorState={(newText) =>
                         updateEditorState(editorState, newText, suggestions)
                     }
-                    updateSortIdx={updateSortIdx}
                     checkDescObj={checkDescObj}
                     hasAnalyzedOnce={hasAnalyzedOnce}
                 />

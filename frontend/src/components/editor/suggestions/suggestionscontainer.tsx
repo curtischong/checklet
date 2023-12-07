@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SuggestionIdToRef } from "./suggestionsTypes";
 import { SuggestionCard } from "./SuggestionCard";
 import ZeroImage from "./ZeroState.svg";
@@ -18,27 +18,47 @@ export type SuggestionsContainerProps = {
     setActiveSuggestion: SetState<Suggestion | undefined>;
     editorState: string;
     updateEditorState: (e: string) => void;
-    updateSortIdx: (idx: number) => void;
     checkDescObj: CheckDescObj;
     hasAnalyzedOnce: boolean;
 };
 
-export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
-    props: SuggestionsContainerProps,
-) => {
-    const {
-        suggestions,
-        activeSuggestion,
-        setActiveSuggestion,
-        editorState,
-        updateEditorState,
-        updateSortIdx,
-        hasAnalyzedOnce,
-    } = props;
+export enum SortType {
+    TextOrder,
+    Category,
+}
 
+export const Sorters = {
+    [SortType.TextOrder]: (a: Suggestion, b: Suggestion): number => {
+        const res = a.range.start - b.range.start; // sort by order of appearance
+        if (res !== 0) {
+            return res;
+        }
+        return a.range.end - b.range.end; // if they have the same start, sort by end. We want the shorter suggestions to be first, so their underlines are visible
+    },
+    [SortType.Category]: (a: Suggestion, b: Suggestion): number =>
+        a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
+};
+
+export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
+    suggestions,
+    activeSuggestion,
+    setActiveSuggestion,
+    editorState,
+    updateEditorState,
+    hasAnalyzedOnce,
+    checkDescObj,
+}: SuggestionsContainerProps) => {
+    const [sortedSuggestions, setSortedSuggestions] = useState<Suggestion[]>(
+        [],
+    );
     const suggestionsContainerRef = useRef<HTMLDivElement>(null);
-
     const suggestionsRefs = useRef<SuggestionIdToRef>({});
+
+    const [sortType, setSortType] = useState(SortType.TextOrder);
+    useEffect(() => {
+        const sorted = [...suggestions].sort(Sorters[sortType]);
+        setSortedSuggestions(sorted);
+    }, [suggestions]);
 
     const onCollapseClick = useCallback(
         (s: Suggestion) => {
@@ -90,8 +110,8 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     const renderSuggestions = React.useCallback(() => {
         suggestionsRefs.current = {}; // reset refs
         if (editorState !== "") {
-            if (suggestions.length > 0) {
-                return suggestions.map((s: Suggestion, index: number) => {
+            if (sortedSuggestions.length > 0) {
+                return sortedSuggestions.map((s: Suggestion, index: number) => {
                     const ref = React.createRef<HTMLDivElement>();
                     suggestionsRefs.current[s.suggestionId] = ref;
                     return (
@@ -101,7 +121,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                             activeSuggestion={activeSuggestion}
                             onClick={() => onCollapseClick(s)}
                             onReplaceClick={() => onReplaceClick(s)}
-                            checkDescObj={props.checkDescObj}
+                            checkDescObj={checkDescObj}
                             ref={ref}
                         />
                     );
@@ -153,13 +173,13 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
                 }
             />
         );
-    }, [editorState, suggestions, activeSuggestion]);
+    }, [editorState, suggestions, activeSuggestion, sortedSuggestions]);
 
     return (
         <div className="col-span-2">
             <SuggestionsHeader
                 suggestions={suggestions}
-                updateSortIdx={updateSortIdx}
+                setSortType={setSortType}
             />
             <div
                 className="px-4"
@@ -173,16 +193,16 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
 };
 
 const SortIcon = (
-    idx: number,
+    sortType: SortType,
     tooltip: string,
-    updateSortIdx: (idx: number) => void,
+    setSortType: SetState<SortType>,
 ) => {
     return (
         <Tooltip title={tooltip}>
             <BsSortDownAlt
                 className="ml-2"
                 size={20}
-                onClick={() => updateSortIdx(idx)}
+                onClick={() => setSortType(sortType)}
             />
         </Tooltip>
     );
@@ -190,10 +210,10 @@ const SortIcon = (
 
 const SuggestionsHeader = ({
     suggestions,
-    updateSortIdx,
+    setSortType,
 }: {
     suggestions: Suggestion[];
-    updateSortIdx: (idx: number) => void;
+    setSortType: SetState<SortType>;
 }) => {
     return (
         <div className="font-bold text-16 pb-4 pt-1 flex mt-10">
@@ -206,8 +226,12 @@ const SuggestionsHeader = ({
                 </div>
             )}
             <div className="flex ml-auto mr-1">
-                {SortIcon(0, "Sort by text order", updateSortIdx)}
-                {SortIcon(1, "Sort by category", updateSortIdx)}
+                {SortIcon(
+                    SortType.TextOrder,
+                    "Sort by text order",
+                    setSortType,
+                )}
+                {SortIcon(SortType.Category, "Sort by category", setSortType)}
             </div>
         </div>
     );
