@@ -30,10 +30,15 @@ export class Llm {
     }
 
     private cacheGet(prompt: string): string | undefined {
-        return this.cache.get(`${this.systemPromptMessage.content}-${prompt}`);
+        return this.cache.get(
+            `${this.model}-${this.systemPromptMessage.content}-${prompt}`,
+        );
     }
     private cacheSet(prompt: string, value: string): void {
-        this.cache.set(`${this.systemPromptMessage.content}-${prompt}`, value);
+        this.cache.set(
+            `${this.model}-${this.systemPromptMessage.content}-${prompt}`,
+            value,
+        );
     }
 
     async prompt(message: string): Promise<string> {
