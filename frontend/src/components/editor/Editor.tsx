@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
 import { TextButton } from "@components/Button";
@@ -35,41 +35,66 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     };
     const domEditorRef = useRef<{ focus: () => void }>();
 
-    const updateEditorState = (newState: string) => {
-        const oldContent = editorState;
-        const newContent = newState;
-        // const lastChange = newState.getLastChangeType(); // please leave this line here for documentation
+    const updateEditorState = useCallback(
+        (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
+            // if the text changed, we need to shift all the suggestions.
+            if (oldText !== newText) {
+                // console.log("text changed");
+                // PERF: look into rich-textarea to see if we can get the diff of the text change so it's O(1) instead of O(n)
+                // 1) calculate WHERE the text changed (and how many chars changed)
+                const { editedRange, numCharsAdded } = singleEditDistance(
+                    oldText,
+                    newText,
+                );
 
-        // if the text changed, we need to shift all the suggestions.
-        // console.log("oldText", oldText);
-        // console.log("newText", newText);
-        if (oldContent !== newContent) {
-            // console.log("text changed");
-            // PERF: look into rich-textarea to see if we can get the diff of the text change so it's O(1) instead of O(n)
-            // 1) calculate WHERE the text changed (and how many chars changed)
-            const { editedRange, numCharsAdded } = singleEditDistance(
-                oldContent,
-                newContent,
-            );
-
-            // 2) shift all the suggestions. Note: if the text changed WITHIN a suggestion, that suggestion is now invalid. so we remove it
-            const newSuggestions = [];
-            for (const suggestion of suggestions) {
-                if (isBefore(suggestion.range, editedRange)) {
-                    newSuggestions.push({ ...suggestion });
-                } else if (isIntersecting(suggestion.range, editedRange)) {
-                    // do nothing since the suggestion is now invalid
-                } else {
-                    newSuggestions.push({
-                        ...suggestion,
-                        range: shift(suggestion.range, numCharsAdded),
-                    });
+                // 2) shift all the suggestions. Note: if the text changed WITHIN a suggestion, that suggestion is now invalid. so we remove it
+                const newSuggestions = [];
+                for (const suggestion of curSuggestions) {
+                    if (isBefore(suggestion.range, editedRange)) {
+                        newSuggestions.push({ ...suggestion });
+                    } else if (isIntersecting(suggestion.range, editedRange)) {
+                        const textWasAddedBeforeAndSuggestionIsUnchanged =
+                            editedRange.end < suggestion.range.end &&
+                            newText.substring(
+                                editedRange.end,
+                                editedRange.end +
+                                    suggestion.range.end -
+                                    suggestion.range.start,
+                            ) === suggestion.originalText;
+                        if (textWasAddedBeforeAndSuggestionIsUnchanged) {
+                            newSuggestions.push({
+                                ...suggestion,
+                                range: shift(suggestion.range, numCharsAdded),
+                            });
+                        } else {
+                            const textWasAddedAfterAndSuggestionIsUnchanged =
+                                editedRange.start > suggestion.range.start &&
+                                newText.substring(
+                                    editedRange.start -
+                                        (suggestion.range.end -
+                                            suggestion.range.start),
+                                    editedRange.start,
+                                ) === suggestion.originalText;
+                            if (textWasAddedAfterAndSuggestionIsUnchanged) {
+                                newSuggestions.push({
+                                    ...suggestion,
+                                });
+                            }
+                        }
+                        // do nothing since the suggestion is now invalid
+                    } else {
+                        newSuggestions.push({
+                            ...suggestion,
+                            range: shift(suggestion.range, numCharsAdded),
+                        });
+                    }
                 }
+                setSuggestions(newSuggestions);
             }
-            setSuggestions(newSuggestions);
-        }
-        setEditorState(newState);
-    };
+            setEditorState(newText);
+        },
+        [setEditorState, setSuggestions],
+    );
 
     return (
         <div className="mx-auto max-w-screen-lg">
@@ -80,7 +105,9 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     suggestions={suggestions}
                     updateSuggestions={setSuggestions}
                     editorState={editorState}
-                    updateEditorState={updateEditorState}
+                    updateEditorState={(newText) =>
+                        updateEditorState(editorState, newText, suggestions)
+                    }
                     sort={sorts[sortIdx]}
                     editorRef={domEditorRef}
                     storefront={storefront}
@@ -92,7 +119,9 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     activeSuggestion={activeSuggestion}
                     setActiveSuggestion={setActiveSuggestion}
                     editorState={editorState}
-                    updateEditorState={updateEditorState}
+                    updateEditorState={(newText) =>
+                        updateEditorState(editorState, newText, suggestions)
+                    }
                     updateSortIdx={updateSortIdx}
                     checkDescObj={checkDescObj}
                     hasAnalyzedOnce={hasAnalyzedOnce}

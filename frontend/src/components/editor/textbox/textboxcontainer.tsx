@@ -167,6 +167,7 @@ export const TextboxContainer = ({
                             onClick={checkDocument}
                             loading={isLoading}
                             className="h-9 float-right ml-32"
+                            disabled={editorState === ""}
                         >
                             Check Document
                         </LoadingButton>
@@ -178,7 +179,7 @@ export const TextboxContainer = ({
                 ref={editorRef}
                 value={editorState}
                 onChange={(e) => updateEditorState(e.target.value)}
-                className="bg-white resize-none w-full h-[76vh]"
+                className="bg-white resize-none w-full h-[76vh] outline-none"
             >
                 {(v) => {
                     suggestionIdToRef.current = {}; // reset the map
