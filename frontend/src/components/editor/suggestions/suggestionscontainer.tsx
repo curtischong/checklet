@@ -71,16 +71,9 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     useEffect(() => {
         if (activeSuggestion) {
             const ref = suggestionsRefs.current[activeSuggestion.suggestionId];
-            // we need to request animation frame cause otherwise, scrollIntoView will sometimes fail
+            // we cannot use scrollIntoView because there is a bug in its implementation in chrome
+            // I even tried wrapping it in a requestAnimationFrame but it doesn't work
             // https://github.com/facebook/react/issues/23396
-            // window.requestAnimationFrame(() => {
-            //     if (ref?.current) {
-            //         ref.current.scrollIntoView({
-            //             behavior: "smooth",
-            //             block: "center",
-            //         });
-            //     }
-            // }
             if (ref.current) {
                 const scrollHeight = ref.current.offsetTop;
                 suggestionsContainerRef.current?.scrollTo({
