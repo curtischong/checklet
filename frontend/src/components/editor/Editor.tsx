@@ -46,7 +46,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     oldText,
                     newText,
                 );
-
                 // 2) shift all the suggestions. Note: if the text changed WITHIN a suggestion, that suggestion is now invalid. so we remove it
                 const newSuggestions = [];
                 for (const suggestion of curSuggestions) {
@@ -54,23 +53,25 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         newSuggestions.push({ ...suggestion });
                     } else if (isIntersecting(suggestion.range, editedRange)) {
                         // console.log(suggestion.range, editedRange);
+
+                        // due to the way we calculate diffs, the editedRange will overlap with the suggestion range
+                        // these if statements handle handles these edge cases so we properly update the suggestion range
                         if (
+                            numCharsAdded > 0 && // they added text at the beginning of the suggestion
                             editedRange.start === suggestion.range.start &&
-                            numCharsAdded === 1
+                            editedRange.end === editedRange.start + 1
                         ) {
-                            // they added a character at the beginning of the suggestion
                             newSuggestions.push({
                                 ...suggestion,
-                                range: shift(suggestion.range, 1),
+                                range: shift(suggestion.range, numCharsAdded),
                             });
                         } else if (
-                            editedRange.start === suggestion.range.start - 1 &&
-                            numCharsAdded === -1
+                            numCharsAdded < 0 && // they rmeoved text at the beginning of the suggestion
+                            editedRange.end === suggestion.range.start + 1
                         ) {
-                            // they deleted a character at the beginning of the suggestion
                             newSuggestions.push({
                                 ...suggestion,
-                                range: shift(suggestion.range, -1),
+                                range: shift(suggestion.range, numCharsAdded),
                             });
                         }
 
