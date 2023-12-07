@@ -6,7 +6,7 @@ import {
     CheckType,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
-import { createUniqueId } from "@utils/strings";
+import { createShortId } from "@utils/strings";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isUserCheckerOwner, validateCheckType } from "pages/api/common";
 import {
@@ -55,7 +55,7 @@ export default async function handler(
         return;
     }
 
-    const checkId = createUniqueId();
+    const checkId = createShortId();
     const checkIdKey = `checks/${checkId}`;
     if (await redisClient.exists(checkIdKey)) {
         sendBadRequest(
