@@ -1,6 +1,11 @@
+import { Api } from "@api/apis";
 import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
+import { LabelWithSwitch } from "@components/Switch";
 import { PositiveExamplePreview } from "@components/create-check/PositiveExamplePreview";
 import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
+import { useClientContext } from "@utils/ClientContext";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
     checkBlueprint: CheckBlueprint;
@@ -14,6 +19,9 @@ export const CheckOverview = ({
     onDelete,
     onEdit,
 }: Props): JSX.Element => {
+    const [tmpIsChecked, setTmpChecked] = useState(checkBlueprint.isEnabled);
+
+    const { user } = useClientContext();
     return (
         <div className="border bg-white rounded-md shadow-around py-3 px-6 w-[400px]">
             <div className="flex flex-row items-end">
@@ -43,6 +51,30 @@ export const CheckOverview = ({
                     </div>
                 ))}
             </div>
+            <LabelWithSwitch
+                text="Is Enabled:"
+                helpText="The checker only runs enables checks on the document"
+                isChecked={tmpIsChecked}
+                setChecked={(newIsChecked: boolean) => {
+                    (async () => {
+                        if (!user) {
+                            toast.error(
+                                "You must be logged in to change a checker's privacy",
+                            );
+                            return;
+                        }
+                        setTmpChecked(newIsChecked); // if we don't set this initially, the switch wont' change state
+                        const success = await Api.setCheckIsEnabled(
+                            checkBlueprint.objInfo.id,
+                            newIsChecked,
+                            user,
+                        );
+                        if (!success) {
+                            setTmpChecked(!newIsChecked);
+                        }
+                    })();
+                }}
+            />
         </div>
     );
 };

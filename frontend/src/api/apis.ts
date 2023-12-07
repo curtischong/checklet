@@ -253,4 +253,21 @@ export class Api {
         );
         return res !== undefined;
     };
+
+    static setCheckIsEnabled = async (
+        checkId: CheckId,
+        isEnabled: boolean,
+        user: User,
+    ): Promise<boolean> => {
+        const res = await Api.createRequest(
+            "api/check/set-is-enabled",
+            "POST",
+            {
+                checkId,
+                isEnabled,
+            },
+            user,
+        );
+        return res !== undefined;
+    };
 }
