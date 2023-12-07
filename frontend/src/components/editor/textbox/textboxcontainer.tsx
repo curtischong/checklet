@@ -192,11 +192,12 @@ export const TextboxContainer = ({
 
                     // basically, every time we see a suggestion, we render it as an underline
                     // the res array just tracks sections of text that are underlines and NOT underlined
-                    for (const suggestion of suggestions) {
+                    for (let i = 0; i < suggestions.length; i++) {
+                        const suggestion = suggestions[i];
                         const range = suggestion.range;
                         if (lastCharIdx < range.start) {
                             res.push(
-                                <span>
+                                <span key={2 * i}>
                                     {v.substring(lastCharIdx, range.start)}
                                 </span>,
                             );
@@ -221,7 +222,7 @@ export const TextboxContainer = ({
                                 className="border-[#189bf2] border-b-[2px]"
                                 style={style}
                                 onClick={() => handleUnderlineClicked(range)}
-                                key={suggestion.suggestionId}
+                                key={2 * i + 1}
                             >
                                 {v.substring(range.start, range.end)}
                             </span>,
@@ -229,7 +230,11 @@ export const TextboxContainer = ({
                         lastCharIdx = range.end;
                     }
                     if (lastCharIdx < v.length) {
-                        res.push(<span>{v.substring(lastCharIdx)}</span>);
+                        res.push(
+                            <span key={2 * suggestions.length}>
+                                {v.substring(lastCharIdx)}
+                            </span>,
+                        );
                     }
                     return res;
                 }}
