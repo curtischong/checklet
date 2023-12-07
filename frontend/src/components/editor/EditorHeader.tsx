@@ -5,6 +5,11 @@ import {
     CheckDescObj,
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
+import {
+    SortType,
+    Sorters,
+} from "@components/editor/suggestions/suggestionscontainer";
+import { mixpanelTrack } from "@utils";
 import { SetState } from "@utils/types";
 import { Affix } from "antd";
 import { useRouter } from "next/router";
@@ -50,11 +55,10 @@ export const EditorHeader = ({
         setHasAnalyzedOnce(true);
 
         const newSuggestions = response.suggestions;
+        newSuggestions.sort(Sorters[SortType.TextOrder]);
         console.log("newSuggestions", newSuggestions);
-
-        console.log("suggestions", newSuggestions);
         setCheckDescObj(response.checkDescs);
-        updateSuggestions(newSuggestions);
+        setSuggestions(newSuggestions);
         // TODO: update the suggestionRefs with the actual ref of the card
 
         mixpanelTrack("Check Document Clicked", {

@@ -22,15 +22,20 @@ export type SuggestionsContainerProps = {
     hasAnalyzedOnce: boolean;
 };
 
-enum SortType {
+export enum SortType {
     TextOrder,
     Category,
 }
 
-const Sorters = {
-    [SortType.TextOrder]: (a: Suggestion, b: Suggestion) =>
-        a.range.start - b.range.start, // sort by order of appearance
-    [SortType.Category]: (a: Suggestion, b: Suggestion) =>
+export const Sorters = {
+    [SortType.TextOrder]: (a: Suggestion, b: Suggestion): number => {
+        const res = a.range.start - b.range.start; // sort by order of appearance
+        if (res !== 0) {
+            return res;
+        }
+        return a.range.end - b.range.end; // if they have the same start, sort by end. We want the shorter suggestions to be first, so their underlines are visible
+    },
+    [SortType.Category]: (a: Suggestion, b: Suggestion): number =>
         a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
 };
 
@@ -168,7 +173,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
                 }
             />
         );
-    }, [editorState, suggestions, activeSuggestion]);
+    }, [editorState, suggestions, activeSuggestion, sortedSuggestions]);
 
     return (
         <div className="col-span-2">
