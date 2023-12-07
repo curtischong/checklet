@@ -3,16 +3,8 @@ import {
     CheckType,
 } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-    isUserCheckOwner,
-    validateCheckType,
-    validateObjInfo,
-} from "pages/api/common";
-import {
-    requestMiddleware,
-    return204Status,
-    sendBadRequest,
-} from "pages/api/commonNetworking";
+import { isUserCheckOwner } from "pages/api/common";
+import { requestMiddleware, return204Status } from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
 export default async function handler(

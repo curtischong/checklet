@@ -7,7 +7,7 @@ import {
     ObjInfo,
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
-import { isLegitId } from "@utils/strings";
+import { isLegitShortId, isLegitUniqueId } from "@utils/strings";
 import { NextApiResponse } from "next";
 import { RedisClient, sendBadRequest } from "pages/api/commonNetworking";
 
@@ -58,7 +58,7 @@ export const validateObjInfo = (objInfo: ObjInfo): string => {
         return "Checker description cannot be empty";
     } else if (objInfo.desc === "") {
         return "Checker description cannot be empty";
-    } else if (!isLegitId(objInfo.id)) {
+    } else if (!isLegitShortId(objInfo.id)) {
         return "Checker id is not legit";
     }
 

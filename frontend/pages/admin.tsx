@@ -15,7 +15,6 @@ import {
     defaultOriginalText,
 } from "@components/create-check/DefaultTextForCheckType";
 import { useClientContext } from "@utils/ClientContext";
-import { createUniqueId } from "@utils/strings";
 import { useCallback } from "react";
 import { toast } from "react-toastify";
 import { CheckerId } from "@api/checker";
