@@ -42,9 +42,6 @@ export const DashboardChecker = ({
                             const checkerId = blueprint.objInfo.id;
                             router.push({
                                 pathname: `/create/checker/${checkerId}`,
-                                query: {
-                                    checkerId,
-                                },
                             });
                         }}
                     />
