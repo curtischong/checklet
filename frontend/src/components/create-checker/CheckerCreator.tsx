@@ -18,6 +18,7 @@ import {
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
 import { CheckOverview } from "@components/create-checker/CheckOverview";
+import { YourChecks } from "@components/create-checker/YourChecks";
 
 export enum Page {
     Main,
@@ -128,115 +129,93 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     }, [name, desc, checkStatuses, user, checkerId]);
 
     return (
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center">
             <div className="container">
-                <div className="flex flex-col w-[450px]">
-                    <div className="flex flex-row items-center">
-                        <p
-                            className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
-                            onClick={() => {
-                                router.push("/dashboard");
-                            }}
-                        >
-                            Dashboard
-                        </p>
-                        <RightArrowIcon className="mx-2 w-[14px]" />
-                        <p className="font-bold text-gray-600">
-                            Create checker
-                        </p>
-                    </div>
-
-                    <h1 className="text-xl font-bold mt-4">Create Checker</h1>
-
-                    <label className="text-lg">Name</label>
-                    <Input
-                        placeholder="Rizzume"
-                        onChange={(e) => {
-                            setName(e.target.value);
+                <div className="flex flex-row">
+                    <div
+                        className="flex flex-col flex-grow"
+                        style={{
+                            flexBasis: "0",
                         }}
-                        value={name}
-                    />
-
-                    <label className="text-lg">Description</label>
-                    <NormalTextArea
-                        placeholder="Rizzume will rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive."
-                        onChange={(e) => {
-                            setDesc(e.target.value);
-                        }}
-                        value={desc}
-                        minRows={3}
-                    />
-
-                    <div className="flex flex-row mt-2">
-                        <h1 className="font-bold text-xl mt-4">Checks</h1>
-                        <HelpIcon
-                            className="mt-[22px] ml-2"
-                            text={
-                                "These are the individual checks your checker runs on the document. "
-                            }
-                        />
-                    </div>
-                    <div className="mt-4 space-y-4">
-                        {checkBlueprints.map((checkBlueprint, idx) => (
-                            <CheckOverview
-                                key={`check-${idx}`}
-                                checkBlueprint={checkBlueprint}
-                                onDelete={async () => {
-                                    if (!user) {
-                                        return;
-                                    }
-                                    const checkId = checkBlueprint.objInfo.id;
-                                    if (
-                                        !(await Api.deleteCheck(
-                                            checkerId,
-                                            checkId,
-                                            user,
-                                        ))
-                                    ) {
-                                        return;
-                                    }
-                                    const newChecks = [...checkBlueprints];
-                                    newChecks.splice(idx, 1);
-                                    setCheckBlueprints(newChecks);
+                    >
+                        <div className="flex flex-row items-center mt-4">
+                            <p
+                                className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
+                                onClick={() => {
+                                    router.push("/dashboard");
                                 }}
-                                onEdit={() => {
-                                    router.push({
-                                        pathname: `/create/check/${checkBlueprint.objInfo.id}`,
-                                        query: {
-                                            checkerId: checkerId,
-                                        },
-                                    });
+                            >
+                                Dashboard
+                            </p>
+                            <RightArrowIcon className="mx-2 w-[14px]" />
+                            <p className="font-bold text-gray-600">
+                                Create checker
+                            </p>
+                        </div>
+
+                        <div className="w-[450px] mx-auto flex flex-col">
+                            <h1 className="text-3xl font-bold mt-4 mb-4">
+                                Create Checker
+                            </h1>
+
+                            <label className="text-lg font-bold ml-1">
+                                Name
+                            </label>
+                            <Input
+                                placeholder="Rizzume"
+                                onChange={(e) => {
+                                    setName(e.target.value);
                                 }}
+                                value={name}
                             />
-                        ))}
-                    </div>
-                    <NormalButton
-                        className="mt-8 w-80"
-                        onClick={() => {
-                            (async () => {
-                                router.push({
-                                    pathname: `/create/check`,
-                                    query: {
-                                        checkerId: checkerId,
-                                    },
-                                });
-                            })();
-                        }}
-                    >
-                        Create Check
-                    </NormalButton>
 
-                    <div className="text-[#ff0000] mt-4 ">{err}</div>
-                    <LoadingButtonSubmit
-                        isLoading={
-                            submittingState === SubmittingState.Submitting
-                        }
-                        onClick={editChecker}
-                        className="mt-4 w-80 h-10"
-                    >
-                        {SubmitButtonText[submittingState]}
-                    </LoadingButtonSubmit>
-                    <div className="h-10"></div>
+                            <label className="text-lg font-bold mt-4 ml-1">
+                                Description
+                            </label>
+                            <NormalTextArea
+                                placeholder="Rizzume will rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive."
+                                onChange={(e) => {
+                                    setDesc(e.target.value);
+                                }}
+                                value={desc}
+                                minRows={4}
+                            />
+
+                            <NormalButton
+                                className="mt-8 w-80"
+                                onClick={() => {
+                                    (async () => {
+                                        router.push({
+                                            pathname: `/create/check`,
+                                            query: {
+                                                checkerId: checkerId,
+                                            },
+                                        });
+                                    })();
+                                }}
+                            >
+                                Create Check
+                            </NormalButton>
+
+                            <div className="text-[#ff0000] mt-4 ">{err}</div>
+                            <LoadingButtonSubmit
+                                isLoading={
+                                    submittingState ===
+                                    SubmittingState.Submitting
+                                }
+                                onClick={editChecker}
+                                className="mt-4 w-80 h-10"
+                            >
+                                {SubmitButtonText[submittingState]}
+                            </LoadingButtonSubmit>
+                            <div className="h-10"></div>
+                        </div>
+                    </div>
+                    <YourChecks
+                        checkerId={checkerId}
+                        checkBlueprints={checkBlueprints}
+                        setCheckBlueprints={setCheckBlueprints}
+                    />
                 </div>
             </div>
         </div>
