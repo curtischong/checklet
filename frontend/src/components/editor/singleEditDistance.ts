@@ -2,6 +2,7 @@ import { DocRange, newDocRange } from "@api/ApiTypes";
 
 export type SingleEditDistance = {
     editedRange: DocRange;
+    newRange: DocRange;
     numCharsAdded: number;
 };
 
@@ -36,6 +37,7 @@ export const singleEditDistance = (
     const numCharsInOriginal = r1 - l1 + 1;
     return {
         editedRange: newDocRange(l1, r1 + 1),
+        newRange: newDocRange(l2, r2 + 1),
         numCharsAdded: numCharsInModified - numCharsInOriginal,
     };
 };

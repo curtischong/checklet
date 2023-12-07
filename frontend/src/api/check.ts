@@ -13,7 +13,6 @@ export class Check {
 
     constructor(public blueprint: CheckBlueprint) {
         const systemPrompt = this.getSystemPrompt();
-        console.log("systemPrompt", systemPrompt);
         this.llm = new Llm(systemPrompt, "gpt-3.5-turbo", true);
     }
 
@@ -36,7 +35,7 @@ export class Check {
 
         return `You are a text document fixer. When given text, follow these instructions. ${this.blueprint.instruction}
 
-Call the function that converts the orginal text to the edited text. Be concise. Only output the edited text. Here are some positive examples of how you should change the original text into the edited text:
+Call the function that converts the orginal text to the edited text. Be concise. Only output the edited text. Do not simply repeat the original text. Here are some positive examples of how you should change the original text into the edited text:
 
 ${positiveExamples}
 `;
@@ -125,6 +124,11 @@ ${positiveExamples}
                         }
                         const originalEx = argsObj.originalTexts[i];
                         const editedEx = argsObj.editedTexts[i];
+                        if (originalEx === editedEx) {
+                            // the model didn't change anything. just ignore it
+                            console.log("originalEx === editedEx", originalEx);
+                            continue;
+                        }
 
                         const editOps = editDistanceOperationsWithClasses(
                             originalEx,
