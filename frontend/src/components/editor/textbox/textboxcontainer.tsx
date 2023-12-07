@@ -1,37 +1,24 @@
 import React, {
     // createRef,
-    CSSProperties,
     MutableRefObject,
     useCallback,
     useEffect,
 } from "react";
-import {
-    Editor,
-    EditorState,
-    CompositeDecorator,
-    ContentState,
-    ContentBlock,
-} from "draft-js";
-import {
-    RangeToSuggestion,
-    RangeToBlockLocation,
-    BlockLocToUnderlineRef,
-} from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
-import "draft-js/dist/Draft.css";
 import { SetState } from "@utils/types";
 import {
     CheckDescObj,
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
-import { Suggestion } from "@api/ApiTypes";
+import { DocRange, Suggestion } from "@api/ApiTypes";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
-import { ExamplesModal } from "@components/editor/textbox/examplesModal";
 import { LoadingButton } from "@components/Button";
 import { Affix } from "antd";
 import { Api } from "@api/apis";
+import { RichTextarea } from "rich-textarea";
+import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
 // const PizZip = require("pizzip");
 // import Docxtemplater from "docxtemplater";
 // import PizZip from "pizzip";
@@ -44,9 +31,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
-    editorState: EditorState;
+    editorState: string;
     activeSuggestion: Suggestion | undefined;
-    updateEditorState: (e: EditorState) => void;
+    updateEditorState: (e: string) => void;
     updateSuggestions: (s: Suggestion[]) => void;
     updateActiveSuggestion: SetState<Suggestion | undefined>;
     sort: (a: Suggestion, b: Suggestion) => number;
@@ -72,187 +59,45 @@ export const TextboxContainer = ({
     setHasAnalyzedOnce,
 }: TextboxContainerProps): JSX.Element => {
     const [isLoading, setIsLoading] = React.useState(false);
-    const [isExampleCodeModalVisible, setIsExampleCodeModalVisible] =
-        React.useState(false);
-
-    const rangeToSuggestion = React.useRef<RangeToSuggestion>({}); // really useful when we need to map decorator to the curresponding suggestion
 
     // these two are needed so we can scroll to the underline span when we click on a card
     // we need two maps since we only know:
     // 1) the blockLoc and the range together OR
     // 2) the rangeBlockLoc and the ref to the span
     // we don't know 1) and 2) at the same time. so we use two maps
-    const rangeBlockLoc = React.useRef<RangeToBlockLocation>({});
-    const underlineRef = React.useRef<BlockLocToUnderlineRef>({});
+    const suggestionIdToRef = React.useRef<SuggestionIdToRef>({});
 
     const router = useRouter();
     useEffect(() => {
         // TODO: load state from localstorage
-        updateEditorState(
-            EditorState.moveFocusToEnd(EditorState.createEmpty(decorator())),
-        );
         editorRef.current?.focus();
     }, []);
 
     useEffect(() => {
         if (activeSuggestion) {
-            const blockLoc =
-                rangeBlockLoc.current[
-                    activeSuggestion.range.start +
-                        "," +
-                        activeSuggestion.range.end
-                ];
-            // DO NOT change where the cursor is. cause if htey click on the underline to make the active suggestion, their cursor will be elsewhere
-            // sometimes these refs are outdated????
-            // HWOEVER, the scroll into view wrks!
-            const ref = underlineRef.current[blockLoc];
-            if (ref) {
-                // we need to request animation frame cause otherwise, scrollIntoView will sometimes fail
+            const ref =
+                suggestionIdToRef.current[activeSuggestion.suggestionId];
+            if (ref?.current) {
+                // we cannot use scrollIntoView because there is a bug in its implementation in chrome
+                // I even tried wrapping it in a requestAnimationFrame but it doesn't work
                 // https://github.com/facebook/react/issues/23396
-                window.requestAnimationFrame(() => {
-                    if (ref.current) {
-                        ref.current.scrollIntoView({
-                            behavior: "smooth",
-                            block: "center",
-                        });
-                    }
+                const scrollHeight = ref.current.offsetTop;
+                editorRef.current?.scrollTo({
+                    left: 0,
+                    top: scrollHeight - editorRef.current.offsetHeight / 2,
+                    behavior: "smooth",
                 });
             }
         }
-    }, [activeSuggestion, underlineRef.current]);
-
-    // handles decorating the text
-    const handleStrategy = useCallback(
-        (
-            contentBlock: ContentBlock,
-            callback: (start: number, end: number) => void,
-            contentState: ContentState,
-        ) => {
-            let currBlock = contentBlock;
-            let start = 0;
-            while (contentState.getBlockBefore(currBlock.getKey()) != null) {
-                const currBlockRaw = contentState.getBlockBefore(
-                    currBlock.getKey(),
-                );
-                if (currBlockRaw) {
-                    currBlock = currBlockRaw;
-                    start += currBlock.getLength() + 1;
-                }
-            }
-            const contentBlockKey = contentBlock.getKey();
-
-            const end = start + contentBlock.getLength();
-            suggestions.forEach((suggestion: Suggestion) => {
-                const rangeStart = suggestion.range.start;
-                const rangeEnd = suggestion.range.end;
-                if (rangeStart > end || rangeEnd < start) {
-                    return;
-                }
-                const rangeKey = `${rangeStart},${rangeEnd}`;
-                rangeToSuggestion.current[rangeKey] = suggestion;
-
-                const startPos = rangeStart - start;
-                const endPos = rangeEnd - start;
-                rangeBlockLoc.current[rangeKey] = `${contentBlockKey}`;
-                callback(
-                    Math.max(startPos, 0),
-                    Math.min(contentBlock.getLength(), endPos),
-                );
-                // suggestion.editOps.forEach((editOp) => {
-                //     const range = editOp.range;
-                //     if (range.start > end || range.end < start) {
-                //         return;
-                //     }
-                //     rangeToSuggestion.current[range.start + "," + range.end] =
-                //         suggestion;
-
-                //     const startPos = range.start - start;
-                //     const endPos = range.end - start;
-                //     rangeBlockLoc.current[
-                //         range.start + "," + range.end
-                //     ] = `${contentBlockKey}`;
-
-                //     callback(
-                //         Math.max(startPos, 0),
-                //         Math.min(contentBlock.getLength(), endPos),
-                //     );
-                // });
-            });
-        },
-        [suggestions],
-    );
-
-    const HandleSpan = useCallback(
-        (
-            props: any,
-            getStyle: (p: any) => CSSProperties,
-            onClick: (p: any) => void,
-        ): JSX.Element => {
-            const ref = React.createRef<HTMLSpanElement>();
-            underlineRef.current[props.blockKey] = ref; // it's ok to just use the blockKey since we are only using the underlineRef to scroll to the underline
-            // (so it's ok if we have multiple underlines with the same blockKey)
-            return (
-                <span
-                    style={getStyle(props)}
-                    data-offset-key={props.offsetKey}
-                    onClick={() => onClick(props)}
-                    ref={ref}
-                >
-                    {props.children}
-                </span>
-            );
-        },
-        [],
-    );
-
-    const spanStyle = useCallback(
-        (props: any): CSSProperties => {
-            const style: CSSProperties = {
-                borderBottom: "2px solid #189bf2",
-            };
-            const contentState: ContentState = props.contentState;
-
-            let currBlock = contentState.getBlockForKey(props.blockKey);
-            let start = 0;
-
-            let rawCurrBlock = contentState.getBlockBefore(currBlock.getKey());
-            while (rawCurrBlock !== undefined) {
-                currBlock = rawCurrBlock;
-                start += currBlock.getLength() + 1;
-                rawCurrBlock = contentState.getBlockBefore(currBlock.getKey());
-            }
-            const startPos = props.start + start;
-            const endPos = props.end + start;
-            const suggestion =
-                rangeToSuggestion.current[startPos + "," + endPos];
-
-            if (suggestion?.suggestionId === activeSuggestion?.suggestionId) {
-                style.backgroundColor = "#DBEBFF";
-                style.padding = "1.5px 0 1px";
-                style.backgroundPosition = "center calc(100% + 2px)";
-                style.backgroundClip = "text";
-            }
-            return style;
-        },
-        [activeSuggestion, rangeToSuggestion.current],
-    );
+    }, [activeSuggestion]);
 
     const handleUnderlineClicked = useCallback(
-        (props: any) => {
-            const contentState = props.contentState;
-            let currBlock = contentState.getBlockForKey(props.blockKey);
-            let start = 0;
-
-            while (contentState.getBlockBefore(currBlock.getKey()) != null) {
-                currBlock = contentState.getBlockBefore(currBlock.getKey());
-                start += currBlock.getLength() + 1;
-            }
-
-            const startPos = props.start + start;
-            const endPos = props.end + start;
-
+        (range: DocRange) => {
+            // PERF: try using a map, but since there's only so few suggestions, it might not be worth it
             const suggestion = suggestions.find((s) => {
-                return s.range.start === startPos && s.range.end === endPos;
+                return (
+                    s.range.start === range.start && s.range.end === range.end
+                );
             });
 
             if (!suggestion) {
@@ -268,44 +113,12 @@ export const TextboxContainer = ({
         [suggestions],
     );
 
-    // damn. decorator NEEDs to be udpated everytime the suggestions are updated
-    // cause:
-    // handleStrategy - needs to update the ranges to update
-    // spanStyle - needs to know which suggestion we clicked on (is currently active)
-    // handleUnderlineClicked - needs to know all the suggestions so it knows which suggestion to select
-    const decorator = useCallback(() => {
-        return new CompositeDecorator([
-            {
-                strategy: handleStrategy, // Tells DraftJS which ranges of text should be decorated (handles newlines in the ranges)
-                // tells DraftJS how to actually render the component
-                component: (props: any) => {
-                    return HandleSpan(props, spanStyle, handleUnderlineClicked);
-                },
-            },
-        ]);
-    }, [handleStrategy, spanStyle, handleUnderlineClicked]);
-
-    // used when we want to insert an example into the editor
-    const handleExampleClicked = (text: string) => {
-        updateEditorState(
-            EditorState.moveFocusToEnd(
-                EditorState.createWithContent(
-                    ContentState.createFromText(text),
-                    decorator(),
-                ),
-            ),
-        );
-        setIsExampleCodeModalVisible(false);
-    };
-
-    const checkDocument = useCallback(async (): Promise<
-        EditorState | undefined
-    > => {
+    const checkDocument = useCallback(async (): Promise<void> => {
         if (isLoading) {
             return;
         }
         setIsLoading(true);
-        const plaintext = editorState.getCurrentContent().getPlainText();
+        const plaintext = editorState;
 
         const response = await Api.checkDoc(
             plaintext,
@@ -317,10 +130,6 @@ export const TextboxContainer = ({
             return;
         }
         setHasAnalyzedOnce(true);
-        rangeToSuggestion.current = {};
-        underlineRef.current = {};
-        rangeBlockLoc.current = {};
-        // return;
 
         const newSuggestions = response.suggestions;
         console.log("newSuggestions", newSuggestions);
@@ -338,19 +147,6 @@ export const TextboxContainer = ({
         });
     }, [editorState, isLoading]);
 
-    useEffect(() => {
-        const selectionState = editorState.getSelection();
-        const content = editorState.getCurrentContent();
-
-        const newEditorState = EditorState.createWithContent(
-            content,
-            decorator(),
-        );
-        updateEditorState(
-            EditorState.forceSelection(newEditorState, selectionState),
-        );
-    }, [decorator, activeSuggestion]);
-
     return (
         <div
             className="textbox col-span-3"
@@ -367,12 +163,6 @@ export const TextboxContainer = ({
                             {storefront.objInfo.desc}
                         </div>
 
-                        <ExamplesModal
-                            onClose={() => setIsExampleCodeModalVisible(false)}
-                            visible={isExampleCodeModalVisible}
-                            onClick={handleExampleClicked}
-                        />
-
                         <LoadingButton
                             onClick={checkDocument}
                             loading={isLoading}
@@ -384,14 +174,62 @@ export const TextboxContainer = ({
                 </div>
             </Affix>
 
-            <Editor
-                spellCheck={true}
-                editorState={editorState}
-                onChange={updateEditorState}
-                placeholder="Type or paste your resume here"
+            <RichTextarea
                 ref={editorRef}
-                stripPastedStyles={true}
-            />
+                value={editorState}
+                onChange={(e) => updateEditorState(e.target.value)}
+                className="bg-white resize-none w-full h-[76vh]"
+            >
+                {(v) => {
+                    suggestionIdToRef.current = {}; // reset the map
+
+                    const res: JSX.Element[] = [];
+                    let lastCharIdx = 0;
+
+                    // basically, every time we see a suggestion, we render it as an underline
+                    // the res array just tracks sections of text that are underlines and NOT underlined
+                    for (const suggestion of suggestions) {
+                        const range = suggestion.range;
+                        if (lastCharIdx < range.start) {
+                            res.push(
+                                <span>
+                                    {v.substring(lastCharIdx, range.start)}
+                                </span>,
+                            );
+                        }
+
+                        const style =
+                            suggestion.range.start ===
+                                activeSuggestion?.range.start &&
+                            suggestion.range.end === activeSuggestion?.range.end
+                                ? {
+                                      backgroundColor: "#DBEBFF",
+                                  }
+                                : {};
+
+                        const ref = React.createRef<HTMLSpanElement>();
+                        suggestionIdToRef.current[suggestion.suggestionId] =
+                            ref;
+
+                        res.push(
+                            <span
+                                ref={ref}
+                                className="border-[#189bf2] border-b-[2px]"
+                                style={style}
+                                onClick={() => handleUnderlineClicked(range)}
+                                key={suggestion.suggestionId}
+                            >
+                                {v.substring(range.start, range.end)}
+                            </span>,
+                        );
+                        lastCharIdx = range.end;
+                    }
+                    if (lastCharIdx < v.length) {
+                        res.push(<span>{v.substring(lastCharIdx)}</span>);
+                    }
+                    return res;
+                }}
+            </RichTextarea>
         </div>
     );
 };

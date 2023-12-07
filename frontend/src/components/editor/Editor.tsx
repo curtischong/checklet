@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
-import { EditorState } from "draft-js";
 import { TextButton } from "@components/Button";
 import { useRouter } from "next/router";
 import { useClientContext } from "@utils/ClientContext";
@@ -18,9 +17,7 @@ interface Props {
 export const Editor = ({ storefront }: Props): JSX.Element => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
     const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
-    const [editorState, setEditorState] = useState<EditorState>(
-        EditorState.createEmpty(),
-    );
+    const [editorState, setEditorState] = useState<string>("");
     const [checkDescObj, setCheckDescObj] = useState<CheckDescObj>({});
     const [sortIdx, setSortIdx] = useState(1);
     const [hasAnalyzedOnce, setHasAnalyzedOnce] = useState(false);
@@ -38,9 +35,9 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     };
     const domEditorRef = useRef<{ focus: () => void }>();
 
-    const updateEditorState = (newState: EditorState) => {
-        const oldContent = editorState.getCurrentContent();
-        const newContent = newState.getCurrentContent();
+    const updateEditorState = (newState: string) => {
+        const oldContent = editorState;
+        const newContent = newState;
         // const lastChange = newState.getLastChangeType(); // please leave this line here for documentation
 
         // if the text changed, we need to shift all the suggestions.
@@ -48,10 +45,11 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
         // console.log("newText", newText);
         if (oldContent !== newContent) {
             // console.log("text changed");
+            // PERF: look into rich-textarea to see if we can get the diff of the text change so it's O(1) instead of O(n)
             // 1) calculate WHERE the text changed (and how many chars changed)
             const { editedRange, numCharsAdded } = singleEditDistance(
-                oldContent.getPlainText(),
-                newContent.getPlainText(),
+                oldContent,
+                newContent,
             );
 
             // 2) shift all the suggestions. Note: if the text changed WITHIN a suggestion, that suggestion is now invalid. so we remove it
