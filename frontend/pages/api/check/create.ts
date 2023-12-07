@@ -82,7 +82,6 @@ export default async function handler(
         instruction: "",
         category: "",
         positiveExamples: [],
-        isEnabled: false,
     };
 
     await redisClient.set(

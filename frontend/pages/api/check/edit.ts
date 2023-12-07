@@ -34,15 +34,6 @@ export default async function handler(
         return;
     }
 
-    if (checkBlueprint.isEnabled) {
-        // validate that it's legit before we make it enabled
-        const validationErr = validateCheckBlueprint(checkBlueprint);
-        if (validationErr !== "") {
-            sendBadRequest(res, validationErr);
-            return;
-        }
-    }
-
     checkBlueprint.objInfo.creatorId = userId; // override just for security purposes
 
     const positiveExamples = checkBlueprint.positiveExamples;

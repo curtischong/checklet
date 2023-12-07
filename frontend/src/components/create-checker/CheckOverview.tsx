@@ -1,25 +1,39 @@
 import { Api } from "@api/apis";
+import { CheckerId } from "@api/checker";
 import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
 import { LabelWithSwitch } from "@components/Switch";
 import { PositiveExamplePreview } from "@components/create-check/PositiveExamplePreview";
-import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
+import {
+    CheckBlueprint,
+    CheckStatuses,
+} from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
+import { SetState } from "@utils/types";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 interface Props {
     checkBlueprint: CheckBlueprint;
+    checkerId: CheckerId;
     onDelete: () => void;
     onEdit: () => void;
+    checkStatuses: CheckStatuses;
+    setCheckStatuses: SetState<CheckStatuses>;
 }
 
 // These are the checks you see when you're creating your checker
 export const CheckOverview = ({
     checkBlueprint,
+    checkerId,
     onDelete,
     onEdit,
+    checkStatuses,
+    setCheckStatuses,
 }: Props): JSX.Element => {
-    const [tmpIsChecked, setTmpChecked] = useState(checkBlueprint.isEnabled);
+    const checkId = checkBlueprint.objInfo.id;
+    const [tmpIsChecked, setTmpChecked] = useState(
+        checkStatuses[checkId].isEnabled,
+    );
 
     const { user } = useClientContext();
     return (
@@ -66,11 +80,15 @@ export const CheckOverview = ({
                         }
                         setTmpChecked(newIsChecked); // if we don't set this initially, the switch wont' change state
                         const success = await Api.setCheckIsEnabled(
-                            checkBlueprint.objInfo.id,
+                            checkId,
+                            checkerId,
                             newIsChecked,
                             user,
                         );
-                        if (!success) {
+                        if (success) {
+                            checkStatuses[checkId].isEnabled = newIsChecked;
+                            setCheckStatuses(checkStatuses);
+                        } else {
                             setTmpChecked(!newIsChecked);
                         }
                     })();

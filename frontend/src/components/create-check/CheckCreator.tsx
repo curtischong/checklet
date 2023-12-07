@@ -52,7 +52,6 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
     );
     const [originalText, setOriginalText] = React.useState("");
     const [editedText, setEditedText] = React.useState("");
-    const [isEnabled, setIsEnabled] = React.useState(false);
 
     const router = useRouter();
     const checkerId = router.query.checkerId as string;
@@ -70,7 +69,6 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
             setInstruction(initialCheckBlueprint.instruction);
             setCategory(initialCheckBlueprint.category);
             setPositiveExamples(initialCheckBlueprint.positiveExamples);
-            setIsEnabled(initialCheckBlueprint.isEnabled);
         },
         [],
     );
@@ -154,7 +152,6 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
             instruction,
             category,
             positiveExamples: newPositiveExamples,
-            isEnabled,
         };
 
         setSubmittingState(SubmittingState.Submitting);
@@ -346,7 +343,6 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                             instruction,
                             category,
                             positiveExamples,
-                            isEnabled,
                         }}
                         originalText={originalText}
                         editedText={editedText}

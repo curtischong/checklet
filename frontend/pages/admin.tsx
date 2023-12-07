@@ -44,7 +44,6 @@ const AdminPage: React.FC = () => {
                         editedText: defaultEditedText[checkType],
                     },
                 ],
-                isEnabled: false,
             };
         },
         [],
