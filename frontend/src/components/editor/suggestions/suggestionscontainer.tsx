@@ -26,6 +26,16 @@ export type SuggestionsContainerProps = {
 export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = (
     props: SuggestionsContainerProps,
 ) => {
+    const [sortIdx, setSortIdx] = useState(1);
+    const sorts: ((a: Suggestion, b: Suggestion) => number)[] = [
+        (a, b) => a.range.start - b.range.start, // sort by order of appearance
+        (a, b) => a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
+    ];
+
+    const updateSortIdx = (idx: number) => {
+        setSortIdx(idx);
+        setSuggestions((prevSuggestions) => prevSuggestions.sort(sorts[idx]));
+    };
     const {
         suggestions,
         activeSuggestion,
