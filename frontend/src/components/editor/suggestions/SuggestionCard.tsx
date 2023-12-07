@@ -85,8 +85,8 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
             </div>
             {/* This is the card details when you open up the card */}
             {isActive && (
-                <div className={css.cardBody}>
-                    <div className={css.suggestion}>
+                <div className={classNames(css.cardBody)}>
+                    <div className={classNames(css.suggestion)}>
                         <SuggestionChange
                             suggestion={suggestion}
                             checkType={checkDesc.checkType}
