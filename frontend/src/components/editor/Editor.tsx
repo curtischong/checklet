@@ -11,6 +11,7 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
 import { singleEditDistance } from "@components/editor/singleEditDistance";
+import { RichTextareaCore } from "@components/RichTextarea";
 
 interface Props {
     storefront: CheckerStorefront;
@@ -18,9 +19,7 @@ interface Props {
 export const Editor = ({ storefront }: Props): JSX.Element => {
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
     const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
-    const [editorState, setEditorState] = useState<EditorState>(
-        EditorState.createEmpty(),
-    );
+    const [editorState, setEditorState] = useState<string>("");
     const [checkDescObj, setCheckDescObj] = useState<CheckDescObj>({});
     const [sortIdx, setSortIdx] = useState(1);
     const [hasAnalyzedOnce, setHasAnalyzedOnce] = useState(false);
@@ -38,9 +37,9 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     };
     const domEditorRef = useRef<{ focus: () => void }>();
 
-    const updateEditorState = (newState: EditorState) => {
-        const oldContent = editorState.getCurrentContent();
-        const newContent = newState.getCurrentContent();
+    const updateEditorState = (newState: string) => {
+        const oldContent = editorState;
+        const newContent = newState;
         // const lastChange = newState.getLastChangeType(); // please leave this line here for documentation
 
         // if the text changed, we need to shift all the suggestions.
@@ -50,8 +49,8 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
             // console.log("text changed");
             // 1) calculate WHERE the text changed (and how many chars changed)
             const { editedRange, numCharsAdded } = singleEditDistance(
-                oldContent.getPlainText(),
-                newContent.getPlainText(),
+                oldContent,
+                newContent,
             );
 
             // 2) shift all the suggestions. Note: if the text changed WITHIN a suggestion, that suggestion is now invalid. so we remove it
@@ -76,6 +75,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
+                {/* <RichTextareaCore /> */}
                 <TextboxContainer
                     activeSuggestion={activeSuggestion}
                     updateActiveSuggestion={setActiveSuggestion}
@@ -89,7 +89,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     setCheckDescObj={setCheckDescObj}
                     setHasAnalyzedOnce={setHasAnalyzedOnce}
                 />
-                <SuggestionsContainer
+                {/* <SuggestionsContainer
                     suggestions={suggestions}
                     activeSuggestion={activeSuggestion}
                     setActiveSuggestion={setActiveSuggestion}
@@ -98,7 +98,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     updateSortIdx={updateSortIdx}
                     checkDescObj={checkDescObj}
                     hasAnalyzedOnce={hasAnalyzedOnce}
-                />
+                /> */}
                 <TextButton
                     className="fixed top-2 right-5"
                     onClick={() => {
