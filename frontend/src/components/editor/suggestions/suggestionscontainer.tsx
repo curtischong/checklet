@@ -58,7 +58,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
     useEffect(() => {
         const sorted = [...suggestions].sort(Sorters[sortType]);
         setSortedSuggestions(sorted);
-    }, [suggestions]);
+    }, [suggestions, sortType]);
 
     const onCollapseClick = useCallback(
         (s: Suggestion) => {
@@ -176,7 +176,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
     }, [editorState, suggestions, activeSuggestion, sortedSuggestions]);
 
     return (
-        <div className="col-span-2">
+        <div className="col-span-2 mt-8">
             <SuggestionsHeader
                 suggestions={suggestions}
                 setSortType={setSortType}
@@ -200,7 +200,7 @@ const SortIcon = (
     return (
         <Tooltip title={tooltip}>
             <BsSortDownAlt
-                className="ml-2"
+                className="ml-2 cursor-pointer"
                 size={20}
                 onClick={() => setSortType(sortType)}
             />
@@ -218,7 +218,7 @@ const SuggestionsHeader = ({
     return (
         <div className="font-bold text-16 pb-4 pt-1 flex mt-10">
             {suggestions.length > 0 && (
-                <div className="flex flex-row ml-8">
+                <div className="flex flex-row ml-4">
                     <div className="font-bold mr-1">{suggestions.length}</div>
                     <div className="text-12">
                         {pluralize("Suggestion", suggestions.length)}
