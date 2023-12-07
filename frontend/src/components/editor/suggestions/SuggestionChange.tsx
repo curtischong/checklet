@@ -14,48 +14,45 @@ export const SuggestionChange = ({
     checkType,
     onReplaceClick,
 }: Props): JSX.Element => {
+    if (checkType === CheckType.highlight) {
+        return <div>{suggestion.originalText}</div>;
+    }
     return (
-        <>
-            {checkType === CheckType.highlight ? (
-                <div>{suggestion.originalText}</div>
+        <div className="flex flex-row">
+            {suggestion.editedText ? (
+                <div
+                    className={classNames(
+                        "line-through text-[#DC5262] break-words",
+                    )}
+                    style={{
+                        textDecorationColor: "#DC5262",
+                    }}
+                >
+                    {suggestion.originalText}
+                </div>
             ) : (
-                <div className="flex flex-row">
-                    {suggestion.editedText ? (
-                        <div
-                            className={classNames(
-                                "line-through text-[#DC5262] whitespace-pre",
-                            )}
-                            style={{
-                                textDecorationColor: "#DC5262",
-                            }}
-                        >
-                            {suggestion.originalText}
-                        </div>
-                    ) : (
-                        <div
-                            className={classNames(
-                                "bg-[#f35769] hover:bg-[#DC5262] text-white rounded md:py-0 md:px-2 cursor-pointer whitespace-pre",
-                            )}
-                            style={{
-                                textDecorationColor: "#DC5262",
-                            }}
-                        >
-                            {suggestion.originalText}
-                        </div>
+                <div
+                    className={classNames(
+                        "bg-[#f35769] hover:bg-[#DC5262] text-white rounded md:py-0 md:px-2 cursor-pointer break-words",
                     )}
-                    {suggestion.editedText && (
-                        <>
-                            <AiOutlineArrowRight className={"mx-3 mt-[5px]"} />
-                            <div
-                                onClick={onReplaceClick}
-                                className="text-white hover:bg-[#1d8fdb] bg-[#189bf2] rounded md:py-0 md:px-2 cursor-pointer whitespace-pre"
-                            >
-                                {suggestion.editedText}
-                            </div>
-                        </>
-                    )}
+                    style={{
+                        textDecorationColor: "#DC5262",
+                    }}
+                >
+                    {suggestion.originalText}
                 </div>
             )}
-        </>
+            {suggestion.editedText && (
+                <>
+                    <AiOutlineArrowRight className={"mx-3 mt-[5px]"} />
+                    <div
+                        onClick={onReplaceClick}
+                        className="text-white hover:bg-[#1d8fdb] bg-[#189bf2] rounded md:py-0 md:px-2 cursor-pointer break-words"
+                    >
+                        {suggestion.editedText}
+                    </div>
+                </>
+            )}
+        </div>
     );
 };
