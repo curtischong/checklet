@@ -174,12 +174,15 @@ export const TextboxContainer = ({
                     </div>
                 </div>
             </Affix>
-
             <RichTextarea
                 ref={editorRef}
                 value={editorState}
                 onChange={(e) => updateEditorState(e.target.value)}
-                className="bg-white resize-none w-full h-[76vh] outline-none"
+                className="bg-white resize-none  h-[76vh] outline-none"
+                // the styling MUST be done via the style prop, not tailwind
+                style={{
+                    width: "100%",
+                }}
             >
                 {(v) => {
                     suggestionIdToRef.current = {}; // reset the map
