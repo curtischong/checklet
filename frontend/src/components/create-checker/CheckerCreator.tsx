@@ -158,7 +158,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 Create Checker
                             </h1>
 
-                            <label className="text-lg font-bold ml-1">
+                            <label className="text-lg font-bold ml-1 mb-1">
                                 Name
                             </label>
                             <Input
