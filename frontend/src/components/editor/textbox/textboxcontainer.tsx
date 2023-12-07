@@ -8,7 +8,7 @@ import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
 import { SetState } from "@utils/types";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
-import { DocRange, Suggestion } from "@api/ApiTypes";
+import { DocRange, Suggestion, isWithinRange } from "@api/ApiTypes";
 import { toast } from "react-toastify";
 import { RichTextarea, RichTextareaHandle } from "rich-textarea";
 import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
@@ -128,16 +128,18 @@ export const TextboxContainer = ({
                                     {v.substring(lastCharIdx, range.start)}
                                 </span>,
                             );
+                            lastCharIdx = range.start;
                         }
 
-                        const style =
-                            suggestion.range.start ===
-                                activeSuggestion?.range.start &&
-                            suggestion.range.end === activeSuggestion?.range.end
-                                ? {
-                                      backgroundColor: "#DBEBFF",
-                                  }
-                                : {};
+                        const isInActiveSuggestion =
+                            activeSuggestion &&
+                            isWithinRange(range, activeSuggestion.range);
+
+                        const style = isInActiveSuggestion
+                            ? {
+                                  backgroundColor: "#DBEBFF",
+                              }
+                            : {};
 
                         const ref = React.createRef<HTMLSpanElement>();
                         suggestionIdToRef.current[suggestion.suggestionId] =
@@ -151,7 +153,7 @@ export const TextboxContainer = ({
                                 onClick={() => handleUnderlineClicked(range)}
                                 key={2 * i + 1}
                             >
-                                {v.substring(range.start, range.end)}
+                                {v.substring(lastCharIdx, range.end)}
                             </span>,
                         );
                         lastCharIdx = range.end;

@@ -51,3 +51,7 @@ export const shift = (r: DocRange, amount: number): DocRange => {
 export const isIntersecting = (r1: DocRange, r2: DocRange): boolean => {
     return r1.start < r2.end && r1.end > r2.start;
 };
+
+export const isWithinRange = (smaller: DocRange, larger: DocRange): boolean => {
+    return smaller.start >= larger.start && smaller.end <= larger.end;
+};
