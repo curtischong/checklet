@@ -19,18 +19,7 @@ export type SuggestionCategory = {
     color: string; // could use Color library instead
 };
 
-export type RangeToSuggestion = {
-    [key: string]: Suggestion;
-};
-
 export type SuggestionIdToRef = {
-    [key: string]: RefObject<HTMLDivElement>;
-};
-
-export type RangeToBlockLocation = {
-    [key: string]: string;
-};
-export type BlockLocToUnderlineRef = {
     [key: string]: RefObject<HTMLSpanElement>;
 };
 

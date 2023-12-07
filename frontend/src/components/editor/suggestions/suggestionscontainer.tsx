@@ -6,7 +6,6 @@ import { BsSortDownAlt } from "react-icons/bs";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
 import NoSuggestionsImage from "./NoSuggestionsState.svg";
 import { mixpanelTrack } from "src/utils";
-import { ContentBlock, EditorState, Modifier, SelectionState } from "draft-js";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import { Tooltip } from "antd";
 import { pluralize } from "@utils/strings";

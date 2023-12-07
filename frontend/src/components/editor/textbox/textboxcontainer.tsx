@@ -4,15 +4,8 @@ import React, {
     useCallback,
     useEffect,
 } from "react";
-import { EditorState } from "draft-js";
-import {
-    RangeToSuggestion,
-    RangeToBlockLocation,
-    BlockLocToUnderlineRef,
-} from "../suggestions/suggestionsTypes";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
-import "draft-js/dist/Draft.css";
 import { SetState } from "@utils/types";
 import {
     CheckDescObj,
@@ -25,6 +18,7 @@ import { LoadingButton } from "@components/Button";
 import { Affix } from "antd";
 import { Api } from "@api/apis";
 import { RichTextarea } from "rich-textarea";
+import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
 // const PizZip = require("pizzip");
 // import Docxtemplater from "docxtemplater";
 // import PizZip from "pizzip";
@@ -66,15 +60,12 @@ export const TextboxContainer = ({
 }: TextboxContainerProps): JSX.Element => {
     const [isLoading, setIsLoading] = React.useState(false);
 
-    const rangeToSuggestion = React.useRef<RangeToSuggestion>({}); // really useful when we need to map decorator to the curresponding suggestion
-
     // these two are needed so we can scroll to the underline span when we click on a card
     // we need two maps since we only know:
     // 1) the blockLoc and the range together OR
     // 2) the rangeBlockLoc and the ref to the span
     // we don't know 1) and 2) at the same time. so we use two maps
-    const rangeBlockLoc = React.useRef<RangeToBlockLocation>({});
-    const underlineRef = React.useRef<BlockLocToUnderlineRef>({});
+    const suggestionIdToRef = React.useRef<SuggestionIdToRef>({});
 
     const router = useRouter();
     useEffect(() => {
@@ -82,32 +73,24 @@ export const TextboxContainer = ({
         editorRef.current?.focus();
     }, []);
 
-    // useEffect(() => {
-    //     if (activeSuggestion) {
-    //         const blockLoc =
-    //             rangeBlockLoc.current[
-    //                 activeSuggestion.range.start +
-    //                     "," +
-    //                     activeSuggestion.range.end
-    //             ];
-    //         // DO NOT change where the cursor is. cause if htey click on the underline to make the active suggestion, their cursor will be elsewhere
-    //         // sometimes these refs are outdated????
-    //         // HWOEVER, the scroll into view wrks!
-    //         const ref = underlineRef.current[blockLoc];
-    //         if (ref) {
-    //             // we need to request animation frame cause otherwise, scrollIntoView will sometimes fail
-    //             // https://github.com/facebook/react/issues/23396
-    //             window.requestAnimationFrame(() => {
-    //                 if (ref.current) {
-    //                     ref.current.scrollIntoView({
-    //                         behavior: "smooth",
-    //                         block: "center",
-    //                     });
-    //                 }
-    //             });
-    //         }
-    //     }
-    // }, [activeSuggestion, underlineRef.current]);
+    useEffect(() => {
+        if (activeSuggestion) {
+            const ref =
+                suggestionIdToRef.current[activeSuggestion.suggestionId];
+            if (ref) {
+                // we need to request animation frame cause otherwise, scrollIntoView will sometimes fail
+                // https://github.com/facebook/react/issues/23396
+                window.requestAnimationFrame(() => {
+                    if (ref.current) {
+                        ref.current.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                        });
+                    }
+                });
+            }
+        }
+    }, [activeSuggestion]);
 
     const handleUnderlineClicked = useCallback(
         (range: DocRange) => {
@@ -131,9 +114,7 @@ export const TextboxContainer = ({
         [suggestions],
     );
 
-    const checkDocument = useCallback(async (): Promise<
-        EditorState | undefined
-    > => {
+    const checkDocument = useCallback(async (): Promise<void> => {
         if (isLoading) {
             return;
         }
@@ -150,9 +131,7 @@ export const TextboxContainer = ({
             return;
         }
         setHasAnalyzedOnce(true);
-        rangeToSuggestion.current = {};
-        underlineRef.current = {};
-        rangeBlockLoc.current = {};
+        suggestionIdToRef.current = {};
         // return;
 
         const newSuggestions = response.suggestions;
@@ -199,11 +178,14 @@ export const TextboxContainer = ({
             </Affix>
 
             <RichTextarea
+                ref={editorRef}
                 value={editorState}
                 style={{ width: "600px", height: "400px" }}
                 onChange={(e) => updateEditorState(e.target.value)}
             >
                 {(v) => {
+                    suggestionIdToRef.current = {}; // reset the map
+
                     const res: JSX.Element[] = [];
                     let lastCharIdx = 0;
                     for (const suggestion of suggestions) {
@@ -225,11 +207,17 @@ export const TextboxContainer = ({
                                   }
                                 : {};
 
+                        const ref = React.createRef<HTMLSpanElement>();
+                        suggestionIdToRef.current[suggestion.suggestionId] =
+                            ref;
+
                         res.push(
                             <span
+                                ref={ref}
                                 className="border-[#189bf2] border-b-[2px]"
                                 style={style}
                                 onClick={() => handleUnderlineClicked(range)}
+                                key={suggestion.suggestionId}
                             >
                                 {v.substring(range.start, range.end)}
                             </span>,

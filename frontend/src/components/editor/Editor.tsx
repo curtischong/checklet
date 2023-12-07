@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
-import { EditorState } from "draft-js";
 import { TextButton } from "@components/Button";
 import { useRouter } from "next/router";
 import { useClientContext } from "@utils/ClientContext";
@@ -11,7 +10,6 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
 import { singleEditDistance } from "@components/editor/singleEditDistance";
-import { RichTextareaCore } from "@components/RichTextarea";
 
 interface Props {
     storefront: CheckerStorefront;
@@ -75,7 +73,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
-                {/* <RichTextareaCore /> */}
                 <TextboxContainer
                     activeSuggestion={activeSuggestion}
                     updateActiveSuggestion={setActiveSuggestion}
