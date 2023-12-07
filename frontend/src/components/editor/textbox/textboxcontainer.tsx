@@ -179,8 +179,8 @@ export const TextboxContainer = ({
             <RichTextarea
                 ref={editorRef}
                 value={editorState}
-                style={{ width: "600px", height: "400px" }}
                 onChange={(e) => updateEditorState(e.target.value)}
+                className="bg-white resize-none w-full h-[76vh]"
             >
                 {(v) => {
                     suggestionIdToRef.current = {}; // reset the map
