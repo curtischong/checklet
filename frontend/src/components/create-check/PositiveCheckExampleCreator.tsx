@@ -32,7 +32,7 @@ export const PositiveCheckExampleCreator = ({
     return (
         <div className="flex flex-col ">
             <ThinLine className="mt-4" />
-            <div>Create Positive Example</div>
+            <div className="font-bold text-lg">Create Positive Example</div>
             <div className="flex items-center mt-2">
                 <label className="text-md">Original Text</label>
                 <HelpIcon

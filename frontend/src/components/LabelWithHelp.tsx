@@ -14,7 +14,7 @@ export const LabelWithHelp = ({
     return (
         <div className={`flex flex-row ${className}`}>
             <label>{label}</label>
-            <HelpIcon className="mt-[3px] ml-1" text={helpText} />
+            <HelpIcon className="mt-[7px] ml-2" text={helpText} />
         </div>
     );
 };

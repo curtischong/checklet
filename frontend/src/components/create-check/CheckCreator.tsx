@@ -10,7 +10,6 @@ import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import { NormalTextArea } from "@components/TextArea";
 import { CheckPreview } from "@components/create-check/CheckPreview";
 import { CreateCheckNavigationPath } from "@components/create-check/CreateCheckNavigationPath";
-import { Page } from "@components/create-checker/CheckerCreator";
 import {
     CheckBlueprint,
     CheckId,
@@ -191,8 +190,8 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 }}
             >
                 <CreateCheckNavigationPath />
-                <h1 className=" text-xl font-bold">Create Check</h1>
-                <label className="text-md mt-4">Name</label>
+                <h1 className=" text-3xl font-bold">Create Check</h1>
+                <label className="text-lg mt-4 font-bold">Name</label>
                 <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -202,7 +201,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 <LabelWithHelp
                     label="Suggestion Reason"
                     helpText="This is a great place to explain your suggestion. Users will see this when they expand the card."
-                    className="mt-2"
+                    className="mt-2 font-bold text-lg"
                 />
                 <NormalTextArea
                     value={desc}
@@ -213,7 +212,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 <LabelWithHelp
                     label="Model Instructions"
                     helpText="Here is where you tell the model how to edit the text."
-                    className="mt-2"
+                    className="mt-2 font-bold text-lg"
                 />
                 <NormalTextArea
                     value={instruction}
@@ -224,7 +223,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 <LabelWithHelp
                     label="Category (optional)"
                     helpText="If you want to organize your cards by category, you can add a category here."
-                    className="mt-2"
+                    className="mt-2 font-bold text-lg"
                 />
                 <Input
                     value={category}
@@ -236,7 +235,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     <LabelWithHelp
                         label="Positive Examples"
                         helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
-                        className="mt-2"
+                        className="mt-2 font-bold text-lg"
                     />
                     <div className="flex flex-col">
                         {positiveExamples.map((example, idx) => (
@@ -327,7 +326,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                             {checkType} Check
                         </div>
                         <HelpIcon
-                            className="ml-2 mt-[6px]"
+                            className="ml-2 mt-[7px]"
                             text={feedbackTypeDesc(checkType)}
                         />
                     </div>
