@@ -96,30 +96,6 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
         })();
     }, []);
 
-    const [clickedSubmit, setClickedSubmit] = React.useState(false);
-    const [err, setErr] = React.useState("");
-
-    const getIncompleteFormErr = useCallback(() => {
-        if (name === "") {
-            return "Please enter a name";
-        } else if (instruction === "") {
-            return "Please enter a model instruction";
-        } else if (desc === "") {
-            return "Please enter a long description";
-        } else if (positiveExamples.length === 0) {
-            return "Please enter at least one positive example";
-        } else {
-            return "";
-        }
-    }, [name, instruction, desc, positiveExamples]);
-
-    useEffect(() => {
-        if (!clickedSubmit) {
-            return;
-        }
-        setErr(getIncompleteFormErr());
-    }, [getIncompleteFormErr, clickedSubmit]);
-
     const saveCheck = useCallback(
         debounce(
             async (
@@ -130,7 +106,6 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 newCategory: string,
                 newPositiveExamples: PositiveCheckExample[],
             ) => {
-                setClickedSubmit(true);
                 if (!user) {
                     return;
                 }
@@ -284,8 +259,6 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                         setEditedText={setEditedText}
                     />
                 </div>
-
-                <div className="text-[#ff0000] mt-4 ">{err}</div>
 
                 <div className="mt-4 flex flex-row space-x-4 items-center">
                     <NormalButton

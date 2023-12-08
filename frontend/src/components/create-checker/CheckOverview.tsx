@@ -9,7 +9,7 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
 import { SetState } from "@utils/types";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface Props {
@@ -34,6 +34,33 @@ export const CheckOverview = ({
     const [tmpIsChecked, setTmpChecked] = useState(
         checkStatuses[checkId].isEnabled,
     );
+    const [err, setErr] = useState("");
+    const [clickedIsPublic, setClickedIsPublic] = useState(false);
+
+    useEffect(() => {
+        setTmpChecked(checkStatuses[checkId].isEnabled);
+    }, [checkStatuses[checkId]]);
+
+    const getIncompleteFormErr = useCallback(() => {
+        if (checkBlueprint.objInfo.name === "") {
+            return "Please enter a name";
+        } else if (checkBlueprint.instruction === "") {
+            return "Please enter a model instruction";
+        } else if (checkBlueprint.objInfo.desc === "") {
+            return "Please enter a long description";
+        } else if (checkBlueprint.positiveExamples.length === 0) {
+            return "Please enter at least one positive example";
+        } else {
+            return "";
+        }
+    }, [checkBlueprint]); // since the blueprint never changes after rendering, it's okay to not JSON.stringify it in the dep array
+    useEffect(() => {
+        const newErr = getIncompleteFormErr();
+        if (newErr !== "") {
+            setTmpChecked(false);
+        }
+        setErr(newErr);
+    }, [getIncompleteFormErr]);
 
     const { user } = useClientContext();
     return (
@@ -64,12 +91,19 @@ export const CheckOverview = ({
                     </div>
                 ))}
             </div>
+            <div className="text-[#ff0000] mt-4 ">
+                {clickedIsPublic ? err : ""}
+            </div>
             <LabelWithSwitch
                 className="mt-6"
                 text="Is Enabled:"
                 helpText="The checker only runs enables checks on the document"
                 isChecked={tmpIsChecked}
                 setChecked={(newIsChecked: boolean) => {
+                    setClickedIsPublic(true);
+                    if (newIsChecked && err !== "") {
+                        return;
+                    }
                     (async () => {
                         if (!user) {
                             toast.error(

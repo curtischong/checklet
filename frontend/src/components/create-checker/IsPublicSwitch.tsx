@@ -38,10 +38,14 @@ export const IsPublicSwitch = ({
             return "Please enter a description";
         } else if (Object.keys(checkStatuses).length === 0) {
             return "Please enter at least one check";
+        } else if (
+            !Object.values(checkStatuses).some((status) => status.isEnabled)
+        ) {
+            return "Please enable at least one check";
         } else {
             return "";
         }
-    }, [name, desc, checkStatuses]);
+    }, [name, desc, JSON.stringify(checkStatuses)]);
 
     useEffect(() => {
         const newErr = getIncompleteFormErr();
@@ -62,7 +66,7 @@ export const IsPublicSwitch = ({
                 isChecked={tmpChecked}
                 setChecked={(newIsChecked: boolean) => {
                     setClickedIsPublic(true);
-                    if (newIsChecked && getIncompleteFormErr() !== "") {
+                    if (newIsChecked && err !== "") {
                         return;
                     }
 
