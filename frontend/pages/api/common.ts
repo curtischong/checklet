@@ -165,10 +165,8 @@ const validatePositiveExamples = (checkBlueprint: CheckBlueprint) => {
         if (example.originalText === "") {
             return "Positive example original text cannot be empty";
         }
-        if (isRephraseCheck) {
-            if (example.originalText === example.editedText) {
-                return "Positive example cannot have the same originalText and rephrased text";
-            }
+        if (isRephraseCheck && example.originalText === example.editedText) {
+            return "Positive example cannot have the same originalText and rephrased text";
         }
     }
     return "";

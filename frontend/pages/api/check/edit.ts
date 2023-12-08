@@ -103,9 +103,7 @@ const validateCheckLengths = (
     return true;
 };
 
-export const validateCheckLengthsHelper = (
-    checkBlueprint: CheckBlueprint,
-): string => {
+const validateCheckLengthsHelper = (checkBlueprint: CheckBlueprint): string => {
     if (checkBlueprint.objInfo.name.length > MAX_CHECK_NAME_LEN) {
         return `Check name cannot be longer than ${MAX_CHECK_NAME_LEN} characters`;
     } else if (checkBlueprint.objInfo.desc.length > MAX_CHECK_DESC_LEN) {
