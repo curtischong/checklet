@@ -1,13 +1,11 @@
 import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import classNames from "classnames";
 import { useRouter } from "next/router";
-import { ParsedUrlQuery } from "querystring";
 import React from "react";
 
 export type LinkSection = {
     name: string;
     url?: string;
-    query?: () => ParsedUrlQuery;
 };
 
 interface Props {
@@ -32,10 +30,7 @@ export const CreateCheckNavigationPath = ({ sections }: Props): JSX.Element => {
                             })}
                             onClick={() => {
                                 if (!section.url) return;
-                                router.push(
-                                    section.url,
-                                    section.query ? section.query() : undefined,
-                                );
+                                router.push(section.url);
                             }}
                         >
                             {section.name}
