@@ -95,6 +95,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                     checkStatuses: newCheckStatuses,
                     isPublic: newIsPublic,
                 };
+                console.log("saving checker");
                 setSubmittingState(SubmittingState.Submitting);
                 (async () => {
                     const success = await Api.editChecker(checker, user);
@@ -114,7 +115,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
         // const checkerId =
         //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
         saveChecker(name, desc, checkStatuses, isPublic);
-    }, [name, desc, checkStatuses, checkerId]);
+    }, [name, desc, Object.values(checkStatuses), checkerId]);
 
     return (
         <div className="flex justify-center">
