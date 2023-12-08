@@ -20,7 +20,7 @@ interface Props {
     setIsLoading: SetState<boolean>;
     isLoading: boolean;
     editorState: string;
-    setHasAnalyzedOnce: SetState<boolean>;
+    setHasModifiedTextAfterChecking: SetState<boolean>;
     storefront: CheckerStorefront;
     setCheckDescObj: SetState<CheckDescObj>;
     setSuggestions: SetState<Suggestion[]>;
@@ -30,7 +30,7 @@ export const EditorHeader = ({
     setIsLoading,
     isLoading,
     editorState,
-    setHasAnalyzedOnce,
+    setHasModifiedTextAfterChecking,
     storefront,
     setCheckDescObj,
     setSuggestions,
@@ -52,7 +52,7 @@ export const EditorHeader = ({
             toast.error("Something went wrong, please try again later");
             return;
         }
-        setHasAnalyzedOnce(true);
+        setHasModifiedTextAfterChecking(false);
 
         const newSuggestions = response.suggestions;
         newSuggestions.sort(Sorters[SortType.TextOrder]);
