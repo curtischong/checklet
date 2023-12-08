@@ -2,6 +2,7 @@ import { SubmitButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { NavigationPath } from "@components/NavigationPath";
 import { SetState } from "@utils/types";
+import { useRouter } from "next/router";
 import React from "react";
 
 interface Props {
@@ -10,9 +11,25 @@ interface Props {
 
 export const CreateCheckName = ({ setCheckName }: Props): JSX.Element => {
     const [tmpName, setTmpName] = React.useState("");
+    const router = useRouter();
+    const checkerId = router.query.checkerId as string;
     return (
         <div>
-            <NavigationPath />
+            <NavigationPath
+                sections={[
+                    {
+                        name: "Dashboard",
+                        url: "/dashboard",
+                    },
+                    {
+                        name: "Create Checker",
+                        url: `/create/checker/${checkerId}`,
+                    },
+                    {
+                        name: "Create Check",
+                    },
+                ]}
+            />
             <div className="w-[500px] mx-auto flex flex-col justify-center h-[80vh]">
                 <div className="text-xl font-bold">Define your Check</div>
                 <div className="mt-4 text-xl">Check Name</div>

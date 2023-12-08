@@ -1,5 +1,6 @@
 import { Api } from "@api/apis";
 import { CheckerId } from "@api/checker";
+import { NormalButton } from "@components/Button";
 import { CheckOverview } from "@components/create-checker/CheckOverview";
 import {
     CheckBlueprint,
@@ -80,6 +81,22 @@ export const YourChecks = ({
                         />
                     ))}
                 </div>
+
+                <NormalButton
+                    className="mt-8 w-80 ml-10"
+                    onClick={() => {
+                        (async () => {
+                            router.push({
+                                pathname: `/create/check`,
+                                query: {
+                                    checkerId: checkerId,
+                                },
+                            });
+                        })();
+                    }}
+                >
+                    Create Check
+                </NormalButton>
             </div>
         </div>
     );

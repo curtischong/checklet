@@ -9,6 +9,7 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { SetState } from "@utils/types";
 import React from "react";
+import { useRouter } from "next/router";
 
 interface SelectCheckTypeProps {
     setCheckType: SetState<CheckType | undefined>;
@@ -20,10 +21,26 @@ export const SelectCheckType = ({
     const [tmpCheckType, setTmpCheckType] = React.useState<CheckType>(
         CheckType.highlight,
     );
+    const router = useRouter();
+    const checkerId = router.query.checkerId as string;
 
     return (
         <div className="flex flex-col">
-            <NavigationPath />
+            <NavigationPath
+                sections={[
+                    {
+                        name: "Dashboard",
+                        url: "/dashboard",
+                    },
+                    {
+                        name: "Create Checker",
+                        url: `/create/checker/${checkerId}`,
+                    },
+                    {
+                        name: "Create Check",
+                    },
+                ]}
+            />
             <div className="w-[50vw] mx-auto flex flex-col">
                 <div className="mt-16 font-bold text-xl">Select Check Type</div>
                 <SlidingRadioButton

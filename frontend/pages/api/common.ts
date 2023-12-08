@@ -154,9 +154,13 @@ export const validateCheckBlueprint = (
 };
 
 const validatePositiveExamples = (checkBlueprint: CheckBlueprint) => {
+    const isRephraseCheck = checkBlueprint.checkType === CheckType.rephrase;
     for (const example of checkBlueprint.positiveExamples) {
         if (example.originalText === "") {
             return "Positive example original text cannot be empty";
+        }
+        if (isRephraseCheck && example.originalText === example.editedText) {
+            return "Positive example cannot have the same originalText and rephrased text";
         }
     }
     return "";

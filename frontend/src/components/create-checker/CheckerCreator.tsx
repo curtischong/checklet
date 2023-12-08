@@ -9,7 +9,6 @@ import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useClientContext } from "@utils/ClientContext";
 import { Api } from "@api/apis";
-import { RightArrowIcon } from "@components/icons/RightArrowIcon";
 import { NormalTextArea } from "@components/TextArea";
 import {
     CheckBlueprint,
@@ -177,22 +176,6 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 value={desc}
                                 minRows={4}
                             />
-
-                            <NormalButton
-                                className="mt-8 w-80"
-                                onClick={() => {
-                                    (async () => {
-                                        router.push({
-                                            pathname: `/create/check`,
-                                            query: {
-                                                checkerId: checkerId,
-                                            },
-                                        });
-                                    })();
-                                }}
-                            >
-                                Create Check
-                            </NormalButton>
 
                             <div className="text-[#ff0000] mt-4 ">{err}</div>
                             <LoadingButtonSubmit

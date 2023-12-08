@@ -2,7 +2,7 @@ import { Api } from "@api/apis";
 import { CheckerId } from "@api/checker";
 import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
 import { LabelWithSwitch } from "@components/Switch";
-import { PositiveExamplePreview } from "@components/create-check/PositiveExamplePreview";
+import { FlattenedPositiveExamplePreview } from "@components/create-check/FlattenedPositiveExamplePreview";
 import {
     CheckBlueprint,
     CheckStatuses,
@@ -55,10 +55,9 @@ export const CheckOverview = ({
             <h2 className="mt-4">{checkBlueprint.objInfo.desc}</h2>
             <h2 className="font-bold mt-5">Positive Examples</h2>
             <div className="flex flex-col">
-                {/* TODO: do a diff, so we see the red deletion / green insertion */}
                 {checkBlueprint.positiveExamples.map((example, idx) => (
                     <div className="flex flex-row" key={`example-${idx}`}>
-                        <PositiveExamplePreview
+                        <FlattenedPositiveExamplePreview
                             example={example}
                             checkType={checkBlueprint.checkType}
                         />

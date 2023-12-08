@@ -39,7 +39,11 @@ export const LabelWithSwitch = ({
 }: LabelWithSwitchProps): JSX.Element => {
     return (
         <div className={classNames("flex flex-row", className)}>
-            <LabelWithHelp label={text} helpText={helpText} />
+            <LabelWithHelp
+                label={text}
+                helpText={helpText}
+                helpIconClassName="mt-[3px]"
+            />
             <NormalSwitch
                 isChecked={isChecked}
                 setChecked={setChecked}

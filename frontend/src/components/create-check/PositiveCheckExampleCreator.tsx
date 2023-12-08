@@ -29,6 +29,7 @@ export const PositiveCheckExampleCreator = ({
     editedText,
     setEditedText,
 }: Props): JSX.Element => {
+    const isTextTheSame = originalText === editedText;
     return (
         <div className="flex flex-col ">
             <ThinLine className="mt-4" />
@@ -59,8 +60,15 @@ export const PositiveCheckExampleCreator = ({
                     />
                 </>
             )}
+            <div>
+                {originalText !== "" && isTextTheSame && (
+                    <div className="text-red-500">
+                        Original text and edited text should not be the same
+                    </div>
+                )}
+            </div>
             <NormalButton
-                disabled={originalText === ""}
+                disabled={originalText === "" || isTextTheSame}
                 className="px-10 py-[6px] w-[240px] mt-4"
                 onClick={() => {
                     onCreate({
