@@ -212,10 +212,9 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     placeholder={defaultName[checkType]}
                 />
 
-                <LabelWithHelp
+                <CheckSectionHeader
                     label="Suggestion Reason"
                     helpText="This is a great place to explain your suggestion. Users will see this when they expand the card."
-                    className="mt-2 font-bold text-lg"
                 />
                 <NormalTextArea
                     value={desc}
@@ -223,10 +222,9 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     placeholder={defaultDesc[checkType]}
                     minRows={3}
                 />
-                <LabelWithHelp
+                <CheckSectionHeader
                     label="Model Instructions"
                     helpText="Here is where you tell the model how to edit the text."
-                    className="mt-2 font-bold text-lg"
                 />
                 <NormalTextArea
                     value={instruction}
@@ -234,10 +232,9 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     placeholder={defaultInstructions[checkType]}
                     minRows={4}
                 />
-                <LabelWithHelp
+                <CheckSectionHeader
                     label="Category (optional)"
                     helpText="If you want to organize your cards by category, you can add a category here."
-                    className="mt-2 font-bold text-lg"
                 />
                 <Input
                     value={category}
@@ -246,10 +243,9 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 />
 
                 <div className="mt-4">
-                    <LabelWithHelp
+                    <CheckSectionHeader
                         label="Positive Examples"
                         helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
-                        className="mt-2 font-bold text-lg"
                     />
                     <div className="flex flex-col">
                         {positiveExamples.map((example, idx) => (
@@ -363,5 +359,20 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 </div>
             </div>
         </div>
+    );
+};
+
+interface CheckSectionHeaderProps {
+    label: string;
+    helpText: string;
+}
+const CheckSectionHeader = ({ label, helpText }: CheckSectionHeaderProps) => {
+    return (
+        <LabelWithHelp
+            label={label}
+            helpText={helpText}
+            className="mt-2 font-bold text-lg"
+            helpIconClassName="mt-[7px]"
+        />
     );
 };
