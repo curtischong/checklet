@@ -132,7 +132,11 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 };
 
                 setSubmittingState(SubmittingState.Submitting);
-                const success = await Api.editCheck(checkBlueprint, user);
+                const success = await Api.editCheck(
+                    checkBlueprint,
+                    checkerId,
+                    user,
+                );
                 if (success) {
                     setSubmittingState(SubmittingState.NotSubmitting);
                 } else {
