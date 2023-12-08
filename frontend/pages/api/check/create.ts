@@ -15,6 +15,7 @@ import {
     sendBadRequest,
 } from "pages/api/commonNetworking";
 import { createClient } from "redis";
+import { MAX_CHECK_NAME_LEN } from "src/constants";
 
 export default async function handler(
     req: NextApiRequest,
@@ -46,6 +47,13 @@ export default async function handler(
 
     if (name === "") {
         sendBadRequest(res, "Check name cannot be empty");
+        return;
+    }
+    if (name.length > MAX_CHECK_NAME_LEN) {
+        sendBadRequest(
+            res,
+            `Check name cannot be longer than ${MAX_CHECK_NAME_LEN} characters`,
+        );
         return;
     }
 
