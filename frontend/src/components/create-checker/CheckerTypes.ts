@@ -65,3 +65,17 @@ export interface FeedbackResponse {
     checkDescs: CheckDescObj;
     suggestions: Suggestion[];
 }
+
+// TODO-someday: find a better place to put this
+export enum SubmittingState {
+    NotSubmitting,
+    ChangesDetected,
+    Submitting,
+}
+export const SaveStatusText: {
+    [key in SubmittingState]: string;
+} = {
+    [SubmittingState.ChangesDetected]: "Changes are unsaved",
+    [SubmittingState.NotSubmitting]: "Changes are saved!",
+    [SubmittingState.Submitting]: "Saving changes...",
+};

@@ -153,6 +153,7 @@ export class Api {
 
     static editCheck = async (
         checkBlueprint: CheckBlueprint,
+        checkerId: CheckerId,
         user: User,
     ): Promise<boolean> => {
         const res = await Api.createRequest(
@@ -160,6 +161,7 @@ export class Api {
             "POST",
             {
                 checkBlueprint,
+                checkerId,
             },
             user,
         );

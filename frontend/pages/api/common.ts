@@ -89,6 +89,12 @@ export const validateChecker = async (
     if (checkIds.length === 0) {
         return "Checker must have at least one check";
     }
+    const hasOneEnabledCheck = Object.values(
+        checkerBlueprint.checkStatuses,
+    ).some((checkStatus) => checkStatus.isEnabled);
+    if (!hasOneEnabledCheck) {
+        return "Checker must have at least one enabled check";
+    }
 
     // PERF: batch this
     for (const checkId of checkIds) {

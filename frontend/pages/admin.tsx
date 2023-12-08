@@ -66,7 +66,7 @@ const AdminPage: React.FC = () => {
                 return;
             }
             check.objInfo.id = checkId;
-            if (!(await Api.editCheck(check, user))) {
+            if (!(await Api.editCheck(check, checkerId, user))) {
                 toast.error("Failed to edit check");
                 return;
             }

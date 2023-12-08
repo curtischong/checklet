@@ -1,8 +1,4 @@
-import {
-    LoadingButtonSubmit,
-    NormalButton,
-    SubmittingState,
-} from "@components/Button";
+import { NormalButton } from "@components/Button";
 import { Input } from "antd";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
@@ -14,6 +10,8 @@ import {
     CheckBlueprint,
     CheckStatuses,
     CheckerBlueprint,
+    SaveStatusText,
+    SubmittingState,
 } from "@components/create-checker/CheckerTypes";
 import { YourChecks } from "@components/create-checker/YourChecks";
 import { NavigationPath } from "@components/NavigationPath";
@@ -25,12 +23,6 @@ export enum Page {
     CheckCreator,
 }
 
-const SaveStatusText = {
-    [SubmittingState.ChangesDetected]: "Changes are unsaved",
-    [SubmittingState.NotSubmitting]: "Changes are saved!",
-    [SubmittingState.Submitting]: "Creating Checker",
-    [SubmittingState.Submitted]: "Submitting changes",
-};
 interface Props {
     checkerId: string;
 }
@@ -85,6 +77,8 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                     toast.error("You must be logged in to create a checker");
                     return;
                 }
+                // const checkerId =
+                //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
                 const checker: CheckerBlueprint = {
                     objInfo: {
                         name: newName,
@@ -112,10 +106,8 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     );
 
     useEffect(() => {
-        // const checkerId =
-        //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
         saveChecker(name, desc, checkStatuses, isPublic);
-    }, [name, desc, JSON.stringify(Object.values(checkStatuses)), checkerId]);
+    }, [name, desc, JSON.stringify(Object.values(checkStatuses))]);
 
     return (
         <div className="flex justify-center">
