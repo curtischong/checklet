@@ -171,3 +171,18 @@ const validatePositiveExamples = (checkBlueprint: CheckBlueprint) => {
     }
     return "";
 };
+
+export const disableCheckerIfNoEnabledChecks = async (
+    redisClient: RedisClient,
+    checkerBlueprint: CheckerBlueprint,
+    checkerId: CheckerId,
+): Promise<void> => {
+    // if the checker has no other enabled checks, then we should make the checker private
+    const checkerHasOtherEnabledChecks = Object.values(
+        checkerBlueprint.checkStatuses,
+    ).some((checkStatus) => checkStatus.isEnabled);
+    if (!checkerHasOtherEnabledChecks) {
+        checkerBlueprint.isPublic = false;
+        await redisClient.sRem("publicCheckerIds", checkerId);
+    }
+};

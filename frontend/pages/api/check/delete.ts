@@ -1,6 +1,10 @@
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isUserCheckOwner, isUserCheckerOwner } from "pages/api/common";
+import {
+    disableCheckerIfNoEnabledChecks,
+    isUserCheckOwner,
+    isUserCheckerOwner,
+} from "pages/api/common";
 import {
     requestMiddleware,
     return204Status,
@@ -49,13 +53,11 @@ export default async function handler(
 
     delete checkerBlueprint.checkStatuses[checkId];
 
-    // if the checker has no other enabled checks, then we should make the checker private
-    const checkerHasOtherEnabledChecks = Object.values(
-        checkerBlueprint.checkStatuses,
-    ).some((checkStatus) => checkStatus.isEnabled);
-    if (!checkerHasOtherEnabledChecks) {
-        checkerBlueprint.isPublic = false;
-    }
+    await disableCheckerIfNoEnabledChecks(
+        redisClient,
+        checkerBlueprint,
+        checkerId,
+    );
 
     // we are done validating. now write
     await redisClient.set(checkerKey, JSON.stringify(checkerBlueprint));
