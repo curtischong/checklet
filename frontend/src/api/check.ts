@@ -125,6 +125,11 @@ ${positiveExamples}
                         }
                         const originalEx = argsObj.originalTexts[i];
                         const editedEx = argsObj.editedTexts[i];
+                        if (originalEx === editedEx) {
+                            // the model didn't change anything. just ignore it
+                            console.log("originalEx === editedEx", originalEx);
+                            continue;
+                        }
 
                         const editOps = editDistanceOperationsWithClasses(
                             originalEx,
