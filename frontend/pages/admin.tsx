@@ -106,6 +106,12 @@ const AdminPage: React.FC = () => {
             <NormalButton className="mt-10 w-60" onClick={createRizzume}>
                 Create Rizzume
             </NormalButton>
+            <NormalButton
+                className="mt-10 w-60"
+                onClick={() => localStorage.clear()}
+            >
+                Clear Localstorage
+            </NormalButton>
         </div>
     );
 };

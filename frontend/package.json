@@ -25,6 +25,7 @@
         "fs": "^0.0.1-security",
         "gulp": "^4.0.2",
         "gulp-cli": "^2.3.0",
+        "lodash.debounce": "^4.0.8",
         "mixpanel-browser": "^2.45.0",
         "next": "^14.0.3",
         "next-compose-plugins": "^2.2.1",
@@ -47,6 +48,7 @@
         "uuid": "^8.3.2"
     },
     "devDependencies": {
+        "@types/lodash.debounce": "^4.0.9",
         "@types/node": "^20.10.1",
         "@types/pdfjs-dist": "^2.10.378",
         "@types/react": "^18.2.42",

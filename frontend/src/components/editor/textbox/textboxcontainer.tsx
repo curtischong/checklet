@@ -11,6 +11,7 @@ import { DocRange, Suggestion, isWithinRange } from "@api/ApiTypes";
 import { toast } from "react-toastify";
 import { RichTextarea, RichTextareaHandle } from "rich-textarea";
 import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
+import debounce from "lodash.debounce";
 // const PizZip = require("pizzip");
 // import Docxtemplater from "docxtemplater";
 // import PizZip from "pizzip";
@@ -51,7 +52,23 @@ export const TextboxContainer = ({
     useEffect(() => {
         // TODO: load state from localstorage
         editorRef.current?.focus();
+
+        const prevDocument = localStorage.getItem("editorText");
+        if (prevDocument) {
+            updateEditorState(prevDocument);
+        }
     }, []);
+
+    const debouncedSave = useCallback(
+        debounce((newState) => {
+            localStorage.setItem("editorText", newState);
+        }, 1000),
+        [],
+    );
+
+    useEffect(() => {
+        debouncedSave(editorState);
+    }, [editorState, debouncedSave]);
 
     useEffect(() => {
         if (activeSuggestion) {
