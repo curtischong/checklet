@@ -34,13 +34,18 @@ export default async function handler(
             userId,
             checkerBlueprint,
         );
-        if (validationErr !== "") {
-            sendBadRequest(res, validationErr);
-            return;
-        }
+        // do not send an error. just save it, but don't add it to the public list
+        // if (validationErr !== "") {
+        //     sendBadRequest(res, validationErr);
+        //     return;
+        // }
 
-        // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis
-        await redisClient.sAdd("publicCheckerIds", checkerId);
+        if (validationErr !== "") {
+            checkerBlueprint.isPublic = false;
+        } else {
+            // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis
+            await redisClient.sAdd("publicCheckerIds", checkerId);
+        }
     }
 
     checkerBlueprint.objInfo.creatorId = userId; // override just for security purposes

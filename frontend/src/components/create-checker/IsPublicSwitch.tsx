@@ -44,15 +44,18 @@ export const IsPublicSwitch = ({
     }, [name, desc, checkStatuses]);
 
     useEffect(() => {
-        if (!clickedIsPublic) {
-            return;
+        const newErr = getIncompleteFormErr();
+        if (newErr !== "") {
+            setTmpChecked(false);
         }
-        setErr(getIncompleteFormErr());
-    }, [getIncompleteFormErr, clickedIsPublic]);
+        setErr(newErr);
+    }, [getIncompleteFormErr]);
 
     return (
         <>
-            <div className="text-[#ff0000] mt-4 ">{err}</div>
+            <div className="text-[#ff0000] mt-4 ">
+                {clickedIsPublic ? err : ""}
+            </div>
             <LabelWithSwitch
                 text="Is Public:"
                 helpText="Public checkers are discoverable and usable by anybody. People may reverse-engineer your prompts if you make it public"
