@@ -181,16 +181,6 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 checkerId={checkerId}
                             />
                             <div className="flex flex-row space-x-8">
-                                {/* <LoadingButtonSubmit
-                                    isLoading={
-                                        submittingState ===
-                                        SubmittingState.Submitting
-                                    }
-                                    onClick={editChecker}
-                                    className="mt-4 w-40 h-10"
-                                >
-                                    {SubmitButtonText[submittingState]}
-                                </LoadingButtonSubmit> */}
                                 <NormalButton
                                     className="mt-4 w-52 h-10"
                                     onClick={() => {
