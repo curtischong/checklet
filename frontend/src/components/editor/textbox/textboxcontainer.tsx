@@ -58,11 +58,17 @@ export const TextboxContainer = ({
             updateEditorState(prevDocument);
         }
     }, []);
+
+    const debouncedSave = useCallback(
+        debounce((newState) => {
+            localStorage.setItem("editorText", newState);
+        }, 1000),
+        [],
+    );
+
     useEffect(() => {
-        debounce(() => {
-            localStorage.setItem("editorText", editorState);
-        }, 1000);
-    }, [editorState]);
+        debouncedSave(editorState);
+    }, [editorState, debouncedSave]);
 
     useEffect(() => {
         if (activeSuggestion) {
