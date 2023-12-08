@@ -25,6 +25,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const router = useRouter();
     const { user } = useClientContext();
     const [isLoading, setIsLoading] = React.useState(false);
+    const editorRef = useRef<RichTextareaHandle | null>(null);
 
     const updateEditorState = useCallback(
         (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
@@ -82,6 +83,33 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
         [setEditorState, setSuggestions],
     );
 
+    // const newEditorState =
+    // editorState.slice(0, s.range.start) +
+    // s.editedText +
+    // editorState.slice(s.range.end);
+    const acceptSuggestion = useCallback((suggestion: Suggestion) => {
+        if (!editorRef) {
+            console.error("editor ref not found. cannot accept suggestion");
+            return;
+        }
+
+        editorRef.current.focus();
+        editorRef.current.setSelectionRange(
+            suggestion.range.start,
+            suggestion.range.end,
+        );
+        // execCommand is deprecated but it works!
+        document.execCommand("insertText", false, suggestion.editedText);
+
+        // the below code works, but the user cannot undo the change. Keeping it here for reference though
+        //
+        // the user did a replacement. We should set it to true cause the text was modified!
+        // if we don't, and if all suggestions are resolved, we'll show the "no suggestions generated" img
+        // (however, the replacement COULD trigger more suggestions. So we must set this to false to prevent the possibly misleading img from appearing)
+        // setHasModifiedTextAfterChecking(true);
+        // updateEditorState(editorState, newText, suggestions);
+    }, []);
+
     return (
         <div className="mx-auto max-w-screen-lg">
             <div className="grid grid-cols-5 gap-5 px-5">
@@ -117,6 +145,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                             );
                         }}
                         isLoading={isLoading}
+                        editorRef={editorRef}
                     />
                 </div>
                 <SuggestionsContainer
@@ -124,13 +153,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     activeSuggestion={activeSuggestion}
                     setActiveSuggestion={setActiveSuggestion}
                     editorState={editorState}
-                    updateEditorState={(newText) => {
-                        // the user did a replacement. We should set it to true cause the text was modified!
-                        // if we don't, and if all suggestions are resolved, we'll show the "no suggestions generated" img
-                        // (however, the replacement COULD trigger more suggestions. So we must set this to false to prevent the possibly misleading img from appearing)
-                        setHasModifiedTextAfterChecking(true);
-                        updateEditorState(editorState, newText, suggestions);
-                    }}
+                    acceptSuggestion={acceptSuggestion}
                     checkDescObj={checkDescObj}
                     hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
                 />
