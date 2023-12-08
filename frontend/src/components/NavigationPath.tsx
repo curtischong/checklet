@@ -12,7 +12,7 @@ interface Props {
     sections: LinkSection[];
 }
 
-export const CreateCheckNavigationPath = ({ sections }: Props): JSX.Element => {
+export const NavigationPath = ({ sections }: Props): JSX.Element => {
     const router = useRouter();
 
     return (

@@ -1,6 +1,6 @@
 import { SubmitButton } from "@components/Button";
 import { Input } from "@components/Input";
-import { CreateCheckNavigationPath } from "@components/create-check/CreateCheckNavigationPath";
+import { NavigationPath } from "@components/NavigationPath";
 import { SetState } from "@utils/types";
 import React from "react";
 
@@ -12,7 +12,7 @@ export const CreateCheckName = ({ setCheckName }: Props): JSX.Element => {
     const [tmpName, setTmpName] = React.useState("");
     return (
         <div>
-            <CreateCheckNavigationPath />
+            <NavigationPath />
             <div className="w-[500px] mx-auto flex flex-col justify-center h-[80vh]">
                 <div className="text-xl font-bold">Define your Check</div>
                 <div className="mt-4 text-xl">Check Name</div>

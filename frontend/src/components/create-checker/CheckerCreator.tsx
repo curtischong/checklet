@@ -17,7 +17,7 @@ import {
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
 import { YourChecks } from "@components/create-checker/YourChecks";
-import { CreateCheckNavigationPath } from "@components/create-check/CreateCheckNavigationPath";
+import { NavigationPath } from "@components/NavigationPath";
 
 export enum Page {
     Main,
@@ -137,7 +137,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                             flexBasis: "0",
                         }}
                     >
-                        <CreateCheckNavigationPath
+                        <NavigationPath
                             sections={[
                                 {
                                     name: "Dashboard",
