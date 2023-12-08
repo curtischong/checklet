@@ -125,7 +125,7 @@ export class Api {
         name: string,
         checkType: CheckType,
         user: User,
-    ): Promise<CheckId> => {
+    ): Promise<CheckId | undefined> => {
         const res = await Api.createRequest(
             "api/check/create",
             "POST",

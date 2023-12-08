@@ -17,7 +17,12 @@ import { YourChecks } from "@components/create-checker/YourChecks";
 import { NavigationPath } from "@components/NavigationPath";
 import { IsPublicSwitch } from "@components/create-checker/IsPublicSwitch";
 import debounce from "lodash.debounce";
-import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "src/constants";
+import {
+    ADMIN_EMAILS,
+    MAX_CHECKER_DESC_LEN,
+    MAX_CHECKER_NAME_LEN,
+} from "src/constants";
+import { downloadTextFile } from "util/download";
 
 export enum Page {
     Main,
@@ -110,6 +115,25 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
         saveChecker(name, desc, checkStatuses, isPublic);
     }, [name, desc, JSON.stringify(Object.values(checkStatuses))]);
 
+    const downloadChecker = () => {
+        downloadTextFile(
+            name.replace(" ", "_") + ".json",
+            JSON.stringify({
+                checkerBlueprint: {
+                    objInfo: {
+                        name,
+                        desc,
+                        creatorId: user?.uid ?? "",
+                        id: checkerId,
+                    },
+                    checkStatuses,
+                    isPublic,
+                },
+                checkBlueprints,
+            }),
+        );
+    };
+
     return (
         <div className="flex justify-center">
             <div className="container">
@@ -189,6 +213,11 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                     {SaveStatusText[submittingState]}
                                 </div>
                             </div>
+                            {ADMIN_EMAILS.includes(user?.email ?? "") && (
+                                <NormalButton onClick={downloadChecker}>
+                                    download
+                                </NormalButton>
+                            )}
                             <div className="h-10"></div>
                         </div>
                     </div>
