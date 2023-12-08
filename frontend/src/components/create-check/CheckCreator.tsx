@@ -32,7 +32,7 @@ import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Api } from "@api/apis";
-import { PositiveExamplePreview } from "@components/create-check/PositiveExamplePreview";
+import { FlattenedPositiveExamplePreview } from "@components/create-check/FlattenedPositiveExamplePreview";
 
 interface Props {
     checkId: CheckId;
@@ -262,7 +262,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                                         );
                                     }}
                                 />
-                                <PositiveExamplePreview
+                                <FlattenedPositiveExamplePreview
                                     example={example}
                                     checkType={checkType}
                                 />

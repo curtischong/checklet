@@ -4,7 +4,7 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
 
-export const PositiveExamplePreview = ({
+export const FlattenedPositiveExamplePreview = ({
     example,
     checkType,
 }: {
@@ -14,13 +14,13 @@ export const PositiveExamplePreview = ({
     return (
         <div className="flex flex-row">
             <div className="flex flex-col">
-                <div>{example.originalText}</div>
+                <div>{example.originalText.replaceAll("\n", "¶")}</div>
             </div>
-            {checkType === CheckType.rephrase && (
+            {checkType === CheckType.rephrase && example.editedText && (
                 <>
                     <RightArrowWithTailIcon className="mx-4" />
                     <div className="flex flex-col">
-                        <div>{example.editedText}</div>
+                        <div>{example.editedText.replaceAll("\n", "¶")}</div>
                     </div>
                 </>
             )}

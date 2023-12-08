@@ -2,7 +2,7 @@ import { Api } from "@api/apis";
 import { CheckerId } from "@api/checker";
 import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
 import { LabelWithSwitch } from "@components/Switch";
-import { PositiveExamplePreview } from "@components/create-check/PositiveExamplePreview";
+import { FlattenedPositiveExamplePreview } from "@components/create-check/FlattenedPositiveExamplePreview";
 import {
     CheckBlueprint,
     CheckStatuses,
@@ -57,7 +57,7 @@ export const CheckOverview = ({
             <div className="flex flex-col">
                 {checkBlueprint.positiveExamples.map((example, idx) => (
                     <div className="flex flex-row" key={`example-${idx}`}>
-                        <PositiveExamplePreview
+                        <FlattenedPositiveExamplePreview
                             example={example}
                             checkType={checkBlueprint.checkType}
                         />
