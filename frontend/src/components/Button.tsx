@@ -57,13 +57,6 @@ export const LoadingButton: React.FC<IButton & { loading: boolean }> = ({
     );
 };
 
-export enum SubmittingState {
-    NotSubmitting,
-    ChangesDetected,
-    Submitting,
-    Submitted,
-}
-
 export const LoadingButtonSubmit: React.FC<
     IButton & { isLoading: boolean }
 > = ({ className = "", children, isLoading, ...rest }) => {

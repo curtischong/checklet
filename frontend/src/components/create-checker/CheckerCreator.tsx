@@ -1,8 +1,4 @@
-import {
-    LoadingButtonSubmit,
-    NormalButton,
-    SubmittingState,
-} from "@components/Button";
+import { NormalButton } from "@components/Button";
 import { Input } from "antd";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
@@ -14,6 +10,8 @@ import {
     CheckBlueprint,
     CheckStatuses,
     CheckerBlueprint,
+    SaveStatusText,
+    SubmittingState,
 } from "@components/create-checker/CheckerTypes";
 import { YourChecks } from "@components/create-checker/YourChecks";
 import { NavigationPath } from "@components/NavigationPath";
@@ -25,12 +23,6 @@ export enum Page {
     CheckCreator,
 }
 
-const SaveStatusText = {
-    [SubmittingState.ChangesDetected]: "Changes are unsaved",
-    [SubmittingState.NotSubmitting]: "Changes are saved!",
-    [SubmittingState.Submitting]: "Creating Checker",
-    [SubmittingState.Submitted]: "Submitting changes",
-};
 interface Props {
     checkerId: string;
 }
@@ -39,9 +31,8 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
     const [desc, setDesc] = React.useState("");
     const [checkStatuses, setCheckStatuses] = React.useState<CheckStatuses>({});
-    const [submittingState, setSubmittingState] = React.useState(
-        SubmittingState.NotSubmitting,
-    );
+    const [submittingState, setSubmittingState] =
+        React.useState<SubmittingState>(SubmittingState.NotSubmitting);
     const [isPublic, setIsPublic] = React.useState(false);
     const [checkBlueprints, setCheckBlueprints] = React.useState<
         CheckBlueprint[]
