@@ -7,9 +7,19 @@ import {
     ObjInfo,
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
-import { isLegitShortId, isLegitUniqueId } from "@utils/strings";
+import { isLegitShortId } from "@utils/strings";
 import { NextApiResponse } from "next";
 import { RedisClient, sendBadRequest } from "pages/api/commonNetworking";
+import {
+    MAX_CHECKER_DESC_LEN,
+    MAX_CHECKER_NAME_LEN,
+    MAX_CHECK_CATEGORY_LEN,
+    MAX_CHECK_DESC_LEN,
+    MAX_POSITIVE_EX_EDITED_TEXT_LEN,
+    MAX_CHECK_INSTR_LEN,
+    MAX_CHECK_NAME_LEN,
+    MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN,
+} from "src/constants";
 
 export const isUserCheckerOwner = async (
     redisClient: RedisClient,
@@ -85,6 +95,13 @@ export const validateChecker = async (
         return objInfoErr;
     }
 
+    if (checkerBlueprint.objInfo.name.length > MAX_CHECKER_NAME_LEN) {
+        return `Checker name cannot be longer than ${MAX_CHECKER_NAME_LEN} characters`;
+    }
+    if (checkerBlueprint.objInfo.desc.length > MAX_CHECKER_DESC_LEN) {
+        return `Checker description cannot be longer than ${MAX_CHECKER_DESC_LEN} characters`;
+    }
+
     const checkIds = Object.keys(checkerBlueprint.checkStatuses);
     if (checkIds.length === 0) {
         return "Checker must have at least one check";
@@ -146,6 +163,11 @@ export const validateCheckBlueprint = (
         return validateObjInfoErr;
     }
 
+    const validateCheckLengthsErr = validateCheckLengths(checkBlueprint);
+    if (validateCheckLengthsErr !== "") {
+        return validateCheckLengthsErr;
+    }
+
     if (checkBlueprint.instruction === "") {
         return "Check instruction cannot be empty";
     } else if (checkBlueprint.positiveExamples.length === 0) {
@@ -159,14 +181,35 @@ export const validateCheckBlueprint = (
     return validatePositiveExamples(checkBlueprint);
 };
 
+const validateCheckLengths = (checkBlueprint: CheckBlueprint): string => {
+    if (checkBlueprint.objInfo.name.length > MAX_CHECK_NAME_LEN) {
+        return `Check name cannot be longer than ${MAX_CHECK_NAME_LEN} characters`;
+    } else if (checkBlueprint.objInfo.desc.length > MAX_CHECK_DESC_LEN) {
+        return `Check description cannot be longer than ${MAX_CHECK_DESC_LEN} characters`;
+    } else if (checkBlueprint.instruction.length > MAX_CHECK_INSTR_LEN) {
+        return `Check instruction cannot be longer than ${MAX_CHECK_INSTR_LEN} characters`;
+    } else if (checkBlueprint.category.length > MAX_CHECK_CATEGORY_LEN) {
+        return `Check category cannot be longer than ${MAX_CHECK_CATEGORY_LEN} characters`;
+    }
+    return "";
+};
+
 const validatePositiveExamples = (checkBlueprint: CheckBlueprint) => {
     const isRephraseCheck = checkBlueprint.checkType === CheckType.rephrase;
     for (const example of checkBlueprint.positiveExamples) {
         if (example.originalText === "") {
             return "Positive example original text cannot be empty";
         }
-        if (isRephraseCheck && example.originalText === example.editedText) {
-            return "Positive example cannot have the same originalText and rephrased text";
+        if (example.originalText.length > MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN) {
+            return `Positive example original text cannot be longer than ${MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN} characters`;
+        }
+        if (isRephraseCheck) {
+            if (example.originalText === example.editedText) {
+                return "Positive example cannot have the same originalText and rephrased text";
+            }
+            if (example.editedText!.length > MAX_POSITIVE_EX_EDITED_TEXT_LEN) {
+                return `Positive example rephrased text cannot be longer than ${MAX_POSITIVE_EX_EDITED_TEXT_LEN} characters`;
+            }
         }
     }
     return "";

@@ -10,6 +10,10 @@ import { defaultOriginalText } from "@components/create-check/DefaultTextForChec
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { SetState } from "@utils/types";
 import React from "react";
+import {
+    MAX_POSITIVE_EX_EDITED_TEXT_LEN,
+    MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN,
+} from "src/constants";
 
 interface Props {
     checkType: CheckType;
@@ -45,6 +49,7 @@ export const PositiveCheckExampleCreator = ({
                 value={originalText}
                 onChange={(e) => setOriginalText(e.target.value)}
                 placeholder={defaultOriginalText[checkType]}
+                maxLength={MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN}
             />
             {checkType === CheckType.rephrase && (
                 <>
@@ -57,6 +62,7 @@ export const PositiveCheckExampleCreator = ({
                         value={editedText}
                         onChange={(e) => setEditedText(e.target.value)}
                         placeholder="Jan"
+                        maxLength={MAX_POSITIVE_EX_EDITED_TEXT_LEN}
                     />
                 </>
             )}
