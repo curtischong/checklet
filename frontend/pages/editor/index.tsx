@@ -8,8 +8,10 @@ const EditorHome: React.FC = () => {
     const router = useRouter();
     const { user } = useClientContext();
     return (
-        <div>
-            <div>What do you want to check?</div>
+        <div className="mx-auto container">
+            <div className="text-center text-3xl mt-12 font-bold">
+                What do you want to check?
+            </div>
             <CheckerStore />
             <TextButton
                 className="fixed top-2 right-5"

@@ -20,7 +20,7 @@ export const CheckerStore = (): JSX.Element => {
     }, []);
 
     return (
-        <div>
+        <div className="flex flex-col items-center mt-10">
             {storefronts.map((storefront, idx) => {
                 return (
                     <div key={`storefront-${idx}`}>
@@ -40,7 +40,7 @@ const StoreFront = ({ storefront }: StorefrontProps) => {
     const router = useRouter();
     return (
         <div
-            className="bg-white rounded-md w-60 px-4 py-4 cursor-pointer"
+            className="bg-white rounded-md w-60 px-4 py-4 cursor-pointer shadow-around"
             onClick={() => {
                 router.push(`/editor/${storefront.objInfo.id}`);
             }}
