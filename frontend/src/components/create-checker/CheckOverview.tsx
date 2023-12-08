@@ -80,7 +80,7 @@ export const CheckOverview = ({
             </div>
             {/* <h2>{checkBlueprint.instruction}</h2> */}
             <h2 className="mt-4">{checkBlueprint.objInfo.desc}</h2>
-            <h2 className="font-bold mt-5">Positive Examples</h2>
+            {/* <h2 className="font-bold mt-5">Positive Examples</h2>
             <div className="flex flex-col">
                 {checkBlueprint.positiveExamples.map((example, idx) => (
                     <div className="flex flex-row" key={`example-${idx}`}>
@@ -90,12 +90,12 @@ export const CheckOverview = ({
                         />
                     </div>
                 ))}
-            </div>
+            </div> */}
             <div className="text-[#ff0000] mt-4 ">
                 {clickedIsPublic ? err : ""}
             </div>
             <LabelWithSwitch
-                className="mt-6"
+                className="mt-4"
                 text="Is Enabled:"
                 helpText="The checker only runs enables checks on the document"
                 isChecked={tmpIsChecked}
