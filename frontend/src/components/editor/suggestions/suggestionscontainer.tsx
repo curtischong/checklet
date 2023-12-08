@@ -17,7 +17,7 @@ export type SuggestionsContainerProps = {
     activeSuggestion: Suggestion | undefined;
     setActiveSuggestion: SetState<Suggestion | undefined>;
     editorState: string;
-    updateEditorState: (e: string) => void;
+    acceptSuggestion: (suggestion: Suggestion) => void;
     checkDescObj: CheckDescObj;
     hasModifiedTextAfterChecking: boolean;
 };
@@ -44,7 +44,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
     activeSuggestion,
     setActiveSuggestion,
     editorState,
-    updateEditorState,
+    acceptSuggestion,
     hasModifiedTextAfterChecking,
     checkDescObj,
 }: SuggestionsContainerProps) => {
@@ -79,13 +79,9 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
 
     const onReplaceClick = useCallback(
         (s: Suggestion) => {
-            const newEditorState =
-                editorState.slice(0, s.range.start) +
-                s.editedText +
-                editorState.slice(s.range.end);
-            updateEditorState(newEditorState);
+            acceptSuggestion(s);
         },
-        [editorState, updateEditorState],
+        [editorState, acceptSuggestion],
     );
 
     useEffect(() => {

@@ -6,7 +6,7 @@ import React, {
 } from "react";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
-import { SetState } from "@utils/types";
+import { Ref, SetState } from "@utils/types";
 import { DocRange, Suggestion, isWithinRange } from "@api/ApiTypes";
 import { toast } from "react-toastify";
 import { RichTextarea, RichTextareaHandle } from "rich-textarea";
@@ -30,6 +30,7 @@ export type TextboxContainerProps = {
     updateEditorState: (e: string) => void;
     updateActiveSuggestion: SetState<Suggestion | undefined>;
     isLoading: boolean;
+    editorRef: Ref<RichTextareaHandle | null>;
 };
 
 // const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
@@ -41,6 +42,7 @@ export const TextboxContainer = ({
     updateEditorState,
     updateActiveSuggestion,
     isLoading,
+    editorRef,
 }: TextboxContainerProps): JSX.Element => {
     // these two are needed so we can scroll to the underline span when we click on a card
     // we need two maps since we only know:
@@ -48,7 +50,6 @@ export const TextboxContainer = ({
     // 2) the rangeBlockLoc and the ref to the span
     // we don't know 1) and 2) at the same time. so we use two maps
     const suggestionIdToRef = React.useRef<SuggestionIdToRef>({});
-    const editorRef = useRef<RichTextareaHandle | null>(null);
 
     useEffect(() => {
         // TODO: load state from localstorage
