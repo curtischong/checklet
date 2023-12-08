@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textbox/textboxcontainer";
 import { TextButton } from "@components/Button";
@@ -20,7 +20,8 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
     const [editorState, setEditorState] = useState<string>("");
     const [checkDescObj, setCheckDescObj] = useState<CheckDescObj>({});
-    const [hasAnalyzedOnce, setHasAnalyzedOnce] = useState(false);
+    const [hasModifiedTextAfterChecking, setHasModifiedTextAfterChecking] =
+        useState(false);
     const router = useRouter();
     const { user } = useClientContext();
     const [isLoading, setIsLoading] = React.useState(false);
@@ -94,7 +95,9 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     <EditorHeader
                         isLoading={isLoading}
                         editorState={editorState}
-                        setHasAnalyzedOnce={setHasAnalyzedOnce}
+                        setHasModifiedTextAfterChecking={
+                            setHasModifiedTextAfterChecking
+                        }
                         setSuggestions={setSuggestions}
                         storefront={storefront}
                         setIsLoading={setIsLoading}
@@ -105,9 +108,14 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         updateActiveSuggestion={setActiveSuggestion}
                         suggestions={suggestions}
                         editorState={editorState}
-                        updateEditorState={(newText) =>
-                            updateEditorState(editorState, newText, suggestions)
-                        }
+                        updateEditorState={(newText) => {
+                            setHasModifiedTextAfterChecking(newText !== "");
+                            updateEditorState(
+                                editorState,
+                                newText,
+                                suggestions,
+                            );
+                        }}
                         isLoading={isLoading}
                     />
                 </div>
@@ -116,11 +124,15 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     activeSuggestion={activeSuggestion}
                     setActiveSuggestion={setActiveSuggestion}
                     editorState={editorState}
-                    updateEditorState={(newText) =>
-                        updateEditorState(editorState, newText, suggestions)
-                    }
+                    updateEditorState={(newText) => {
+                        // the user did a replacement. We should set it to true cause the text was modified!
+                        // if we don't, and if all suggestions are resolved, we'll show the "no suggestions generated" img
+                        // (however, the replacement COULD trigger more suggestions. So we must set this to false to prevent the possibly misleading img from appearing)
+                        setHasModifiedTextAfterChecking(true);
+                        updateEditorState(editorState, newText, suggestions);
+                    }}
                     checkDescObj={checkDescObj}
-                    hasAnalyzedOnce={hasAnalyzedOnce}
+                    hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
                 />
                 <TextButton
                     className="fixed top-2 right-5"

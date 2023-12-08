@@ -19,7 +19,7 @@ export type SuggestionsContainerProps = {
     editorState: string;
     updateEditorState: (e: string) => void;
     checkDescObj: CheckDescObj;
-    hasAnalyzedOnce: boolean;
+    hasModifiedTextAfterChecking: boolean;
 };
 
 export enum SortType {
@@ -45,7 +45,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
     setActiveSuggestion,
     editorState,
     updateEditorState,
-    hasAnalyzedOnce,
+    hasModifiedTextAfterChecking,
     checkDescObj,
 }: SuggestionsContainerProps) => {
     const [sortedSuggestions, setSortedSuggestions] = useState<Suggestion[]>(
@@ -128,7 +128,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
                 });
             }
 
-            if (hasAnalyzedOnce) {
+            if (!hasModifiedTextAfterChecking) {
                 return (
                     <NoSuggestionMessage
                         imageSrc={NoSuggestionsImage.src}
