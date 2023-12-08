@@ -4,6 +4,7 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
+    disableCheckerIfNoEnabledChecks as disableCheckerIfHasNoEnabledChecks,
     isUserCheckOwner,
     isUserCheckerOwner,
     validateCheckBlueprint,
@@ -53,6 +54,12 @@ export default async function handler(
         await redisClient.set(
             `checkers/${checkerId}`,
             JSON.stringify(checkerBlueprint),
+        );
+
+        await disableCheckerIfHasNoEnabledChecks(
+            redisClient,
+            checkerBlueprint,
+            checkerId,
         );
     }
 
