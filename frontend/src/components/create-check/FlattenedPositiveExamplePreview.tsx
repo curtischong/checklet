@@ -14,6 +14,7 @@ export const FlattenedPositiveExamplePreview = ({
     return (
         <div className="flex flex-row">
             <div className="flex flex-col">
+                {/* this is the Pilcrow symbol */}
                 <div>{example.originalText.replaceAll("\n", "¶")}</div>
             </div>
             {checkType === CheckType.rephrase && example.editedText && (
