@@ -6,7 +6,7 @@ import React from "react";
 
 export type LinkSection = {
     name: string;
-    url: string;
+    url?: string;
     query?: () => ParsedUrlQuery;
 };
 
@@ -24,16 +24,14 @@ export const CreateCheckNavigationPath = ({ sections }: Props): JSX.Element => {
                 return (
                     <React.Fragment key={index}>
                         <p
-                            className={classNames(
-                                "cursor-pointer transition duration-300 ",
-                                {
-                                    "text-gray-400 hover:text-gray-600":
-                                        !isLastSection,
-                                    "text-gray-600 hover:text-gray-600":
-                                        isLastSection,
-                                },
-                            )}
+                            className={classNames({
+                                "text-gray-400 hover:text-gray-600 cursor-pointer transition duration-300":
+                                    !isLastSection,
+                                "text-gray-600 font-bold cursor-normal":
+                                    isLastSection,
+                            })}
                             onClick={() => {
+                                if (!section.url) return;
                                 router.push(
                                     section.url,
                                     section.query ? section.query() : undefined,
@@ -42,7 +40,7 @@ export const CreateCheckNavigationPath = ({ sections }: Props): JSX.Element => {
                         >
                             {section.name}
                         </p>
-                        {index < sections.length - 1 && (
+                        {!isLastSection && (
                             <RightArrowIcon className="mx-2 w-[14px]" />
                         )}
                     </React.Fragment>

@@ -17,6 +17,7 @@ import {
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
 import { YourChecks } from "@components/create-checker/YourChecks";
+import { CreateCheckNavigationPath } from "@components/create-check/CreateCheckNavigationPath";
 
 export enum Page {
     Main,
@@ -136,20 +137,17 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                             flexBasis: "0",
                         }}
                     >
-                        <div className="flex flex-row items-center mt-4">
-                            <p
-                                className="text-gray-400 cursor-pointer  transition duration-300 hover:text-gray-600"
-                                onClick={() => {
-                                    router.push("/dashboard");
-                                }}
-                            >
-                                Dashboard
-                            </p>
-                            <RightArrowIcon className="mx-2 w-[14px]" />
-                            <p className="font-bold text-gray-600">
-                                Create checker
-                            </p>
-                        </div>
+                        <CreateCheckNavigationPath
+                            sections={[
+                                {
+                                    name: "Dashboard",
+                                    url: "/dashboard",
+                                },
+                                {
+                                    name: "Create checker",
+                                },
+                            ]}
+                        />
 
                         <div className="w-[450px] mx-auto flex flex-col">
                             <h1 className="text-3xl mt-4 mb-4 font-bold">
