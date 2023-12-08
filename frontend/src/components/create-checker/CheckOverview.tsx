@@ -55,7 +55,6 @@ export const CheckOverview = ({
             <h2 className="mt-4">{checkBlueprint.objInfo.desc}</h2>
             <h2 className="font-bold mt-5">Positive Examples</h2>
             <div className="flex flex-col">
-                {/* TODO: do a diff, so we see the red deletion / green insertion */}
                 {checkBlueprint.positiveExamples.map((example, idx) => (
                     <div className="flex flex-row" key={`example-${idx}`}>
                         <PositiveExamplePreview
