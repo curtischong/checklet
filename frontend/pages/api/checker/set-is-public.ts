@@ -44,6 +44,12 @@ export default async function setCheckerIsPublic(
         }
     }
 
+    if (isPublic) {
+        await redisClient.sAdd("publicCheckerIds", checkerId);
+    } else {
+        await redisClient.sRem("publicCheckerIds", checkerId);
+    }
+
     checkerBlueprint.isPublic = isPublic;
     await redisClient.set(
         `checkers/${checkerId}`,
