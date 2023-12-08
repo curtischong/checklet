@@ -1,10 +1,9 @@
 import { Api } from "@api/apis";
 import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
-import { LabelWithSwitch } from "@components/Switch";
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import { IsPublicSwitch } from "@components/create-checker/IsPublicSwitch";
 import { useClientContext } from "@utils/ClientContext";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import { toast } from "react-toastify";
 
 interface Props {
@@ -18,7 +17,6 @@ export const DashboardChecker = ({
     fetchCheckerBlueprints,
 }: Props): JSX.Element => {
     const { user } = useClientContext();
-    const [tmpChecked, setTmpChecked] = useState<boolean>(blueprint.isPublic);
     const router = useRouter();
 
     // display: flex;
@@ -63,30 +61,13 @@ export const DashboardChecker = ({
                 </div>
             </div>
             <div>{blueprint.objInfo.desc}</div>
-            <div className="flex flex-row mt-4 cursor-default space-x-2">
-                <LabelWithSwitch
-                    text="Is Public:"
-                    helpText="Public checkers are discoverable and usable by anybody. People may reverse-engineer your prompts if you make it public"
-                    isChecked={tmpChecked}
-                    setChecked={(newIsChecked: boolean) => {
-                        (async () => {
-                            if (!user) {
-                                toast.error(
-                                    "You must be logged in to change a checker's privacy",
-                                );
-                                return;
-                            }
-                            setTmpChecked(newIsChecked); // if we don't set this initially, the switch wont' change state
-                            const success = await Api.setCheckerIsPublic(
-                                blueprint.objInfo.id,
-                                newIsChecked,
-                                user,
-                            );
-                            if (!success) {
-                                setTmpChecked(!newIsChecked);
-                            }
-                        })();
-                    }}
+            <div className=" mt-4 cursor-default ">
+                <IsPublicSwitch
+                    name={blueprint.objInfo.name}
+                    desc={blueprint.objInfo.desc}
+                    checkStatuses={blueprint.checkStatuses}
+                    checkerId={blueprint.objInfo.id}
+                    isPublic={blueprint.isPublic}
                 />
             </div>
         </div>

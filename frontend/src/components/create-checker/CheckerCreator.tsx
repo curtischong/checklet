@@ -17,6 +17,7 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { YourChecks } from "@components/create-checker/YourChecks";
 import { NavigationPath } from "@components/NavigationPath";
+import { IsPublicSwitch } from "@components/create-checker/IsPublicSwitch";
 
 export enum Page {
     Main,
@@ -45,9 +46,6 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     >([]);
     const { user } = useClientContext();
 
-    const [err, setErr] = React.useState("");
-    const [clickedIsPublic, setClickedIsPublic] = React.useState(false);
-
     const router = useRouter();
 
     // fetch the checker blueprint from the server
@@ -73,31 +71,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
         })();
     }, [user]);
 
-    // TODO: use for changing isPublic
-    const getIncompleteFormErr = useCallback(() => {
-        if (name === "") {
-            return "Please enter a name";
-        } else if (desc === "") {
-            return "Please enter a description";
-        } else if (Object.keys(checkStatuses).length === 0) {
-            return "Please enter at least one check";
-        } else {
-            return "";
-        }
-    }, [name, desc, checkStatuses]);
-
-    useEffect(() => {
-        if (!clickedIsPublic) {
-            return;
-        }
-        setErr(getIncompleteFormErr());
-    }, [getIncompleteFormErr, clickedIsPublic]);
-
     const editChecker = useCallback(() => {
-        setClickedIsPublic(true);
-        if (getIncompleteFormErr() !== "") {
-            return;
-        }
         if (!user) {
             toast.error("You must be logged in to create a checker");
             return;
@@ -177,7 +151,13 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 minRows={4}
                             />
 
-                            <div className="text-[#ff0000] mt-4 ">{err}</div>
+                            <IsPublicSwitch
+                                name={name}
+                                desc={desc}
+                                checkStatuses={checkStatuses}
+                                isPublic={isPublic}
+                                checkerId={checkerId}
+                            />
                             <div className="flex flex-row space-x-8">
                                 <LoadingButtonSubmit
                                     isLoading={
