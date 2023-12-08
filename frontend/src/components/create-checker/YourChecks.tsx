@@ -29,9 +29,11 @@ export const YourChecks = ({
     const { user } = useClientContext();
     return (
         <div
-            className="flex-grow "
+            className="flex-grow no-scrollbar bg-gradient-to-b "
             style={{
                 flexBasis: "0",
+                overflowY: "scroll",
+                height: "calc(100vh)",
             }}
         >
             <div className="flex flex-col ml-20">
@@ -83,7 +85,7 @@ export const YourChecks = ({
                 </div>
 
                 <NormalButton
-                    className="mt-8 w-80 ml-10"
+                    className="mt-12 w-80 ml-10"
                     onClick={() => {
                         (async () => {
                             router.push({
@@ -97,6 +99,7 @@ export const YourChecks = ({
                 >
                     Create Check
                 </NormalButton>
+                <div className="h-32"></div>
             </div>
         </div>
     );

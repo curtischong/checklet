@@ -178,16 +178,26 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                             />
 
                             <div className="text-[#ff0000] mt-4 ">{err}</div>
-                            <LoadingButtonSubmit
-                                isLoading={
-                                    submittingState ===
-                                    SubmittingState.Submitting
-                                }
-                                onClick={editChecker}
-                                className="mt-4 w-80 h-10"
-                            >
-                                {SubmitButtonText[submittingState]}
-                            </LoadingButtonSubmit>
+                            <div className="flex flex-row space-x-8">
+                                <LoadingButtonSubmit
+                                    isLoading={
+                                        submittingState ===
+                                        SubmittingState.Submitting
+                                    }
+                                    onClick={editChecker}
+                                    className="mt-4 w-40 h-10"
+                                >
+                                    {SubmitButtonText[submittingState]}
+                                </LoadingButtonSubmit>
+                                <NormalButton
+                                    className="mt-4 w-52 h-10"
+                                    onClick={() => {
+                                        router.push("/dashboard");
+                                    }}
+                                >
+                                    Return to Dashboard
+                                </NormalButton>
+                            </div>
                             <div className="h-10"></div>
                         </div>
                     </div>
