@@ -7,7 +7,7 @@ import {
     ObjInfo,
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
-import { isLegitShortId, isLegitUniqueId } from "@utils/strings";
+import { isLegitShortId } from "@utils/strings";
 import { NextApiResponse } from "next";
 import { RedisClient, sendBadRequest } from "pages/api/commonNetworking";
 

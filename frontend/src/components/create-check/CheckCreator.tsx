@@ -35,6 +35,12 @@ import { toast } from "react-toastify";
 import { Api } from "@api/apis";
 import { FlattenedPositiveExamplePreview } from "@components/create-check/FlattenedPositiveExamplePreview";
 import debounce from "lodash.debounce";
+import {
+    MAX_CHECK_CATEGORY_LEN,
+    MAX_CHECK_DESC_LEN,
+    MAX_CHECK_INSTR_LEN,
+    MAX_CHECK_NAME_LEN,
+} from "src/constants";
 
 interface Props {
     checkId: CheckId;
@@ -190,6 +196,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={defaultName[checkType]}
+                    maxLength={MAX_CHECK_NAME_LEN}
                 />
 
                 <CheckSectionHeader
@@ -201,6 +208,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     onChange={(e) => setDesc(e.target.value)}
                     placeholder={defaultDesc[checkType]}
                     minRows={3}
+                    maxLength={MAX_CHECK_DESC_LEN}
                 />
                 <CheckSectionHeader
                     label="Model Instructions"
@@ -211,6 +219,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     onChange={(e) => setInstruction(e.target.value)}
                     placeholder={defaultInstructions[checkType]}
                     minRows={4}
+                    maxLength={MAX_CHECK_INSTR_LEN}
                 />
                 <CheckSectionHeader
                     label="Category (optional)"
@@ -220,6 +229,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                     placeholder={defaultCategory[checkType]}
+                    maxLength={MAX_CHECK_CATEGORY_LEN}
                 />
 
                 <div className="mt-4">

@@ -7,6 +7,7 @@ import {
     sendBadRequest,
 } from "pages/api/commonNetworking";
 import { createClient } from "redis";
+import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "src/constants";
 
 export default async function handler(
     req: NextApiRequest,
@@ -36,6 +37,9 @@ export default async function handler(
             );
             return;
         }
+    }
+    if (!validateCheckerLengths(checkerBlueprint, res)) {
+        return;
     }
 
     if (checkerBlueprint.isPublic) {
@@ -67,3 +71,27 @@ export default async function handler(
 
     return204Status(res);
 }
+
+const validateCheckerLengths = (
+    checkerBlueprint: CheckerBlueprint,
+    res: NextApiResponse,
+): boolean => {
+    const err = validateCheckerLengthsHelper(checkerBlueprint);
+    if (err !== "") {
+        sendBadRequest(res, err);
+        return false;
+    }
+    return true;
+};
+
+const validateCheckerLengthsHelper = (
+    checkerBlueprint: CheckerBlueprint,
+): string => {
+    if (checkerBlueprint.objInfo.name.length > MAX_CHECKER_NAME_LEN) {
+        return `Checker name cannot be longer than ${MAX_CHECKER_NAME_LEN} characters`;
+    }
+    if (checkerBlueprint.objInfo.desc.length > MAX_CHECKER_DESC_LEN) {
+        return `Checker description cannot be longer than ${MAX_CHECKER_DESC_LEN} characters`;
+    }
+    return "";
+};

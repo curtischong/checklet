@@ -15,6 +15,14 @@ import {
     sendBadRequest,
 } from "pages/api/commonNetworking";
 import { createClient } from "redis";
+import {
+    MAX_CHECK_CATEGORY_LEN,
+    MAX_CHECK_DESC_LEN,
+    MAX_CHECK_INSTR_LEN,
+    MAX_CHECK_NAME_LEN,
+    MAX_POSITIVE_EX_EDITED_TEXT_LEN,
+    MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN,
+} from "src/constants";
 
 export default async function handler(
     req: NextApiRequest,
@@ -36,6 +44,9 @@ export default async function handler(
         return;
     }
     if (!(await isUserCheckerOwner(redisClient, res, userId, checkerId))) {
+        return;
+    }
+    if (!validateCheckLengths(checkBlueprint, res)) {
         return;
     }
 
@@ -79,3 +90,39 @@ export default async function handler(
 
     return204Status(res);
 }
+
+const validateCheckLengths = (
+    checkBlueprint: CheckBlueprint,
+    res: NextApiResponse,
+): boolean => {
+    const err = validateCheckLengthsHelper(checkBlueprint);
+    if (err !== "") {
+        sendBadRequest(res, err);
+        return false;
+    }
+    return true;
+};
+
+const validateCheckLengthsHelper = (checkBlueprint: CheckBlueprint): string => {
+    if (checkBlueprint.objInfo.name.length > MAX_CHECK_NAME_LEN) {
+        return `Check name cannot be longer than ${MAX_CHECK_NAME_LEN} characters`;
+    } else if (checkBlueprint.objInfo.desc.length > MAX_CHECK_DESC_LEN) {
+        return `Check description cannot be longer than ${MAX_CHECK_DESC_LEN} characters`;
+    } else if (checkBlueprint.instruction.length > MAX_CHECK_INSTR_LEN) {
+        return `Check instruction cannot be longer than ${MAX_CHECK_INSTR_LEN} characters`;
+    } else if (checkBlueprint.category.length > MAX_CHECK_CATEGORY_LEN) {
+        return `Check category cannot be longer than ${MAX_CHECK_CATEGORY_LEN} characters`;
+    }
+    for (const example of checkBlueprint.positiveExamples) {
+        if (example.originalText.length > MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN) {
+            return `Positive example original text cannot be longer than ${MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN} characters`;
+        }
+        if (
+            checkBlueprint.checkType === CheckType.rephrase &&
+            example.editedText!.length > MAX_POSITIVE_EX_EDITED_TEXT_LEN
+        ) {
+            return `Positive example rephrased text cannot be longer than ${MAX_POSITIVE_EX_EDITED_TEXT_LEN} characters`;
+        }
+    }
+    return "";
+};

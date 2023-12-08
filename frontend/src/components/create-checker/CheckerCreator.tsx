@@ -17,6 +17,7 @@ import { YourChecks } from "@components/create-checker/YourChecks";
 import { NavigationPath } from "@components/NavigationPath";
 import { IsPublicSwitch } from "@components/create-checker/IsPublicSwitch";
 import debounce from "lodash.debounce";
+import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "src/constants";
 
 export enum Page {
     Main,
@@ -149,6 +150,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                     setName(e.target.value);
                                 }}
                                 value={name}
+                                maxLength={MAX_CHECKER_NAME_LEN}
                             />
 
                             <label className="text-lg font-bold mt-4 ml-1">
@@ -164,6 +166,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 }}
                                 value={desc}
                                 minRows={4}
+                                maxLength={MAX_CHECKER_DESC_LEN}
                             />
 
                             <IsPublicSwitch
