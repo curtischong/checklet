@@ -1,7 +1,11 @@
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isUserCheckerOwner, validateChecker } from "pages/api/common";
-import { requestMiddleware, return204Status } from "pages/api/commonNetworking";
+import {
+    requestMiddleware,
+    return204Status,
+    sendBadRequest,
+} from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
 export default async function handler(
@@ -21,6 +25,17 @@ export default async function handler(
 
     if (!(await isUserCheckerOwner(redisClient, res, userId, checkerId))) {
         return;
+    }
+
+    // verify that the checkerIds in the checkStatuses exist
+    for (const checkId of Object.keys(checkerBlueprint.checkStatuses)) {
+        if (!(await redisClient.exists(`checks/${checkId}`))) {
+            sendBadRequest(
+                res,
+                `Check with id ${checkId} does not exist. Do not set it in checkStatuses`,
+            );
+            return;
+        }
     }
 
     if (checkerBlueprint.isPublic) {

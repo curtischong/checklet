@@ -47,8 +47,17 @@ export default async function handler(
         return;
     }
 
-    // we are done validating. now write
     delete checkerBlueprint.checkStatuses[checkId];
+
+    // if the checker has no other enabled checks, then we should make the checker private
+    const checkerHasOtherEnabledChecks = Object.values(
+        checkerBlueprint.checkStatuses,
+    ).some((checkStatus) => checkStatus.isEnabled);
+    if (!checkerHasOtherEnabledChecks) {
+        checkerBlueprint.isPublic = false;
+    }
+
+    // we are done validating. now write
     await redisClient.set(checkerKey, JSON.stringify(checkerBlueprint));
 
     // https://redis.io/commands/srem/ This should be O(1)

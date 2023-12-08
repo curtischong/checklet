@@ -71,6 +71,8 @@ export const YourChecks = ({
                                 const newChecks = [...checkBlueprints];
                                 newChecks.splice(idx, 1);
                                 setCheckBlueprints(newChecks);
+                                delete checkStatuses[checkId];
+                                setCheckStatuses(checkStatuses);
                             }}
                             onEdit={() => {
                                 router.push({
