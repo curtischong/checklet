@@ -16,7 +16,7 @@ interface Props {
     checkBlueprints: CheckBlueprint[];
     checkerId: CheckerId;
     checkStatuses: CheckStatuses;
-    setCheckStatuses: SetState<CheckStatuses>;
+    setCheckStatuses: (newCs: CheckStatuses) => void;
 }
 export const YourChecks = ({
     setCheckBlueprints,

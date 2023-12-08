@@ -18,7 +18,7 @@ interface Props {
     onDelete: () => void;
     onEdit: () => void;
     checkStatuses: CheckStatuses;
-    setCheckStatuses: SetState<CheckStatuses>;
+    setCheckStatuses: (newCs: CheckStatuses) => void;
 }
 
 // These are the checks you see when you're creating your checker

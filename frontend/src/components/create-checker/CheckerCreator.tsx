@@ -18,16 +18,18 @@ import {
 import { YourChecks } from "@components/create-checker/YourChecks";
 import { NavigationPath } from "@components/NavigationPath";
 import { IsPublicSwitch } from "@components/create-checker/IsPublicSwitch";
+import debounce from "lodash.debounce";
 
 export enum Page {
     Main,
     CheckCreator,
 }
 
-const SubmitButtonText = {
-    [SubmittingState.NotSubmitting]: "Create Checker",
+const SaveStatusText = {
+    [SubmittingState.ChangesDetected]: "Changes are unsaved",
+    [SubmittingState.NotSubmitting]: "Changes are saved!",
     [SubmittingState.Submitting]: "Creating Checker",
-    [SubmittingState.Submitted]: "Checker Created!",
+    [SubmittingState.Submitted]: "Submitting changes",
 };
 interface Props {
     checkerId: string;
@@ -71,34 +73,48 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
         })();
     }, [user]);
 
-    const editChecker = useCallback(() => {
-        if (!user) {
-            toast.error("You must be logged in to create a checker");
-            return;
-        }
-
-        const checker: CheckerBlueprint = {
-            objInfo: {
-                name,
-                desc,
-                creatorId: user.uid,
-                id: checkerId,
+    const saveChecker = useCallback(
+        debounce(
+            async (
+                newName: string,
+                newDesc: string,
+                newCheckStatuses: CheckStatuses,
+                newIsPublic: boolean,
+            ) => {
+                if (!user) {
+                    toast.error("You must be logged in to create a checker");
+                    return;
+                }
+                const checker: CheckerBlueprint = {
+                    objInfo: {
+                        name: newName,
+                        desc: newDesc,
+                        creatorId: user.uid,
+                        id: checkerId,
+                    },
+                    checkStatuses: newCheckStatuses,
+                    isPublic: newIsPublic,
+                };
+                setSubmittingState(SubmittingState.Submitting);
+                (async () => {
+                    const success = await Api.editChecker(checker, user);
+                    if (success) {
+                        setSubmittingState(SubmittingState.NotSubmitting);
+                    } else {
+                        setSubmittingState(SubmittingState.ChangesDetected);
+                    }
+                })();
             },
-            checkStatuses,
-            isPublic,
-        };
+            1000,
+        ),
+        [],
+    );
 
+    useEffect(() => {
         // const checkerId =
         //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
-        setSubmittingState(SubmittingState.Submitting);
-        (async () => {
-            await Api.editChecker(checker, user);
-            setSubmittingState(SubmittingState.Submitted);
-            setTimeout(() => {
-                setSubmittingState(SubmittingState.NotSubmitting);
-            }, 3000);
-        })();
-    }, [name, desc, checkStatuses, user, checkerId]);
+        saveChecker(name, desc, checkStatuses, isPublic);
+    }, [name, desc, checkStatuses, checkerId]);
 
     return (
         <div className="flex justify-center">
@@ -134,6 +150,9 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                             <Input
                                 placeholder="Rizzume"
                                 onChange={(e) => {
+                                    setSubmittingState(
+                                        SubmittingState.ChangesDetected,
+                                    );
                                     setName(e.target.value);
                                 }}
                                 value={name}
@@ -145,6 +164,9 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                             <NormalTextArea
                                 placeholder="Rizzume will rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive."
                                 onChange={(e) => {
+                                    setSubmittingState(
+                                        SubmittingState.ChangesDetected,
+                                    );
                                     setDesc(e.target.value);
                                 }}
                                 value={desc}
@@ -159,7 +181,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 checkerId={checkerId}
                             />
                             <div className="flex flex-row space-x-8">
-                                <LoadingButtonSubmit
+                                {/* <LoadingButtonSubmit
                                     isLoading={
                                         submittingState ===
                                         SubmittingState.Submitting
@@ -168,7 +190,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                     className="mt-4 w-40 h-10"
                                 >
                                     {SubmitButtonText[submittingState]}
-                                </LoadingButtonSubmit>
+                                </LoadingButtonSubmit> */}
                                 <NormalButton
                                     className="mt-4 w-52 h-10"
                                     onClick={() => {
@@ -177,6 +199,9 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 >
                                     Return to Dashboard
                                 </NormalButton>
+                                <div className="mt-6">
+                                    {SaveStatusText[submittingState]}
+                                </div>
                             </div>
                             <div className="h-10"></div>
                         </div>
@@ -186,7 +211,10 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                         checkBlueprints={checkBlueprints}
                         setCheckBlueprints={setCheckBlueprints}
                         checkStatuses={checkStatuses}
-                        setCheckStatuses={setCheckStatuses}
+                        setCheckStatuses={(newCheckStatuses: CheckStatuses) => {
+                            setSubmittingState(SubmittingState.ChangesDetected);
+                            setCheckStatuses(newCheckStatuses);
+                        }}
                     />
                 </div>
             </div>
