@@ -2,7 +2,6 @@ import {
     DeleteButton,
     LoadingButtonSubmit,
     NormalButton,
-    SubmittingState,
 } from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
@@ -15,6 +14,8 @@ import {
     CheckId,
     CheckType,
     PositiveCheckExample,
+    SaveStatusText,
+    SubmittingState,
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
 import {
@@ -33,6 +34,7 @@ import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Api } from "@api/apis";
 import { FlattenedPositiveExamplePreview } from "@components/create-check/FlattenedPositiveExamplePreview";
+import debounce from "lodash.debounce";
 
 interface Props {
     checkId: CheckId;
@@ -118,68 +120,67 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
         setErr(getIncompleteFormErr());
     }, [getIncompleteFormErr, clickedSubmit]);
 
-    const submitCheck = useCallback(() => {
-        setClickedSubmit(true);
-        if (!user) {
-            return;
-        }
-        if (getIncompleteFormErr() !== "") {
-            return;
-        }
-        let newPositiveExamples = positiveExamples;
-        if (checkType === CheckType.highlight) {
-            // remove all of the editedText in the positive examples
-            newPositiveExamples = positiveExamples.map((example) => {
-                return {
-                    originalText: example.originalText,
-                };
-            });
-        }
-        if (!name || !checkType) {
-            toast("name or checkType is undefined. Let Curtis know!");
-            return;
-        }
+    const saveCheck = useCallback(
+        debounce(
+            async (
+                newName: string,
+                newCheckType: CheckType,
+                newInstruction: string,
+                newDesc: string,
+                newCategory: string,
+                newPositiveExamples: PositiveCheckExample[],
+            ) => {
+                setClickedSubmit(true);
+                if (!user) {
+                    return;
+                }
+                if (newCheckType === CheckType.highlight) {
+                    // remove all of the editedText in the positive examples
+                    newPositiveExamples = newPositiveExamples.map((example) => {
+                        return {
+                            originalText: example.originalText,
+                        };
+                    });
+                }
 
-        const checkBlueprint: CheckBlueprint = {
-            objInfo: {
-                name,
-                desc,
-                id: checkId,
-                creatorId: user.uid,
+                const checkBlueprint: CheckBlueprint = {
+                    objInfo: {
+                        name: newName,
+                        desc: newDesc,
+                        id: checkId,
+                        creatorId: user.uid,
+                    },
+                    checkType: newCheckType,
+                    instruction: newInstruction,
+                    category: newCategory,
+                    positiveExamples: newPositiveExamples,
+                };
+
+                setSubmittingState(SubmittingState.Submitting);
+                const success = await Api.editCheck(checkBlueprint, user);
+                if (success) {
+                    setSubmittingState(SubmittingState.NotSubmitting);
+                } else {
+                    setSubmittingState(SubmittingState.ChangesDetected);
+                }
             },
+            1000,
+        ),
+        [],
+    );
+
+    useEffect(() => {
+        // const checkerId =
+        //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
+        saveCheck(
+            name,
             checkType,
             instruction,
+            desc,
             category,
-            positiveExamples: newPositiveExamples,
-        };
-
-        setSubmittingState(SubmittingState.Submitting);
-        (async () => {
-            await Api.editCheck(checkBlueprint, user);
-            setSubmittingState(SubmittingState.Submitted);
-            setTimeout(() => {
-                setSubmittingState(SubmittingState.NotSubmitting);
-            }, 3000);
-        })();
-    }, [
-        name,
-        checkType,
-        instruction,
-        desc,
-        category,
-        positiveExamples,
-        checkId,
-        getIncompleteFormErr,
-    ]);
-
-    const SubmitCheckText = {
-        [`${SubmittingState.NotSubmitting}-create`]: "Create Check",
-        [`${SubmittingState.Submitting}-create`]: "Creating Check",
-        [`${SubmittingState.Submitted}-create`]: "Check Created!",
-        [`${SubmittingState.NotSubmitting}-update`]: "Update Check",
-        [`${SubmittingState.Submitting}-update`]: "Updating Check",
-        [`${SubmittingState.Submitted}-update`]: "Check Updated!",
-    };
+            positiveExamples,
+        );
+    }, [name, checkType, instruction, desc, category, positiveExamples]);
 
     return (
         <div className="flex flex-row mt-4 container mx-auto">
@@ -286,22 +287,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
 
                 <div className="text-[#ff0000] mt-4 ">{err}</div>
 
-                <div className="mt-4 flex flex-row space-x-4">
-                    <LoadingButtonSubmit
-                        isLoading={
-                            submittingState === SubmittingState.Submitting
-                        }
-                        onClick={submitCheck}
-                        className="w-40"
-                    >
-                        {
-                            SubmitCheckText[
-                                `${submittingState}-${
-                                    router.query.isNew ? "create" : "update"
-                                }`
-                            ]
-                        }
-                    </LoadingButtonSubmit>
+                <div className="mt-4 flex flex-row space-x-4 items-center">
                     <NormalButton
                         className="w-56 py-[4px]"
                         onClick={() => {
@@ -310,6 +296,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     >
                         Return to Create Checker
                     </NormalButton>
+                    <div>{SaveStatusText[submittingState]}</div>
                 </div>
                 <div className="h-20"></div>
             </div>

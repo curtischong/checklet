@@ -31,8 +31,9 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
     const [desc, setDesc] = React.useState("");
     const [checkStatuses, setCheckStatuses] = React.useState<CheckStatuses>({});
-    const [submittingState, setSubmittingState] =
-        React.useState<SubmittingState>(SubmittingState.NotSubmitting);
+    const [submittingState, setSubmittingState] = React.useState(
+        SubmittingState.NotSubmitting,
+    );
     const [isPublic, setIsPublic] = React.useState(false);
     const [checkBlueprints, setCheckBlueprints] = React.useState<
         CheckBlueprint[]
@@ -76,6 +77,8 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                     toast.error("You must be logged in to create a checker");
                     return;
                 }
+                // const checkerId =
+                //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
                 const checker: CheckerBlueprint = {
                     objInfo: {
                         name: newName,
@@ -103,10 +106,8 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     );
 
     useEffect(() => {
-        // const checkerId =
-        //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
         saveChecker(name, desc, checkStatuses, isPublic);
-    }, [name, desc, JSON.stringify(Object.values(checkStatuses)), checkerId]);
+    }, [name, desc, JSON.stringify(Object.values(checkStatuses))]);
 
     return (
         <div className="flex justify-center">
