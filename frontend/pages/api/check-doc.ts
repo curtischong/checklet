@@ -1,17 +1,16 @@
 import { Checker } from "@api/checker";
 import {
-    CheckBlueprint,
     CheckDescObj,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getCheckBlueprints } from "pages/api/common";
 import {
-    RedisClient,
     isUnauthenticatedRequestValid,
     sendBadRequest,
 } from "pages/api/commonNetworking";
 import { createClient } from "redis";
+import { MAX_EDITOR_LEN } from "src/constants";
 
 export default async function handler(
     req: NextApiRequest,
@@ -33,6 +32,13 @@ export default async function handler(
     }
     if (!doc) {
         sendBadRequest(res, "doc is undefined");
+        return;
+    }
+    if (doc.length > MAX_EDITOR_LEN) {
+        sendBadRequest(
+            res,
+            `doc is too long. It must be within ${MAX_EDITOR_LEN} characters`,
+        );
         return;
     }
 

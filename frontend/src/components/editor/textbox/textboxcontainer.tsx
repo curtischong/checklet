@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { RichTextarea, RichTextareaHandle } from "rich-textarea";
 import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
 import debounce from "lodash.debounce";
+import { MAX_EDITOR_LEN } from "src/constants";
 // const PizZip = require("pizzip");
 // import Docxtemplater from "docxtemplater";
 // import PizZip from "pizzip";
@@ -125,6 +126,7 @@ export const TextboxContainer = ({
                     width: "100%",
                 }}
                 disabled={isLoading}
+                maxLength={MAX_EDITOR_LEN}
             >
                 {(v) => {
                     suggestionIdToRef.current = {}; // reset the map

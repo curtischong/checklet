@@ -1,3 +1,6 @@
+// determines the maximum number of chars for each input box in the app. the frontend and backend uses these values for validation
+export const MAX_EDITOR_LEN = 4000 * 3.9; // 4k tokens * 3.9 chars per token
+
 export const MAX_CHECKER_DESC_LEN = 700;
 export const MAX_CHECKER_NAME_LEN = 150;
 
