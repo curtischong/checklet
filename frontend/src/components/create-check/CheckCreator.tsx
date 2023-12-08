@@ -9,7 +9,7 @@ import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import { NormalTextArea } from "@components/TextArea";
 import { CheckPreview } from "@components/create-check/CheckPreview";
-import { CreateCheckNavigationPath } from "@components/create-check/CreateCheckNavigationPath";
+import { NavigationPath } from "@components/NavigationPath";
 import {
     CheckBlueprint,
     CheckId,
@@ -189,7 +189,21 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     flexBasis: "0",
                 }}
             >
-                <CreateCheckNavigationPath />
+                <NavigationPath
+                    sections={[
+                        {
+                            name: "Dashboard",
+                            url: "/dashboard",
+                        },
+                        {
+                            name: "Create Checker",
+                            url: `/create/checker/${checkerId}`,
+                        },
+                        {
+                            name: "Create Check",
+                        },
+                    ]}
+                />
                 <h1 className=" text-3xl font-bold">Create Check</h1>
                 <label className="text-lg mt-4 font-bold">Name</label>
                 <Input

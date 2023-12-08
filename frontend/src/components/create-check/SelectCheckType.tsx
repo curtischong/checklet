@@ -1,7 +1,7 @@
 import { SubmitButton } from "@components/Button";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import { CheckPreview } from "@components/create-check/CheckPreview";
-import { CreateCheckNavigationPath } from "@components/create-check/CreateCheckNavigationPath";
+import { NavigationPath } from "@components/NavigationPath";
 import { feedbackTypeDesc } from "@components/create-check/DefaultTextForCheckType";
 import {
     CheckType,
@@ -23,7 +23,7 @@ export const SelectCheckType = ({
 
     return (
         <div className="flex flex-col">
-            <CreateCheckNavigationPath />
+            <NavigationPath />
             <div className="w-[50vw] mx-auto flex flex-col">
                 <div className="mt-16 font-bold text-xl">Select Check Type</div>
                 <SlidingRadioButton
