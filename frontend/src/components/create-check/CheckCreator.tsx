@@ -1,4 +1,4 @@
-import { DeleteButton, NormalButton, PlusButton } from "@components/Button";
+import { DeleteButton, NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
@@ -253,6 +253,10 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                                         <FlattenedPositiveExamplePreview
                                             example={example}
                                             checkType={checkType}
+                                            setPositiveExamples={
+                                                setPositiveExamples
+                                            }
+                                            positiveExamples={positiveExamples}
                                         />
                                     </div>
                                 ))}
