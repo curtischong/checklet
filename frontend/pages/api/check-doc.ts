@@ -49,12 +49,25 @@ export default async function handler(
     }
     const checkerBlueprint: CheckerBlueprint = JSON.parse(rawCheckerBlueprint);
 
+    // TODO: if checker is private, check if user is owner. I don't want to do this rn, so ppl can share their private checkers
+    // let uid: string | null = null;
+    // if (req.body.idToken !== undefined) {
+    //     uid = await tryGetUserId(req, res);
+    // }
+    // if (
+    //     !checkerBlueprint.isPublic &&
+    //     checkerBlueprint.objInfo.creatorId !== userId
+    // ) {
+    //     sendBadRequest(res, "You don't have access to this checker");
+    //     return;
+    // }
+
     const checkBlueprints = await getCheckBlueprints(
         redisClient,
         checkerBlueprint,
         true,
     );
-    const checker = new Checker(checkerBlueprint, checkBlueprints);
+    const checker = new Checker(checkBlueprints, "gpt-3.5-turbo");
 
     const suggestions = await checker.checkDoc(doc);
 
@@ -67,7 +80,7 @@ export default async function handler(
     });
 }
 
-const getCheckDescForCheckIds = (
+export const getCheckDescForCheckIds = (
     checker: Checker,
     uniqueCheckIds: Set<string>,
 ): CheckDescObj => {

@@ -61,11 +61,17 @@ export class Api {
     static checkDoc = async (
         doc: string,
         checkerId: CheckerId,
-    ): Promise<FeedbackResponse> => {
-        const data = await Api.createRequest("api/check-doc", "POST", {
-            doc,
-            checkerId,
-        });
+        user: User | null,
+    ): Promise<FeedbackResponse | undefined> => {
+        const data = await Api.createRequest(
+            "api/check-doc",
+            "POST",
+            {
+                doc,
+                checkerId,
+            },
+            user,
+        );
         return data;
     };
 
@@ -273,5 +279,18 @@ export class Api {
             user,
         );
         return res !== undefined;
+    };
+
+    static getEnabledChecks = async (
+        checkerId: CheckerId,
+    ): Promise<CheckBlueprint[] | undefined> => {
+        const res = await Api.createRequest(
+            "api/check/set-is-enabled",
+            "POST",
+            {
+                checkerId,
+            },
+        );
+        return res?.checkBlueprints;
     };
 }

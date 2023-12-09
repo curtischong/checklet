@@ -1,5 +1,4 @@
 import { Suggestion, newDocRange } from "@api/ApiTypes";
-import { editDistanceOperationsWithClasses } from "@api/editDistance";
 import { Llm } from "@api/llm";
 import {
     CheckBlueprint,
@@ -11,10 +10,10 @@ import { createUniqueId } from "@utils/strings";
 export class Check {
     private llm;
 
-    constructor(public blueprint: CheckBlueprint) {
+    constructor(public blueprint: CheckBlueprint, modelName: string) {
         const systemPrompt = this.getSystemPrompt();
         console.log("systemPrompt", systemPrompt);
-        this.llm = new Llm(systemPrompt, "gpt-3.5-turbo", true);
+        this.llm = new Llm(systemPrompt, modelName, true);
     }
 
     private getSystemPrompt(): string {
