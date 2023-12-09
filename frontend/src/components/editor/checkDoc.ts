@@ -12,7 +12,7 @@ export const checkDocText = async (
     checkerId: string,
     user: User | null,
 ): Promise<FeedbackResponse | undefined> => {
-    const isUsingServer = localStorage.get("modelType") === ModelType.GPT35;
+    const isUsingServer = localStorage.getItem("modelType") === ModelType.GPT35;
     if (isUsingServer) {
         return await Api.checkDoc(doc, checkerId, user);
     }
