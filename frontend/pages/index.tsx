@@ -34,7 +34,9 @@ const HomePage: React.FC = () => {
                     Get tailored suggestions written by experts in the field
                 </div>
                 <div>3.</div>
-                <div>Edit your document!</div> */}
+                <div>Edit your document!</div> 
+                <p>Special thanks to Joseph Anderson and James Portnow for being fantastic writers and inspiring me to make this/write in general</p>
+                */}
             </div>
         </div>
     );
