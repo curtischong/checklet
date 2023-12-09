@@ -20,7 +20,7 @@ export const CheckerStore = (): JSX.Element => {
     }, []);
 
     return (
-        <div className="flex flex-col items-center mt-10">
+        <div className="flex flex-col items-center mt-10 space-y-4">
             {storefronts.map((storefront, idx) => {
                 return (
                     <div key={`storefront-${idx}`}>
