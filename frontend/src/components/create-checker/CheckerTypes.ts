@@ -55,10 +55,12 @@ export type CheckerBlueprint = {
     objInfo: ObjInfo;
     checkStatuses: CheckStatuses;
     isPublic: boolean;
+    placeholder: string; // the placeholder text the user sees when they are faced with a blank editor
 };
 
 export interface CheckerStorefront {
     objInfo: ObjInfo;
+    placeholder: string;
 }
 
 export interface FeedbackResponse {

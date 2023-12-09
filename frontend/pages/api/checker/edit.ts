@@ -7,7 +7,11 @@ import {
     sendBadRequest,
 } from "pages/api/commonNetworking";
 import { createClient } from "redis";
-import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "src/constants";
+import {
+    MAX_CHECKER_DESC_LEN,
+    MAX_CHECKER_NAME_LEN,
+    MAX_CHECKER_PLACEHOLDER_LEN,
+} from "src/constants";
 
 export default async function handler(
     req: NextApiRequest,
@@ -92,6 +96,9 @@ const validateCheckerLengthsHelper = (
     }
     if (checkerBlueprint.objInfo.desc.length > MAX_CHECKER_DESC_LEN) {
         return `Checker description cannot be longer than ${MAX_CHECKER_DESC_LEN} characters`;
+    }
+    if (checkerBlueprint.placeholder.length > MAX_CHECKER_PLACEHOLDER_LEN) {
+        return `Checker placeholder cannot be longer than ${MAX_CHECKER_PLACEHOLDER_LEN} characters`;
     }
     return "";
 };

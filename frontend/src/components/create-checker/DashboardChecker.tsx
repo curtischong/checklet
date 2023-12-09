@@ -65,16 +65,19 @@ export const DashboardChecker = ({
                 </div>
             </div>
             <div>{blueprint.objInfo.desc}</div>
-            <div className=" mt-4 cursor-default flex flex-row items-center">
-                <IsPublicSwitch
-                    name={blueprint.objInfo.name}
-                    desc={blueprint.objInfo.desc}
-                    checkStatuses={blueprint.checkStatuses}
-                    checkerId={blueprint.objInfo.id}
-                    isPublic={blueprint.isPublic}
-                />
+            <div className=" mt-2 cursor-default flex flex-row items-start">
+                <div className="mt-2 flex-grow">
+                    <IsPublicSwitch
+                        name={blueprint.objInfo.name}
+                        desc={blueprint.objInfo.desc}
+                        placeholder={blueprint.placeholder}
+                        checkStatuses={blueprint.checkStatuses}
+                        checkerId={blueprint.objInfo.id}
+                        isPublic={blueprint.isPublic}
+                    />
+                </div>
                 <TextButton
-                    className="ml-8"
+                    className="self-start"
                     onClick={() =>
                         router.push({
                             pathname: `/editor/${blueprint.objInfo.id}`,

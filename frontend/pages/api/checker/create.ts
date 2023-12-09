@@ -45,6 +45,7 @@ export default async function handler(
             desc: "",
             creatorId: userId,
         },
+        placeholder: "",
         checkStatuses: {},
         isPublic: false,
     };

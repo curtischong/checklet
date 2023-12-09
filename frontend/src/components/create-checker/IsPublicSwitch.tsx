@@ -11,6 +11,7 @@ interface Props {
     checkerId: CheckerId;
     name: string;
     desc: string;
+    placeholder: string;
     checkStatuses: CheckStatuses;
 }
 
@@ -19,6 +20,7 @@ export const IsPublicSwitch = ({
     checkerId,
     name,
     desc,
+    placeholder,
     checkStatuses,
 }: Props): JSX.Element => {
     const [clickedIsPublic, setClickedIsPublic] = useState(false);
@@ -36,6 +38,8 @@ export const IsPublicSwitch = ({
             return "Please enter a name";
         } else if (desc === "") {
             return "Please enter a description";
+        } else if (placeholder === "") {
+            return "Please enter a placeholder";
         } else if (Object.keys(checkStatuses).length === 0) {
             return "Please enter at least one check";
         } else if (
@@ -45,7 +49,7 @@ export const IsPublicSwitch = ({
         } else {
             return "";
         }
-    }, [name, desc, JSON.stringify(checkStatuses)]);
+    }, [name, desc, placeholder, JSON.stringify(checkStatuses)]);
 
     useEffect(() => {
         const newErr = getIncompleteFormErr();
@@ -56,10 +60,10 @@ export const IsPublicSwitch = ({
     }, [getIncompleteFormErr]);
 
     return (
-        <>
-            <div className="text-[#ff0000] mt-4 ">
-                {clickedIsPublic ? err : ""}
-            </div>
+        <div className="flex flex-col">
+            {clickedIsPublic && err && (
+                <div className="text-[#ff0000] mt-4 ">{err}</div>
+            )}
             <LabelWithSwitch
                 text="Is Public:"
                 helpText="Public checkers are discoverable and usable by anybody. People may reverse-engineer your prompts if you make it public"
@@ -89,6 +93,6 @@ export const IsPublicSwitch = ({
                     })();
                 }}
             />
-        </>
+        </div>
     );
 };

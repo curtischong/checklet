@@ -1,3 +1,4 @@
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { checkerBlueprintToCheckerStorefront } from "pages/api/common";
 import {
@@ -32,8 +33,11 @@ export default async function handler(
         });
         return;
     }
-    const checkerBlueprint = JSON.parse(rawCheckerBlueprint);
-    if (!checkerBlueprint.isPublic && checkerBlueprint.creatorId !== uid) {
+    const checkerBlueprint: CheckerBlueprint = JSON.parse(rawCheckerBlueprint);
+    if (
+        !checkerBlueprint.isPublic &&
+        checkerBlueprint.objInfo.creatorId !== uid
+    ) {
         // do not send bad request since we already know it errored out. we don't want to show the error toast
         res.status(200).json({
             checkerStorefront: undefined,
