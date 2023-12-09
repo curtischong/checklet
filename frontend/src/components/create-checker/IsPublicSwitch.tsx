@@ -32,7 +32,6 @@ export const IsPublicSwitch = ({
         setTmpChecked(isPublic);
     }, [isPublic]);
 
-    // TODO: use for changing isPublic
     const getIncompleteFormErr = useCallback(() => {
         if (name === "") {
             return "Please enter a name";
