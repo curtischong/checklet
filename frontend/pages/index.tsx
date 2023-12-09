@@ -1,14 +1,20 @@
-import { NormalButton } from "@components/Button";
-import { useRouter } from "next/router";
+import { CheckerStore } from "@components/CheckerStore";
 
-const PrivacyPolicy: React.FC = () => {
-    const router = useRouter();
+const HomePage: React.FC = () => {
+    // const router = useRouter();
     return (
         <div className="flex flex-row">
             <div className="container mx-auto text-center mt-20">
-                <p>Learn from Experts</p>
+                <div className="ml-0">
+                    <p className="text-4xl">I need a name lol</p>
+                    <p>
+                        This is Grammarly, but for anything. Writing jokes,
+                        resumes, cold emails, etc.
+                    </p>
+                </div>
+                <CheckerStore />
 
-                <NormalButton
+                {/* <NormalButton
                     onClick={() => {
                         router.push("/editor");
                     }}
@@ -28,10 +34,10 @@ const PrivacyPolicy: React.FC = () => {
                     Get tailored suggestions written by experts in the field
                 </div>
                 <div>3.</div>
-                <div>Edit your document!</div>
+                <div>Edit your document!</div> */}
             </div>
         </div>
     );
 };
 
-export default PrivacyPolicy;
+export default HomePage;
