@@ -21,9 +21,12 @@ export const SuggestionChange = ({
         suggestion.originalText.includes("\n") ||
         suggestion.editedText?.includes("\n") ||
         suggestion.originalText.length > 50 ||
+        // (suggestion.editedText &&
+        //     (suggestion.editedText.length > 1 ||
+        //         suggestion.editedText[0].length > 50));
         (suggestion.editedText &&
-            (suggestion.editedText.length > 1 ||
-                suggestion.editedText[0].length > 50));
+            suggestion.editedText.reduce((sum, text) => sum + text.length, 0) >
+                50);
     return (
         <div
             className={classNames("flex", {
@@ -62,7 +65,12 @@ export const SuggestionChange = ({
             ) : (
                 <AiOutlineArrowRight className={"mx-3 mt-[5px] w-[50px]"} />
             )}
-            <div className="flex flex-col space-y-1">
+            <div
+                className={classNames("flex", {
+                    "flex-col space-y-1": showReplacementVertically,
+                    "flex-row space-x-1": !showReplacementVertically,
+                })}
+            >
                 {suggestion.editedText.map((option, idx) => {
                     return (
                         <div

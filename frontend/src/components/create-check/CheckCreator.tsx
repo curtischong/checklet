@@ -234,10 +234,10 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                         label="Positive Examples"
                         helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
                     />
-                    <div className="flex flex-col">
+                    <div className="flex flex-col space-y-1">
                         {positiveExamples.map((example, idx) => (
                             <div
-                                className="flex flex-row"
+                                className="flex flex-row items-start"
                                 key={`positive-example-${idx}`}
                             >
                                 <DeleteButton
