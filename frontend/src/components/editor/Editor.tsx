@@ -7,10 +7,15 @@ import { useClientContext } from "@utils/ClientContext";
 import {
     CheckDescObj,
     CheckerStorefront,
+    ModelType,
 } from "@components/create-checker/CheckerTypes";
 import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
 import { singleEditDistance } from "@components/editor/singleEditDistance";
 import { EditorHeader } from "@components/editor/EditorHeader";
+import { SlidingRadioButton } from "@components/SlidingRadioButton";
+import { RichTextareaHandle } from "rich-textarea";
+import { EnterApiKeyModal } from "@components/editor/EnterApiKeyModal";
+import { Mode } from "fs";
 
 interface Props {
     storefront: CheckerStorefront;
@@ -26,6 +31,20 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const { user } = useClientContext();
     const [isLoading, setIsLoading] = React.useState(false);
     const editorRef = useRef<RichTextareaHandle | null>(null);
+    const [modelType, setModelType] = useState(ModelType.GPT35);
+    const [isEnterApiKeyOpen, setIsEnterApiKeyOpen] = useState(false);
+
+    useEffect(() => {
+        const modelType = localStorage.getItem("modelType");
+        if (modelType) {
+            setModelType(modelType as ModelType);
+        }
+    }, []);
+
+    const updateModelType = useCallback((newModelType: ModelType) => {
+        localStorage.setItem("modelType", newModelType);
+        setModelType(newModelType);
+    }, []);
 
     const updateEditorState = useCallback(
         (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
@@ -89,7 +108,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     // editorState.slice(s.range.end);
     const acceptSuggestion = useCallback(
         (suggestion: Suggestion, acceptedOption: string) => {
-            if (!editorRef) {
+            if (!editorRef.current) {
                 console.error("editor ref not found. cannot accept suggestion");
                 return;
             }
@@ -160,19 +179,35 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     checkDescObj={checkDescObj}
                     hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
                 />
-                <TextButton
-                    className="fixed top-2 right-5"
-                    onClick={() => {
-                        const isLoggedOut = user === null;
-                        if (isLoggedOut) {
-                            router.push("/login");
-                        } else {
-                            router.push("/dashboard");
-                        }
-                    }}
-                >
-                    Create Your Own Checker
-                </TextButton>
+                <div className="fixed top-4 right-5 flex-row flex space-x-8">
+                    <EnterApiKeyModal
+                        isOpen={isEnterApiKeyOpen}
+                        setIsOpen={setIsEnterApiKeyOpen}
+                        updateModelType={updateModelType}
+                    />
+                    <SlidingRadioButton
+                        setSelected={(newModelType) => {
+                            if (newModelType === ModelType.GPT4) {
+                                setIsEnterApiKeyOpen(true);
+                            }
+                            updateModelType(newModelType as ModelType);
+                        }}
+                        selected={modelType}
+                        options={[ModelType.GPT35, ModelType.GPT4]}
+                    />
+                    <TextButton
+                        onClick={() => {
+                            const isLoggedOut = user === null;
+                            if (isLoggedOut) {
+                                router.push("/login");
+                            } else {
+                                router.push("/dashboard");
+                            }
+                        }}
+                    >
+                        Create Your Own Checker
+                    </TextButton>
+                </div>
             </div>
         </div>
     );

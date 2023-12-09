@@ -79,3 +79,8 @@ export const SaveStatusText: {
     [SubmittingState.NotSubmitting]: "Changes are saved!",
     [SubmittingState.Submitting]: "Saving changes...",
 };
+
+export enum ModelType {
+    GPT35 = "GPT-3.5",
+    GPT4 = "GPT-4",
+}
