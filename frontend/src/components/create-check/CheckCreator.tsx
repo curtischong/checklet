@@ -230,32 +230,36 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 />
 
                 <div className="mt-4">
-                    <CheckSectionHeader
-                        label="Positive Examples"
-                        helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
-                    />
-                    <div className="flex flex-col space-y-1 mt-2">
-                        {positiveExamples.map((example, idx) => (
-                            <div
-                                className="flex flex-row items-start"
-                                key={`positive-example-${idx}`}
-                            >
-                                <DeleteButton
-                                    onClick={() => {
-                                        setPositiveExamples(
-                                            positiveExamples.filter(
-                                                (_, i) => i !== idx,
-                                            ),
-                                        );
-                                    }}
-                                />
-                                <FlattenedPositiveExamplePreview
-                                    example={example}
-                                    checkType={checkType}
-                                />
+                    {positiveExamples.length > 0 && (
+                        <>
+                            <CheckSectionHeader
+                                label="Positive Examples"
+                                helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
+                            />
+                            <div className="flex flex-col space-y-1 mt-2">
+                                {positiveExamples.map((example, idx) => (
+                                    <div
+                                        className="flex flex-row items-start"
+                                        key={`positive-example-${idx}`}
+                                    >
+                                        <DeleteButton
+                                            onClick={() => {
+                                                setPositiveExamples(
+                                                    positiveExamples.filter(
+                                                        (_, i) => i !== idx,
+                                                    ),
+                                                );
+                                            }}
+                                        />
+                                        <FlattenedPositiveExamplePreview
+                                            example={example}
+                                            checkType={checkType}
+                                        />
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
+                        </>
+                    )}
                     <PositiveCheckExampleCreator
                         checkType={checkType}
                         onCreate={(newExample) => {
