@@ -1,6 +1,7 @@
-import { CheckerId } from "@api/checker";
+import { Checker, CheckerId } from "@api/checker";
 import {
     CheckBlueprint,
+    CheckDescObj,
     CheckType,
     CheckerBlueprint,
     CheckerStorefront,

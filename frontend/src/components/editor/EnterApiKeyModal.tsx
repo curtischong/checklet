@@ -15,8 +15,13 @@ export const EnterApiKeyModal = ({
     updateModelType,
 }: Props): JSX.Element => {
     const [apiKey, setApiKey] = useState("");
+    const [apiKeyExists, setApiKeyExists] = useState(false);
     useEffect(() => {
-        setApiKey(localStorage.getItem("openai-api-key") ?? "");
+        const existingApiKey = localStorage.getItem("openai-api-key");
+        if (existingApiKey) {
+            setApiKeyExists(true);
+        }
+        setApiKey(existingApiKey ?? "");
     }, []);
 
     const submitApiKey = useCallback(() => {
@@ -38,8 +43,12 @@ export const EnterApiKeyModal = ({
             footer={null}
         >
             <div>
-                Paste your OpenAI API key to run the checker using GPT-4. Your
-                API key{" "}
+                {apiKeyExists
+                    ? "If you want to change your API key, paste it below. Otherwise, you're good!"
+                    : "Paste your OpenAI API key to run the checker using GPT-4."}
+                <br />
+                <br />
+                <span className="font-bold">Note: </span>Your API key{" "}
                 <span className="border-b-[2px] border-blue-500">
                     never leaves your computer
                 </span>
@@ -66,7 +75,7 @@ export const EnterApiKeyModal = ({
                 className="py-1 mt-4"
                 onClick={submitApiKey}
             >
-                Submit Api Key
+                Use Api Key
             </SubmitButton>
         </Modal>
     );

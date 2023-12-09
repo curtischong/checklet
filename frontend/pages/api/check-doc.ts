@@ -1,8 +1,6 @@
+import * as path from "path";
 import { Checker } from "@api/checker";
-import {
-    CheckDescObj,
-    CheckerBlueprint,
-} from "@components/create-checker/CheckerTypes";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getCheckBlueprints } from "pages/api/common";
 import {
@@ -11,6 +9,8 @@ import {
 } from "pages/api/commonNetworking";
 import { createClient } from "redis";
 import { MAX_EDITOR_LEN } from "src/constants";
+import { SimpleCache } from "@api/SimpleCache";
+import { getCheckDescForCheckIds } from "shared/checker-utils";
 
 export default async function handler(
     req: NextApiRequest,
@@ -49,12 +49,35 @@ export default async function handler(
     }
     const checkerBlueprint: CheckerBlueprint = JSON.parse(rawCheckerBlueprint);
 
+    // TODO: if checker is private, check if user is owner. I don't want to do this rn, so ppl can share their private checkers
+    // let uid: string | null = null;
+    // if (req.body.idToken !== undefined) {
+    //     uid = await tryGetUserId(req, res);
+    // }
+    // if (
+    //     !checkerBlueprint.isPublic &&
+    //     checkerBlueprint.objInfo.creatorId !== userId
+    // ) {
+    //     sendBadRequest(res, "You don't have access to this checker");
+    //     return;
+    // }
+
     const checkBlueprints = await getCheckBlueprints(
         redisClient,
         checkerBlueprint,
         true,
     );
-    const checker = new Checker(checkerBlueprint, checkBlueprints);
+
+    const cache = new SimpleCache(
+        path.join(process.cwd(), ".chatgpt_history"),
+        "/cache",
+    );
+    const checker = new Checker(
+        checkBlueprints,
+        "gpt-3.5-turbo",
+        cache,
+        undefined,
+    );
 
     const suggestions = await checker.checkDoc(doc);
 
@@ -66,29 +89,3 @@ export default async function handler(
         suggestions,
     });
 }
-
-const getCheckDescForCheckIds = (
-    checker: Checker,
-    uniqueCheckIds: Set<string>,
-): CheckDescObj => {
-    const checkDescObj: CheckDescObj = {};
-
-    for (const checkId of uniqueCheckIds) {
-        console.log("checkId", checkId);
-        const checkBlueprint = checker.checks.get(checkId)?.blueprint;
-        if (!checkBlueprint) {
-            console.error(
-                "[check-doc] cannot find checkBlueprint for checkId",
-                checkId,
-            );
-            continue;
-        }
-        checkDescObj[checkId] = {
-            objInfo: checkBlueprint.objInfo,
-            checkType: checkBlueprint.checkType,
-            category: checkBlueprint.category,
-            positiveExamples: checkBlueprint.positiveExamples,
-        };
-    }
-    return checkDescObj;
-};

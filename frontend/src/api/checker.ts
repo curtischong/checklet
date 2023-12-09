@@ -3,33 +3,30 @@ import { Check } from "@api/check";
 import {
     CheckBlueprint,
     CheckId,
-    CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
 
 export type CheckerId = string; // TODO: make this 32 bytes?
 export class Checker {
-    blueprint: CheckerBlueprint;
     checks: Map<CheckId, Check>;
 
     constructor(
-        checkerBlueprint: CheckerBlueprint,
         checkBlueprints: CheckBlueprint[],
+        private modelName: string,
+        cache: any | undefined,
+        apiKey: string | undefined,
     ) {
-        this.blueprint = checkerBlueprint;
         this.checks = new Map<CheckId, Check>();
 
         for (const checkBlueprint of checkBlueprints) {
-            const check = new Check(checkBlueprint);
+            const check = new Check(
+                checkBlueprint,
+                this.modelName,
+                cache,
+                apiKey,
+            );
             this.checks.set(checkBlueprint.objInfo.id, check);
         }
     }
-
-    // static fromFile(checkerPath: string): Checker {
-    //     const checkerBlueprint = JSON.parse(
-    //         fs.readFileSync(checkerPath, "utf-8"),
-    //     );
-    //     return new Checker(checkerBlueprint);
-    // }
 
     async checkDoc(doc: string): Promise<Suggestion[]> {
         const results: Suggestion[] = [];

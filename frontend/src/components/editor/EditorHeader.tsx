@@ -1,16 +1,16 @@
 import { Suggestion } from "@api/ApiTypes";
-import { Api } from "@api/apis";
 import { LoadingButton } from "@components/Button";
-import ThinLine from "@components/ThinLine";
 import {
     CheckDescObj,
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
+import { checkDocText } from "@components/editor/checkDoc";
 import {
     SortType,
     Sorters,
 } from "@components/editor/suggestions/suggestionscontainer";
 import { mixpanelTrack } from "@utils";
+import { useClientContext } from "@utils/ClientContext";
 import { SetState } from "@utils/types";
 import { Affix } from "antd";
 import { useRouter } from "next/router";
@@ -37,17 +37,15 @@ export const EditorHeader = ({
     setSuggestions,
 }: Props): JSX.Element => {
     const router = useRouter();
+    const { user } = useClientContext();
     const checkDocument = useCallback(async (): Promise<void> => {
         if (isLoading) {
             return;
         }
         setIsLoading(true);
         const plaintext = editorState;
-
-        const response = await Api.checkDoc(
-            plaintext,
-            router.query.checkerId as string,
-        );
+        const checkerId = router.query.checkerId as string;
+        const response = await checkDocText(plaintext, checkerId, user);
         setIsLoading(false);
         if (!response) {
             toast.error("Something went wrong, please try again later");
