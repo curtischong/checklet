@@ -79,7 +79,7 @@ export const PositiveCheckExampleCreator = ({
                 onClick={() => {
                     onCreate({
                         originalText,
-                        editedText,
+                        editedText: [editedText],
                     });
                     setOriginalText("");
                     setEditedText("");

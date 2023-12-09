@@ -13,7 +13,7 @@ type SuggestionCard = {
     suggestion: Suggestion;
     activeSuggestion: Suggestion | undefined;
     onClick: () => void;
-    onReplaceClick: () => void;
+    onReplaceClick: (acceptedOption: string) => void;
     checkDescObj: CheckDescObj;
     classNames?: string;
 };

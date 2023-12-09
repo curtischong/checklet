@@ -43,7 +43,7 @@ export const CheckPreview = ({
 
     const editedTextToUse = useMemo(() => {
         if (editedText !== "" || originalText !== "") {
-            return editedText;
+            return [editedText];
         } else if (blueprint.positiveExamples.length > 0) {
             return blueprint.positiveExamples[0].editedText;
         } else {

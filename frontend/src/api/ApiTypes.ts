@@ -16,7 +16,7 @@ export type SuggestionId = string;
 export type Suggestion = {
     range: DocRange; // range of the original text
     originalText: string;
-    editedText?: string;
+    editedText: string[];
     editOps: EditOp[]; // NOTE: these are relative to suggestion.range
     checkId: string;
     suggestionId: SuggestionId;

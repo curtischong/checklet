@@ -79,7 +79,7 @@ export default async function handler(
     const positiveExamples = checkBlueprint.positiveExamples;
     for (const example of positiveExamples) {
         if (checkBlueprint.checkType !== CheckType.rephrase) {
-            example.editedText = ""; // clear, so users can't pass in bad data
+            example.editedText = []; // clear, so users can't pass in bad data
         }
     }
 
@@ -117,11 +117,12 @@ const validateCheckLengthsHelper = (checkBlueprint: CheckBlueprint): string => {
         if (example.originalText.length > MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN) {
             return `Positive example original text cannot be longer than ${MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN} characters`;
         }
-        if (
-            checkBlueprint.checkType === CheckType.rephrase &&
-            example.editedText!.length > MAX_POSITIVE_EX_EDITED_TEXT_LEN
-        ) {
-            return `Positive example rephrased text cannot be longer than ${MAX_POSITIVE_EX_EDITED_TEXT_LEN} characters`;
+        if (checkBlueprint.checkType === CheckType.rephrase) {
+            for (const option of example.editedText) {
+                if (option.length > MAX_POSITIVE_EX_EDITED_TEXT_LEN) {
+                    return `Positive example rephrased text cannot be longer than ${MAX_POSITIVE_EX_EDITED_TEXT_LEN} characters`;
+                }
+            }
         }
     }
     return "";

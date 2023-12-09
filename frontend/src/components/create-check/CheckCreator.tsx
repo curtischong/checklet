@@ -1,8 +1,4 @@
-import {
-    DeleteButton,
-    LoadingButtonSubmit,
-    NormalButton,
-} from "@components/Button";
+import { DeleteButton, NormalButton, PlusButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
@@ -41,6 +37,7 @@ import {
     MAX_CHECK_INSTR_LEN,
     MAX_CHECK_NAME_LEN,
 } from "src/constants";
+import { Tooltip } from "antd";
 
 interface Props {
     checkId: CheckId;
@@ -237,10 +234,10 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                         label="Positive Examples"
                         helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
                     />
-                    <div className="flex flex-col">
+                    <div className="flex flex-col space-y-1">
                         {positiveExamples.map((example, idx) => (
                             <div
-                                className="flex flex-row"
+                                className="flex flex-row items-start"
                                 key={`positive-example-${idx}`}
                             >
                                 <DeleteButton

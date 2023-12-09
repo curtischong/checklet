@@ -87,28 +87,31 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     // editorState.slice(0, s.range.start) +
     // s.editedText +
     // editorState.slice(s.range.end);
-    const acceptSuggestion = useCallback((suggestion: Suggestion) => {
-        if (!editorRef) {
-            console.error("editor ref not found. cannot accept suggestion");
-            return;
-        }
+    const acceptSuggestion = useCallback(
+        (suggestion: Suggestion, acceptedOption: string) => {
+            if (!editorRef) {
+                console.error("editor ref not found. cannot accept suggestion");
+                return;
+            }
 
-        editorRef.current.focus();
-        editorRef.current.setSelectionRange(
-            suggestion.range.start,
-            suggestion.range.end,
-        );
-        // execCommand is deprecated but it works!
-        document.execCommand("insertText", false, suggestion.editedText);
+            editorRef.current.focus();
+            editorRef.current.setSelectionRange(
+                suggestion.range.start,
+                suggestion.range.end,
+            );
+            // execCommand is deprecated but it works!
+            document.execCommand("insertText", false, acceptedOption);
 
-        // the below code works, but the user cannot undo the change. Keeping it here for reference though
-        //
-        // the user did a replacement. We should set it to true cause the text was modified!
-        // if we don't, and if all suggestions are resolved, we'll show the "no suggestions generated" img
-        // (however, the replacement COULD trigger more suggestions. So we must set this to false to prevent the possibly misleading img from appearing)
-        // setHasModifiedTextAfterChecking(true);
-        // updateEditorState(editorState, newText, suggestions);
-    }, []);
+            // the below code works, but the user cannot undo the change. Keeping it here for reference though
+            //
+            // the user did a replacement. We should set it to true cause the text was modified!
+            // if we don't, and if all suggestions are resolved, we'll show the "no suggestions generated" img
+            // (however, the replacement COULD trigger more suggestions. So we must set this to false to prevent the possibly misleading img from appearing)
+            // setHasModifiedTextAfterChecking(true);
+            // updateEditorState(editorState, newText, suggestions);
+        },
+        [],
+    );
 
     return (
         <div className="mx-auto max-w-screen-lg">

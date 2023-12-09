@@ -2,13 +2,11 @@ import { Api } from "@api/apis";
 import { CheckerId } from "@api/checker";
 import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
 import { LabelWithSwitch } from "@components/Switch";
-import { FlattenedPositiveExamplePreview } from "@components/create-check/FlattenedPositiveExamplePreview";
 import {
     CheckBlueprint,
     CheckStatuses,
 } from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
-import { SetState } from "@utils/types";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 

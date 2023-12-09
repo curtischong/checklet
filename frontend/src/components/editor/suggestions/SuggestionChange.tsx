@@ -6,7 +6,7 @@ import { AiOutlineArrowDown, AiOutlineArrowRight } from "react-icons/ai";
 interface Props {
     suggestion: Suggestion;
     checkType: CheckType;
-    onReplaceClick: () => void;
+    onReplaceClick: (acceptedOption: string) => void;
 }
 
 export const SuggestionChange = ({
@@ -21,7 +21,12 @@ export const SuggestionChange = ({
         suggestion.originalText.includes("\n") ||
         suggestion.editedText?.includes("\n") ||
         suggestion.originalText.length > 50 ||
-        (suggestion.editedText && suggestion.editedText.length > 50);
+        // (suggestion.editedText &&
+        //     (suggestion.editedText.length > 1 ||
+        //         suggestion.editedText[0].length > 50));
+        (suggestion.editedText &&
+            suggestion.editedText.reduce((sum, text) => sum + text.length, 0) >
+                50);
     return (
         <div
             className={classNames("flex", {
@@ -55,26 +60,32 @@ export const SuggestionChange = ({
                     {suggestion.originalText}
                 </div>
             )}
-            {suggestion.editedText && (
-                <>
-                    {showReplacementVertically ? (
-                        <AiOutlineArrowDown className="mt-[6px] mb-[8px] mx-auto" />
-                    ) : (
-                        <AiOutlineArrowRight
-                            className={"mx-3 mt-[5px] w-[50px]"}
-                        />
-                    )}
-                    <div
-                        onClick={onReplaceClick}
-                        className="text-white hover:bg-[#1d8fdb] bg-[#189bf2] rounded md:py-0 md:px-2 cursor-pointer whitespace-pre-wrap"
-                        style={{
-                            wordBreak: "break-word",
-                        }}
-                    >
-                        {suggestion.editedText}
-                    </div>
-                </>
+            {showReplacementVertically ? (
+                <AiOutlineArrowDown className="mt-[6px] mb-[8px] mx-auto" />
+            ) : (
+                <AiOutlineArrowRight className={"mx-3 mt-[5px] w-[50px]"} />
             )}
+            <div
+                className={classNames("flex", {
+                    "flex-col space-y-1": showReplacementVertically,
+                    "flex-row space-x-1": !showReplacementVertically,
+                })}
+            >
+                {suggestion.editedText.map((option, idx) => {
+                    return (
+                        <div
+                            key={`edited-text-${idx}`}
+                            onClick={() => onReplaceClick(option)}
+                            className="text-white hover:bg-[#1d8fdb] bg-[#189bf2] rounded md:py-0 md:px-2 cursor-pointer whitespace-pre-wrap"
+                            style={{
+                                wordBreak: "break-word",
+                            }}
+                        >
+                            {option}
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 };

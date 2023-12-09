@@ -5,6 +5,7 @@ import React, { useCallback } from "react";
 import { UploadIcon } from "@components/icons/UploadIcon";
 import classNames from "classnames";
 import { EditIcon } from "@components/icons/EditIcon";
+import { PlusIcon } from "@components/icons/PlusIcon";
 
 export type IButton = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -161,6 +162,19 @@ export const DeleteButtonWithConfirm: React.FC<
         <Popconfirm title="Confirm Delete" onConfirm={onDelete}>
             <DeleteButton {...rest} />
         </Popconfirm>
+    );
+};
+
+export const PlusButton: React.FC<IButton> = ({ className = "", ...rest }) => {
+    return (
+        <div className="flex items-center">
+            <button
+                className={`text-gray-400 hover:text-gray-600 px-[4px] py-[4px] mx-[10px] rounded transition duration-300 ${className}`}
+                {...rest}
+            >
+                <PlusIcon />
+            </button>
+        </div>
     );
 };
 
