@@ -22,7 +22,7 @@ export const SuggestionChange = ({
         return (
             <div
                 className={classNames(
-                    "bg-[#f35769] hover:bg-[#DC5262] text-white rounded md:py-0 md:px-2 cursor-pointer break-words whitespace-pre-wrap",
+                    "bg-[#f35769] hover:bg-[#DC5262] text-white rounded md:py-0 md:px-2 cursor-pointer break-words whitespace-pre-wrap select-none",
                 )}
                 style={{
                     textDecorationColor: "#DC5262",
@@ -43,7 +43,7 @@ export const SuggestionChange = ({
         //         suggestion.editedText[0].length > 50));
         (suggestion.editedText &&
             suggestion.editedText.reduce((sum, text) => sum + text.length, 0) >
-                50);
+                30);
     return (
         <div
             className={classNames("flex", {
@@ -53,7 +53,7 @@ export const SuggestionChange = ({
         >
             <div
                 className={classNames(
-                    "line-through text-[#DC5262] whitespace-pre-wrap",
+                    "line-through text-[#DC5262] whitespace-pre-wrap select-none",
                 )}
                 // https://stackoverflow.com/questions/12699800/smarter-word-break-in-css
                 style={{

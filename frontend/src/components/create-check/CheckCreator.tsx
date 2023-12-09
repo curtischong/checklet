@@ -37,7 +37,6 @@ import {
     MAX_CHECK_INSTR_LEN,
     MAX_CHECK_NAME_LEN,
 } from "src/constants";
-import { Tooltip } from "antd";
 
 interface Props {
     checkId: CheckId;
@@ -117,6 +116,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     newPositiveExamples = newPositiveExamples.map((example) => {
                         return {
                             originalText: example.originalText,
+                            editedText: [],
                         };
                     });
                 }
