@@ -1,8 +1,10 @@
+import { PlusButton } from "@components/Button";
 import {
     CheckType,
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
 import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
+import { Tooltip } from "antd";
 
 export const FlattenedPositiveExamplePreview = ({
     example,
@@ -23,6 +25,12 @@ export const FlattenedPositiveExamplePreview = ({
                     <div className="flex flex-col">
                         <div>{example.editedText.replaceAll("\n", "¶")}</div>
                     </div>
+                    <Tooltip
+                        className="mt-[-1px]"
+                        title="Add rephrase option. This teaches the model to generate multiple options"
+                    >
+                        <PlusButton />
+                    </Tooltip>
                 </>
             )}
         </div>

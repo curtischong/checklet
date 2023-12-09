@@ -1,8 +1,4 @@
-import {
-    DeleteButton,
-    LoadingButtonSubmit,
-    NormalButton,
-} from "@components/Button";
+import { DeleteButton, NormalButton, PlusButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
@@ -41,6 +37,7 @@ import {
     MAX_CHECK_INSTR_LEN,
     MAX_CHECK_NAME_LEN,
 } from "src/constants";
+import { Tooltip } from "antd";
 
 interface Props {
     checkId: CheckId;
