@@ -232,10 +232,9 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 <div className="mt-4">
                     {positiveExamples.length > 0 && (
                         <>
-                            <CheckSectionHeader
-                                label="Positive Examples"
-                                helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
-                            />
+                            <div className="font-bold text-lg">
+                                Positive Examples
+                            </div>
                             <div className="flex flex-col space-y-1 mt-2">
                                 {positiveExamples.map((example, idx) => (
                                     <div
@@ -341,7 +340,10 @@ interface CheckSectionHeaderProps {
     label: string;
     helpText: string;
 }
-const CheckSectionHeader = ({ label, helpText }: CheckSectionHeaderProps) => {
+export const CheckSectionHeader = ({
+    label,
+    helpText,
+}: CheckSectionHeaderProps): JSX.Element => {
     return (
         <LabelWithHelp
             label={label}
