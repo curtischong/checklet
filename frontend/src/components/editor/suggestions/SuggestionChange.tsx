@@ -17,6 +17,23 @@ export const SuggestionChange = ({
     if (checkType === CheckType.highlight) {
         return <div>{suggestion.originalText}</div>;
     }
+
+    if (suggestion.editedText[0] === "") {
+        return (
+            <div
+                className={classNames(
+                    "bg-[#f35769] hover:bg-[#DC5262] text-white rounded md:py-0 md:px-2 cursor-pointer break-words whitespace-pre-wrap select-none",
+                )}
+                style={{
+                    textDecorationColor: "#DC5262",
+                    wordBreak: "break-word",
+                }}
+            >
+                {suggestion.originalText}
+            </div>
+        );
+    }
+
     const showReplacementVertically =
         suggestion.originalText.includes("\n") ||
         suggestion.editedText?.includes("\n") ||
@@ -26,7 +43,7 @@ export const SuggestionChange = ({
         //         suggestion.editedText[0].length > 50));
         (suggestion.editedText &&
             suggestion.editedText.reduce((sum, text) => sum + text.length, 0) >
-                50);
+                30);
     return (
         <div
             className={classNames("flex", {
@@ -34,32 +51,18 @@ export const SuggestionChange = ({
                 "flex-row": !showReplacementVertically,
             })}
         >
-            {suggestion.editedText ? (
-                <div
-                    className={classNames(
-                        "line-through text-[#DC5262] whitespace-pre-wrap",
-                    )}
-                    // https://stackoverflow.com/questions/12699800/smarter-word-break-in-css
-                    style={{
-                        textDecorationColor: "#DC5262",
-                        wordBreak: "break-word",
-                    }}
-                >
-                    {suggestion.originalText}
-                </div>
-            ) : (
-                <div
-                    className={classNames(
-                        "bg-[#f35769] hover:bg-[#DC5262] text-white rounded md:py-0 md:px-2 cursor-pointer break-words whitespace-pre-wrap",
-                    )}
-                    style={{
-                        textDecorationColor: "#DC5262",
-                        wordBreak: "break-word",
-                    }}
-                >
-                    {suggestion.originalText}
-                </div>
-            )}
+            <div
+                className={classNames(
+                    "line-through text-[#DC5262] whitespace-pre-wrap select-none",
+                )}
+                // https://stackoverflow.com/questions/12699800/smarter-word-break-in-css
+                style={{
+                    textDecorationColor: "#DC5262",
+                    wordBreak: "break-word",
+                }}
+            >
+                {suggestion.originalText}
+            </div>
             {showReplacementVertically ? (
                 <AiOutlineArrowDown className="mt-[6px] mb-[8px] mx-auto" />
             ) : (

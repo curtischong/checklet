@@ -1,10 +1,11 @@
-import { PlusButton, TextButton } from "@components/Button";
+import { CloseButton, PlusButton, TextButton } from "@components/Button";
 import { NormalTextArea } from "@components/TextArea";
 import {
     CheckType,
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
 import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
+import { SetState } from "@utils/types";
 import { Tooltip } from "antd";
 import { useState } from "react";
 import { MAX_POSITIVE_EX_EDITED_TEXT_LEN } from "src/constants";
@@ -12,9 +13,13 @@ import { MAX_POSITIVE_EX_EDITED_TEXT_LEN } from "src/constants";
 export const FlattenedPositiveExamplePreview = ({
     example,
     checkType,
+    setPositiveExamples, // this is only here so when we change hte positive exampe, we update the preview card
+    positiveExamples,
 }: {
     example: PositiveCheckExample;
     checkType: CheckType;
+    setPositiveExamples: SetState<PositiveCheckExample[]>;
+    positiveExamples: PositiveCheckExample[];
 }): JSX.Element => {
     const [isAddingRephrase, setIsAddingRephrase] = useState(false);
     const [rephaseOption, setRephaseOption] = useState("");
@@ -54,7 +59,7 @@ export const FlattenedPositiveExamplePreview = ({
                 )}
             </div>
             {isAddingRephrase && (
-                <div className="flex flex-row items-start">
+                <div className="flex flex-row items-start space-x-0">
                     <NormalTextArea
                         value={rephaseOption}
                         onChange={(e) => setRephaseOption(e.target.value)}
@@ -62,10 +67,15 @@ export const FlattenedPositiveExamplePreview = ({
                         minRows={1}
                         maxLength={MAX_POSITIVE_EX_EDITED_TEXT_LEN}
                     />
+                    <CloseButton
+                        className="mt-[7px] ml-2"
+                        onClick={() => setIsAddingRephrase(false)}
+                    />
                     <TextButton
-                        className="w-52 mt-[3px]"
+                        className="w-48 mt-[5px] px-0 ml-[-20px]"
                         onClick={() => {
                             example.editedText.push(rephaseOption);
+                            setPositiveExamples([...positiveExamples]);
                             setRephaseOption("");
                             setIsAddingRephrase(false);
                         }}

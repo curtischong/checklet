@@ -14,6 +14,7 @@ import {
     MAX_POSITIVE_EX_EDITED_TEXT_LEN,
     MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN,
 } from "src/constants";
+import { CheckSectionHeader } from "@components/create-check/CheckCreator";
 
 interface Props {
     checkType: CheckType;
@@ -35,9 +36,12 @@ export const PositiveCheckExampleCreator = ({
 }: Props): JSX.Element => {
     const isTextTheSame = originalText === editedText;
     return (
-        <div className="flex flex-col ">
-            <ThinLine className="mt-4" />
-            <div className="font-bold text-lg">Create Positive Example</div>
+        <div className="flex flex-col mt-4">
+            {/* <ThinLine className="mt-4" /> */}
+            <CheckSectionHeader
+                label="Create Positive Example"
+                helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
+            />
             <div className="flex items-center mt-2">
                 <label className="text-md">Original Text</label>
                 <HelpIcon

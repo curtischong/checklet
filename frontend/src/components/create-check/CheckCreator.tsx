@@ -1,4 +1,4 @@
-import { DeleteButton, NormalButton, PlusButton } from "@components/Button";
+import { DeleteButton, NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
@@ -37,7 +37,6 @@ import {
     MAX_CHECK_INSTR_LEN,
     MAX_CHECK_NAME_LEN,
 } from "src/constants";
-import { Tooltip } from "antd";
 
 interface Props {
     checkId: CheckId;
@@ -117,6 +116,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     newPositiveExamples = newPositiveExamples.map((example) => {
                         return {
                             originalText: example.originalText,
+                            editedText: [],
                         };
                     });
                 }
@@ -230,32 +230,39 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 />
 
                 <div className="mt-4">
-                    <CheckSectionHeader
-                        label="Positive Examples"
-                        helpText="Positive examples helps the model recognize when to apply your check. Because just like humans, computers understand instructions better with examples"
-                    />
-                    <div className="flex flex-col space-y-1">
-                        {positiveExamples.map((example, idx) => (
-                            <div
-                                className="flex flex-row items-start"
-                                key={`positive-example-${idx}`}
-                            >
-                                <DeleteButton
-                                    onClick={() => {
-                                        setPositiveExamples(
-                                            positiveExamples.filter(
-                                                (_, i) => i !== idx,
-                                            ),
-                                        );
-                                    }}
-                                />
-                                <FlattenedPositiveExamplePreview
-                                    example={example}
-                                    checkType={checkType}
-                                />
+                    {positiveExamples.length > 0 && (
+                        <>
+                            <div className="font-bold text-lg">
+                                Positive Examples
                             </div>
-                        ))}
-                    </div>
+                            <div className="flex flex-col space-y-1 mt-2">
+                                {positiveExamples.map((example, idx) => (
+                                    <div
+                                        className="flex flex-row items-start"
+                                        key={`positive-example-${idx}`}
+                                    >
+                                        <DeleteButton
+                                            onClick={() => {
+                                                setPositiveExamples(
+                                                    positiveExamples.filter(
+                                                        (_, i) => i !== idx,
+                                                    ),
+                                                );
+                                            }}
+                                        />
+                                        <FlattenedPositiveExamplePreview
+                                            example={example}
+                                            checkType={checkType}
+                                            setPositiveExamples={
+                                                setPositiveExamples
+                                            }
+                                            positiveExamples={positiveExamples}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    )}
                     <PositiveCheckExampleCreator
                         checkType={checkType}
                         onCreate={(newExample) => {
@@ -337,7 +344,10 @@ interface CheckSectionHeaderProps {
     label: string;
     helpText: string;
 }
-const CheckSectionHeader = ({ label, helpText }: CheckSectionHeaderProps) => {
+export const CheckSectionHeader = ({
+    label,
+    helpText,
+}: CheckSectionHeaderProps): JSX.Element => {
     return (
         <LabelWithHelp
             label={label}
