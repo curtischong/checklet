@@ -1,48 +1,39 @@
-import * as fs from "fs";
-import * as path from "path";
 import { OpenAI } from "openai";
 import { SimpleCache } from "@api/SimpleCache";
 import { JSONSchema } from "openai/lib/jsonschema";
 
 export class Llm {
-    useCache: boolean;
     client: OpenAI;
     model: string;
-    cache: SimpleCache;
     systemPromptMessage: OpenAI.ChatCompletionMessageParam;
 
     constructor(
         systemPrompt: string,
         model = "gpt-3.5-turbo",
-        useCache = false,
+        private cache: SimpleCache | undefined,
     ) {
-        this.useCache = useCache;
         this.client = new OpenAI();
         this.model = model;
         this.systemPromptMessage = {
             role: "system",
             content: systemPrompt,
         };
-
-        const cacheDir = path.join(process.cwd(), ".chatgpt_history");
-        fs.mkdirSync(cacheDir, { recursive: true });
-        this.cache = new SimpleCache(cacheDir + "/cache");
     }
 
     private cacheGet(prompt: string): string | undefined {
-        return this.cache.get(
+        return this.cache?.get(
             `${this.model}-${this.systemPromptMessage.content}-${prompt}`,
         );
     }
     private cacheSet(prompt: string, value: string): void {
-        this.cache.set(
+        this.cache?.set(
             `${this.model}-${this.systemPromptMessage.content}-${prompt}`,
             value,
         );
     }
 
     async prompt(message: string): Promise<string> {
-        if (this.useCache) {
+        if (this.cache) {
             const cachedValue = this.cacheGet(message);
             if (cachedValue) {
                 return cachedValue;
@@ -73,7 +64,7 @@ export class Llm {
         functionDesc: string;
         functionParams: JSONSchema;
     }): Promise<string> {
-        if (this.useCache) {
+        if (this.cache) {
             const cachedArgStr = this.cacheGet(callData.prompt);
             if (cachedArgStr) {
                 // console.log("cache success");

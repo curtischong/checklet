@@ -5,8 +5,10 @@ export class SimpleCache {
     filePath: string;
     cache: Record<string, string>;
 
-    constructor(filePath: string) {
-        this.filePath = filePath;
+    constructor(cacheDir: string, filePath: string) {
+        fs.mkdirSync(cacheDir, { recursive: true });
+
+        this.filePath = cacheDir + filePath;
         this.cache = {};
 
         // Load existing data from the file if it exists

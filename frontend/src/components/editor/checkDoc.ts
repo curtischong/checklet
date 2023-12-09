@@ -5,7 +5,7 @@ import {
     ModelType,
 } from "@components/create-checker/CheckerTypes";
 import { User } from "firebase/auth";
-import { getCheckDescForCheckIds } from "pages/api/check-doc";
+import { getCheckDescForCheckIds } from "shared/checker-utils";
 
 export const checkDocText = async (
     doc: string,
@@ -21,7 +21,7 @@ export const checkDocText = async (
         return undefined;
     }
 
-    const checker = new Checker(checkBlueprints, "gpt4");
+    const checker = new Checker(checkBlueprints, "gpt4", undefined);
 
     const suggestions = await checker.checkDoc(doc);
 

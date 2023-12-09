@@ -10,10 +10,14 @@ import { createUniqueId } from "@utils/strings";
 export class Check {
     private llm;
 
-    constructor(public blueprint: CheckBlueprint, modelName: string) {
+    constructor(
+        public blueprint: CheckBlueprint,
+        modelName: string,
+        cache: any | undefined, // TODO: resolve the types so it works properly on the client
+    ) {
         const systemPrompt = this.getSystemPrompt();
         console.log("systemPrompt", systemPrompt);
-        this.llm = new Llm(systemPrompt, modelName, true);
+        this.llm = new Llm(systemPrompt, modelName, cache);
     }
 
     private getSystemPrompt(): string {
