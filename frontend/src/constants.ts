@@ -4,6 +4,7 @@ export const MAX_EDITOR_LEN = 4000 * 3.5; // 4k tokens * 3.5 chars per token
 
 export const MAX_CHECKER_DESC_LEN = 700;
 export const MAX_CHECKER_NAME_LEN = 150;
+export const MAX_CHECKER_PLACEHOLDER_LEN = 700;
 
 export const MAX_CHECK_NAME_LEN = 100;
 export const MAX_CHECK_DESC_LEN = 700;

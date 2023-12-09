@@ -15,7 +15,6 @@ import { EditorHeader } from "@components/editor/EditorHeader";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import { RichTextareaHandle } from "rich-textarea";
 import { EnterApiKeyModal } from "@components/editor/EnterApiKeyModal";
-import { Mode } from "fs";
 
 interface Props {
     storefront: CheckerStorefront;
@@ -154,6 +153,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         setCheckDescObj={setCheckDescObj}
                     />
                     <TextboxContainer
+                        storefront={storefront}
                         activeSuggestion={activeSuggestion}
                         updateActiveSuggestion={setActiveSuggestion}
                         suggestions={suggestions}

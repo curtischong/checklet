@@ -21,8 +21,10 @@ import {
     ADMIN_EMAILS,
     MAX_CHECKER_DESC_LEN,
     MAX_CHECKER_NAME_LEN,
+    MAX_CHECKER_PLACEHOLDER_LEN,
 } from "src/constants";
 import { downloadTextFile } from "util/download";
+import { LabelWithHelp } from "@components/LabelWithHelp";
 
 export enum Page {
     Main,
@@ -36,6 +38,7 @@ interface Props {
 export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
     const [desc, setDesc] = React.useState("");
+    const [placeholder, setPlaceholder] = React.useState("");
     const [checkStatuses, setCheckStatuses] = React.useState<CheckStatuses>({});
     const [submittingState, setSubmittingState] = React.useState(
         SubmittingState.NotSubmitting,
@@ -65,6 +68,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
             const { checkerBlueprint, checkBlueprints } = res;
             setName(checkerBlueprint.objInfo.name);
             setDesc(checkerBlueprint.objInfo.desc);
+            setPlaceholder(checkerBlueprint.placeholder);
             setCheckStatuses(checkerBlueprint.checkStatuses);
             setIsPublic(checkerBlueprint.isPublic);
             setCheckBlueprints(checkBlueprints);
@@ -76,6 +80,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
             async (
                 newName: string,
                 newDesc: string,
+                newPlaceholder: string,
                 newCheckStatuses: CheckStatuses,
                 newIsPublic: boolean,
             ) => {
@@ -92,6 +97,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                         creatorId: user.uid,
                         id: checkerId,
                     },
+                    placeholder: newPlaceholder,
                     checkStatuses: newCheckStatuses,
                     isPublic: newIsPublic,
                 };
@@ -112,8 +118,8 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     );
 
     useEffect(() => {
-        saveChecker(name, desc, checkStatuses, isPublic);
-    }, [name, desc, JSON.stringify(Object.values(checkStatuses))]);
+        saveChecker(name, desc, placeholder, checkStatuses, isPublic);
+    }, [name, desc, placeholder, JSON.stringify(Object.values(checkStatuses))]);
 
     const downloadChecker = () => {
         downloadTextFile(
@@ -128,6 +134,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                     },
                     checkStatuses,
                     isPublic,
+                    placeholder,
                 },
                 checkBlueprints,
             }),
@@ -193,9 +200,30 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 maxLength={MAX_CHECKER_DESC_LEN}
                             />
 
+                            <LabelWithHelp
+                                className="text-lg font-bold mt-4 ml-1"
+                                label="Editor Placeholder"
+                                helpText="This is the gray text users see if the editor is empty. It gives them an idea of what to put in the editor"
+                                helpIconClassName="mt-[7px]"
+                            />
+                            <NormalTextArea
+                                placeholder={`• Expedited DynamoDB queries from 68 ms to 41 ms by optimizing the schema for reads
+• Unified request authorization logic by proxying requests through a Spring API Gateway`}
+                                onChange={(e) => {
+                                    setSubmittingState(
+                                        SubmittingState.ChangesDetected,
+                                    );
+                                    setPlaceholder(e.target.value);
+                                }}
+                                value={placeholder}
+                                minRows={4}
+                                maxLength={MAX_CHECKER_PLACEHOLDER_LEN}
+                            />
+
                             <IsPublicSwitch
                                 name={name}
                                 desc={desc}
+                                placeholder={placeholder}
                                 checkStatuses={checkStatuses}
                                 isPublic={isPublic}
                                 checkerId={checkerId}

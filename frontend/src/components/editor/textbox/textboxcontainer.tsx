@@ -13,6 +13,7 @@ import { RichTextarea, RichTextareaHandle } from "rich-textarea";
 import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
 import debounce from "lodash.debounce";
 import { MAX_EDITOR_LEN } from "src/constants";
+import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
 // const PizZip = require("pizzip");
 // import Docxtemplater from "docxtemplater";
 // import PizZip from "pizzip";
@@ -31,6 +32,7 @@ export type TextboxContainerProps = {
     updateActiveSuggestion: SetState<Suggestion | undefined>;
     isLoading: boolean;
     editorRef: Ref<RichTextareaHandle | null>;
+    storefront: CheckerStorefront;
 };
 
 // const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
@@ -43,6 +45,7 @@ export const TextboxContainer = ({
     updateActiveSuggestion,
     isLoading,
     editorRef,
+    storefront,
 }: TextboxContainerProps): JSX.Element => {
     // these two are needed so we can scroll to the underline span when we click on a card
     // we need two maps since we only know:
@@ -118,6 +121,9 @@ export const TextboxContainer = ({
             style={{ maxHeight: "calc(100vh - 80px)", overflow: "auto" }}
         >
             <RichTextarea
+                placeholder={
+                    storefront.placeholder || "Write your document here!"
+                }
                 ref={editorRef}
                 value={editorState}
                 onChange={(e) => updateEditorState(e.target.value)}

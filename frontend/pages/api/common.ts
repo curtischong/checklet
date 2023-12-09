@@ -50,6 +50,7 @@ export const checkerBlueprintToCheckerStorefront = (
 ): CheckerStorefront => {
     return {
         objInfo: blueprint.objInfo,
+        placeholder: blueprint.placeholder,
     };
 };
 
@@ -94,6 +95,9 @@ export const validateChecker = async (
     ).some((checkStatus) => checkStatus.isEnabled);
     if (!hasOneEnabledCheck) {
         return "Checker must have at least one enabled check";
+    }
+    if (checkerBlueprint.placeholder === "") {
+        return "Checker placeholder cannot be empty";
     }
 
     // PERF: batch this

@@ -99,6 +99,8 @@ const AdminPage: React.FC = () => {
             },
             checkStatuses,
             isPublic: true,
+            placeholder: `• Expedited DynamoDB queries from 68 ms to 41 ms by optimizing the schema for reads
+• Unified request authorization logic by proxying requests through a Spring API Gateway`,
         };
         await Api.editChecker(checkerBlueprint, user);
     }, []);
