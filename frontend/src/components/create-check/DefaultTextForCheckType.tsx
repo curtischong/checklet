@@ -10,10 +10,14 @@ export const defaultOriginalText: DefaultTextForCheckType = {
     [CheckType.proposal]: "proposal",
 };
 
-export const defaultEditedText: DefaultTextForCheckType = {
-    [CheckType.highlight]: "",
-    [CheckType.rephrase]: "Jan",
-    [CheckType.proposal]: "",
+type DefaultEditedTextForCheckType = {
+    [key in CheckType]: string[];
+};
+
+export const defaultEditedText: DefaultEditedTextForCheckType = {
+    [CheckType.highlight]: [],
+    [CheckType.rephrase]: ["Jan"],
+    [CheckType.proposal]: [],
 };
 
 export const defaultName: DefaultTextForCheckType = {

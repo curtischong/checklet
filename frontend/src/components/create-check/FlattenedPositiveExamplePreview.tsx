@@ -22,15 +22,22 @@ export const FlattenedPositiveExamplePreview = ({
             {checkType === CheckType.rephrase && example.editedText && (
                 <>
                     <RightArrowWithTailIcon className="mx-4" />
-                    <div className="flex flex-col">
-                        <div>{example.editedText.replaceAll("\n", "¶")}</div>
-                    </div>
-                    <Tooltip
-                        className="mt-[-1px]"
-                        title="Add rephrase option. This teaches the model to generate multiple options"
-                    >
-                        <PlusButton />
-                    </Tooltip>
+                    {example.editedText.map((text, idx) => (
+                        <div
+                            className="flex flex-row"
+                            key={`editedText-${idx}`}
+                        >
+                            <div className="flex flex-col">
+                                <div>{text.replaceAll("\n", "¶")}</div>
+                            </div>
+                            <Tooltip
+                                className="mt-[-1px]"
+                                title="Add rephrase option. This teaches the model to generate multiple options"
+                            >
+                                <PlusButton />
+                            </Tooltip>
+                        </div>
+                    ))}
                 </>
             )}
         </div>
