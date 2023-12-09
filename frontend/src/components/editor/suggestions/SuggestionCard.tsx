@@ -57,7 +57,7 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
             }}
         >
             <div className={css.header} onClick={onClick}>
-                <span className={css.bigDot} />
+                {/* <span className={css.bigDot} /> */}
                 {isActive ? (
                     <div
                         className={classNames(
