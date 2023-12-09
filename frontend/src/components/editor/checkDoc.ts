@@ -5,6 +5,7 @@ import {
     ModelType,
 } from "@components/create-checker/CheckerTypes";
 import { User } from "firebase/auth";
+import { toast } from "react-toastify";
 import { getCheckDescForCheckIds } from "shared/checker-utils";
 
 export const checkDocText = async (
@@ -20,8 +21,15 @@ export const checkDocText = async (
     if (!checkBlueprints) {
         return undefined;
     }
+    const apiKey = localStorage.getItem("openai-api-key");
+    if (!apiKey) {
+        toast.error(
+            "No OpenAI API key found. Please set it first by clicking on the GPT-4 option in the top right",
+        );
+        return undefined;
+    }
 
-    const checker = new Checker(checkBlueprints, "gpt4", undefined);
+    const checker = new Checker(checkBlueprints, "gpt-4", undefined, apiKey);
 
     const suggestions = await checker.checkDoc(doc);
 

@@ -13,11 +13,17 @@ export class Checker {
         checkBlueprints: CheckBlueprint[],
         private modelName: string,
         cache: any | undefined,
+        apiKey: string | undefined,
     ) {
         this.checks = new Map<CheckId, Check>();
 
         for (const checkBlueprint of checkBlueprints) {
-            const check = new Check(checkBlueprint, this.modelName, cache);
+            const check = new Check(
+                checkBlueprint,
+                this.modelName,
+                cache,
+                apiKey,
+            );
             this.checks.set(checkBlueprint.objInfo.id, check);
         }
     }

@@ -14,10 +14,11 @@ export class Check {
         public blueprint: CheckBlueprint,
         modelName: string,
         cache: any | undefined, // TODO: resolve the types so it works properly on the client
+        apiKey: string | undefined,
     ) {
         const systemPrompt = this.getSystemPrompt();
         console.log("systemPrompt", systemPrompt);
-        this.llm = new Llm(systemPrompt, modelName, cache);
+        this.llm = new Llm(systemPrompt, modelName, cache, apiKey);
     }
 
     private getSystemPrompt(): string {

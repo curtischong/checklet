@@ -72,7 +72,12 @@ export default async function handler(
         path.join(process.cwd(), ".chatgpt_history"),
         "/cache",
     );
-    const checker = new Checker(checkBlueprints, "gpt-3.5-turbo", cache);
+    const checker = new Checker(
+        checkBlueprints,
+        "gpt-3.5-turbo",
+        cache,
+        undefined,
+    );
 
     const suggestions = await checker.checkDoc(doc);
 

@@ -11,8 +11,12 @@ export class Llm {
         systemPrompt: string,
         model = "gpt-3.5-turbo",
         private cache: SimpleCache | undefined,
+        apiKey: string | undefined,
     ) {
-        this.client = new OpenAI();
+        this.client = new OpenAI({
+            apiKey,
+            dangerouslyAllowBrowser: true,
+        });
         this.model = model;
         this.systemPromptMessage = {
             role: "system",

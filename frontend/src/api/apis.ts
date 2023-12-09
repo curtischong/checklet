@@ -285,7 +285,7 @@ export class Api {
         checkerId: CheckerId,
     ): Promise<CheckBlueprint[] | undefined> => {
         const res = await Api.createRequest(
-            "api/check/set-is-enabled",
+            "api/check/get-enabled-checks",
             "POST",
             {
                 checkerId,
