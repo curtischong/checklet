@@ -1,4 +1,4 @@
-import { PlusButton, TextButton } from "@components/Button";
+import { CloseButton, PlusButton, TextButton } from "@components/Button";
 import { NormalTextArea } from "@components/TextArea";
 import {
     CheckType,
@@ -54,7 +54,7 @@ export const FlattenedPositiveExamplePreview = ({
                 )}
             </div>
             {isAddingRephrase && (
-                <div className="flex flex-row items-start">
+                <div className="flex flex-row items-start space-x-0">
                     <NormalTextArea
                         value={rephaseOption}
                         onChange={(e) => setRephaseOption(e.target.value)}
@@ -62,8 +62,12 @@ export const FlattenedPositiveExamplePreview = ({
                         minRows={1}
                         maxLength={MAX_POSITIVE_EX_EDITED_TEXT_LEN}
                     />
+                    <CloseButton
+                        className="mt-[7px] ml-2"
+                        onClick={() => setIsAddingRephrase(false)}
+                    />
                     <TextButton
-                        className="w-52 mt-[3px]"
+                        className="w-48 mt-[5px] px-0 ml-[-20px]"
                         onClick={() => {
                             example.editedText.push(rephaseOption);
                             setRephaseOption("");

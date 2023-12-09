@@ -6,6 +6,7 @@ import { UploadIcon } from "@components/icons/UploadIcon";
 import classNames from "classnames";
 import { EditIcon } from "@components/icons/EditIcon";
 import { PlusIcon } from "@components/icons/PlusIcon";
+import { CloseIcon } from "@components/icons/CloseIcon";
 
 export type IButton = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -116,7 +117,7 @@ export const TextButton: React.FC<IButton> = ({
 }) => {
     return (
         <button
-            className={` text-gray-700 hover:text-gray-800 py-2 px-4 rounded transition duration-300 ${className}`}
+            className={` text-gray-500 hover:text-gray-800 py-2 rounded transition duration-300 ${className}`}
             {...rest}
         >
             {children}
@@ -173,6 +174,19 @@ export const PlusButton: React.FC<IButton> = ({ className = "", ...rest }) => {
                 {...rest}
             >
                 <PlusIcon />
+            </button>
+        </div>
+    );
+};
+
+export const CloseButton: React.FC<IButton> = ({ className = "", ...rest }) => {
+    return (
+        <div className="flex items-center">
+            <button
+                className={`text-gray-400 hover:text-gray-600 px-[4px] py-[4px] mx-[10px] rounded transition duration-300 ${className}`}
+                {...rest}
+            >
+                <CloseIcon />
             </button>
         </div>
     );
