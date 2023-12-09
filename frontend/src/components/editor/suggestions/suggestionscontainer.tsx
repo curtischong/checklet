@@ -17,7 +17,7 @@ export type SuggestionsContainerProps = {
     activeSuggestion: Suggestion | undefined;
     setActiveSuggestion: SetState<Suggestion | undefined>;
     editorState: string;
-    acceptSuggestion: (suggestion: Suggestion) => void;
+    acceptSuggestion: (suggestion: Suggestion, acceptedOption: string) => void;
     checkDescObj: CheckDescObj;
     hasModifiedTextAfterChecking: boolean;
 };
@@ -77,13 +77,6 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
         [activeSuggestion, setActiveSuggestion],
     );
 
-    const onReplaceClick = useCallback(
-        (s: Suggestion) => {
-            acceptSuggestion(s);
-        },
-        [editorState, acceptSuggestion],
-    );
-
     useEffect(() => {
         if (activeSuggestion) {
             const ref = suggestionsRefs.current[activeSuggestion.suggestionId];
@@ -116,7 +109,9 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
                             suggestion={s}
                             activeSuggestion={activeSuggestion}
                             onClick={() => onCollapseClick(s)}
-                            onReplaceClick={() => onReplaceClick(s)}
+                            onReplaceClick={(acceptedOption) =>
+                                acceptSuggestion(s, acceptedOption)
+                            }
                             checkDescObj={checkDescObj}
                             ref={ref}
                         />

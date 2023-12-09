@@ -105,7 +105,12 @@ ${positiveExamples}
                                 type: "array",
                                 description: "The fixed texts",
                                 items: {
-                                    type: "string",
+                                    type: "array",
+                                    description:
+                                        "Each individual candidate option for editing the text",
+                                    items: {
+                                        type: "string",
+                                    },
                                 },
                             },
                         },
@@ -124,17 +129,26 @@ ${positiveExamples}
                             break;
                         }
                         const originalEx = argsObj.originalTexts[i];
-                        const editedEx = argsObj.editedTexts[i];
-                        if (originalEx === editedEx) {
-                            // the model didn't change anything. just ignore it
-                            console.log("originalEx === editedEx", originalEx);
-                            continue;
+                        const editedOptions = argsObj.editedTexts[i];
+                        console.log("editedOptions", editedOptions);
+                        const prunedOptions = [];
+                        for (const option of editedOptions) {
+                            if (originalEx === option) {
+                                // the model didn't change anything. just ignore it
+                                console.log(
+                                    "originalEx === option",
+                                    originalEx,
+                                );
+                                continue;
+                            }
+                            prunedOptions.push(option);
                         }
 
-                        const editOps = editDistanceOperationsWithClasses(
-                            originalEx,
-                            editedEx,
-                        );
+                        // TODO: reenable if these are used
+                        // const editOps = editDistanceOperationsWithClasses(
+                        //     originalEx,
+                        //     editedEx,
+                        // );
 
                         const originalTextIdx = doc
                             .substring(startIdx)
@@ -158,8 +172,8 @@ ${positiveExamples}
                                 startIdx,
                             ),
                             originalText: originalEx,
-                            editedText: editedEx,
-                            editOps,
+                            editedText: prunedOptions,
+                            editOps: [],
                             checkId: this.blueprint.objInfo.id,
                             suggestionId: createUniqueId(),
                         });
@@ -234,6 +248,7 @@ ${positiveExamples}
                             editOps: [],
                             checkId: this.blueprint.objInfo.id,
                             suggestionId: createUniqueId(),
+                            editedText: [],
                         });
                     }
                     resolve(suggestions);
