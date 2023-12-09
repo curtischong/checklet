@@ -1,6 +1,7 @@
 import { Suggestion } from "@api/ApiTypes";
 import { Api } from "@api/apis";
 import { LoadingButton } from "@components/Button";
+import ThinLine from "@components/ThinLine";
 import {
     CheckDescObj,
     CheckerStorefront,
@@ -70,26 +71,25 @@ export const EditorHeader = ({
 
     return (
         <Affix offsetTop={0}>
-            <div className="bg-gradient-to-b from-white via-white to-transparent pt-4 pb-4 pl-4">
-                <div className="pb-6 flex flex-row">
-                    {/* TODO: maybe put on the right side, above feedback */}
-                    <div className="font-bold my-auto">
+            {/* <div className="bg-gradient-to-b from-[#fff0f1] via-[fff0f1] to-transparent pt-4"> */}
+            <div className="flex flex-col pt-4">
+                {/* TODO: maybe put on the right side, above feedback */}
+                <div className="flex flex-row">
+                    <div className=" text-3xl my-auto flex-grow">
                         {storefront.objInfo.name}
                     </div>
-                    <div className="font-bold my-auto ml-20">
-                        {storefront.objInfo.desc}
-                    </div>
-
                     <LoadingButton
                         onClick={checkDocument}
                         loading={isLoading}
-                        className="h-9 float-right ml-32"
+                        className="h-9 mt-2"
                         disabled={editorState === ""}
                     >
                         Check Document
                     </LoadingButton>
                 </div>
+                <div className="text-md ">{storefront.objInfo.desc}</div>
             </div>
+            <hr className="w-full h-[1px] bg-black mb-4 mt-1" />
         </Affix>
     );
 };

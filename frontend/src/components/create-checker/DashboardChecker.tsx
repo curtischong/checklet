@@ -1,5 +1,9 @@
 import { Api } from "@api/apis";
-import { DeleteButtonWithConfirm, EditButton } from "@components/Button";
+import {
+    DeleteButtonWithConfirm,
+    EditButton,
+    TextButton,
+} from "@components/Button";
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { IsPublicSwitch } from "@components/create-checker/IsPublicSwitch";
 import { useClientContext } from "@utils/ClientContext";
@@ -61,7 +65,7 @@ export const DashboardChecker = ({
                 </div>
             </div>
             <div>{blueprint.objInfo.desc}</div>
-            <div className=" mt-4 cursor-default ">
+            <div className=" mt-4 cursor-default flex flex-row items-center">
                 <IsPublicSwitch
                     name={blueprint.objInfo.name}
                     desc={blueprint.objInfo.desc}
@@ -69,6 +73,16 @@ export const DashboardChecker = ({
                     checkerId={blueprint.objInfo.id}
                     isPublic={blueprint.isPublic}
                 />
+                <TextButton
+                    className="ml-8"
+                    onClick={() =>
+                        router.push({
+                            pathname: `/editor/${blueprint.objInfo.id}`,
+                        })
+                    }
+                >
+                    Open in Editor
+                </TextButton>
             </div>
         </div>
     );
