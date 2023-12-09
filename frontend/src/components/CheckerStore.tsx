@@ -40,12 +40,14 @@ const StoreFront = ({ storefront }: StorefrontProps) => {
     const router = useRouter();
     return (
         <div
-            className="bg-white rounded-md w-60 px-4 py-4 cursor-pointer shadow-around"
+            className="bg-white rounded-md w-[350px] px-4 py-4 cursor-pointer shadow-around text-left"
             onClick={() => {
                 router.push(`/editor/${storefront.objInfo.id}`);
             }}
         >
-            <div className="text-xl font-bold">{storefront.objInfo.name}</div>
+            <div className="text-xl font-bold mb-1">
+                {storefront.objInfo.name}
+            </div>
             <div>{storefront.objInfo.desc}</div>
         </div>
     );

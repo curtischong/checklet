@@ -55,7 +55,6 @@ export const TextboxContainer = ({
     const suggestionIdToRef = React.useRef<SuggestionIdToRef>({});
 
     useEffect(() => {
-        // TODO: load state from localstorage
         editorRef.current?.focus();
 
         const prevDocument = localStorage.getItem("editorText");

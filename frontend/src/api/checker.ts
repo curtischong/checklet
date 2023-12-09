@@ -5,7 +5,7 @@ import {
     CheckId,
 } from "@components/create-checker/CheckerTypes";
 
-export type CheckerId = string; // TODO: make this 32 bytes?
+export type CheckerId = string;
 export class Checker {
     checks: Map<CheckId, Check>;
 
@@ -31,7 +31,8 @@ export class Checker {
     async checkDoc(doc: string): Promise<Suggestion[]> {
         const results: Suggestion[] = [];
         for (const check of this.checks.values()) {
-            // todo: parallelize
+            // todo: parallelize. but maybe not cause we don't want to spam the api
+            // but maybe we should batch calls then in one request
             results.push(...(await check.checkDoc(doc)));
         }
         return results;

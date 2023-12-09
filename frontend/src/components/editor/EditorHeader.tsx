@@ -58,7 +58,6 @@ export const EditorHeader = ({
         console.log("newSuggestions", newSuggestions);
         setCheckDescObj(response.checkDescs);
         setSuggestions(newSuggestions);
-        // TODO: update the suggestionRefs with the actual ref of the card
 
         mixpanelTrack("Check Document Clicked", {
             "Number of suggestions generated": newSuggestions.length,
@@ -71,7 +70,6 @@ export const EditorHeader = ({
         <Affix offsetTop={0}>
             {/* <div className="bg-gradient-to-b from-[#fff0f1] via-[fff0f1] to-transparent pt-4"> */}
             <div className="flex flex-col pt-4">
-                {/* TODO: maybe put on the right side, above feedback */}
                 <div className="flex flex-row">
                     <div className=" text-3xl my-auto flex-grow">
                         {storefront.objInfo.name}

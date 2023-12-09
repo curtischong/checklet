@@ -64,7 +64,6 @@ export const validateObjInfo = (objInfo: ObjInfo): string => {
         return "Checker id is not legit";
     }
 
-    // TODO: validate that the user exists
     return "";
 };
 
