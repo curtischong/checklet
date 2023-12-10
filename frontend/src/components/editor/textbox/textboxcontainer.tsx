@@ -92,12 +92,13 @@ export const TextboxContainer = ({
     }, [activeSuggestion]);
 
     const handleUnderlineClicked = useCallback(
-        (range: DocRange) => {
+        (suggestionId?: SuggestionId) => {
+            if (!suggestionId) {
+                return;
+            }
             // PERF: try using a map, but since there's only so few suggestions, it might not be worth it
             const suggestion = suggestions.find((s) => {
-                return (
-                    s.range.start === range.start && s.range.end === range.end
-                );
+                return s.suggestionId === suggestionId;
             });
 
             if (!suggestion) {
@@ -200,7 +201,11 @@ export const TextboxContainer = ({
                                 : {};
 
                             const ref = React.createRef<HTMLSpanElement>();
+                            console.log("sSuggestions", sSuggestions);
+                            let clickSuggestionId: SuggestionId | undefined =
+                                undefined;
                             for (const suggestionId of sSuggestions ?? []) {
+                                clickSuggestionId = suggestionId;
                                 suggestionIdToRef.current[suggestionId] = ref;
                             }
 
@@ -210,6 +215,11 @@ export const TextboxContainer = ({
                                     key={res.length}
                                     className="border-[#189bf2] border-b-[2px]"
                                     style={style}
+                                    onClick={() =>
+                                        handleUnderlineClicked(
+                                            clickSuggestionId,
+                                        )
+                                    }
                                 >
                                     {v.substring(start, end)}
                                 </span>,
