@@ -150,7 +150,7 @@ export const TextboxContainer = ({
                     // also, we don't want to allocate 10k array indexes cause this logic needs to run VERY frequently
 
                     const starts = new Map<number, SuggestionId[]>(); // we need the suggestionId instead of an number, so we can set the suggetionIdToRef map
-                    const ends = new Map<number, number>();
+                    const ends = new Map<number, SuggestionId[]>();
                     for (const suggestion of suggestions) {
                         const start = suggestion.range.start;
                         const end = suggestion.range.end;
@@ -162,9 +162,9 @@ export const TextboxContainer = ({
                         }
                         const dEnd = ends.get(end);
                         if (dEnd) {
-                            ends.set(end, dEnd + 1);
+                            dEnd.push(suggestion.suggestionId);
                         } else {
-                            ends.set(end, 1);
+                            ends.set(end, [suggestion.suggestionId]);
                         }
                     }
                     const allPoints = new Set([
@@ -177,18 +177,22 @@ export const TextboxContainer = ({
 
                     suggestionIdToRef.current = {}; // reset the map
 
-                    let insideNumSuggestions = 0;
+                    const activeSuggestions = new Set<SuggestionId>();
                     const res: JSX.Element[] = [];
                     for (let i = 0; i < sortedPoints.length - 1; i++) {
                         const start = sortedPoints[i];
                         const end = sortedPoints[i + 1];
-                        const sSuggestions = starts.get(start);
-                        const eAmount = ends.get(start); // yes. start. not end. this is not a typo
-                        insideNumSuggestions += sSuggestions?.length ?? 0;
-                        insideNumSuggestions -= eAmount ?? 0;
+                        const sSuggestions = starts.get(start) ?? [];
+                        const eSuggestions = ends.get(start) ?? []; // yes. start. not end. this is not a typo
+                        sSuggestions.forEach((item) =>
+                            activeSuggestions.add(item),
+                        );
+                        eSuggestions.forEach((item) =>
+                            activeSuggestions.delete(item),
+                        );
 
                         const range = newDocRange(start, end);
-                        const isWithinSuggestion = insideNumSuggestions > 0;
+                        const isWithinSuggestion = activeSuggestions.size > 0;
                         if (isWithinSuggestion) {
                             const isInActiveSuggestion =
                                 activeSuggestion &&
@@ -201,10 +205,9 @@ export const TextboxContainer = ({
                                 : {};
 
                             const ref = React.createRef<HTMLSpanElement>();
-                            console.log("sSuggestions", sSuggestions);
                             let clickSuggestionId: SuggestionId | undefined =
                                 undefined;
-                            for (const suggestionId of sSuggestions ?? []) {
+                            for (const suggestionId of activeSuggestions) {
                                 clickSuggestionId = suggestionId;
                                 suggestionIdToRef.current[suggestionId] = ref;
                             }
