@@ -45,12 +45,16 @@ export const CheckPreview = ({
         if (editedText !== "" || originalText !== "") {
             return [editedText];
         } else if (blueprint.positiveExamples.length > 0) {
-            console.log("editedText", blueprint.positiveExamples[0].editedText);
             return blueprint.positiveExamples[0].editedText;
         } else {
             return defaultEditedText[blueprint.checkType];
         }
-    }, [originalText, editedText, JSON.stringify(blueprint.positiveExamples)]);
+    }, [
+        originalText,
+        editedText,
+        blueprint.checkType,
+        JSON.stringify(blueprint.positiveExamples),
+    ]);
 
     const suggestion: Suggestion = {
         checkId,

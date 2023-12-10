@@ -107,6 +107,8 @@ export const TextboxContainer = ({
         [suggestions],
     );
 
+    // This is a similar prblem to https://leetcode.com/problems/describe-the-painting/
+
     return (
         <div
             className="textbox col-span-3"
