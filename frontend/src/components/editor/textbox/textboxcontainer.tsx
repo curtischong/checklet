@@ -145,6 +145,7 @@ export const TextboxContainer = ({
                     for (let i = 0; i < suggestions.length; i++) {
                         const suggestion = suggestions[i];
                         const range = suggestion.range;
+                        // render the text in between underlines (not in a suggestion)
                         if (lastCharIdx < range.start) {
                             res.push(
                                 <span key={2 * i}>
@@ -176,6 +177,10 @@ export const TextboxContainer = ({
                                 onClick={() => handleUnderlineClicked(range)}
                                 key={2 * i + 1}
                             >
+                                {/*  If this suggestion's range overlaps with the previous suggestion COMPLETELY, then an empty span element
+                                is created (since the substring will have 0 chars). This is fine! since the isInActiveSuggestion logic above
+                                will still show the correctly highlighted underline spans if you click on the card on the right
+                                 */}
                                 {v.substring(lastCharIdx, range.end)}
                             </span>,
                         );
