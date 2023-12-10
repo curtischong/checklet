@@ -85,6 +85,12 @@ export const EditorHeader = ({
                     onlyUseCheckId,
                     user,
                 );
+                if (!checkBlueprint) {
+                    toast.error(
+                        `couldn't find the checkBlueprint for onlyUseCheckId=${onlyUseCheckId}`,
+                    );
+                    return;
+                }
                 setOnlyUseCheckBlueprint(checkBlueprint);
             }
         })();
