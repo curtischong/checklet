@@ -1,6 +1,8 @@
 import { Api } from "@api/apis";
-import { Checker } from "@api/checker";
+import { Checker, CheckerId } from "@api/checker";
 import {
+    CheckBlueprint,
+    CheckId,
     FeedbackResponse,
     ModelType,
 } from "@components/create-checker/CheckerTypes";
@@ -10,17 +12,33 @@ import { getCheckDescForCheckIds } from "shared/checker-utils";
 
 export const checkDocText = async (
     doc: string,
-    checkerId: string,
+    checkerId: CheckerId,
     user: User | null,
+    onlyUseCheckId: CheckId | undefined,
 ): Promise<FeedbackResponse | undefined> => {
     const isUsingServer = localStorage.getItem("modelType") === ModelType.GPT35;
     if (isUsingServer) {
-        return await Api.checkDoc(doc, checkerId, user);
+        return await Api.checkDoc(doc, checkerId, user, onlyUseCheckId);
     }
-    const checkBlueprints = await Api.getEnabledChecks(checkerId);
-    if (!checkBlueprints) {
-        return undefined;
+    let checkBlueprints: CheckBlueprint[] = [];
+    if (onlyUseCheckId) {
+        if (!user) {
+            toast.error("You must be logged in to test a checkId");
+            return;
+        }
+        const rawCheckBlueprint = await Api.getCheckBlueprint(checkerId, user);
+        if (!rawCheckBlueprint) {
+            return undefined;
+        }
+        checkBlueprints = [rawCheckBlueprint];
+    } else {
+        const rawCheckBlueprints = await Api.getEnabledChecks(checkerId);
+        if (!rawCheckBlueprints) {
+            return undefined;
+        }
+        checkBlueprints = rawCheckBlueprints;
     }
+
     const apiKey = localStorage.getItem("openai-api-key");
     if (!apiKey) {
         toast.error(

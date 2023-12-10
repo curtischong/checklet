@@ -62,6 +62,7 @@ export class Api {
         doc: string,
         checkerId: CheckerId,
         user: User | null,
+        onlyUseCheckId: CheckId | undefined,
     ): Promise<FeedbackResponse | undefined> => {
         const data = await Api.createRequest(
             "api/check-doc",
@@ -69,6 +70,7 @@ export class Api {
             {
                 doc,
                 checkerId,
+                onlyUseCheckId,
             },
             user,
         );
@@ -99,7 +101,7 @@ export class Api {
         return data;
     };
 
-    static fetchCheckBlueprint = async (
+    static getCheckBlueprint = async (
         checkId: CheckId,
         user: User,
     ): Promise<CheckBlueprint | undefined> => {

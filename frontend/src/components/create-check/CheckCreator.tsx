@@ -87,7 +87,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                 toast.error("Please log in to edit your check");
                 return;
             }
-            const checkBlueprint = await Api.fetchCheckBlueprint(checkId, user);
+            const checkBlueprint = await Api.getCheckBlueprint(checkId, user);
             if (!checkBlueprint) {
                 console.warn(
                     `check blueprint not found for checkId=${checkId}`,
@@ -286,6 +286,19 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                         }}
                     >
                         Return to Create Checker
+                    </NormalButton>
+                    <NormalButton
+                        className="py-[4px]"
+                        onClick={() => {
+                            router.push({
+                                pathname: `/editor/${checkerId}`,
+                                query: {
+                                    onlyUseCheckId: checkId,
+                                },
+                            });
+                        }}
+                    >
+                        Try your check in the editor
                     </NormalButton>
                     <div>{SaveStatusText[submittingState]}</div>
                 </div>
