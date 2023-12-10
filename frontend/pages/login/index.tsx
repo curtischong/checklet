@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { GoogleAuthProvider } from "firebase/auth";
 import { useClientContext } from "@utils/ClientContext";
-import { AuthBoxCss } from "pages/login/authBoxCss";
+import { AuthBoxCss } from "@components/authBoxCss";
 import { useRouter } from "next/router";
 import { TextButton } from "@components/Button";
 

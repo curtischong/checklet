@@ -3,7 +3,6 @@ import { getAuth } from "firebase-admin/auth";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { firebaseConfig } from "@utils/ClientContext";
 import { createClient } from "redis";
-import { CheckerId } from "@api/checker";
 
 export type RedisClient = ReturnType<typeof createClient>;
 
