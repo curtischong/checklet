@@ -1,8 +1,11 @@
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { createShortId } from "@utils/strings";
 import { NextApiRequest, NextApiResponse } from "next";
-import { requestMiddleware, sendBadRequest } from "pages/api/commonNetworking";
-import { createClient } from "redis";
+import {
+    connectToRedis,
+    requestMiddleware,
+    sendBadRequest,
+} from "pages/api/commonNetworking";
 
 export default async function handler(
     req: NextApiRequest,
@@ -13,8 +16,7 @@ export default async function handler(
         return;
     }
     // https://redis.io/docs/connect/clients/nodejs/
-    const redisClient = createClient();
-    await redisClient.connect();
+    const redisClient = await connectToRedis();
 
     // instead of json.stringifying an array, we use a set
     // https://stackoverflow.com/questions/16844188/saving-and-retrieving-array-of-strings-in-redis

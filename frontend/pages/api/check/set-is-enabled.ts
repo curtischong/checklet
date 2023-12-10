@@ -9,11 +9,11 @@ import {
     validateCheckBlueprint,
 } from "pages/api/common";
 import {
+    connectToRedis,
     requestMiddleware,
     return204Status,
     sendBadRequest,
 } from "pages/api/commonNetworking";
-import { createClient } from "redis";
 
 export default async function setCheckIsEnabled(
     req: NextApiRequest,
@@ -23,8 +23,7 @@ export default async function setCheckIsEnabled(
     if (userId === null) {
         return;
     }
-    const redisClient = createClient();
-    await redisClient.connect();
+    const redisClient = await connectToRedis();
 
     const checkId = req.body.checkId;
     const checkerId = req.body.checkerId;

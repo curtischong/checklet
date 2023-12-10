@@ -2,6 +2,7 @@ import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isUserCheckerOwner, validateChecker } from "pages/api/common";
 import {
+    connectToRedis,
     requestMiddleware,
     return204Status,
     sendBadRequest,
@@ -21,9 +22,7 @@ export default async function handler(
     if (userId === null) {
         return;
     }
-    // https://redis.io/docs/connect/clients/nodejs/
-    const redisClient = createClient();
-    await redisClient.connect();
+    const redisClient = await connectToRedis();
 
     const checkerBlueprint: CheckerBlueprint = req.body.checkerBlueprint;
     const checkerId = checkerBlueprint.objInfo.id;

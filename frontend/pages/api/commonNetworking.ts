@@ -76,3 +76,12 @@ export const return204Status = (res: NextApiResponse): void => {
     // https://github.com/vercel/next.js/discussions/51475
     res.status(200).json({ success: true });
 };
+
+export const connectToRedis = async (): Promise<RedisClient> => {
+    // https://redis.io/docs/connect/clients/nodejs/
+    const redisClient = createClient({
+        url: "redis://0.0.0.0:6379",
+    });
+    await redisClient.connect();
+    return redisClient;
+};

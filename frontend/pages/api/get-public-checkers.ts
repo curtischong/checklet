@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { checkerBlueprintToCheckerStorefront } from "pages/api/common";
 import {
+    connectToRedis,
     isUnauthenticatedRequestValid,
     tryGetUserId,
 } from "pages/api/commonNetworking";
@@ -19,15 +20,7 @@ export default async function handler(
         uid = await tryGetUserId(req, res);
     }
 
-    // https://redis.io/docs/connect/clients/nodejs/
-    const redisClient = createClient();
-    // const redisClient = createClient({
-    //     socket: {
-    //         host: "0.0.0.0",
-    //         port: 6379,
-    //     },
-    // });
-    await redisClient.connect();
+    const redisClient = await connectToRedis();
 
     const checkerIds = await redisClient.sMembers("publicCheckerIds");
     const checkerBlueprints = await getCheckerBlueprints(

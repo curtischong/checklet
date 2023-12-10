@@ -1,8 +1,11 @@
 import { CheckBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isUserCheckOwner } from "pages/api/common";
-import { requestMiddleware, sendBadRequest } from "pages/api/commonNetworking";
-import { createClient } from "redis";
+import {
+    connectToRedis,
+    requestMiddleware,
+    sendBadRequest,
+} from "pages/api/commonNetworking";
 
 export default async function handler(
     req: NextApiRequest,
@@ -12,9 +15,7 @@ export default async function handler(
     if (userId === null) {
         return;
     }
-    // https://redis.io/docs/connect/clients/nodejs/
-    const redisClient = createClient();
-    await redisClient.connect();
+    const redisClient = await connectToRedis();
     const checkId = req.body.checkId;
 
     if (!(await isUserCheckOwner(redisClient, res, userId, checkId))) {

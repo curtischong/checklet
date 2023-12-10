@@ -1,7 +1,11 @@
 import { CheckerId } from "@api/checker";
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { RedisClient, requestMiddleware } from "pages/api/commonNetworking";
+import {
+    RedisClient,
+    connectToRedis,
+    requestMiddleware,
+} from "pages/api/commonNetworking";
 import { createClient } from "redis";
 
 export default async function handler(
@@ -13,9 +17,7 @@ export default async function handler(
         return;
     }
 
-    // https://redis.io/docs/connect/clients/nodejs/
-    const redisClient = createClient();
-    await redisClient.connect();
+    const redisClient = await connectToRedis();
     const checkerIds = await redisClient.sMembers(`users/${userId}/checkerIds`);
     const checkerBlueprints = await getCheckerBlueprints(
         redisClient,
