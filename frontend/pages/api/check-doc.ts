@@ -1,6 +1,9 @@
 import * as path from "path";
 import { Checker } from "@api/checker";
-import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import {
+    CheckBlueprint,
+    CheckerBlueprint,
+} from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getCheckBlueprints } from "pages/api/common";
 import {
@@ -25,6 +28,7 @@ export default async function handler(
 
     const checkerId = req.body.checkerId;
     const doc = req.body.doc;
+    const onlyUseCheckId = req.body.onlyUseCheckId;
 
     if (!checkerId) {
         sendBadRequest(res, "checkerId is undefined");
@@ -62,11 +66,26 @@ export default async function handler(
     //     return;
     // }
 
-    const checkBlueprints = await getCheckBlueprints(
-        redisClient,
-        checkerBlueprint,
-        true,
-    );
+    let checkBlueprints: CheckBlueprint[] = [];
+    if (onlyUseCheckId) {
+        const rawCheckBlueprint = await redisClient.get(
+            `checks/${onlyUseCheckId}`,
+        );
+        if (!rawCheckBlueprint) {
+            sendBadRequest(
+                res,
+                `Check with id ${onlyUseCheckId} does not exist`,
+            );
+            return;
+        }
+        checkBlueprints = [JSON.parse(rawCheckBlueprint)];
+    } else {
+        checkBlueprints = await getCheckBlueprints(
+            redisClient,
+            checkerBlueprint,
+            true,
+        );
+    }
 
     const cache = new SimpleCache(
         path.join(process.cwd(), ".chatgpt_history"),

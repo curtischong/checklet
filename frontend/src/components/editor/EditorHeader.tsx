@@ -1,6 +1,8 @@
 import { Suggestion } from "@api/ApiTypes";
-import { LoadingButton } from "@components/Button";
+import { Api } from "@api/apis";
+import { LoadingButton, NormalButton } from "@components/Button";
 import {
+    CheckBlueprint,
     CheckDescObj,
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
@@ -14,7 +16,7 @@ import { useClientContext } from "@utils/ClientContext";
 import { SetState } from "@utils/types";
 import { Affix } from "antd";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface Props {
@@ -38,14 +40,25 @@ export const EditorHeader = ({
 }: Props): JSX.Element => {
     const router = useRouter();
     const { user } = useClientContext();
+    const [onlyUseCheckBlueprint, setOnlyUseCheckBlueprint] = useState<
+        CheckBlueprint | undefined
+    >();
+
+    const onlyUseCheckId = router.query.onlyUseCheckId as string;
+    const checkerId = router.query.checkerId as string;
+
     const checkDocument = useCallback(async (): Promise<void> => {
         if (isLoading) {
             return;
         }
         setIsLoading(true);
         const plaintext = editorState;
-        const checkerId = router.query.checkerId as string;
-        const response = await checkDocText(plaintext, checkerId, user);
+        const response = await checkDocText(
+            plaintext,
+            checkerId,
+            user,
+            onlyUseCheckId,
+        );
         setIsLoading(false);
         if (!response) {
             toast.error("Something went wrong, please try again later");
@@ -55,7 +68,6 @@ export const EditorHeader = ({
 
         const newSuggestions = response.suggestions;
         newSuggestions.sort(Sorters[SortType.TextOrder]);
-        console.log("newSuggestions", newSuggestions);
         setCheckDescObj(response.checkDescs);
         setSuggestions(newSuggestions);
 
@@ -66,6 +78,24 @@ export const EditorHeader = ({
         });
     }, [editorState, isLoading]);
 
+    useEffect(() => {
+        (async () => {
+            if (onlyUseCheckId && user) {
+                const checkBlueprint = await Api.getCheckBlueprint(
+                    onlyUseCheckId,
+                    user,
+                );
+                if (!checkBlueprint) {
+                    toast.error(
+                        `couldn't find the checkBlueprint for onlyUseCheckId=${onlyUseCheckId}`,
+                    );
+                    return;
+                }
+                setOnlyUseCheckBlueprint(checkBlueprint);
+            }
+        })();
+    }, []);
+
     return (
         <Affix offsetTop={0}>
             {/* <div className="bg-gradient-to-b from-[#fff0f1] via-[fff0f1] to-transparent pt-4"> */}
@@ -74,16 +104,47 @@ export const EditorHeader = ({
                     <div className=" text-3xl my-auto flex-grow">
                         {storefront.objInfo.name}
                     </div>
-                    <LoadingButton
-                        onClick={checkDocument}
-                        loading={isLoading}
-                        className="h-9 mt-2"
-                        disabled={editorState === ""}
-                    >
-                        Check Document
-                    </LoadingButton>
+                    <div className="flex flex-col space-y-2">
+                        <LoadingButton
+                            onClick={checkDocument}
+                            loading={isLoading}
+                            className="h-9 mt-2"
+                            disabled={editorState === ""}
+                        >
+                            Check Document
+                        </LoadingButton>
+
+                        {onlyUseCheckBlueprint && (
+                            <NormalButton
+                                className="py-[4px]"
+                                onClick={() => {
+                                    router.push({
+                                        pathname: `/create/check/${onlyUseCheckId}`,
+                                        query: {
+                                            checkerId,
+                                        },
+                                    });
+                                }}
+                            >
+                                Return to Check Editor
+                            </NormalButton>
+                        )}
+                    </div>
                 </div>
-                <div className="text-md ">{storefront.objInfo.desc}</div>
+                <div className="text-md ">
+                    {onlyUseCheckBlueprint ? (
+                        <>
+                            <p>
+                                You are testing the check:{" "}
+                                <span className="font-bold">
+                                    {onlyUseCheckBlueprint.objInfo.name}
+                                </span>
+                            </p>
+                        </>
+                    ) : (
+                        <p>{storefront.objInfo.desc}</p>
+                    )}
+                </div>
             </div>
             <hr className="w-full h-[1px] bg-black mb-4 mt-1" />
         </Affix>
