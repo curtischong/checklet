@@ -7,6 +7,7 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { getCheckBlueprints } from "pages/api/common";
 import {
+    connectToRedis,
     isUnauthenticatedRequestValid,
     sendBadRequest,
 } from "pages/api/commonNetworking";
@@ -23,8 +24,7 @@ export default async function handler(
         return;
     }
 
-    const redisClient = createClient();
-    await redisClient.connect();
+    const redisClient = await connectToRedis();
 
     const checkerId = req.body.checkerId;
     const doc = req.body.doc;

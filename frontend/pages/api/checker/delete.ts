@@ -2,11 +2,11 @@ import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
 import { isUserCheckerOwner } from "pages/api/common";
 import {
+    connectToRedis,
     requestMiddleware,
     return204Status,
     sendBadRequest,
 } from "pages/api/commonNetworking";
-import { createClient } from "redis";
 
 export default async function deleteChecker(
     req: NextApiRequest,
@@ -17,8 +17,7 @@ export default async function deleteChecker(
         return;
     }
 
-    const redisClient = createClient();
-    await redisClient.connect();
+    const redisClient = await connectToRedis();
     const checkerId = req.body.checkerId;
     if (!(await isUserCheckerOwner(redisClient, res, userId, checkerId))) {
         return;

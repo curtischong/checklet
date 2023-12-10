@@ -2,7 +2,6 @@ import React, {
     // createRef,
     useCallback,
     useEffect,
-    useRef,
 } from "react";
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
@@ -14,12 +13,6 @@ import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTyp
 import debounce from "lodash.debounce";
 import { MAX_EDITOR_LEN } from "src/constants";
 import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
-// const PizZip = require("pizzip");
-// import Docxtemplater from "docxtemplater";
-// import PizZip from "pizzip";
-// import css from "./textboxcontainer.module.scss";
-// import classnames from "classnames";
-// import { LoadingButton, NormalButton } from "@components/Button";
 
 // need same version with worker and pdfjs for it to work properly
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;

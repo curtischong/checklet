@@ -16,7 +16,8 @@ export const checkDocText = async (
     user: User | null,
     onlyUseCheckId: CheckId | undefined,
 ): Promise<FeedbackResponse | undefined> => {
-    const isUsingServer = localStorage.getItem("modelType") === ModelType.GPT35;
+    const isUsingServer =
+        localStorage.getItem("modelType") === ModelType.GPT35 ?? true;
     if (isUsingServer) {
         return await Api.checkDoc(doc, checkerId, user, onlyUseCheckId);
     }

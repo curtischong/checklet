@@ -10,6 +10,7 @@ import {
     validateCheckBlueprint,
 } from "pages/api/common";
 import {
+    connectToRedis,
     requestMiddleware,
     return204Status,
     sendBadRequest,
@@ -32,9 +33,7 @@ export default async function handler(
     if (userId === null) {
         return;
     }
-    // https://redis.io/docs/connect/clients/nodejs/
-    const redisClient = createClient();
-    await redisClient.connect();
+    const redisClient = await connectToRedis();
 
     const checkerId = req.body.checkerId;
     const checkBlueprint: CheckBlueprint = req.body.checkBlueprint;

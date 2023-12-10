@@ -8,7 +8,7 @@
         "start": "next start",
         "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
         "prettier": "prettier --write '**/*.{js,jsx,ts,tsx}'",
-        "redis": "docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest"
+        "redis": "docker run -d -p 6379:6379 -p 8001:8001 redis/redis-stack:latest"
     },
     "dependencies": {
         "@types/mixpanel-browser": "^2.38.0",
@@ -20,6 +20,7 @@
         "css-loader": "^6.7.1",
         "docxtemplater": "^3.31.2",
         "firebase": "^10.7.0",
+        "firebase-admin": "^12.0.0",
         "firebase-tools": "^12.9.1",
         "firebaseui": "^6.1.0",
         "fs": "^0.0.1-security",

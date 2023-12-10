@@ -3,7 +3,6 @@ import { getAuth } from "firebase-admin/auth";
 import { initializeApp, getApps } from "firebase-admin/app";
 import { firebaseConfig } from "@utils/ClientContext";
 import { createClient } from "redis";
-import { CheckerId } from "@api/checker";
 
 export type RedisClient = ReturnType<typeof createClient>;
 
@@ -76,4 +75,13 @@ export const return204Status = (res: NextApiResponse): void => {
     // we cannot use a real 204 status since nextjs doesn't support it (it'll also confuse it, thinking no response was sent)
     // https://github.com/vercel/next.js/discussions/51475
     res.status(200).json({ success: true });
+};
+
+export const connectToRedis = async (): Promise<RedisClient> => {
+    // https://redis.io/docs/connect/clients/nodejs/
+    const redisClient = createClient({
+        url: "redis://0.0.0.0:6379",
+    });
+    await redisClient.connect();
+    return redisClient;
 };
