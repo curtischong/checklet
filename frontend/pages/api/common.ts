@@ -2,6 +2,7 @@ import { Checker, CheckerId } from "@api/checker";
 import {
     CheckBlueprint,
     CheckDescObj,
+    CheckId,
     CheckType,
     CheckerBlueprint,
     CheckerStorefront,
@@ -34,7 +35,7 @@ export const isUserCheckOwner = async (
     redisClient: RedisClient,
     res: NextApiResponse,
     userId: string,
-    checkId: CheckerId,
+    checkId: CheckId,
 ): Promise<boolean> => {
     if (!(await redisClient.sIsMember(`users/${userId}/checkIds`, checkId))) {
         sendBadRequest(

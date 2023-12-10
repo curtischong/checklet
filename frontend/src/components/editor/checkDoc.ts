@@ -26,7 +26,10 @@ export const checkDocText = async (
             toast.error("You must be logged in to test a checkId");
             return;
         }
-        const rawCheckBlueprint = await Api.getCheckBlueprint(checkerId, user);
+        const rawCheckBlueprint = await Api.getCheckBlueprint(
+            onlyUseCheckId,
+            user,
+        );
         if (!rawCheckBlueprint) {
             return undefined;
         }
