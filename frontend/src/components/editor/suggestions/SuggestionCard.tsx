@@ -96,6 +96,7 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
                     <div className={css.desc}>
                         {" "}
                         <ReactMarkdown
+                            className="whitespace-pre-wrap"
                             children={`${checkDesc.objInfo.desc}`}
                             remarkPlugins={[remarkGfm]}
                         />{" "}

@@ -68,6 +68,7 @@ export const EditorHeader = ({
 
         const newSuggestions = response.suggestions;
         newSuggestions.sort(Sorters[SortType.TextOrder]);
+        console.log("newSuggestions", newSuggestions);
         setCheckDescObj(response.checkDescs);
         setSuggestions(newSuggestions);
 
@@ -97,7 +98,7 @@ export const EditorHeader = ({
     }, []);
 
     return (
-        <Affix offsetTop={0}>
+        <div>
             {/* <div className="bg-gradient-to-b from-[#fff0f1] via-[fff0f1] to-transparent pt-4"> */}
             <div className="flex flex-col pt-4">
                 <div className="flex flex-row">
@@ -147,6 +148,6 @@ export const EditorHeader = ({
                 </div>
             </div>
             <hr className="w-full h-[1px] bg-black mb-4 mt-1" />
-        </Affix>
+        </div>
     );
 };

@@ -6,7 +6,13 @@ import React, {
 import * as pdfjs from "pdfjs-dist";
 import { mixpanelTrack } from "../../../utils";
 import { Ref, SetState } from "@utils/types";
-import { DocRange, Suggestion, isWithinRange } from "@api/ApiTypes";
+import {
+    DocRange,
+    Suggestion,
+    SuggestionId,
+    isWithinRange,
+    newDocRange,
+} from "@api/ApiTypes";
 import { toast } from "react-toastify";
 import { RichTextarea, RichTextareaHandle } from "rich-textarea";
 import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
@@ -86,12 +92,13 @@ export const TextboxContainer = ({
     }, [activeSuggestion]);
 
     const handleUnderlineClicked = useCallback(
-        (range: DocRange) => {
+        (suggestionId?: SuggestionId) => {
+            if (!suggestionId) {
+                return;
+            }
             // PERF: try using a map, but since there's only so few suggestions, it might not be worth it
             const suggestion = suggestions.find((s) => {
-                return (
-                    s.range.start === range.start && s.range.end === range.end
-                );
+                return s.suggestionId === suggestionId;
             });
 
             if (!suggestion) {
@@ -128,64 +135,118 @@ export const TextboxContainer = ({
                 maxLength={MAX_EDITOR_LEN}
             >
                 {(v) => {
+                    // This is a similar problem to https://leetcode.com/problems/describe-the-painting/\
+
+                    // The main thing we need to solve is: "is this span currently in the range of a suggestion"
+                    // if it is, we need to underline it
+                    // we can solve this using a line-sweep algorithm.
+                    // the main idea is to iterate through all the suggestions and then insert the start/end of the ranges into two sets
+                    // then we sort the merged sets and iterate from left to right. Every time we see a "start", we increment a counter
+                    // and we decrement the counter everytime we see an "end"
+                    // if the counter is positive, then we know that the span is inside a suggestion
+                    // - in other words: a span is only underlined if at the START of the span, the counter is positive
+                    //
+                    // I'm not sure if this approach is faster than thedifference array solutions to the problem, but that problem is harder than this thing
+                    // also, we don't want to allocate 10k array indexes cause this logic needs to run VERY frequently
+
+                    const starts = new Map<number, SuggestionId[]>(); // we need the suggestionId instead of an number, so we can set the suggetionIdToRef map
+                    const ends = new Map<number, SuggestionId[]>();
+                    for (const suggestion of suggestions) {
+                        const start = suggestion.range.start;
+                        const end = suggestion.range.end;
+                        const dStart = starts.get(start);
+                        if (dStart) {
+                            dStart.push(suggestion.suggestionId);
+                        } else {
+                            starts.set(start, [suggestion.suggestionId]);
+                        }
+                        const dEnd = ends.get(end);
+                        if (dEnd) {
+                            dEnd.push(suggestion.suggestionId);
+                        } else {
+                            ends.set(end, [suggestion.suggestionId]);
+                        }
+                    }
+                    const allPoints = new Set([
+                        ...starts.keys(),
+                        ...ends.keys(),
+                    ]);
+                    allPoints.add(0);
+                    const sortedPoints = Array.from(allPoints);
+                    sortedPoints.sort((a, b) => a - b);
+
                     suggestionIdToRef.current = {}; // reset the map
 
+                    const activeSuggestions = new Set<SuggestionId>();
                     const res: JSX.Element[] = [];
-                    let lastCharIdx = 0;
+                    for (let i = 0; i < sortedPoints.length - 1; i++) {
+                        const start = sortedPoints[i];
+                        const end = sortedPoints[i + 1];
+                        const sSuggestions = starts.get(start) ?? [];
+                        const eSuggestions = ends.get(start) ?? []; // yes. start. not end. this is not a typo
+                        sSuggestions.forEach((item) =>
+                            activeSuggestions.add(item),
+                        );
+                        eSuggestions.forEach((item) =>
+                            activeSuggestions.delete(item),
+                        );
 
-                    // basically, every time we see a suggestion, we render it as an underline
-                    // the res array just tracks sections of text that are underlines and NOT underlined
-                    for (let i = 0; i < suggestions.length; i++) {
-                        const suggestion = suggestions[i];
-                        const range = suggestion.range;
-                        // render the text in between underlines (not in a suggestion)
-                        if (lastCharIdx < range.start) {
+                        const range = newDocRange(start, end);
+                        const isWithinSuggestion = activeSuggestions.size > 0;
+                        if (isWithinSuggestion) {
+                            const isInActiveSuggestion =
+                                activeSuggestion &&
+                                isWithinRange(range, activeSuggestion.range);
+
+                            const style = isInActiveSuggestion
+                                ? {
+                                      backgroundColor: "#DBEBFF",
+                                  }
+                                : {};
+
+                            const ref = React.createRef<HTMLSpanElement>();
+                            let clickSuggestionId: SuggestionId | undefined =
+                                undefined;
+                            for (const suggestionId of activeSuggestions) {
+                                clickSuggestionId = suggestionId;
+                                suggestionIdToRef.current[suggestionId] = ref;
+                            }
+
                             res.push(
-                                <span key={2 * i}>
-                                    {v.substring(lastCharIdx, range.start)}
+                                <span
+                                    ref={ref}
+                                    key={res.length}
+                                    className="border-[#189bf2] border-b-[2px]"
+                                    style={style}
+                                    onClick={() =>
+                                        handleUnderlineClicked(
+                                            clickSuggestionId,
+                                        )
+                                    }
+                                >
+                                    {v.substring(start, end)}
                                 </span>,
                             );
-                            lastCharIdx = range.start;
+                        } else {
+                            res.push(
+                                <span key={res.length}>
+                                    {v.substring(start, end)}
+                                </span>,
+                            );
                         }
-
-                        const isInActiveSuggestion =
-                            activeSuggestion &&
-                            isWithinRange(range, activeSuggestion.range);
-
-                        const style = isInActiveSuggestion
-                            ? {
-                                  backgroundColor: "#DBEBFF",
-                              }
-                            : {};
-
-                        const ref = React.createRef<HTMLSpanElement>();
-                        suggestionIdToRef.current[suggestion.suggestionId] =
-                            ref;
-
-                        res.push(
-                            <span
-                                ref={ref}
-                                className="border-[#189bf2] border-b-[2px]"
-                                style={style}
-                                onClick={() => handleUnderlineClicked(range)}
-                                key={2 * i + 1}
-                            >
-                                {/*  If this suggestion's range overlaps with the previous suggestion COMPLETELY, then an empty span element
-                                is created (since the substring will have 0 chars). This is fine! since the isInActiveSuggestion logic above
-                                will still show the correctly highlighted underline spans if you click on the card on the right
-                                 */}
-                                {v.substring(lastCharIdx, range.end)}
-                            </span>,
-                        );
-                        lastCharIdx = range.end;
                     }
-                    if (lastCharIdx < v.length) {
+
+                    // we need to append the (non-underlined) text from the last suggestion to the end of the string
+                    if (sortedPoints[sortedPoints.length - 1] < v.length) {
                         res.push(
-                            <span key={2 * suggestions.length}>
-                                {v.substring(lastCharIdx)}
+                            <span key={res.length}>
+                                {v.substring(
+                                    sortedPoints[sortedPoints.length - 1],
+                                )}
                             </span>,
                         );
                     }
+
                     return res;
                 }}
             </RichTextarea>
