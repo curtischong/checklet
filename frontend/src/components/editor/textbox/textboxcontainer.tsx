@@ -9,6 +9,7 @@ import { Ref, SetState } from "@utils/types";
 import {
     DocRange,
     Suggestion,
+    SuggestionId,
     isWithinRange,
     newDocRange,
 } from "@api/ApiTypes";
@@ -147,16 +148,16 @@ export const TextboxContainer = ({
                     // I'm not sure if this approach is faster than thedifference array solutions to the problem, but that problem is harder than this thing
                     // also, we don't want to allocate 10k array indexes cause this logic needs to run VERY frequently
 
-                    const starts = new Map<number, number>();
+                    const starts = new Map<number, SuggestionId[]>(); // we need the suggestionId instead of an number, so we can set the suggetionIdToRef map
                     const ends = new Map<number, number>();
                     for (const suggestion of suggestions) {
                         const start = suggestion.range.start;
                         const end = suggestion.range.end;
                         const dStart = starts.get(start);
                         if (dStart) {
-                            starts.set(start, dStart + 1);
+                            dStart.push(suggestion.suggestionId);
                         } else {
-                            starts.set(start, 1);
+                            starts.set(start, [suggestion.suggestionId]);
                         }
                         const dEnd = ends.get(end);
                         if (dEnd) {
@@ -169,26 +170,23 @@ export const TextboxContainer = ({
                         ...starts.keys(),
                         ...ends.keys(),
                     ]);
-                    const sortedPoints = Array.from(allPoints).sort();
-
-                    let insideNumSuggestions = 0;
+                    allPoints.add(0);
+                    const sortedPoints = Array.from(allPoints);
+                    sortedPoints.sort((a, b) => a - b);
 
                     suggestionIdToRef.current = {}; // reset the map
 
+                    let insideNumSuggestions = 0;
                     const res: JSX.Element[] = [];
-                    let lastCharIdx = 0;
-                    for (const point of sortedPoints) {
-                        if (lastCharIdx === point) {
-                            // this is a special case where the start and end of a suggestion are the same (typically when lastCHarIdx === 0)
-                            // so this isn't a span. continue.
-                            continue;
-                        }
-                        const sAmount = starts.get(point);
-                        const eAmount = ends.get(point);
-                        insideNumSuggestions += sAmount ?? 0;
+                    for (let i = 0; i < sortedPoints.length - 1; i++) {
+                        const start = sortedPoints[i];
+                        const end = sortedPoints[i + 1];
+                        const sSuggestions = starts.get(start);
+                        const eAmount = ends.get(start); // yes. start. not end. this is not a typo
+                        insideNumSuggestions += sSuggestions?.length ?? 0;
                         insideNumSuggestions -= eAmount ?? 0;
 
-                        const range = newDocRange(lastCharIdx, point);
+                        const range = newDocRange(start, end);
                         const isWithinSuggestion = insideNumSuggestions > 0;
                         if (isWithinSuggestion) {
                             const isInActiveSuggestion =
@@ -201,84 +199,41 @@ export const TextboxContainer = ({
                                   }
                                 : {};
 
-                            // const ref = React.createRef<HTMLSpanElement>();
-                            // suggestionIdToRef.current[suggestion.suggestionId] =
-                            //     ref;
+                            const ref = React.createRef<HTMLSpanElement>();
+                            for (const suggestionId of sSuggestions ?? []) {
+                                suggestionIdToRef.current[suggestionId] = ref;
+                            }
 
                             res.push(
                                 <span
+                                    ref={ref}
                                     key={res.length}
                                     className="border-[#189bf2] border-b-[2px]"
                                     style={style}
                                 >
-                                    {v.substring(lastCharIdx, point)}
+                                    {v.substring(start, end)}
                                 </span>,
                             );
                         } else {
                             res.push(
                                 <span key={res.length}>
-                                    {v.substring(lastCharIdx, point)}
+                                    {v.substring(start, end)}
                                 </span>,
                             );
                         }
-                        lastCharIdx = point;
                     }
 
-                    // we need to handle the last case
-                    if (lastCharIdx < v.length) {
+                    // we need to append the (non-underlined) text from the last suggestion to the end of the string
+                    if (sortedPoints[sortedPoints.length - 1] < v.length) {
                         res.push(
                             <span key={res.length}>
-                                {v.substring(lastCharIdx)}
+                                {v.substring(
+                                    sortedPoints[sortedPoints.length - 1],
+                                )}
                             </span>,
                         );
                     }
 
-                    // // basically, every time we see a suggestion, we render it as an underline
-                    // // the res array just tracks sections of text that are underlines and NOT underlined
-                    // for (let i = 0; i < suggestions.length; i++) {
-                    //     const suggestion = suggestions[i];
-                    //     const range = suggestion.range;
-                    //     // render the text in between underlines (not in a suggestion)
-                    //     if (lastCharIdx < range.start) {
-                    //         res.push(
-                    //             <span key={2 * i}>
-                    //                 {v.substring(lastCharIdx, range.start)}
-                    //             </span>,
-                    //         );
-                    //         lastCharIdx = range.start;
-                    //     }
-
-                    //     const isInActiveSuggestion =
-                    //         activeSuggestion &&
-                    //         isWithinRange(range, activeSuggestion.range);
-
-                    //     const style = isInActiveSuggestion
-                    //         ? {
-                    //               backgroundColor: "#DBEBFF",
-                    //           }
-                    //         : {};
-
-                    //     const ref = React.createRef<HTMLSpanElement>();
-                    //     suggestionIdToRef.current[suggestion.suggestionId] =
-                    //         ref;
-
-                    //     res.push(
-                    //         <span
-                    //             ref={ref}
-                    //             className="border-[#189bf2] border-b-[2px]"
-                    //             style={style}
-                    //             onClick={() => handleUnderlineClicked(range)}
-                    //             key={2 * i + 1}
-                    //         >
-                    //             {/*  If this suggestion's range overlaps with the previous suggestion COMPLETELY, then an empty span element
-                    //             is created (since the substring will have 0 chars). This is fine! since the isInActiveSuggestion logic above
-                    //             will still show the correctly highlighted underline spans if you click on the card on the right
-                    //              */}
-                    //             {v.substring(lastCharIdx, range.end)}
-                    //         </span>,
-                    //     );
-                    //     lastCharIdx = range.end;
-                    // }
                     return res;
                 }}
             </RichTextarea>
