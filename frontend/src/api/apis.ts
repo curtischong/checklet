@@ -9,7 +9,7 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { User } from "firebase/auth";
 import { toast } from "react-toastify";
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const baseUrl = "http://3.140.246.97/"; //process.env.NEXT_PUBLIC_BASE_URL;
 export class Api {
     // can refactor if need to do deletes, etc to have extended by each requestType
     // need to see how cors will work in prod
