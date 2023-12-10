@@ -21,6 +21,12 @@ export default async function handler(
 
     // https://redis.io/docs/connect/clients/nodejs/
     const redisClient = createClient();
+    // const redisClient = createClient({
+    //     socket: {
+    //         host: "0.0.0.0",
+    //         port: 6379,
+    //     },
+    // });
     await redisClient.connect();
 
     const checkerIds = await redisClient.sMembers("publicCheckerIds");
