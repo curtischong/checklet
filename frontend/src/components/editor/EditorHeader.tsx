@@ -108,19 +108,21 @@ export const EditorHeader = ({
                             Check Document
                         </LoadingButton>
 
-                        <NormalButton
-                            className="py-[4px]"
-                            onClick={() => {
-                                router.push({
-                                    pathname: `/create/check/${onlyUseCheckId}`,
-                                    query: {
-                                        checkerId,
-                                    },
-                                });
-                            }}
-                        >
-                            Return to Check Editor
-                        </NormalButton>
+                        {onlyUseCheckBlueprint && (
+                            <NormalButton
+                                className="py-[4px]"
+                                onClick={() => {
+                                    router.push({
+                                        pathname: `/create/check/${onlyUseCheckId}`,
+                                        query: {
+                                            checkerId,
+                                        },
+                                    });
+                                }}
+                            >
+                                Return to Check Editor
+                            </NormalButton>
+                        )}
                     </div>
                 </div>
                 <div className="text-md ">
@@ -134,7 +136,7 @@ export const EditorHeader = ({
                             </p>
                         </>
                     ) : (
-                        <p>storefront.objInfo.desc</p>
+                        <p>{storefront.objInfo.desc}</p>
                     )}
                 </div>
             </div>
