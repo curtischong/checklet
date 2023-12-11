@@ -29,12 +29,11 @@ export class Checker {
     }
 
     async checkDoc(doc: string): Promise<Suggestion[]> {
-        const results: Suggestion[] = [];
-        for (const check of this.checks.values()) {
-            // todo: parallelize. but maybe not cause we don't want to spam the api
-            // but maybe we should batch calls then in one request
-            results.push(...(await check.checkDoc(doc)));
-        }
-        return results;
+        const results = await Promise.all(
+            Array.from(this.checks.values()).map((check) =>
+                check.checkDoc(doc),
+            ),
+        );
+        return ([] as Suggestion[]).concat(...results);
     }
 }
