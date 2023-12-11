@@ -6,7 +6,7 @@
         "dev": "cp .env.dev .env.local && next dev",
         "build": "cp .env.prod .env.local && next build && docker tag yourwriterfriend splacorn/yourwriterfriend && docker push splacorn/yourwriterfriend",
         "start": "next start",
-        "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
+        "lint": "eslint '**/*.{js,jsx,ts,tsx}' --fix",
         "prettier": "prettier --write '**/*.{js,jsx,ts,tsx}'",
         "redis": "docker run -d -p 6379:6379 -p 8001:8001 redis/redis-stack:latest"
     },
