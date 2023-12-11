@@ -49,7 +49,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
         (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
             // if the text changed, we need to shift all the suggestions.
             if (oldText !== newText) {
-                // console.log("text changed");
                 // PERF: look into rich-textarea to see if we can get the diff of the text change so it's O(1) instead of O(n)
                 // 1) calculate WHERE the text changed (and how many chars changed)
                 const { editedRange, numCharsAdded } = singleEditDistance(

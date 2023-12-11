@@ -12,7 +12,6 @@ export const RichTextareaCore = (): JSX.Element => {
         { start: 10, end: 11, color: "green" },
         { start: 14, end: 17, color: "blue" },
     ];
-    console.log("hi");
 
     return (
         <RichTextarea

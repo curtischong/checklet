@@ -68,7 +68,6 @@ export const EditorHeader = ({
 
         const newSuggestions = response.suggestions;
         newSuggestions.sort(Sorters[SortType.TextOrder]);
-        console.log("newSuggestions", newSuggestions);
         setCheckDescObj(response.checkDescs);
         setSuggestions(newSuggestions);
 
