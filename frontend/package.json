@@ -3,8 +3,8 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev",
-        "build": "next build",
+        "dev": "cp .env.dev .env.local && next dev",
+        "build": "cp .env.prod .env.local && next build && docker tag yourwriterfriend splacorn/yourwriterfriend && docker push splacorn/yourwriterfriend",
         "start": "next start",
         "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
         "prettier": "prettier --write '**/*.{js,jsx,ts,tsx}'",

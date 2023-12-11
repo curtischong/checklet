@@ -52,7 +52,6 @@ export const ClientContextProvider = ({
         const firestore = getFirestore(firebaseApp);
 
         const unsubscribe = firebaseAuth.onAuthStateChanged((firebaseUser) => {
-            console.log("firebaseUser", firebaseUser);
             // only set the value after the user's login status is known, so we render the page knowing
             setValue({
                 clientContext: {
