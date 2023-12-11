@@ -4,6 +4,7 @@ import "antd/dist/antd.css";
 import mixpanel from "mixpanel-browser";
 import { AppProps } from "next/app";
 import Head from "next/head";
+import { lora, mackinac } from "pages/fonts";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,7 +30,9 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                     <link rel="shortcut icon" href="/nautilus-favicon.jpeg" />
                 </Head>
                 <ClientContextProvider>
-                    <Component {...pageProps} />
+                    <div className={`${lora.variable} ${mackinac.variable}`}>
+                        <Component {...pageProps} />
+                    </div>
                     <ToastContainer />
                 </ClientContextProvider>
             </>

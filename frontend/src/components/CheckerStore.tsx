@@ -45,7 +45,7 @@ const StoreFront = ({ storefront }: StorefrontProps) => {
                 router.push(`/editor/${storefront.objInfo.id}`);
             }}
         >
-            <div className="text-xl font-bold mb-1">
+            <div className="text-xl font-bold mb-1 font-mackinac">
                 {storefront.objInfo.name}
             </div>
             <div>{storefront.objInfo.desc}</div>
