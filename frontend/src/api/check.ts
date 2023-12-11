@@ -21,6 +21,10 @@ export class Check {
         this.llm = new Llm(systemPrompt, modelName, cache, apiKey);
     }
 
+    public getPromptForDoc(doc: string): string {
+        return `${this.getSystemPrompt()}\n\nFix this text:\n${doc}`;
+    }
+
     private getSystemPrompt(): string {
         switch (this.blueprint.checkType) {
             case CheckType.rephrase:

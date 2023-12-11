@@ -29,6 +29,12 @@ export class Checker {
     }
 
     async checkDoc(doc: string): Promise<Suggestion[]> {
+        // 1) get all the prompts for all the checks
+        const prompts = [];
+        for (const check of this.checks.values()) {
+            prompts.push(check.getPromptForDoc(doc));
+        }
+
         const results: Suggestion[] = [];
         for (const check of this.checks.values()) {
             // todo: parallelize. but maybe not cause we don't want to spam the api
