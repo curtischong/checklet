@@ -1,0 +1,13 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.configPath": "frontend/.prettierrc",
+    "editor.formatOnSave": true,
+    "prettier.prettierPath": "./frontend/node_modules/prettier/index.js",
+    "python.analysis.typeCheckingMode": "basic",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true,
+        "source.sortMembers": true
+    }
+}
