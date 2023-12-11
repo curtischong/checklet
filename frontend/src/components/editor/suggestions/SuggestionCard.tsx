@@ -1,13 +1,13 @@
+import classnames from "classnames";
 import React, { forwardRef, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import classnames from "classnames";
 
-import css from "./suggestionCard.module.scss";
 import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
-import classNames from "classnames";
 import { SuggestionChange } from "@components/editor/suggestions/SuggestionChange";
+import classNames from "classnames";
+import css from "./suggestionCard.module.scss";
 
 type SuggestionCard = {
     suggestion: Suggestion;

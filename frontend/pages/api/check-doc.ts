@@ -1,4 +1,4 @@
-import * as path from "path";
+import { SimpleCache } from "@api/SimpleCache";
 import { Checker } from "@api/checker";
 import {
     CheckBlueprint,
@@ -11,10 +11,9 @@ import {
     isUnauthenticatedRequestValid,
     sendBadRequest,
 } from "pages/api/commonNetworking";
-import { createClient } from "redis";
-import { MAX_EDITOR_LEN } from "src/constants";
-import { SimpleCache } from "@api/SimpleCache";
+import * as path from "path";
 import { getCheckDescForCheckIds } from "shared/checker-utils";
+import { MAX_EDITOR_LEN } from "src/constants";
 
 export default async function handler(
     req: NextApiRequest,
