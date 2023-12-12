@@ -1,7 +1,8 @@
+import { DownArrowWithTailIcon } from "@/components/icons/DownArrowWithTailIcon";
+import { RightArrowWithTailIcon } from "@/components/icons/RightArrowWithTailIcon";
 import { Suggestion } from "@api/ApiTypes";
 import { CheckType } from "@components/create-checker/CheckerTypes";
 import classNames from "classnames";
-import { AiOutlineArrowDown, AiOutlineArrowRight } from "react-icons/ai";
 
 interface Props {
     suggestion: Suggestion;
@@ -64,9 +65,9 @@ export const SuggestionChange = ({
                 {suggestion.originalText}
             </div>
             {showReplacementVertically ? (
-                <AiOutlineArrowDown className="mt-[6px] mb-[8px] mx-auto" />
+                <DownArrowWithTailIcon className="mt-[6px] mb-[8px] mx-auto" />
             ) : (
-                <AiOutlineArrowRight className={"mx-3 mt-[5px] w-[50px]"} />
+                <RightArrowWithTailIcon className={"mx-3 mt-[5px] w-[50px]"} />
             )}
             <div
                 className={classNames("flex", {

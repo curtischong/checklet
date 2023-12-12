@@ -1,10 +1,10 @@
+import { SortIcon } from "@/components/icons/SortIcon";
 import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import { pluralize } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { Tooltip } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { BsSortDownAlt } from "react-icons/bs"; // TODO: consider removing this dependency. we cna use svgs instead
 import { mixpanelTrack } from "../../../utils";
 import NoSuggestionsImage from "./NoSuggestionsState.svg";
 import { SuggestionCard } from "./SuggestionCard";
@@ -142,8 +142,8 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
                         content={
                             <>
                                 <div className={"w-3/4"}>
-                                    Click &apos;Check Document&apos; to check for mistakes
-                                    &#128640;
+                                    Click &apos;Check Document&apos; to check
+                                    for mistakes &#128640;
                                 </div>
                             </>
                         }
@@ -158,13 +158,21 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
                 header={"Nothing to check yet"}
                 content={
                     <div className={"w-[70%]"}>
-                        Start writing or paste your resume to see Nautilus&apos;s
-                        feedback.
+                        Start writing or paste your resume to see
+                        Nautilus&apos;s feedback.
                     </div>
                 }
             />
         );
-    }, [editorState, suggestions, activeSuggestion, sortedSuggestions]);
+    }, [
+        editorState,
+        sortedSuggestions,
+        hasModifiedTextAfterChecking,
+        activeSuggestion,
+        checkDescObj,
+        onCollapseClick,
+        acceptSuggestion,
+    ]);
 
     return (
         <div className="col-span-2 mt-8">
@@ -183,14 +191,14 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
     );
 };
 
-const SortIcon = (
+const SortIconWithTooltip = (
     sortType: SortType,
     tooltip: string,
     setSortType: SetState<SortType>,
 ) => {
     return (
         <Tooltip title={tooltip}>
-            <BsSortDownAlt
+            <SortIcon
                 className="ml-2 cursor-pointer"
                 size={20}
                 onClick={() => setSortType(sortType)}
@@ -217,12 +225,16 @@ const SuggestionsHeader = ({
                 </div>
             )}
             <div className="flex ml-auto mr-1">
-                {SortIcon(
+                {SortIconWithTooltip(
                     SortType.TextOrder,
                     "Sort by text order",
                     setSortType,
                 )}
-                {SortIcon(SortType.Category, "Sort by category", setSortType)}
+                {SortIconWithTooltip(
+                    SortType.Category,
+                    "Sort by category",
+                    setSortType,
+                )}
             </div>
         </div>
     );
