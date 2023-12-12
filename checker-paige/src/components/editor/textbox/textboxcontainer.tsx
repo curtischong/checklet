@@ -1,3 +1,5 @@
+import { MAX_EDITOR_LEN } from "@/constants";
+import { mixpanelTrack } from "@/utils";
 import {
     Suggestion,
     SuggestionId,
@@ -8,19 +10,13 @@ import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
 import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
 import { Ref, SetState } from "@utils/types";
 import debounce from "lodash.debounce";
-import * as pdfjs from "pdfjs-dist";
 import React, {
-    // createRef,
     useCallback,
     useEffect,
+    useMemo,
 } from "react";
 import { toast } from "react-toastify";
 import { RichTextarea, RichTextareaHandle } from "rich-textarea";
-import { MAX_EDITOR_LEN } from "src/constants";
-import { mixpanelTrack } from "../../../utils";
-
-// need same version with worker and pdfjs for it to work properly
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 export type TextboxContainerProps = {
     suggestions: Suggestion[];
@@ -59,9 +55,9 @@ export const TextboxContainer = ({
         if (prevDocument) {
             updateEditorState(prevDocument);
         }
-    }, []);
+    }, [editorRef, updateEditorState]);
 
-    const debouncedSave = useCallback(
+    const debouncedSave = useMemo(() =>
         debounce((newState) => {
             localStorage.setItem("editorText", newState);
         }, 1000),
@@ -88,7 +84,7 @@ export const TextboxContainer = ({
                 });
             }
         }
-    }, [activeSuggestion]);
+    }, [activeSuggestion, editorRef]);
 
     const handleUnderlineClicked = useCallback(
         (suggestionId?: SuggestionId) => {
@@ -110,7 +106,7 @@ export const TextboxContainer = ({
                 suggestion,
             });
         },
-        [suggestions],
+        [suggestions, updateActiveSuggestion],
     );
 
     return (
