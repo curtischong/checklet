@@ -1,11 +1,10 @@
-import React from "react";
-import { SuggestionMessage } from "./suggestionsTypes";
+interface Props {
+    imageSrc: string;
+    header: string;
+    content: JSX.Element;
+}
 
-export const NoSuggestionMessage: React.FC<SuggestionMessage> = (
-    suggestionMessage: SuggestionMessage,
-) => {
-    const { imageSrc, header, content } = suggestionMessage;
-
+export const NoSuggestionMessage = ({ imageSrc, header, content }: Props) => {
     return (
         <div className="flex flex-col items-center text-center m-auto pt-8">
             <img src={imageSrc} className="h-[18.75rem]" />

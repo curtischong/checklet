@@ -54,13 +54,13 @@ export const feedbackTypeDesc = (checkType: CheckType) => {
                 <div>
                     <div>
                         Highlight checks are used to highlight a section of
-                        text. They're useful for pointing out flaws, but don't
-                        offer a specific suggestion to fix it.
+                        text. They&apos;re useful for pointing out flaws, but
+                        don&apos;t offer a specific suggestion to fix it.
                     </div>
                     <br />
                     <div>
-                        This is useful if you know there's an error, but don't
-                        have enough information to suggest a fix.
+                        This is useful if you know there&apos;s an error, but
+                        don&apos;t have enough information to suggest a fix.
                     </div>
                 </div>
             );
@@ -85,13 +85,14 @@ export const feedbackTypeDesc = (checkType: CheckType) => {
                 <div>
                     <div>
                         Proposal feedbacks allows the model to propose
-                        information to the user. They aren't rephrase feedbacks
-                        because the proposals presented don't change the text.
+                        information to the user. They aren&apos;t rephrase
+                        feedbacks because the proposals presented don&apos;t
+                        change the text.
                     </div>
                     <br />
                     <div>
-                        This is useful for complex suggestions that can't be
-                        easily expressed as a rephrase.
+                        This is useful for complex suggestions that can&apos;t
+                        bea easily expressed as a rephrase.
                     </div>
                 </div>
             );
