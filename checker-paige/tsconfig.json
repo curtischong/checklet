@@ -26,34 +26,28 @@
         "allowJs": true,
         "skipLibCheck": true,
         "strict": true,
-        "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "esModuleInterop": true,
         "module": "esnext",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "isolatedModules": true,
         "jsx": "preserve",
-        "baseUrl": ".",
+        "incremental": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
         "paths": {
-            "@api": ["src/api"],
-            "@api/*": ["src/api/*"],
-            "@components/*": ["src/components/*"],
-            "@components": ["src/components"],
-            "@public/*": ["public/*"],
-            "@public": ["public"],
-            "@styles/*": ["src/styles/*"],
-            "@styles": ["src/styles"],
-            "@utils": ["../checker-paige/src/utils"],
-            "@utils/*": ["../checker-paige/src/utils/*"]
-        },
-        "incremental": true
+            "@/*": ["./src/*"],
+            "@api/*": ["./src/api/*"],
+            "@components/*": ["./src/components/*"],
+            "@public/*": ["./public/*"],
+            "@styles/*": ["./src/styles/*"],
+            "@utils/*": ["./src/utils/*"]
+        }
     },
-    "include": [
-        "next-env.d.ts",
-        "**/*.ts",
-        "**/*.tsx",
-        "src/components/utils/getAccessCode.js"
-    ],
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
     "exclude": ["node_modules"]
 }

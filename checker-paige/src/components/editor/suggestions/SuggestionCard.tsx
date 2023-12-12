@@ -1,0 +1,127 @@
+import classnames from "classnames";
+import { useMemo } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+import { Suggestion } from "@api/ApiTypes";
+import { CheckDescObj } from "@components/create-checker/CheckerTypes";
+import { SuggestionChange } from "@components/editor/suggestions/SuggestionChange";
+import classNames from "classnames";
+
+type SuggestionCard = {
+    suggestion: Suggestion;
+    activeSuggestion: Suggestion | undefined;
+    onClick: () => void;
+    onReplaceClick: (acceptedOption: string) => void;
+    checkDescObj: CheckDescObj;
+    classNames?: string;
+    ref: React.RefObject<HTMLDivElement>;
+};
+
+const isEqual = (...objects: Suggestion[]) =>
+    objects.every((obj) => JSON.stringify(obj) === JSON.stringify(objects[0]));
+
+export const SuggestionCard = (
+    props: SuggestionCard,
+    ref: React.RefObject<HTMLDivElement>,
+) => {
+    const { activeSuggestion, onClick, onReplaceClick, suggestion } = props;
+    const isActive = useMemo(() => {
+        if (activeSuggestion == null) {
+            return false;
+        }
+        return isEqual(suggestion, activeSuggestion);
+    }, [suggestion, activeSuggestion]);
+
+    const originalText = suggestion.originalText;
+
+    const checkDesc = props.checkDescObj[suggestion.checkId];
+    if (!checkDesc) {
+        // if we pressed check document, then the author of the checker disabled a check, then we press check document again, we will be missing some checkDescs
+        // So we just don't render the card
+        return <></>;
+    }
+
+    return (
+        <div
+            ref={ref as React.RefObject<HTMLDivElement>}
+            className={classnames(
+                "bg-white",
+                {
+                    "w-full rounded-lg shadow-md p-4 mb-8 animate-open":
+                        isActive,
+                    "flex w-full rounded-md shadow-md p-4 mb-5 animate-closed":
+                        !isActive,
+                },
+                props.classNames,
+                {
+                    "cursor-pointer": !isActive,
+                },
+            )}
+            onClick={() => {
+                if (!isActive) {
+                    onClick();
+                }
+            }}
+        >
+            <div className={"flex overflow-hidden text-xs"} onClick={onClick}>
+                {isActive ? (
+                    <div
+                        className={classNames("text-[#6e758b] cursor-pointer")}
+                    >
+                        {checkDesc.objInfo.name}
+                        {/* <span
+                                className={"p-[3px] rounded-xl bg-red-800 mx-8"}
+                            /> */}
+                        <div className="absolute right-4 top-2">
+                            {checkDesc.category}
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <div
+                            className={
+                                "overflow-hidden whitespace-no-wrap overflow-ellipsis max-w-40"
+                            }
+                        >
+                            {originalText}
+                        </div>
+                        <span
+                            className={
+                                "bg-gray-600 rounded-full h-2 w-2 align-middle mx-10"
+                            }
+                        />
+                        <div
+                            className={
+                                "overflow-hidden text-gray-600 font-normal"
+                            }
+                        >
+                            {checkDesc.objInfo.name}
+                        </div>
+                    </>
+                )}
+            </div>
+            {/* This is the card details when you open up the card */}
+            {isActive && (
+                <div className={"py-[15px] px-[10px]"}>
+                    <div className={"text-base pb-10 flex"}>
+                        <SuggestionChange
+                            suggestion={suggestion}
+                            checkType={checkDesc.checkType}
+                            onReplaceClick={onReplaceClick}
+                        />
+                    </div>
+                    <div className={`text-[13px]`}>
+                        {" "}
+                        <ReactMarkdown
+                            className="whitespace-pre-wrap"
+                            remarkPlugins={[remarkGfm]}
+                        >
+                            {checkDesc.objInfo.desc}
+                        </ReactMarkdown>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
