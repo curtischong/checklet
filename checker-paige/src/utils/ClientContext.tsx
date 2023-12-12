@@ -43,6 +43,7 @@ export const ClientContextProvider = ({
 }: {
     children: React.ReactNode | React.ReactNode[];
 }): JSX.Element => {
+    console.log("ClientContextProvider");
     const [value, setValue] = React.useState<ClientContextReact | undefined>();
 
     React.useEffect(() => {
