@@ -44,12 +44,10 @@ const SuggestionCard = React.forwardRef((props: SuggestionCard, ref) => {
         <div
             ref={ref as React.RefObject<HTMLDivElement>}
             className={classnames(
-                "bg-white",
+                "bg-white shadow-around",
                 {
-                    "w-full rounded-lg shadow-md p-4 mb-8 animate-open":
-                        isActive,
-                    "flex w-full rounded-md shadow-md p-4 mb-5 animate-closed":
-                        !isActive,
+                    "w-full rounded-lg  p-4 mb-8 animate-open": isActive,
+                    "flex w-full rounded-md p-4 mb-5 animate-closed": !isActive,
                 },
                 props.classNames,
                 {
@@ -65,28 +63,35 @@ const SuggestionCard = React.forwardRef((props: SuggestionCard, ref) => {
             <div className={"flex overflow-hidden text-xs"} onClick={onClick}>
                 {isActive ? (
                     <div
-                        className={classNames("text-[#6e758b] cursor-pointer")}
+                        className={classNames(
+                            "text-[#6e758b] cursor-pointer flex flex-row w-full",
+                        )}
                     >
-                        {checkDesc.objInfo.name}
+                        <div
+                            className="flex-grow"
+                            style={{
+                                flexBasis: "0",
+                            }}
+                        >
+                            {checkDesc.objInfo.name}
+                        </div>
                         {/* <span
                                 className={"p-[3px] rounded-xl bg-red-800 mx-8"}
                             /> */}
-                        <div className="absolute right-4 top-2">
-                            {checkDesc.category}
-                        </div>
+                        <div className="">{checkDesc.category}</div>
                     </div>
                 ) : (
                     <>
                         <div
                             className={
-                                "overflow-hidden whitespace-no-wrap overflow-ellipsis max-w-40"
+                                "overflow-hidden whitespace-nowrap overflow-ellipsis max-w-[40%]"
                             }
                         >
                             {originalText}
                         </div>
                         <span
                             className={
-                                "bg-gray-600 rounded-full h-2 w-2 align-middle mx-10"
+                                "bg-red-600 rounded-full h-1 w-1 my-auto mx-2"
                             }
                         />
                         <div

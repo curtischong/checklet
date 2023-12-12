@@ -216,25 +216,29 @@ const SuggestionsHeader = ({
     return (
         <div className="font-bold text-16 pb-4 pt-1 flex mt-10">
             {suggestions.length > 0 && (
-                <div className="flex flex-row ml-4">
-                    <div className="font-bold mr-1">{suggestions.length}</div>
-                    <div className="text-12">
-                        {pluralize("Suggestion", suggestions.length)}
+                <>
+                    <div className="flex flex-row ml-4">
+                        <div className="font-bold mr-1">
+                            {suggestions.length}
+                        </div>
+                        <div className="text-12">
+                            {pluralize("Suggestion", suggestions.length)}
+                        </div>
                     </div>
-                </div>
+                    <div className="flex ml-auto mt-1 mr-10">
+                        {SortIconWithTooltip(
+                            SortType.TextOrder,
+                            "Sort by text order",
+                            setSortType,
+                        )}
+                        {SortIconWithTooltip(
+                            SortType.Category,
+                            "Sort by category",
+                            setSortType,
+                        )}
+                    </div>
+                </>
             )}
-            <div className="flex ml-auto mr-1">
-                {SortIconWithTooltip(
-                    SortType.TextOrder,
-                    "Sort by text order",
-                    setSortType,
-                )}
-                {SortIconWithTooltip(
-                    SortType.Category,
-                    "Sort by category",
-                    setSortType,
-                )}
-            </div>
         </div>
     );
 };
