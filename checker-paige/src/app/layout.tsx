@@ -1,9 +1,6 @@
 import { lora, mackinac } from "@/app/fonts";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "react-toastify/dist/ReactToastify.css";
-import "tailwindcss/tailwind.css";
-import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +20,7 @@ export default function RootLayout({
                 className={`${lora.variable} ${mackinac.variable} ${inter.className}`}
             >
                 {children}
+                <div>THIS IS THE FOOTER</div>
             </body>
         </html>
     );
