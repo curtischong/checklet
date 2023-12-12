@@ -3,7 +3,7 @@ import { CheckerStore } from "@components/CheckerStore";
 const HomePage: React.FC = () => {
     // const router = useRouter();
     return (
-        <div className="flex flex-row">
+        <div className="flex flex-row ">
             <div className="container mx-auto text-center mt-20">
                 <div className="ml-0">
                     <p className="text-4xl">I need a name lol</p>
