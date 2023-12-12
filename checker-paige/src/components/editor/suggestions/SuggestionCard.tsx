@@ -7,6 +7,7 @@ import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import { SuggestionChange } from "@components/editor/suggestions/SuggestionChange";
 import classNames from "classnames";
+import React from "react";
 
 type SuggestionCard = {
     suggestion: Suggestion;
@@ -21,10 +22,7 @@ type SuggestionCard = {
 const isEqual = (...objects: Suggestion[]) =>
     objects.every((obj) => JSON.stringify(obj) === JSON.stringify(objects[0]));
 
-export const SuggestionCard = (
-    props: SuggestionCard,
-    ref: React.RefObject<HTMLDivElement>,
-) => {
+const SuggestionCard = React.forwardRef((props: SuggestionCard, ref) => {
     const { activeSuggestion, onClick, onReplaceClick, suggestion } = props;
     const isActive = useMemo(() => {
         if (activeSuggestion == null) {
@@ -124,4 +122,8 @@ export const SuggestionCard = (
             )}
         </div>
     );
-};
+});
+
+SuggestionCard.displayName = "SuggestionsCard";
+
+export default SuggestionCard;

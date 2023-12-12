@@ -1,3 +1,4 @@
+import SuggestionCard from "@/components/editor/suggestions/SuggestionCard";
 import { SortIcon } from "@/components/icons/SortIcon";
 import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
@@ -7,7 +8,6 @@ import { Tooltip } from "antd/lib";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { mixpanelTrack } from "../../../utils";
 import NoSuggestionsImage from "./NoSuggestionsState.svg";
-import { SuggestionCard } from "./SuggestionCard";
 import ZeroImage from "./ZeroState.svg";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
 import { SuggestionIdToRef } from "./suggestionsTypes";
