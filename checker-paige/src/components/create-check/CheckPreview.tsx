@@ -1,8 +1,5 @@
+import SuggestionCard from "@/components/editor/suggestions/SuggestionCard";
 import { Suggestion } from "@api/ApiTypes";
-import {
-    CheckBlueprint,
-    CheckDesc,
-} from "@components/create-checker/CheckerTypes";
 import {
     defaultCategory,
     defaultDesc,
@@ -10,7 +7,10 @@ import {
     defaultName,
     defaultOriginalText,
 } from "@components/create-check/DefaultTextForCheckType";
-import { SuggestionCard } from "@components/editor/suggestions/SuggestionCard";
+import {
+    CheckBlueprint,
+    CheckDesc,
+} from "@components/create-checker/CheckerTypes";
 import { useMemo } from "react";
 
 interface Props {

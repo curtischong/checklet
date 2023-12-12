@@ -1,3 +1,4 @@
+import SuggestionCard from "@/components/editor/suggestions/SuggestionCard";
 import { SortIcon } from "@/components/icons/SortIcon";
 import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
@@ -7,7 +8,6 @@ import { Tooltip } from "antd/lib";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { mixpanelTrack } from "../../../utils";
 import NoSuggestionsImage from "./NoSuggestionsState.svg";
-import { SuggestionCard } from "./SuggestionCard";
 import ZeroImage from "./ZeroState.svg";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
 import { SuggestionIdToRef } from "./suggestionsTypes";
@@ -198,10 +198,13 @@ const SortIconWithTooltip = (
 ) => {
     return (
         <Tooltip title={tooltip}>
-            <SortIcon
-                className="ml-2 cursor-pointer"
-                onClick={() => setSortType(sortType)}
-            />
+            {/* we need to wrap it in a div element so events are fired onhover and the Tooltip component can detect the hover */}
+            <div>
+                <SortIcon
+                    className="ml-2 cursor-pointer"
+                    onClick={() => setSortType(sortType)}
+                />
+            </div>
         </Tooltip>
     );
 };
@@ -216,14 +219,18 @@ const SuggestionsHeader = ({
     return (
         <div className="font-bold text-16 pb-4 pt-1 flex mt-10">
             {suggestions.length > 0 && (
-                <div className="flex flex-row ml-4">
-                    <div className="font-bold mr-1">{suggestions.length}</div>
-                    <div className="text-12">
-                        {pluralize("Suggestion", suggestions.length)}
+                <>
+                    <div className="flex flex-row ml-4">
+                        <div className="font-bold mr-1">
+                            {suggestions.length}
+                        </div>
+                        <div className="text-12">
+                            {pluralize("Suggestion", suggestions.length)}
+                        </div>
                     </div>
-                </div>
+                </>
             )}
-            <div className="flex ml-auto mr-1">
+            <div className="flex ml-auto mt-1 mr-10 space-x-2">
                 {SortIconWithTooltip(
                     SortType.TextOrder,
                     "Sort by text order",

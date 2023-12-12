@@ -10,11 +10,7 @@ import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
 import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
 import { Ref, SetState } from "@utils/types";
 import debounce from "lodash.debounce";
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-} from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import { RichTextarea, RichTextareaHandle } from "rich-textarea";
 
@@ -55,12 +51,13 @@ export const TextboxContainer = ({
         if (prevDocument) {
             updateEditorState(prevDocument);
         }
-    }, [editorRef, updateEditorState]);
+    }, [editorRef]);
 
-    const debouncedSave = useMemo(() =>
-        debounce((newState) => {
-            localStorage.setItem("editorText", newState);
-        }, 1000),
+    const debouncedSave = useMemo(
+        () =>
+            debounce((newState) => {
+                localStorage.setItem("editorText", newState);
+            }, 1000),
         [],
     );
 
@@ -106,7 +103,7 @@ export const TextboxContainer = ({
                 suggestion,
             });
         },
-        [suggestions, updateActiveSuggestion],
+        [suggestions],
     );
 
     return (
@@ -135,11 +132,13 @@ export const TextboxContainer = ({
                     // The main thing we need to solve is: "is this span currently in the range of a suggestion"
                     // if it is, we need to underline it
                     // we can solve this using a line-sweep algorithm.
-                    // the main idea is to iterate through all the suggestions and then insert the start/end of the ranges into two sets
+                    // the main idea is to iterate through all the suggestions and then insert the start/end of the ranges into two "sets"
                     // then we sort the merged sets and iterate from left to right. Every time we see a "start", we increment a counter
                     // and we decrement the counter everytime we see an "end"
                     // if the counter is positive, then we know that the span is inside a suggestion
                     // - in other words: a span is only underlined if at the START of the span, the counter is positive
+                    //
+                    // NOTE: we are not using sets, but instead using maps so we can track which suggestionId is active (needed to find which suggestion to bring up when the line is clicked)
                     //
                     // I'm not sure if this approach is faster than thedifference array solutions to the problem, but that problem is harder than this thing
                     // also, we don't want to allocate 10k array indexes cause this logic needs to run VERY frequently
