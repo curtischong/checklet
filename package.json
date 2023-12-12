@@ -3,6 +3,7 @@
     "@types/lodash.debounce": "^4.0.9",
     "firebase-admin": "^11.11.1",
     "lodash.debounce": "^4.0.8",
+    "prettier": "^3.1.1",
     "react-icons": "^4.12.0",
     "react-markdown": "^9.0.1",
     "redis": "^4.6.11",

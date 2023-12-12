@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
-import { TextboxContainer } from "./textbox/textboxcontainer";
+import { TextboxContainer } from "./textboxcontainer";
 import { TextButton } from "@components/Button";
 import { useRouter } from "next/router";
 import { useClientContext } from "@utils/ClientContext";

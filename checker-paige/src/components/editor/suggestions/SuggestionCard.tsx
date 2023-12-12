@@ -7,7 +7,6 @@ import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import { SuggestionChange } from "@components/editor/suggestions/SuggestionChange";
 import classNames from "classnames";
-import css from "./suggestionCard.module.scss";
 
 type SuggestionCard = {
     suggestion: Suggestion;
@@ -16,13 +15,16 @@ type SuggestionCard = {
     onReplaceClick: (acceptedOption: string) => void;
     checkDescObj: CheckDescObj;
     classNames?: string;
-    ref:  React.RefObject<HTMLDivElement>;
+    ref: React.RefObject<HTMLDivElement>;
 };
 
 const isEqual = (...objects: Suggestion[]) =>
     objects.every((obj) => JSON.stringify(obj) === JSON.stringify(objects[0]));
 
-export const SuggestionCard = ((props: SuggestionCard, ref:  React.RefObject<HTMLDivElement>) => {
+export const SuggestionCard = (
+    props: SuggestionCard,
+    ref: React.RefObject<HTMLDivElement>,
+) => {
     const { activeSuggestion, onClick, onReplaceClick, suggestion } = props;
     const isActive = useMemo(() => {
         if (activeSuggestion == null) {
@@ -45,7 +47,12 @@ export const SuggestionCard = ((props: SuggestionCard, ref:  React.RefObject<HTM
             ref={ref as React.RefObject<HTMLDivElement>}
             className={classnames(
                 "bg-white",
-                isActive ? css.containerActive : css.container,
+                {
+                    "w-full rounded-lg shadow-md p-4 mb-8 animate-open":
+                        isActive,
+                    "flex w-full rounded-md shadow-md p-4 mb-5 animate-closed":
+                        !isActive,
+                },
                 props.classNames,
                 {
                     "cursor-pointer": !isActive,
@@ -57,14 +64,10 @@ export const SuggestionCard = ((props: SuggestionCard, ref:  React.RefObject<HTM
                 }
             }}
         >
-            <div className={css.header} onClick={onClick}>
-                {/* <span className={css.bigDot} /> */}
+            <div className={"flex overflow-hidden text-xs"} onClick={onClick}>
                 {isActive ? (
                     <div
-                        className={classNames(
-                            css.activeCategory,
-                            "cursor-pointer",
-                        )}
+                        className={classNames("text-[#6e758b] cursor-pointer")}
                     >
                         {checkDesc.objInfo.name}
                         {/* <span
@@ -76,9 +79,23 @@ export const SuggestionCard = ((props: SuggestionCard, ref:  React.RefObject<HTM
                     </div>
                 ) : (
                     <>
-                        <div className={css.srcNautObj}>{originalText}</div>
-                        <span className={css.smallDot} />
-                        <div className={css.shortDesc}>
+                        <div
+                            className={
+                                "overflow-hidden whitespace-no-wrap overflow-ellipsis max-w-40"
+                            }
+                        >
+                            {originalText}
+                        </div>
+                        <span
+                            className={
+                                "bg-gray-600 rounded-full h-2 w-2 align-middle mx-10"
+                            }
+                        />
+                        <div
+                            className={
+                                "overflow-hidden text-gray-600 font-normal"
+                            }
+                        >
                             {checkDesc.objInfo.name}
                         </div>
                     </>
@@ -86,15 +103,15 @@ export const SuggestionCard = ((props: SuggestionCard, ref:  React.RefObject<HTM
             </div>
             {/* This is the card details when you open up the card */}
             {isActive && (
-                <div className={classNames(css.cardBody)}>
-                    <div className={classNames(css.suggestion)}>
+                <div className={"py-[15px] px-[10px]"}>
+                    <div className={"text-base pb-10 flex"}>
                         <SuggestionChange
                             suggestion={suggestion}
                             checkType={checkDesc.checkType}
                             onReplaceClick={onReplaceClick}
                         />
                     </div>
-                    <div className={css.desc}>
+                    <div className={`text-[13px]`}>
                         {" "}
                         <ReactMarkdown
                             className="whitespace-pre-wrap"
@@ -107,4 +124,4 @@ export const SuggestionCard = ((props: SuggestionCard, ref:  React.RefObject<HTM
             )}
         </div>
     );
-});
+};
