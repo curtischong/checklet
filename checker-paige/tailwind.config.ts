@@ -15,6 +15,27 @@ const config: Config = {
                 lora: ["var(--font-lora)"],
                 mackinac: ["var(--font-mackinac)"],
             },
+            keyframes: {
+                open: {
+                    "0%": {
+                        opacity: "0",
+                        transform: "scaleY(0.2) translateY(-50%)",
+                    },
+                    "80%": {
+                        opacity: "1",
+                        transform: "scaleY(0.8) translateY(0%)",
+                    },
+                    "100%": { opacity: "1", transform: "scaleY(1)" },
+                },
+                close: {
+                    "0%": { opacity: "0" },
+                    "100%": { opacity: "1" },
+                },
+            },
+            animation: {
+                open: "open 0.3s linear forwards",
+                close: "close 0.3s linear forwards",
+            },
         },
     },
     plugins: [],

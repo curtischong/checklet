@@ -47,7 +47,7 @@ const SuggestionCard = React.forwardRef((props: SuggestionCard, ref) => {
                 "bg-white shadow-around",
                 {
                     "w-full rounded-lg  p-4 mb-8 animate-open": isActive,
-                    "flex w-full rounded-md p-4 mb-5 animate-closed": !isActive,
+                    "flex w-full rounded-md p-4 mb-5 animate-close": !isActive,
                 },
                 props.classNames,
                 {

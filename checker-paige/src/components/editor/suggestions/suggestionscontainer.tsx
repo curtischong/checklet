@@ -230,7 +230,7 @@ const SuggestionsHeader = ({
                     </div>
                 </>
             )}
-            <div className="flex ml-auto mt-1 mr-10 space-x-4">
+            <div className="flex ml-auto mt-1 mr-10 space-x-2">
                 {SortIconWithTooltip(
                     SortType.TextOrder,
                     "Sort by text order",
