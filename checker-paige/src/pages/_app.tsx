@@ -5,6 +5,7 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
+import "./globals.css";
 
 const mixPanelDevToken = "94ac9cfab8d2280edba19b31b2937926";
 const mixPanelProdToken = "dc8c89187149505f2392759f15e0fd4d";
