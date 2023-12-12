@@ -6,7 +6,7 @@ const HomePage: React.FC = () => {
         <div className="flex flex-row ">
             <div className="container mx-auto text-center mt-20">
                 <div className="ml-0">
-                    <p className="text-4xl">I need a name lol</p>
+                    <p className="text-4xl font-mackinac">I need a name lol</p>
                     <p>
                         This is Grammarly, but for anything. Writing jokes,
                         resumes, cold emails, etc.
