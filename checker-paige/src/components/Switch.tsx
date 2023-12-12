@@ -1,5 +1,5 @@
 import { LabelWithHelp } from "@components/LabelWithHelp";
-import { Switch } from "antd";
+import { Switch } from "antd/lib";
 import classNames from "classnames";
 
 interface NormalSwitchProps {

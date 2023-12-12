@@ -1,12 +1,10 @@
-import { TrashIcon } from "@components/icons/TrashIcon";
-import { Button, Popconfirm, Upload } from "antd";
-import classnames from "classnames";
-import React, { useCallback } from "react";
-import { UploadIcon } from "@components/icons/UploadIcon";
-import classNames from "classnames";
+import { CloseIcon } from "@components/icons/CloseIcon";
 import { EditIcon } from "@components/icons/EditIcon";
 import { PlusIcon } from "@components/icons/PlusIcon";
-import { CloseIcon } from "@components/icons/CloseIcon";
+import { TrashIcon } from "@components/icons/TrashIcon";
+import { Button, Popconfirm } from "antd/lib";
+import classNames from "classnames";
+import React from "react";
 
 export type IButton = React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,

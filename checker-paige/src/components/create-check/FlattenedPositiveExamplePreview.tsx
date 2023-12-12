@@ -1,3 +1,4 @@
+import { MAX_POSITIVE_EX_EDITED_TEXT_LEN } from "@/constants";
 import { CloseButton, PlusButton, TextButton } from "@components/Button";
 import { NormalTextArea } from "@components/TextArea";
 import {
@@ -6,9 +7,8 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon";
 import { SetState } from "@utils/types";
-import { Tooltip } from "antd";
+import { Tooltip } from "antd/lib";
 import { useState } from "react";
-import { MAX_POSITIVE_EX_EDITED_TEXT_LEN } from "src/constants";
 
 export const FlattenedPositiveExamplePreview = ({
     example,

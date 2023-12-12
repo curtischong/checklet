@@ -1,7 +1,7 @@
 import { SubmitButton } from "@components/Button";
 import { ModelType } from "@components/create-checker/CheckerTypes";
 import { SetState } from "@utils/types";
-import { Input, Modal } from "antd";
+import { Input, Modal } from "antd/lib";
 import { useCallback, useEffect, useState } from "react";
 interface Props {
     isOpen: boolean;

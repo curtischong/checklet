@@ -1,11 +1,8 @@
+import { ADMIN_EMAILS } from "@/constants";
 import { Api } from "@api/apis";
+import { CheckerId } from "@api/checker";
 import { NormalButton } from "@components/Button";
-import {
-    CheckBlueprint,
-    CheckStatuses,
-    CheckType,
-    CheckerBlueprint,
-} from "@components/create-checker/CheckerTypes";
+import { FileUpload } from "@components/FileUpload";
 import {
     defaultCategory,
     defaultDesc,
@@ -14,21 +11,24 @@ import {
     defaultName,
     defaultOriginalText,
 } from "@components/create-check/DefaultTextForCheckType";
+import {
+    CheckBlueprint,
+    CheckStatuses,
+    CheckType,
+    CheckerBlueprint,
+} from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
 import { useCallback } from "react";
 import { toast } from "react-toastify";
-import { CheckerId } from "@api/checker";
-import { ADMIN_EMAILS } from "src/constants";
-import { FileUpload } from "@components/FileUpload";
 
 const AdminPage: React.FC = () => {
     const { user } = useClientContext();
-    if (user === null || !ADMIN_EMAILS.includes(user.email ?? "")) {
-        return <div>Not logged in as an admin</div>;
-    }
 
     const createDefaultCheck = useCallback(
         (checkType: CheckType): CheckBlueprint => {
+            if (!user) {
+                throw new Error("User is null");
+            }
             return {
                 objInfo: {
                     name: defaultName[checkType],
@@ -47,7 +47,7 @@ const AdminPage: React.FC = () => {
                 ],
             };
         },
-        [],
+        [user],
     );
 
     const createCheck = useCallback(
@@ -56,6 +56,9 @@ const AdminPage: React.FC = () => {
             checkerId: CheckerId,
             checkStatuses: CheckStatuses,
         ) => {
+            if (!user) {
+                throw new Error("User is null");
+            }
             const check = createDefaultCheck(checkType);
             const checkId = await Api.createCheck(
                 checkerId,
@@ -76,10 +79,14 @@ const AdminPage: React.FC = () => {
                 isEnabled: true,
             };
         },
-        [createDefaultCheck],
+        [createDefaultCheck, user],
     );
 
     const createRizzume = useCallback(async () => {
+        if (!user) {
+            toast.error("Not logged in");
+            return;
+        }
         const checkerId = await Api.createChecker(user);
         if (!checkerId) {
             toast.error("Failed to create checker");
@@ -103,71 +110,88 @@ const AdminPage: React.FC = () => {
 • Unified request authorization logic by proxying requests through a Spring API Gateway`,
         };
         await Api.editChecker(checkerBlueprint, user);
-    }, []);
+    }, [createCheck, user]);
 
-    const createChecker = useCallback(async (checkerJson: string) => {
-        const parsedCheckerJson = JSON.parse(checkerJson);
-        const checkerBlueprint: CheckerBlueprint =
-            parsedCheckerJson.checkerBlueprint;
-        const checkBlueprints: CheckBlueprint[] =
-            parsedCheckerJson.checkBlueprints;
-        const checkerId = await Api.createChecker(user);
-        if (!checkerId) {
-            toast.error("Failed to create checker");
-            return;
-        }
-        checkerBlueprint.objInfo.id = checkerId;
-        const oldCheckStatuses = checkerBlueprint.checkStatuses;
-        checkerBlueprint.checkStatuses = {};
-        const success = await Api.editChecker(checkerBlueprint, user);
-        if (!success) {
-            toast.error("Failed to edit checker");
-            return;
-        }
-
-        for (const oldCheckId of Object.keys(oldCheckStatuses)) {
-            const isEnabled = oldCheckStatuses[oldCheckId].isEnabled;
-            const checkBlueprint = checkBlueprints.find(
-                (checkBlueprint) => checkBlueprint.objInfo.id === oldCheckId,
-            );
-            if (!checkBlueprint) {
-                toast.error("Failed to find check blueprint");
+    const createChecker = useCallback(
+        async (checkerJson: string) => {
+            if (!user) {
+                toast.error("Not logged in");
                 return;
             }
-            const check: CheckBlueprint = {
-                ...checkBlueprint,
-                objInfo: {
-                    ...checkBlueprint.objInfo,
-                    creatorId: user.uid,
-                },
-            };
-            const checkId = await Api.createCheck(
-                checkerId,
-                check.objInfo.name,
-                check.checkType,
-                user,
-            );
-            if (!checkId) {
-                toast.error("Failed to create check");
+            const parsedCheckerJson = JSON.parse(checkerJson);
+            const checkerBlueprint: CheckerBlueprint =
+                parsedCheckerJson.checkerBlueprint;
+            const checkBlueprints: CheckBlueprint[] =
+                parsedCheckerJson.checkBlueprints;
+            const checkerId = await Api.createChecker(user);
+            if (!checkerId) {
+                toast.error("Failed to create checker");
                 return;
             }
-            check.objInfo.id = checkId;
-            if (!(await Api.editCheck(check, checkerId, user))) {
-                toast.error("Failed to edit check");
+            checkerBlueprint.objInfo.id = checkerId;
+            const oldCheckStatuses = checkerBlueprint.checkStatuses;
+            checkerBlueprint.checkStatuses = {};
+            const success = await Api.editChecker(checkerBlueprint, user);
+            if (!success) {
+                toast.error("Failed to edit checker");
                 return;
             }
-            await Api.setCheckIsEnabled(checkId, checkerId, isEnabled, user);
-        }
-        if (checkerBlueprint.isPublic) {
-            await Api.setCheckerIsPublic(
-                checkerId,
-                checkerBlueprint.isPublic,
-                user,
-            );
-        }
 
-        toast.success("Created checker");
-    }, []);
+            for (const oldCheckId of Object.keys(oldCheckStatuses)) {
+                const isEnabled = oldCheckStatuses[oldCheckId].isEnabled;
+                const checkBlueprint = checkBlueprints.find(
+                    (checkBlueprint) =>
+                        checkBlueprint.objInfo.id === oldCheckId,
+                );
+                if (!checkBlueprint) {
+                    toast.error("Failed to find check blueprint");
+                    return;
+                }
+                const check: CheckBlueprint = {
+                    ...checkBlueprint,
+                    objInfo: {
+                        ...checkBlueprint.objInfo,
+                        creatorId: user.uid,
+                    },
+                };
+                const checkId = await Api.createCheck(
+                    checkerId,
+                    check.objInfo.name,
+                    check.checkType,
+                    user,
+                );
+                if (!checkId) {
+                    toast.error("Failed to create check");
+                    return;
+                }
+                check.objInfo.id = checkId;
+                if (!(await Api.editCheck(check, checkerId, user))) {
+                    toast.error("Failed to edit check");
+                    return;
+                }
+                await Api.setCheckIsEnabled(
+                    checkId,
+                    checkerId,
+                    isEnabled,
+                    user,
+                );
+            }
+            if (checkerBlueprint.isPublic) {
+                await Api.setCheckerIsPublic(
+                    checkerId,
+                    checkerBlueprint.isPublic,
+                    user,
+                );
+            }
+
+            toast.success("Created checker");
+        },
+        [user],
+    );
+
+    if (user === null || !ADMIN_EMAILS.includes(user.email ?? "")) {
+        return <div>Not logged in as an admin</div>;
+    }
 
     return (
         <div className="container mx-auto mt-10 flex flex-col px-32">

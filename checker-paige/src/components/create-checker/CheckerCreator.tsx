@@ -1,10 +1,14 @@
-import { NormalButton } from "@components/Button";
-import { Input } from "antd";
-import { useRouter } from "next/router";
-import React, { useCallback, useEffect } from "react";
-import { toast } from "react-toastify";
-import { useClientContext } from "@utils/ClientContext";
+import {
+    ADMIN_EMAILS,
+    MAX_CHECKER_DESC_LEN,
+    MAX_CHECKER_NAME_LEN,
+    MAX_CHECKER_PLACEHOLDER_LEN,
+} from "@/constants";
+import { downloadTextFile } from "@/utils/download";
 import { Api } from "@api/apis";
+import { NormalButton } from "@components/Button";
+import { LabelWithHelp } from "@components/LabelWithHelp";
+import { NavigationPath } from "@components/NavigationPath";
 import { NormalTextArea } from "@components/TextArea";
 import {
     CheckBlueprint,
@@ -13,18 +17,14 @@ import {
     SaveStatusText,
     SubmittingState,
 } from "@components/create-checker/CheckerTypes";
-import { YourChecks } from "@components/create-checker/YourChecks";
-import { NavigationPath } from "@components/NavigationPath";
 import { IsPublicSwitch } from "@components/create-checker/IsPublicSwitch";
+import { YourChecks } from "@components/create-checker/YourChecks";
+import { useClientContext } from "@utils/ClientContext";
+import { Input } from "antd/lib";
 import debounce from "lodash.debounce";
-import {
-    ADMIN_EMAILS,
-    MAX_CHECKER_DESC_LEN,
-    MAX_CHECKER_NAME_LEN,
-    MAX_CHECKER_PLACEHOLDER_LEN,
-} from "src/constants";
-import { downloadTextFile } from "util/download";
-import { LabelWithHelp } from "@components/LabelWithHelp";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export enum Page {
     Main,

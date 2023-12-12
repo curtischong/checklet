@@ -3,7 +3,7 @@ import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import { pluralize } from "@utils/strings";
 import { SetState } from "@utils/types";
-import { Tooltip } from "antd";
+import { Tooltip } from "antd/lib";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { mixpanelTrack } from "../../../utils";
 import NoSuggestionsImage from "./NoSuggestionsState.svg";
