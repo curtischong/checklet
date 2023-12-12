@@ -1,11 +1,11 @@
-import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
-import { NextApiRequest, NextApiResponse } from "next";
-import { checkerBlueprintToCheckerStorefront } from "pages/api/common";
+import { checkerBlueprintToCheckerStorefront } from "@/pages/api/common";
 import {
     connectToRedis,
     isUnauthenticatedRequestValid,
     tryGetUserId,
-} from "pages/api/commonNetworking";
+} from "@/pages/api/commonNetworking";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
     req: NextApiRequest,
