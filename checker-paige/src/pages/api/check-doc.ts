@@ -1,5 +1,5 @@
 import { MAX_EDITOR_LEN } from "@/constants";
-import { getCheckBlueprints } from "@/pages/api/commonNemon";
+import { getCheckBlueprints } from "@/pages/api/common";
 import {
     connectToRedis,
     isUnauthenticatedRequestValid,

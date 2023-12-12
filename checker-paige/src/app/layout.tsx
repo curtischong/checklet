@@ -20,6 +20,7 @@ export default function RootLayout({
                 className={`${lora.variable} ${mackinac.variable} ${inter.className}`}
             >
                 {children}
+                <div>THIS IS THE FOOTER</div>
             </body>
         </html>
     );
