@@ -198,10 +198,13 @@ const SortIconWithTooltip = (
 ) => {
     return (
         <Tooltip title={tooltip}>
-            <SortIcon
-                className="ml-2 cursor-pointer"
-                onClick={() => setSortType(sortType)}
-            />
+            {/* we need to wrap it in a div element so events are fired onhover and the Tooltip component can detect the hover */}
+            <div>
+                <SortIcon
+                    className="ml-2 cursor-pointer"
+                    onClick={() => setSortType(sortType)}
+                />
+            </div>
         </Tooltip>
     );
 };
@@ -225,20 +228,20 @@ const SuggestionsHeader = ({
                             {pluralize("Suggestion", suggestions.length)}
                         </div>
                     </div>
-                    <div className="flex ml-auto mt-1 mr-10">
-                        {SortIconWithTooltip(
-                            SortType.TextOrder,
-                            "Sort by text order",
-                            setSortType,
-                        )}
-                        {SortIconWithTooltip(
-                            SortType.Category,
-                            "Sort by category",
-                            setSortType,
-                        )}
-                    </div>
                 </>
             )}
+            <div className="flex ml-auto mt-1 mr-10 space-x-4">
+                {SortIconWithTooltip(
+                    SortType.TextOrder,
+                    "Sort by text order",
+                    setSortType,
+                )}
+                {SortIconWithTooltip(
+                    SortType.Category,
+                    "Sort by category",
+                    setSortType,
+                )}
+            </div>
         </div>
     );
 };
