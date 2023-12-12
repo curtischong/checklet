@@ -51,7 +51,7 @@ export const TextboxContainer = ({
         if (prevDocument) {
             updateEditorState(prevDocument);
         }
-    }, [editorRef, updateEditorState]);
+    }, [editorRef]);
 
     const debouncedSave = useMemo(
         () =>
@@ -103,7 +103,7 @@ export const TextboxContainer = ({
                 suggestion,
             });
         },
-        [suggestions, updateActiveSuggestion],
+        [suggestions],
     );
 
     return (

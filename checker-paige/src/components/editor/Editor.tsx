@@ -1,20 +1,20 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
-import { TextboxContainer } from "./textboxcontainer";
+import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
 import { TextButton } from "@components/Button";
-import { useRouter } from "next/router";
-import { useClientContext } from "@utils/ClientContext";
+import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import {
     CheckDescObj,
     CheckerStorefront,
     ModelType,
 } from "@components/create-checker/CheckerTypes";
-import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
-import { singleEditDistance } from "@components/editor/singleEditDistance";
 import { EditorHeader } from "@components/editor/EditorHeader";
-import { SlidingRadioButton } from "@components/SlidingRadioButton";
-import { RichTextareaHandle } from "rich-textarea";
 import { EnterApiKeyModal } from "@components/editor/EnterApiKeyModal";
+import { singleEditDistance } from "@components/editor/singleEditDistance";
+import { useClientContext } from "@utils/ClientContext";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { RichTextareaHandle } from "rich-textarea";
+import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
+import { TextboxContainer } from "./textboxcontainer";
 
 interface Props {
     storefront: CheckerStorefront;
