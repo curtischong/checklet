@@ -1,3 +1,4 @@
+import { getCheckDescForCheckIds } from "@/shared/checker-utils";
 import { Api } from "@api/apis";
 import { Checker, CheckerId } from "@api/checker";
 import {
@@ -8,7 +9,6 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { User } from "firebase/auth";
 import { toast } from "react-toastify";
-import { getCheckDescForCheckIds } from "shared/checker-utils";
 
 export const checkDocText = async (
     doc: string,
