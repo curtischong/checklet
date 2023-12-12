@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
+import { mixpanelTrack } from "@/utils";
+import { ClientContextProvider } from "@utils/ClientContext";
+import mixpanel from "mixpanel-browser";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import mixpanel from "mixpanel-browser";
-import { mixpanelTrack } from "src/utils";
-import "antd/dist/antd.css";
-import "@styles/global.css";
-import { ClientContextProvider } from "@utils/ClientContext";
+import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

@@ -1,24 +1,23 @@
-import React, {
-    // createRef,
-    useCallback,
-    useEffect,
-} from "react";
-import * as pdfjs from "pdfjs-dist";
-import { mixpanelTrack } from "../../../utils";
-import { Ref, SetState } from "@utils/types";
 import {
-    DocRange,
     Suggestion,
     SuggestionId,
     isWithinRange,
     newDocRange,
 } from "@api/ApiTypes";
+import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
+import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
+import { Ref, SetState } from "@utils/types";
+import debounce from "lodash.debounce";
+import * as pdfjs from "pdfjs-dist";
+import React, {
+    // createRef,
+    useCallback,
+    useEffect,
+} from "react";
 import { toast } from "react-toastify";
 import { RichTextarea, RichTextareaHandle } from "rich-textarea";
-import { SuggestionIdToRef } from "@components/editor/suggestions/suggestionsTypes";
-import debounce from "lodash.debounce";
 import { MAX_EDITOR_LEN } from "src/constants";
-import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
+import { mixpanelTrack } from "../../../utils";
 
 // need same version with worker and pdfjs for it to work properly
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;

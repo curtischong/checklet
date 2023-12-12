@@ -1,16 +1,16 @@
+import { Suggestion } from "@api/ApiTypes";
+import { CheckDescObj } from "@components/create-checker/CheckerTypes";
+import { pluralize } from "@utils/strings";
+import { SetState } from "@utils/types";
+import { Tooltip } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { SuggestionIdToRef } from "./suggestionsTypes";
+import { BsSortDownAlt } from "react-icons/bs";
+import { mixpanelTrack } from "../../../utils";
+import NoSuggestionsImage from "./NoSuggestionsState.svg";
 import { SuggestionCard } from "./SuggestionCard";
 import ZeroImage from "./ZeroState.svg";
-import { BsSortDownAlt } from "react-icons/bs";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
-import NoSuggestionsImage from "./NoSuggestionsState.svg";
-import { mixpanelTrack } from "src/utils";
-import { CheckDescObj } from "@components/create-checker/CheckerTypes";
-import { Tooltip } from "antd";
-import { pluralize } from "@utils/strings";
-import { Suggestion } from "@api/ApiTypes";
-import { SetState } from "@utils/types";
+import { SuggestionIdToRef } from "./suggestionsTypes";
 
 export type SuggestionsContainerProps = {
     suggestions: Suggestion[];

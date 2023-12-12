@@ -11,13 +11,12 @@ import {
     SortType,
     Sorters,
 } from "@components/editor/suggestions/suggestionscontainer";
-import { mixpanelTrack } from "@utils";
 import { useClientContext } from "@utils/ClientContext";
 import { SetState } from "@utils/types";
-import { Affix } from "antd";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { mixpanelTrack } from "../../utils";
 
 interface Props {
     setIsLoading: SetState<boolean>;
