@@ -1,4 +1,3 @@
-import "@/app/globals.css";
 import { mixpanelTrack } from "@/utils";
 import { ClientContextProvider } from "@utils/ClientContext";
 import mixpanel from "mixpanel-browser";
@@ -6,8 +5,6 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "tailwindcss/tailwind.css";
 
 const mixPanelDevToken = "94ac9cfab8d2280edba19b31b2937926";
 const mixPanelProdToken = "dc8c89187149505f2392759f15e0fd4d";
