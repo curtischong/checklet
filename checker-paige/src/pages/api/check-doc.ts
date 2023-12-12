@@ -1,6 +1,10 @@
 import { MAX_EDITOR_LEN } from "@/constants";
-import { getCheckBlueprints } from "@/pages/api/common";
-import { connectToRedis, isUnauthenticatedRequestValid, sendBadRequest } from "@/pages/api/commonNetworking";
+import { getCheckBlueprints } from "@/pages/api/commonNemon";
+import {
+    connectToRedis,
+    isUnauthenticatedRequestValid,
+    sendBadRequest,
+} from "@/pages/api/commonNetworking";
 import { getCheckDescForCheckIds } from "@/shared/checker-utils";
 import { SimpleCache } from "@api/SimpleCache";
 import { Checker } from "@api/checker";

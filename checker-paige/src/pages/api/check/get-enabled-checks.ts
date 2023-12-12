@@ -1,15 +1,11 @@
-import { Checker } from "@api/checker";
-import {
-    CheckDescObj,
-    CheckerBlueprint,
-} from "@components/create-checker/CheckerTypes";
-import { NextApiRequest, NextApiResponse } from "next";
-import { getCheckBlueprints } from "pages/api/common";
+import { getCheckBlueprints } from "@/pages/api/common";
 import {
     connectToRedis,
     isUnauthenticatedRequestValid,
     sendBadRequest,
-} from "pages/api/commonNetworking";
+} from "@/pages/api/commonNetworking";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
     req: NextApiRequest,

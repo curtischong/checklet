@@ -1,5 +1,9 @@
 import { checkerBlueprintToCheckerStorefront } from "@/pages/api/common";
-import { connectToRedis, isUnauthenticatedRequestValid, tryGetUserId } from "@/pages/api/commonNetworking";
+import {
+    connectToRedis,
+    isUnauthenticatedRequestValid,
+    tryGetUserId,
+} from "@/pages/api/commonNetworking";
 import { getCheckerBlueprints } from "@/pages/api/get-user-checkers";
 import { NextApiRequest, NextApiResponse } from "next";
 

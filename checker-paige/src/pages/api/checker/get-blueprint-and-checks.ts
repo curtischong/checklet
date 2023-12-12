@@ -1,14 +1,14 @@
+import { getCheckBlueprints, isUserCheckerOwner } from "@/pages/api/common";
+import {
+    connectToRedis,
+    requestMiddleware,
+    sendBadRequest,
+} from "@/pages/api/commonNetworking";
 import {
     CheckBlueprint,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getCheckBlueprints, isUserCheckerOwner } from "pages/api/common";
-import {
-    connectToRedis,
-    requestMiddleware,
-    sendBadRequest,
-} from "pages/api/commonNetworking";
 
 export default async function handler(
     req: NextApiRequest,

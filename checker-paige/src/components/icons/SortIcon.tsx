@@ -1,8 +1,10 @@
 // https://icon-sets.iconify.design/iconoir/sort-up/
 export const SortIcon = ({
     className = "",
+    onClick,
 }: {
     className?: string;
+    onClick?: () => void;
 }): JSX.Element => {
     return (
         <svg
@@ -11,6 +13,7 @@ export const SortIcon = ({
             height="24"
             viewBox="0 0 24 24"
             className={className}
+            onClick={onClick}
         >
             <path
                 fill="none"

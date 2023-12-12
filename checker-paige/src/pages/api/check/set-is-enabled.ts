@@ -1,19 +1,19 @@
 import {
-    CheckBlueprint,
-    CheckerBlueprint,
-} from "@components/create-checker/CheckerTypes";
-import { NextApiRequest, NextApiResponse } from "next";
-import {
     isUserCheckOwner,
     isUserCheckerOwner,
     validateCheckBlueprint,
-} from "pages/api/common";
+} from "@/pages/api/common";
 import {
     connectToRedis,
     requestMiddleware,
     return204Status,
     sendBadRequest,
-} from "pages/api/commonNetworking";
+} from "@/pages/api/commonNetworking";
+import {
+    CheckBlueprint,
+    CheckerBlueprint,
+} from "@components/create-checker/CheckerTypes";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function setCheckIsEnabled(
     req: NextApiRequest,

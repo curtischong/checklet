@@ -200,7 +200,6 @@ const SortIconWithTooltip = (
         <Tooltip title={tooltip}>
             <SortIcon
                 className="ml-2 cursor-pointer"
-                size={20}
                 onClick={() => setSortType(sortType)}
             />
         </Tooltip>

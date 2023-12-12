@@ -1,10 +1,26 @@
+import {
+    MAX_CHECK_CATEGORY_LEN,
+    MAX_CHECK_DESC_LEN,
+    MAX_CHECK_INSTR_LEN,
+    MAX_CHECK_NAME_LEN,
+} from "@/constants";
+import { Api } from "@api/apis";
 import { DeleteButton, NormalButton } from "@components/Button";
 import { Input } from "@components/Input";
 import { LabelWithHelp } from "@components/LabelWithHelp";
+import { NavigationPath } from "@components/NavigationPath";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import { NormalTextArea } from "@components/TextArea";
 import { CheckPreview } from "@components/create-check/CheckPreview";
-import { NavigationPath } from "@components/NavigationPath";
+import {
+    defaultCategory,
+    defaultDesc,
+    defaultInstructions,
+    defaultName,
+    feedbackTypeDesc,
+} from "@components/create-check/DefaultTextForCheckType";
+import { FlattenedPositiveExamplePreview } from "@components/create-check/FlattenedPositiveExamplePreview";
+import { PositiveCheckExampleCreator } from "@components/create-check/PositiveCheckExampleCreator";
 import {
     CheckBlueprint,
     CheckId,
@@ -14,29 +30,13 @@ import {
     SubmittingState,
     validCheckTypes,
 } from "@components/create-checker/CheckerTypes";
-import {
-    defaultCategory,
-    defaultDesc,
-    defaultInstructions,
-    defaultName,
-    feedbackTypeDesc,
-} from "@components/create-check/DefaultTextForCheckType";
-import { PositiveCheckExampleCreator } from "@components/create-check/PositiveCheckExampleCreator";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { useClientContext } from "@utils/ClientContext";
 import { SetState } from "@utils/types";
+import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
-import { Api } from "@api/apis";
-import { FlattenedPositiveExamplePreview } from "@components/create-check/FlattenedPositiveExamplePreview";
-import debounce from "lodash.debounce";
-import {
-    MAX_CHECK_CATEGORY_LEN,
-    MAX_CHECK_DESC_LEN,
-    MAX_CHECK_INSTR_LEN,
-    MAX_CHECK_NAME_LEN,
-} from "src/constants";
 
 interface Props {
     checkId: CheckId;

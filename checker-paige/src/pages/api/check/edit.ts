@@ -1,29 +1,28 @@
 import {
-    CheckBlueprint,
-    CheckType,
-} from "@components/create-checker/CheckerTypes";
-import { NextApiRequest, NextApiResponse } from "next";
-import {
-    disableCheckerIfNoEnabledChecks as disableCheckerIfHasNoEnabledChecks,
-    isUserCheckOwner,
-    isUserCheckerOwner,
-    validateCheckBlueprint,
-} from "pages/api/common";
-import {
-    connectToRedis,
-    requestMiddleware,
-    return204Status,
-    sendBadRequest,
-} from "pages/api/commonNetworking";
-import { createClient } from "redis";
-import {
     MAX_CHECK_CATEGORY_LEN,
     MAX_CHECK_DESC_LEN,
     MAX_CHECK_INSTR_LEN,
     MAX_CHECK_NAME_LEN,
     MAX_POSITIVE_EX_EDITED_TEXT_LEN,
     MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN,
-} from "src/constants";
+} from "@/constants";
+import {
+    disableCheckerIfNoEnabledChecks as disableCheckerIfHasNoEnabledChecks,
+    isUserCheckOwner,
+    isUserCheckerOwner,
+    validateCheckBlueprint,
+} from "@/pages/api/common";
+import {
+    connectToRedis,
+    requestMiddleware,
+    return204Status,
+    sendBadRequest,
+} from "@/pages/api/commonNetworking";
+import {
+    CheckBlueprint,
+    CheckType,
+} from "@components/create-checker/CheckerTypes";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
     req: NextApiRequest,

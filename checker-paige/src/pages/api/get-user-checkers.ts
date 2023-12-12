@@ -1,4 +1,8 @@
-import { RedisClient, connectToRedis, requestMiddleware } from "@/pages/api/commonNetworking";
+import {
+    RedisClient,
+    connectToRedis,
+    requestMiddleware,
+} from "@/pages/api/commonNetworking";
 import { CheckerId } from "@api/checker";
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";

@@ -1,20 +1,18 @@
-import { NormalButton, TextButton } from "@components/Button";
+import {
+    MAX_POSITIVE_EX_EDITED_TEXT_LEN,
+    MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN,
+} from "@/constants";
+import { NormalButton } from "@components/Button";
 import { LabelWithHelp } from "@components/LabelWithHelp";
 import { NormalTextArea } from "@components/TextArea";
-import ThinLine from "@components/ThinLine";
+import { CheckSectionHeader } from "@components/create-check/CheckCreator";
+import { defaultOriginalText } from "@components/create-check/DefaultTextForCheckType";
 import {
     CheckType,
     PositiveCheckExample,
 } from "@components/create-checker/CheckerTypes";
-import { defaultOriginalText } from "@components/create-check/DefaultTextForCheckType";
 import { HelpIcon } from "@components/icons/HelpIcon";
 import { SetState } from "@utils/types";
-import React from "react";
-import {
-    MAX_POSITIVE_EX_EDITED_TEXT_LEN,
-    MAX_POSITIVE_EX_ORIGINAL_TEXT_LEN,
-} from "src/constants";
-import { CheckSectionHeader } from "@components/create-check/CheckCreator";
 
 interface Props {
     checkType: CheckType;

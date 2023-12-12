@@ -1,11 +1,11 @@
-import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
-import { createShortId } from "@utils/strings";
-import { NextApiRequest, NextApiResponse } from "next";
 import {
     connectToRedis,
     requestMiddleware,
     sendBadRequest,
-} from "pages/api/commonNetworking";
+} from "@/pages/api/commonNetworking";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import { createShortId } from "@utils/strings";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
     req: NextApiRequest,

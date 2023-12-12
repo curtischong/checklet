@@ -1,12 +1,12 @@
-import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
-import { NextApiRequest, NextApiResponse } from "next";
-import { isUserCheckerOwner, validateChecker } from "pages/api/common";
+import { isUserCheckerOwner, validateChecker } from "@/pages/api/common";
 import {
     connectToRedis,
     requestMiddleware,
     return204Status,
     sendBadRequest,
-} from "pages/api/commonNetworking";
+} from "@/pages/api/commonNetworking";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function setCheckerIsPublic(
     req: NextApiRequest,

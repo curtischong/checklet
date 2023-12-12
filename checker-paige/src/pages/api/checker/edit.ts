@@ -1,18 +1,17 @@
-import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
-import { NextApiRequest, NextApiResponse } from "next";
-import { isUserCheckerOwner, validateChecker } from "pages/api/common";
+import {
+    MAX_CHECKER_DESC_LEN,
+    MAX_CHECKER_NAME_LEN,
+    MAX_CHECKER_PLACEHOLDER_LEN,
+} from "@/constants";
+import { isUserCheckerOwner, validateChecker } from "@/pages/api/common";
 import {
     connectToRedis,
     requestMiddleware,
     return204Status,
     sendBadRequest,
-} from "pages/api/commonNetworking";
-import { createClient } from "redis";
-import {
-    MAX_CHECKER_DESC_LEN,
-    MAX_CHECKER_NAME_LEN,
-    MAX_CHECKER_PLACEHOLDER_LEN,
-} from "src/constants";
+} from "@/pages/api/commonNetworking";
+import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
     req: NextApiRequest,

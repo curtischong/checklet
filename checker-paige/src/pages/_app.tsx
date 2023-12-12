@@ -1,3 +1,4 @@
+import "@/app/globals.css";
 import { mixpanelTrack } from "@/utils";
 import { ClientContextProvider } from "@utils/ClientContext";
 import mixpanel from "mixpanel-browser";

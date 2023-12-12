@@ -1,3 +1,11 @@
+import { MAX_CHECK_NAME_LEN } from "@/constants";
+import { isUserCheckerOwner, validateCheckType } from "@/pages/api/common";
+import {
+    RedisClient,
+    connectToRedis,
+    requestMiddleware,
+    sendBadRequest,
+} from "@/pages/api/commonNetworking";
 import { CheckerId } from "@api/checker";
 import {
     CheckBlueprint,
@@ -8,14 +16,6 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { createShortId } from "@utils/strings";
 import { NextApiRequest, NextApiResponse } from "next";
-import { isUserCheckerOwner, validateCheckType } from "pages/api/common";
-import {
-    RedisClient,
-    connectToRedis,
-    requestMiddleware,
-    sendBadRequest,
-} from "pages/api/commonNetworking";
-import { MAX_CHECK_NAME_LEN } from "src/constants";
 
 export default async function handler(
     req: NextApiRequest,
