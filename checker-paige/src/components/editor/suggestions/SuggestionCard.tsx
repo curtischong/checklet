@@ -1,5 +1,5 @@
 import classnames from "classnames";
-import React, { forwardRef, useMemo } from "react";
+import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -16,12 +16,13 @@ type SuggestionCard = {
     onReplaceClick: (acceptedOption: string) => void;
     checkDescObj: CheckDescObj;
     classNames?: string;
+    ref:  React.RefObject<HTMLDivElement>;
 };
 
 const isEqual = (...objects: Suggestion[]) =>
     objects.every((obj) => JSON.stringify(obj) === JSON.stringify(objects[0]));
 
-export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
+export const SuggestionCard = ((props: SuggestionCard, ref:  React.RefObject<HTMLDivElement>) => {
     const { activeSuggestion, onClick, onReplaceClick, suggestion } = props;
     const isActive = useMemo(() => {
         if (activeSuggestion == null) {
@@ -97,9 +98,10 @@ export const SuggestionCard = forwardRef((props: SuggestionCard, ref) => {
                         {" "}
                         <ReactMarkdown
                             className="whitespace-pre-wrap"
-                            children={`${checkDesc.objInfo.desc}`}
                             remarkPlugins={[remarkGfm]}
-                        />{" "}
+                        >
+                            {checkDesc.objInfo.desc}
+                        </ReactMarkdown>
                     </div>
                 </div>
             )}
