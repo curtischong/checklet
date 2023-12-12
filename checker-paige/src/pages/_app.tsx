@@ -1,3 +1,4 @@
+import { lora, mackinac } from "@/app/fonts";
 import { mixpanelTrack } from "@/utils";
 import { ClientContextProvider } from "@utils/ClientContext";
 import mixpanel from "mixpanel-browser";
@@ -5,6 +6,8 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "tailwindcss/tailwind.css";
 import "./globals.css";
 
 const mixPanelDevToken = "94ac9cfab8d2280edba19b31b2937926";
@@ -27,7 +30,9 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                     <link rel="shortcut icon" href="/nautilus-favicon.jpeg" />
                 </Head>
                 <ClientContextProvider>
-                    <Component {...pageProps} />
+                    <div className={`${lora.variable} ${mackinac.variable}`}>
+                        <Component {...pageProps} />
+                    </div>
                     <ToastContainer />
                 </ClientContextProvider>
             </>
