@@ -1,3 +1,4 @@
+import { RedisClient, sendBadRequest } from "@/pages/api/commonNetworking";
 import { CheckerId } from "@api/checker";
 import {
     CheckBlueprint,
@@ -10,7 +11,6 @@ import {
 } from "@components/create-checker/CheckerTypes";
 import { isLegitShortId } from "@utils/strings";
 import { NextApiResponse } from "next";
-import { RedisClient, sendBadRequest } from "pages/api/commonNetworking";
 
 export const isUserCheckerOwner = async (
     redisClient: RedisClient,

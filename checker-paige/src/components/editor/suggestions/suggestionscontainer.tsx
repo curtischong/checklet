@@ -4,7 +4,7 @@ import { pluralize } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { Tooltip } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { BsSortDownAlt } from "react-icons/bs";
+import { BsSortDownAlt } from "react-icons/bs"; // TODO: consider removing this dependency. we cna use svgs instead
 import { mixpanelTrack } from "../../../utils";
 import NoSuggestionsImage from "./NoSuggestionsState.svg";
 import { SuggestionCard } from "./SuggestionCard";
@@ -142,7 +142,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
                         content={
                             <>
                                 <div className={"w-3/4"}>
-                                    Click 'Check Document' to check for mistakes
+                                    Click &apos;Check Document&apos; to check for mistakes
                                     &#128640;
                                 </div>
                             </>
@@ -158,7 +158,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
                 header={"Nothing to check yet"}
                 content={
                     <div className={"w-[70%]"}>
-                        Start writing or paste your resume to see Nautilus's
+                        Start writing or paste your resume to see Nautilus&apos;s
                         feedback.
                     </div>
                 }

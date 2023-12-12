@@ -1,20 +1,15 @@
-import * as path from "path";
+import { MAX_EDITOR_LEN } from "@/constants";
+import { getCheckBlueprints } from "@/pages/api/common";
+import { connectToRedis, isUnauthenticatedRequestValid, sendBadRequest } from "@/pages/api/commonNetworking";
+import { getCheckDescForCheckIds } from "@/shared/checker-utils";
+import { SimpleCache } from "@api/SimpleCache";
 import { Checker } from "@api/checker";
 import {
     CheckBlueprint,
     CheckerBlueprint,
 } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getCheckBlueprints } from "pages/api/common";
-import {
-    connectToRedis,
-    isUnauthenticatedRequestValid,
-    sendBadRequest,
-} from "pages/api/commonNetworking";
-import { createClient } from "redis";
-import { MAX_EDITOR_LEN } from "src/constants";
-import { SimpleCache } from "@api/SimpleCache";
-import { getCheckDescForCheckIds } from "shared/checker-utils";
+import * as path from "path";
 
 export default async function handler(
     req: NextApiRequest,

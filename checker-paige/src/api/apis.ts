@@ -16,10 +16,8 @@ export class Api {
     static createRequest = async (
         endpoint: string,
         requestType: string,
-        // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
         payload: any,
         user?: User | null,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<any> => {
         if (user) {
             const idToken = await user.getIdToken();
@@ -34,7 +32,6 @@ export class Api {
                 },
                 body: JSON.stringify(payload),
             });
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             toast.error(err.toString());
             return undefined;

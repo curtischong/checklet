@@ -1,12 +1,7 @@
+import { RedisClient, connectToRedis, requestMiddleware } from "@/pages/api/commonNetworking";
 import { CheckerId } from "@api/checker";
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-    RedisClient,
-    connectToRedis,
-    requestMiddleware,
-} from "pages/api/commonNetworking";
-import { createClient } from "redis";
 
 export default async function handler(
     req: NextApiRequest,
