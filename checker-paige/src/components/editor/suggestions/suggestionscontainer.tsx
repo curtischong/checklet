@@ -2,9 +2,9 @@ import SuggestionCard from "@/components/editor/suggestions/SuggestionCard";
 import { SortIcon } from "@/components/icons/SortIcon";
 import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
-import CoolCheckie from "@public/checkies/cool.svg";
-import PencilCheckie from "@public/checkies/pencil.svg";
-import YayCheckie from "@public/checkies/yay.svg";
+import CoolChecklet from "@public/checklets/cool.svg";
+import PencilChecklet from "@public/checklets/pencil.svg";
+import YayChecklet from "@public/checklets/yay.svg";
 import { pluralize } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { Tooltip } from "antd/lib";
@@ -123,7 +123,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
             if (!hasModifiedTextAfterChecking) {
                 return (
                     <NoSuggestionMessage
-                        imageSrc={YayCheckie.src}
+                        imageSrc={YayChecklet.src}
                         header={"No issues found"}
                         content={
                             <>
@@ -138,7 +138,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
             } else {
                 return (
                     <NoSuggestionMessage
-                        imageSrc={CoolCheckie.src}
+                        imageSrc={CoolChecklet.src}
                         header={"Ready to check?"}
                         content={
                             <>
@@ -155,7 +155,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
 
         return (
             <NoSuggestionMessage
-                imageSrc={PencilCheckie.src}
+                imageSrc={PencilChecklet.src}
                 header={"Nothing to check yet"}
                 content={
                     <div className={"w-[70%]"}>

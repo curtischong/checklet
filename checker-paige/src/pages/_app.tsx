@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
         return (
             <>
                 <Head>
-                    <title>Checkie.page</title>
+                    <title>Checklet.page</title>
                     <link rel="shortcut icon" href="/nautilus-favicon.jpeg" />
                 </Head>
                 <ClientContextProvider>

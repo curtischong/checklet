@@ -7,7 +7,7 @@ export const MenuHeader = () => {
     return (
         <div className="absolute top-0 left-0 w-full">
             <a className="absolute left-4 mt-4 font-mackinac" href="/">
-                Checkie.page
+                Checklet.page
             </a>
             {router.pathname !== "/editor" && (
                 <div className="absolute mt-4 right-20">
