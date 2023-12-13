@@ -29,10 +29,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                 <>
                     <Head>
                         <title>Checklet.page</title>
-                        <link
-                            rel="shortcut icon"
-                            href="/nautilus-favicon.jpeg"
-                        />
+                        <link rel="icon" href="/favicon.svg" />
                     </Head>
                     <div>Sorry! Checklet isn&lsquo;t available on mobile</div>
                 </>
@@ -43,7 +40,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
             <>
                 <Head>
                     <title>Checklet.page</title>
-                    <link rel="shortcut icon" href="/nautilus-favicon.jpeg" />
+                    <link rel="icon" href="/favicon.svg" />
                 </Head>
                 <ClientContextProvider>
                     <MenuHeader />
