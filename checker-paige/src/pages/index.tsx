@@ -1,16 +1,35 @@
 import { NormalButton } from "@/components/Button";
 import ThinLine from "@/components/ThinLine";
+import DerpCheckie from "@public/checkies/derp.svg";
+import FlyDownCheckie from "@public/checkies/fly-down.svg";
+import JumpLeftCheckie from "@public/checkies/jump-left.svg";
+import LookRightCheckie from "@public/checkies/look-right.svg";
+import LoveCheckie from "@public/checkies/love.svg";
+import NormalCheckie from "@public/checkies/normal.svg";
+import Image from "next/image";
 import { useRouter } from "next/router";
 
 const HomePage: React.FC = () => {
     const router = useRouter();
     return (
         <div className="flex flex-row ">
-            <div className="container mx-auto text-center mt-20">
-                <div className="ml-0">
-                    <p className="text-4xl font-mackinac">Checker.page</p>
-                    {/* <p className="text-2xl">checks ur page</p> */}
-
+            <div className="container mx-auto text-center">
+                <div className="ml-0 h-screen flex flex-col justify-center">
+                    <Image
+                        alt="FlyDownCheckie"
+                        src={FlyDownCheckie.src}
+                        width={200}
+                        height={200}
+                        className="h-[8rem] top-32 left-[20%] absolute"
+                    />
+                    <Image
+                        alt="NormalCheckie"
+                        src={NormalCheckie.src}
+                        width={200}
+                        height={200}
+                        className="h-[5rem] bottom-[10rem] right-[30%] absolute"
+                    />
+                    <p className="text-4xl font-mackinac">Checkie.page</p>
                     <p>
                         Figuring out what to say is always harder than knowing
                         how to say it right. Use expert-written checkers to
@@ -37,6 +56,34 @@ const HomePage: React.FC = () => {
                         />
                     </div> */}
                 </div>
+                <Image
+                    alt="DerpCheckie"
+                    src={DerpCheckie.src}
+                    width={200}
+                    height={200}
+                    className="h-[5rem] top-[100rem] right-[30%] absolute"
+                />
+                <Image
+                    alt="LoveCheckie"
+                    src={LoveCheckie.src}
+                    width={200}
+                    height={200}
+                    className="h-[6rem] top-[80rem] right-[30%] absolute"
+                />
+                <Image
+                    alt="LookRightCheckie"
+                    src={LookRightCheckie.src}
+                    width={200}
+                    height={200}
+                    className="h-[5rem] top-[100rem] left-[20%] absolute"
+                />
+                <Image
+                    alt="JumpLeftCheckie"
+                    src={JumpLeftCheckie.src}
+                    width={200}
+                    height={200}
+                    className="h-[6rem] top-[80rem] left-[30%] absolute"
+                />
                 <div className="flex flex-row">
                     <div className="text-2xl">
                         2. Paste your writing into the editor

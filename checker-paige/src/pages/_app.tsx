@@ -1,4 +1,5 @@
 import { lora, mackinac } from "@/app/fonts";
+import { MenuHeader } from "@/pages/MenuHeader";
 import { mixpanelTrack } from "@/utils";
 import { ClientContextProvider } from "@utils/ClientContext";
 import mixpanel from "mixpanel-browser";
@@ -26,10 +27,11 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
         return (
             <>
                 <Head>
-                    <title>Nautilus | Resume Feedback</title>
+                    <title>Checkie.page</title>
                     <link rel="shortcut icon" href="/nautilus-favicon.jpeg" />
                 </Head>
                 <ClientContextProvider>
+                    <MenuHeader />
                     <div className={`${lora.variable} ${mackinac.variable}`}>
                         <Component {...pageProps} />
                     </div>

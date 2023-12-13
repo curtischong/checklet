@@ -1,11 +1,10 @@
 import { Api } from "@api/apis";
-import { NormalButton, TextButton } from "@components/Button";
+import { NormalButton } from "@components/Button";
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { DashboardChecker } from "@components/create-checker/DashboardChecker";
 import { useClientContext } from "@utils/ClientContext";
 import { useRouter } from "next/router";
-import React, { useCallback } from "react";
-import { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 
 // used to show you your checkers.
@@ -55,30 +54,6 @@ const Dashboard: React.FC = () => {
 
     return (
         <div className="flex">
-            <TextButton
-                className="fixed right-5 top-3"
-                onClick={() => {
-                    firebaseAuth.signOut().then(
-                        function () {
-                            // Sign-out successful.
-                            router.push("/editor");
-                        },
-                        function (error) {
-                            toast.error(error.message);
-                        },
-                    );
-                }}
-            >
-                logout
-            </TextButton>
-            <TextButton
-                className="fixed right-20 top-3"
-                onClick={() => {
-                    router.push("/editor");
-                }}
-            >
-                Editor
-            </TextButton>
             <div className="container mx-auto mt-20">
                 {/* {user ? user.email : <></>} */}
                 <p className="text-2xl font-bold">Your Checkers</p>
