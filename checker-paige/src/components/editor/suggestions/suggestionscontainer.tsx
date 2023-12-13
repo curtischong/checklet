@@ -2,13 +2,14 @@ import SuggestionCard from "@/components/editor/suggestions/SuggestionCard";
 import { SortIcon } from "@/components/icons/SortIcon";
 import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
+import CoolCheckie from "@public/checkies/cool.svg";
 import PencilCheckie from "@public/checkies/pencil.svg";
+import YayCheckie from "@public/checkies/yay.svg";
 import { pluralize } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { Tooltip } from "antd/lib";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { mixpanelTrack } from "../../../utils";
-import NoSuggestionsImage from "./NoSuggestionsState.svg";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
 import { SuggestionIdToRef } from "./suggestionsTypes";
 
@@ -122,7 +123,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
             if (!hasModifiedTextAfterChecking) {
                 return (
                     <NoSuggestionMessage
-                        imageSrc={NoSuggestionsImage.src}
+                        imageSrc={YayCheckie.src}
                         header={"No issues found"}
                         content={
                             <>
@@ -137,7 +138,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
             } else {
                 return (
                     <NoSuggestionMessage
-                        imageSrc={NoSuggestionsImage.src}
+                        imageSrc={CoolCheckie.src}
                         header={"Ready to check?"}
                         content={
                             <>
@@ -158,8 +159,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
                 header={"Nothing to check yet"}
                 content={
                     <div className={"w-[70%]"}>
-                        Start writing or paste your resume to see
-                        Nautilus&apos;s feedback.
+                        Start writing or paste your document.
                     </div>
                 }
             />
