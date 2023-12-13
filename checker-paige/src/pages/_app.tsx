@@ -24,6 +24,21 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     }, []);
 
     if (typeof window !== "undefined" && Component) {
+        if (window.innerWidth < 768) {
+            return (
+                <>
+                    <Head>
+                        <title>Checklet.page</title>
+                        <link
+                            rel="shortcut icon"
+                            href="/nautilus-favicon.jpeg"
+                        />
+                    </Head>
+                    <div>Sorry! Checklet isn&lsquo;t available on mobile</div>
+                </>
+            );
+        }
+
         return (
             <>
                 <Head>
