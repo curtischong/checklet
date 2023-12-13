@@ -5,7 +5,7 @@ interface Props {
 }
 export default function ThinLine({ className }: Props): JSX.Element {
     const classes = classNames(
-        "border-0 bg-gradient-to-r from-transparent via-black to-transparent mx-auto my-5 w-3/4",
+        "border-0 bg-gradient-to-r from-transparent via-black to-transparent mx-auto my-2 w-3/4",
         className,
     );
 
