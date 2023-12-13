@@ -1,11 +1,11 @@
 import { NormalButton } from "@/components/Button";
 import ThinLine from "@/components/ThinLine";
 import DerpCheckie from "@public/checkies/derp.svg";
-import FlyDownCheckie from "@public/checkies/fly-down.svg";
-import JumpLeftCheckie from "@public/checkies/jump-left.svg";
-import LookRightCheckie from "@public/checkies/look-right.svg";
+import DockyCheckie from "@public/checkies/docky.svg";
 import LoveCheckie from "@public/checkies/love.svg";
 import NormalCheckie from "@public/checkies/normal.svg";
+import PennyCheckie from "@public/checkies/penny.svg";
+import SpacyCheckie from "@public/checkies/spacy.svg";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
@@ -16,8 +16,8 @@ const HomePage: React.FC = () => {
             <div className="container mx-auto text-center">
                 <div className="ml-0 h-screen flex flex-col justify-center">
                     <Image
-                        alt="FlyDownCheckie"
-                        src={FlyDownCheckie.src}
+                        alt="SpacyCheckie"
+                        src={SpacyCheckie.src}
                         width={200}
                         height={200}
                         className="h-[8rem] top-32 left-[20%] absolute"
@@ -71,15 +71,15 @@ const HomePage: React.FC = () => {
                     className="h-[6rem] top-[80rem] right-[30%] absolute"
                 />
                 <Image
-                    alt="LookRightCheckie"
-                    src={LookRightCheckie.src}
+                    alt="PennyCheckie"
+                    src={PennyCheckie.src}
                     width={200}
                     height={200}
-                    className="h-[5rem] top-[100rem] left-[20%] absolute"
+                    className="h-[7rem] top-[100rem] left-[20%] absolute"
                 />
                 <Image
-                    alt="JumpLeftCheckie"
-                    src={JumpLeftCheckie.src}
+                    alt="DockyCheckie"
+                    src={DockyCheckie.src}
                     width={200}
                     height={200}
                     className="h-[6rem] top-[80rem] left-[30%] absolute"
