@@ -36,7 +36,7 @@ interface StorefrontProps {
     storefront: CheckerStorefront;
 }
 
-const StoreFront = ({ storefront }: StorefrontProps) => {
+export const StoreFront = ({ storefront }: StorefrontProps) => {
     const router = useRouter();
     return (
         <div

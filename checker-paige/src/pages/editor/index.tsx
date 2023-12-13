@@ -1,4 +1,3 @@
-import { TextButton } from "@components/Button";
 import { CheckerStore } from "@components/CheckerStore";
 import { useClientContext } from "@utils/ClientContext";
 import { useRouter } from "next/router";
@@ -13,7 +12,7 @@ const EditorHome: React.FC = () => {
                 What do you want to check?
             </div>
             <CheckerStore />
-            <TextButton
+            {/* <TextButton
                 className="fixed top-2 right-5"
                 onClick={() => {
                     const isLoggedOut = user === null;
@@ -25,7 +24,7 @@ const EditorHome: React.FC = () => {
                 }}
             >
                 Create Your Own Checker
-            </TextButton>
+            </TextButton> */}
         </div>
     );
 };

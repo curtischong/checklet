@@ -142,7 +142,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     };
 
     return (
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-14">
             <div className="container">
                 <div className="flex flex-row">
                     <div

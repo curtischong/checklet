@@ -19,7 +19,9 @@ export const NormalSwitch = ({
                 setChecked(!isChecked);
             }}
             size="small"
-            className={className}
+            className={classNames(className, {
+                "bg-gray-300": !isChecked,
+            })}
         />
     );
 };

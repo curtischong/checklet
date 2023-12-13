@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
-import { GoogleAuthProvider } from "firebase/auth";
-import { useClientContext } from "@utils/ClientContext";
 import { AuthBoxCss } from "@components/authBoxCss";
+import { useClientContext } from "@utils/ClientContext";
+import { GoogleAuthProvider } from "firebase/auth";
 import { useRouter } from "next/router";
-import { TextButton } from "@components/Button";
+import React, { useEffect } from "react";
 
 const Login: React.FC = () => {
     const { firebaseAuth } = useClientContext();
@@ -52,14 +51,14 @@ const Login: React.FC = () => {
                     Your Writer Friend
                 </h1>
             </div>
-            <TextButton
+            {/* <TextButton
                 className="mx-auto mb-4"
                 onClick={() => {
                     router.push("/editor");
                 }}
             >
                 Go to Editor
-            </TextButton>
+            </TextButton> */}
             <div className="text-center">
                 Want to create a checker? Sign in below!
             </div>

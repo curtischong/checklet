@@ -1,4 +1,5 @@
 import { lora, mackinac } from "@/app/fonts";
+import { MenuHeader } from "@/pages/MenuHeader";
 import { mixpanelTrack } from "@/utils";
 import { ClientContextProvider } from "@utils/ClientContext";
 import mixpanel from "mixpanel-browser";
@@ -23,13 +24,29 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     }, []);
 
     if (typeof window !== "undefined" && Component) {
+        if (window.innerWidth < 768) {
+            return (
+                <>
+                    <Head>
+                        <title>Checklet.page</title>
+                        <link
+                            rel="shortcut icon"
+                            href="/nautilus-favicon.jpeg"
+                        />
+                    </Head>
+                    <div>Sorry! Checklet isn&lsquo;t available on mobile</div>
+                </>
+            );
+        }
+
         return (
             <>
                 <Head>
-                    <title>Nautilus | Resume Feedback</title>
+                    <title>Checklet.page</title>
                     <link rel="shortcut icon" href="/nautilus-favicon.jpeg" />
                 </Head>
                 <ClientContextProvider>
+                    <MenuHeader />
                     <div className={`${lora.variable} ${mackinac.variable}`}>
                         <Component {...pageProps} />
                     </div>
