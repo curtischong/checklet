@@ -2,13 +2,13 @@ import SuggestionCard from "@/components/editor/suggestions/SuggestionCard";
 import { SortIcon } from "@/components/icons/SortIcon";
 import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
+import PencilCheckie from "@public/checkies/pencil.svg";
 import { pluralize } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { Tooltip } from "antd/lib";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { mixpanelTrack } from "../../../utils";
 import NoSuggestionsImage from "./NoSuggestionsState.svg";
-import ZeroImage from "./ZeroState.svg";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
 import { SuggestionIdToRef } from "./suggestionsTypes";
 
@@ -154,7 +154,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
 
         return (
             <NoSuggestionMessage
-                imageSrc={ZeroImage.src}
+                imageSrc={PencilCheckie.src}
                 header={"Nothing to check yet"}
                 content={
                     <div className={"w-[70%]"}>
