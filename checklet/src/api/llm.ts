@@ -1,5 +1,5 @@
-import { OpenAI } from "openai";
 import { SimpleCache } from "@api/SimpleCache";
+import { OpenAI } from "openai";
 import { JSONSchema } from "openai/lib/jsonschema";
 
 export class Llm {
