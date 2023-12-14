@@ -32,6 +32,7 @@ export const IsPublicSwitch = ({
         setTmpChecked(isPublic);
     }, [isPublic]);
 
+    // TODO: use the same function as in the backend
     const getIncompleteFormErr = useCallback(() => {
         if (name === "") {
             return "Please enter a name";

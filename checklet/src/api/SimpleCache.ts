@@ -1,5 +1,6 @@
-import * as fs from "fs";
+import Log from "@/api/logger";
 import * as crypto from "crypto";
+import * as fs from "fs";
 
 export class SimpleCache {
     filePath: string;
@@ -22,7 +23,7 @@ export class SimpleCache {
                 const fileContent = fs.readFileSync(this.filePath, "utf8");
                 this.cache = JSON.parse(fileContent);
             } catch (error) {
-                console.error(
+                Log.error(
                     `Error reading from cache file. filepath=${this.filePath}, err=${error}`,
                 );
             }
@@ -34,7 +35,7 @@ export class SimpleCache {
             const data = JSON.stringify(this.cache, null, 2);
             fs.writeFileSync(this.filePath, data, "utf8");
         } catch (error) {
-            console.error("Error writing to cache file:", error);
+            Log.error("Error writing to cache file:", error);
         }
     }
 
@@ -59,7 +60,7 @@ export class SimpleCache {
         try {
             return JSON.parse(value);
         } catch (error) {
-            console.error("Error parsing cache value", error);
+            Log.error("Error parsing cache value", error);
             return undefined;
         }
     }

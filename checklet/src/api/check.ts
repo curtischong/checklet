@@ -1,3 +1,4 @@
+import Log from "@/api/logger";
 import { Suggestion, newDocRange } from "@api/ApiTypes";
 import { Llm } from "@api/llm";
 import {
@@ -17,7 +18,7 @@ export class Check {
         apiKey: string | undefined,
     ) {
         const systemPrompt = this.getSystemPrompt();
-        console.log("systemPrompt", systemPrompt);
+        Log.info("systemPrompt", systemPrompt);
         this.llm = new Llm(systemPrompt, modelName, cache, apiKey);
     }
 
@@ -85,7 +86,6 @@ ${positiveExamples}
     }
 
     private async doRephraseCheck(doc: string): Promise<Suggestion[]> {
-        console.log("calling function with doc: ", doc);
         return new Promise<Suggestion[]>((resolve, _reject) => {
             this.llm
                 .callFunction({
@@ -122,27 +122,22 @@ ${positiveExamples}
                     },
                 })
                 .then((args) => {
-                    console.log("got result", args);
                     const argsObj = JSON.parse(args);
                     let startIdx = 0;
 
                     const suggestions: Suggestion[] = [];
                     for (let i = 0; i < argsObj.originalTexts.length; i++) {
                         if (argsObj.editedTexts.length - 1 < i) {
-                            console.error("editedText is too short");
+                            Log.error("editedText is too short");
                             break;
                         }
                         const originalEx = argsObj.originalTexts[i];
                         const editedOptions = argsObj.editedTexts[i];
-                        console.log("editedOptions", editedOptions);
                         const prunedOptions = [];
                         for (const option of editedOptions) {
                             if (originalEx === option) {
                                 // the model didn't change anything. just ignore it
-                                console.log(
-                                    "originalEx === option",
-                                    originalEx,
-                                );
+                                Log.warn("originalEx === option", originalEx);
                                 continue;
                             }
                             prunedOptions.push(option);
@@ -164,7 +159,7 @@ ${positiveExamples}
 
                         if (originalTextIdx === -1) {
                             // the model generated extra suggestions that exceed the length of the doc. just ignore them
-                            console.error("originalText not found in doc");
+                            Log.error("originalText not found in doc");
                             break;
                         }
                         const originalTextIdxRelativeToDoc =
@@ -190,7 +185,7 @@ ${positiveExamples}
                 })
                 .catch((err) => {
                     // the function call errored out. it's ok, just return no suggestions
-                    console.error(`function call failed. err=${err}`);
+                    Log.error(`function call failed. err=${err}`);
                     resolve([]);
                 });
         });
@@ -198,7 +193,7 @@ ${positiveExamples}
     }
 
     private async doHighlightCheck(doc: string): Promise<Suggestion[]> {
-        console.log("calling function with doc: ", doc);
+        Log.info("calling function with doc: ", doc);
         return new Promise<Suggestion[]>((resolve, _reject) => {
             this.llm
                 .callFunction({
@@ -221,7 +216,7 @@ ${positiveExamples}
                     },
                 })
                 .then((args) => {
-                    console.log("got result", args);
+                    Log.info("got result", args);
                     const argsObj = JSON.parse(args);
                     let startIdx = 0;
 
@@ -236,7 +231,7 @@ ${positiveExamples}
 
                         if (highlightedTextIdx === -1) {
                             // the model generated extra suggestions that exceed the length of the doc. just ignore them
-                            console.error("originalText not found in doc");
+                            Log.error("originalText not found in doc");
                             break;
                         }
                         const originalTextIdxRelativeToDoc =
@@ -263,7 +258,7 @@ ${positiveExamples}
                 })
                 .catch((err) => {
                     // the function call errored out. it's ok, just return no suggestions
-                    console.error(`function call failed. err=${err}`);
+                    Log.error(`function call failed. err=${err}`);
                     resolve([]);
                 });
         });

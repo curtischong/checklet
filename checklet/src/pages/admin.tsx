@@ -217,7 +217,7 @@ const AdminPage: React.FC = () => {
             <FileUpload
                 fileType={".json"}
                 onFileUpload={(fileText: string) => {
-                    console.log(`uploaded creation: ${fileText}`);
+                    console.log(`uploaded checker: ${fileText}`);
                     createChecker(fileText);
                 }}
             />
