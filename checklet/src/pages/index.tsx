@@ -24,30 +24,30 @@ const HomePage: React.FC = () => {
                     <Image
                         alt="SpacyChecklet"
                         src={SpacyChecklet.src}
-                        width={200}
-                        height={200}
-                        className="h-[8rem] top-[10%] md:top-[20%] left-[5%] md:left-[20%] absolute"
+                        width={100}
+                        height={100}
+                        className="top-[10%] md:top-[20%] left-[5%] md:left-[20%] absolute"
                     />
                     <Image
                         alt="LoveChecklet"
                         src={LoveChecklet.src}
-                        width={200}
+                        width={100}
                         height={200}
-                        className="h-[6rem] bottom-[25%] right-[0%] md:right-[20%] absolute"
+                        className="bottom-[25%] right-[2%] md:right-[20%] absolute"
                     />
                     <Image
                         alt="DockyChecklet"
                         src={DockyChecklet.src}
-                        width={200}
+                        width={100}
                         height={200}
-                        className="h-[6rem] bottom-[15%] left-[5%] md:left-[30%] absolute"
+                        className="bottom-[15%] left-[5%] md:left-[30%] absolute"
                     />
                     <Image
                         alt="DerpChecklet"
                         src={DerpChecklet.src}
-                        width={200}
+                        width={100}
                         height={200}
-                        className="h-[5rem] top-[5%] right-[5%] md:right-[30%] absolute"
+                        className="top-[5%] right-[5%] md:right-[30%] absolute"
                     />
                     <p className="text-5xl font-mackinac">Checklet.page</p>
                     <p className="mt-4">
@@ -72,7 +72,7 @@ const HomePage: React.FC = () => {
                 </div>
                 <div className="text-3xl mt-32 font-mackinac">How it works</div>
                 <ThinLine />
-                <div className=" text-left max-w-[70%] justify-center flex flex-col mx-auto">
+                <div className=" text-left md:max-w-[70%] justify-center flex flex-col mx-auto">
                     <div className="flex flex-col md:flex-row justify-center gap-8 mt-10 relative">
                         <div className="text-lg flex-1">
                             1. Select a Checker for your type of writing
@@ -95,13 +95,13 @@ const HomePage: React.FC = () => {
                         <Image
                             alt="MushyChecklet"
                             src={MushyChecklet.src}
-                            width={200}
+                            width={100}
                             height={200}
-                            className="h-[5rem] top-[5rem] left-[10%] absolute"
+                            className="md:top-[4rem] right-0 top-[32px] md:left-[10%] absolute"
                         />
                     </div>
 
-                    <div className="flex flex-col md:flex-row justify-center gap-8 mt-32 relative">
+                    <div className="flex flex-col md:flex-row justify-center gap-8 mt-10 relative">
                         <div className="text-lg flex-1">
                             2. Paste your writing into the editor
                         </div>
@@ -122,15 +122,17 @@ const HomePage: React.FC = () => {
                                 <div>...</div>
                             </div>
                         </div>
+                    </div>
+                    <div className="relative h-32 justify-center">
                         <Image
                             alt="PennyChecklet"
                             src={PennyChecklet.src}
-                            width={200}
-                            height={200}
-                            className="h-[7rem] top-[1rem] right-[50%] md:right-[-30%] absolute"
+                            width={100}
+                            height={100}
+                            className="top-[0px] md:top-[1rem] right-[30%] absolute"
                         />
                     </div>
-                    <div className="flex flex-col md:flex-row justify-center gap-8 mt-8 ">
+                    <div className="flex flex-col md:flex-row justify-center gap-8">
                         <div className="text-lg flex-1">
                             3. Receive instant feedback
                         </div>
