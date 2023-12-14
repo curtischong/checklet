@@ -1,10 +1,12 @@
 import { lora, mackinac } from "@/app/fonts";
+import { Footer } from "@/components/Footer";
 import { MenuHeader } from "@/pages/MenuHeader";
 import { mixpanelTrack } from "@/utils";
 import { ClientContextProvider } from "@utils/ClientContext";
 import mixpanel from "mixpanel-browser";
 import { AppProps } from "next/app";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,15 +25,34 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
         mixpanelTrack("Opened app");
     }, []);
 
+    const router = useRouter();
+
     if (typeof window !== "undefined" && Component) {
-        if (window.innerWidth < 768) {
+        if (
+            window.innerWidth < 768 &&
+            !["/", "privacy-policy", "terms-of-service"].includes(
+                router.pathname,
+            )
+        ) {
             return (
                 <>
                     <Head>
                         <title>Checklet.page</title>
                         <link rel="icon" href="/favicon.svg" />
                     </Head>
-                    <div>Sorry! Checklet isn&lsquo;t available on mobile</div>
+                    {/* <MenuHeader /> */}
+                    <div className="fixed top-0 left-0 w-full">
+                        <a
+                            className="absolute left-4 mt-4 font-mackinac"
+                            href="/"
+                        >
+                            Checklet.page
+                        </a>
+                    </div>
+                    <div className="font-3xl font-mackinac font-bold mx-auto text-center mt-[40%]">
+                        Sorry! Checklet isn&lsquo;t available on mobile
+                    </div>
+                    <Footer isAbsolute={true} />
                 </>
             );
         }
