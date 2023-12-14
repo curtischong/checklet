@@ -11,3 +11,12 @@ docker push splacorn/yourwriterfriend
 # sudo docker ps (to get the container id to put into the next command)
 # sudo docker run --env OPENAI_API_KEY=<apikey> --net=container:77d9570d6e26 splacorn/yourwriterfriend:latest
 	
+
+# deploy via docker compose:
+# yarn send-docker-compose
+#
+# on server:
+#
+# sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+# sudo chmod +x /usr/local/bin/docker-compose
+# OPENAI_API_KEY=<apikey> && docker-compose up

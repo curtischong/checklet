@@ -5,7 +5,8 @@
     "scripts": {
         "dev": "cp .env.dev .env.local && next dev",
         "build": "cp .env.prod .env.local && next build",
-        "deploy": "docker build -t yourwriterfriend . --platform linux/amd64 && docker tag yourwriterfriend splacorn/yourwriterfriend && docker push splacorn/yourwriterfriend",
+        "deploy": "docker build -t yourwriterfriend . --platform linux/amd64 && docker tag yourwriterfriend splacorn/yourwriterfriend && docker push splacorn/yourwriterfriend && yarn send-docker-compose",
+        "send-docker-compose": "scp -i ~/.ssh/Transistor.pem deploy/docker-compose.yml ec2-user@ec2-3-140-246-97.us-east-2.compute.amazonaws.com:/home/ec2-user/",
         "start": "next start",
         "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
         "prettier": "prettier --write '**/*.{js,jsx,ts,tsx}'",
