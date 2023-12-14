@@ -9,6 +9,7 @@ import { RightArrowWithTailIcon } from "@components/icons/RightArrowWithTailIcon
 import { SetState } from "@utils/types";
 import { Tooltip } from "antd/lib";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export const FlattenedPositiveExamplePreview = ({
     example,
@@ -22,7 +23,7 @@ export const FlattenedPositiveExamplePreview = ({
     positiveExamples: PositiveCheckExample[];
 }): JSX.Element => {
     const [isAddingRephrase, setIsAddingRephrase] = useState(false);
-    const [rephaseOption, setRephaseOption] = useState("");
+    const [rephraseOption, setRephraseOption] = useState("");
     return (
         <div className="flex flex-col">
             <div className="flex flex-row">
@@ -30,39 +31,54 @@ export const FlattenedPositiveExamplePreview = ({
                     {/* this is the Pilcrow symbol */}
                     <div>{example.originalText.replaceAll("\n", "¶")}</div>
                 </div>
-                {checkType === CheckType.rephrase && example.editedText && (
-                    <>
-                        <RightArrowWithTailIcon className="mx-4" />
-                        <div className="flex flex-row space-x-4">
-                            {example.editedText.map((text, idx) => (
-                                <div
-                                    className="flex flex-row bg-blue-100 px-2 pt-[1px] rounded-md"
-                                    key={`editedText-${idx}`}
-                                >
-                                    <div className="flex flex-col">
-                                        <div>{text.replaceAll("\n", "¶")}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <Tooltip
-                            className="mt-[-1px]"
-                            title="Add rephrase option. This teaches the model to generate multiple options"
-                        >
-                            <PlusButton
-                                onClick={() => {
-                                    setIsAddingRephrase(true);
-                                }}
-                            />
-                        </Tooltip>
-                    </>
-                )}
+                {checkType === CheckType.rephrase &&
+                    example.editedText.length > 0 && (
+                        <>
+                            <RightArrowWithTailIcon className="mx-4" />
+                            <div className="flex flex-row space-x-4">
+                                {example.editedText.map((text, idx) => {
+                                    const flattenedText = text.replaceAll(
+                                        "\n",
+                                        "¶",
+                                    );
+                                    if (text === "") {
+                                        return (
+                                            <div
+                                                className="flex flex-row bg-[#f35769] px-2 pt-[1px] rounded-md text-white"
+                                                key={`editedText-${idx}`}
+                                            >
+                                                {example.originalText}
+                                            </div>
+                                        );
+                                    }
+                                    return (
+                                        <div
+                                            className="flex flex-row bg-[#189bf2] px-2 pt-[1px] text-white rounded-md"
+                                            key={`editedText-${idx}`}
+                                        >
+                                            <div>{flattenedText}</div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <Tooltip
+                                className="mt-[-1px]"
+                                title="Add rephrase option. This teaches the model to generate multiple options"
+                            >
+                                <PlusButton
+                                    onClick={() => {
+                                        setIsAddingRephrase(true);
+                                    }}
+                                />
+                            </Tooltip>
+                        </>
+                    )}
             </div>
             {isAddingRephrase && (
                 <div className="flex flex-row items-start space-x-0">
                     <NormalTextArea
-                        value={rephaseOption}
-                        onChange={(e) => setRephaseOption(e.target.value)}
+                        value={rephraseOption}
+                        onChange={(e) => setRephraseOption(e.target.value)}
                         placeholder={"Add rephrase option"}
                         minRows={1}
                         maxLength={MAX_POSITIVE_EX_EDITED_TEXT_LEN}
@@ -74,9 +90,15 @@ export const FlattenedPositiveExamplePreview = ({
                     <TextButton
                         className="w-48 mt-[5px] px-0 ml-[-20px]"
                         onClick={() => {
-                            example.editedText.push(rephaseOption);
+                            if (example.editedText.includes(rephraseOption)) {
+                                toast.error(
+                                    "This rephrase option already exists",
+                                );
+                                return;
+                            }
+                            example.editedText.push(rephraseOption);
                             setPositiveExamples([...positiveExamples]);
-                            setRephaseOption("");
+                            setRephraseOption("");
                             setIsAddingRephrase(false);
                         }}
                     >

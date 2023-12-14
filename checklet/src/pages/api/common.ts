@@ -177,6 +177,18 @@ const validatePositiveExamples = (checkBlueprint: CheckBlueprint) => {
                 }
             }
         }
+
+        const uniqueEditedTexts = new Set(example.editedText);
+        if (uniqueEditedTexts.size !== example.editedText.length) {
+            return "Positive example rephrased texts must be unique";
+        }
+    }
+
+    const uniqueOriginalTexts = new Set(
+        checkBlueprint.positiveExamples.map((example) => example.originalText),
+    );
+    if (uniqueOriginalTexts.size !== checkBlueprint.positiveExamples.length) {
+        return "Positive example original texts must be unique";
     }
     return "";
 };
