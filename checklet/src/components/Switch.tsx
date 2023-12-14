@@ -44,12 +44,12 @@ export const LabelWithSwitch = ({
             <LabelWithHelp
                 label={text}
                 helpText={helpText}
-                helpIconClassName="mt-[3px]"
+                helpIconClassName={"mt-[5px]"}
             />
             <NormalSwitch
                 isChecked={isChecked}
                 setChecked={setChecked}
-                className="mt-[3px] ml-2"
+                className="mt-[5px] ml-2"
             />
         </div>
     );
