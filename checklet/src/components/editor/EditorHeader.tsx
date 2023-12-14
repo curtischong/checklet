@@ -145,7 +145,7 @@ export const EditorHeader = ({
                     )}
                 </div>
             </div>
-            <hr className="w-full h-[1px] bg-black mb-4 mt-1" />
+            <hr className="w-full h-[1px] bg-black mb-4 mt-1 border-none" />
         </div>
     );
 };
