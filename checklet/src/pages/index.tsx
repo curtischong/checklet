@@ -160,27 +160,6 @@ const HomePage: React.FC = () => {
                     </div>
                 </div>
                 <LinkButton url={"/editor"}>Try it out</LinkButton>
-                {/* <CheckerStore /> */}
-
-                {/* <NormalButton
-                    onClick={() => {
-                        router.push("/editor");
-                    }}
-                >
-                    Try fixing my work!
-                </NormalButton>
-                <div>
-                    We ask experts for help all the time. Because they help out
-                    with our specific need
-                </div>
-                <div>Online courses don't work. Why? </div>
-                <div>
-                    Get tailored suggestions written by experts in the field
-                </div>
-                <div>3.</div>
-                <div>Edit your document!</div> 
-                <p>Special thanks to Joseph Anderson and James Portnow for being fantastic writers and inspiring me to make this/write in general</p>
-                */}
             </div>
             <Footer isAbsolute={false} />
         </div>
