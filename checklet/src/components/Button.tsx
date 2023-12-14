@@ -1,3 +1,4 @@
+import { LinkArrowIcon } from "@/components/icons/LinkArrowIcon";
 import { CloseIcon } from "@components/icons/CloseIcon";
 import { EditIcon } from "@components/icons/EditIcon";
 import { PlusIcon } from "@components/icons/PlusIcon";
@@ -187,6 +188,33 @@ export const CloseButton: React.FC<IButton> = ({ className = "", ...rest }) => {
                 <CloseIcon />
             </button>
         </div>
+    );
+};
+
+export const LinkButton: React.FC<
+    IButton & {
+        url: string;
+    }
+> = ({ className = "", children, url }) => {
+    return (
+        <a
+            href={url}
+            rel="noopener"
+            // target="_blank"
+            aria-label="Read research paper"
+            className={classNames(
+                "pt-1 pb-2 pl-5 pr-7 inline-block rounded-md hover:text-white hover:bg-[#639fff] hover:border-[#639fff] relative text-primary border-[1px] border-gray-400 leading-[130%] tracking-normal transition duration-300",
+                className,
+            )}
+            style={{
+                WebkitFontSmoothing: "antialiased",
+            }}
+        >
+            <span className="flex items-center">
+                <span className="text-xl">{children}</span>
+                <LinkArrowIcon />
+            </span>
+        </a>
     );
 };
 

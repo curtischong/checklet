@@ -44,7 +44,7 @@ export const StoreFront = ({ storefront, isDemo }: StorefrontProps) => {
     return (
         <div
             className={classNames(
-                "bg-white rounded-md w-[350px] px-4 py-4  shadow-around text-left",
+                "bg-white rounded-md max-w-[350px] px-4 py-4  shadow-around text-left",
                 {
                     "cursor-pointer": !isDemo,
                 },

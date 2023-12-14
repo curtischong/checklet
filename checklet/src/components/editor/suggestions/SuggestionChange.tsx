@@ -80,7 +80,7 @@ export const SuggestionChange = ({
                         <div
                             key={`edited-text-${idx}`}
                             onClick={() => onReplaceClick(option)}
-                            className="text-white hover:bg-[#1d8fdb] bg-[#189bf2] rounded md:py-0 md:px-2 cursor-pointer whitespace-pre-wrap"
+                            className="text-white hover:bg-[#1d8fdb] bg-[#189bf2] rounded md:py-0 md:px-2 cursor-pointer whitespace-pre-wrap select-none"
                             style={{
                                 wordBreak: "break-word",
                             }}
