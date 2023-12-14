@@ -1,4 +1,5 @@
 import { Input } from "@/components/Input";
+import { rizzumeDesc } from "@/components/create-check/DefaultTextForCheckType";
 import {
     ADMIN_EMAILS,
     MAX_CHECKER_DESC_LEN,
@@ -192,7 +193,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 Description
                             </label>
                             <NormalTextArea
-                                placeholder="Rizzume will rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive."
+                                placeholder={rizzumeDesc}
                                 onChange={(e) => {
                                     setSubmittingState(
                                         SubmittingState.ChangesDetected,

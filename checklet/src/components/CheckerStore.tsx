@@ -11,7 +11,7 @@ export const CheckerStore = (): JSX.Element => {
     const [storefronts, setStorefronts] = useState<CheckerStorefront[]>([]);
     useEffect(() => {
         (async () => {
-            const newStorefronts = await Api.getPublicCheckers(
+            const newStorefronts = await Api.getStorefronts(
                 user, // if you're not logged in, then don't pass in an ID token! The token is just used so you can see your private checkers
             );
             if (newStorefronts) {

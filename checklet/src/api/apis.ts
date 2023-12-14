@@ -217,11 +217,11 @@ export class Api {
         );
     };
 
-    static getPublicCheckers = async (
+    static getStorefronts = async (
         user: User | null,
     ): Promise<CheckerStorefront[] | undefined> => {
         const data = await Api.createRequest(
-            "api/get-public-checkers",
+            "api/get-storefronts",
             "POST",
             {},
             user,
