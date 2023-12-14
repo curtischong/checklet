@@ -246,7 +246,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                     <NormalButton
                                         className="mt-4 px-6 h-10 mx-auto"
                                         onClick={() => {
-                                            router.push("/dashboard");
+                                            router.push(`/editor/${checkerId}`);
                                         }}
                                     >
                                         Open checker in editor
