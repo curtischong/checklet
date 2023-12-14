@@ -39,7 +39,7 @@ const HomePage: React.FC = () => {
                     height={200}
                     className="h-[6rem] bottom-[10rem] left-[5%] md:left-[30%] absolute"
                 />
-                <p className="text-4xl font-mackinac">Checklet.page</p>
+                <p className="text-5xl font-mackinac">Checklet.page</p>
                 <p className="mt-4">
                     Expert-written checkers to polish jokes, edit resumes,
                     revise emails... check anything!

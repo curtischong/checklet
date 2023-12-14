@@ -31,12 +31,12 @@ export const CreateCheckName = ({ setCheckName }: Props): JSX.Element => {
                         },
                     ]}
                 />
-                <div className="mx-auto flex flex-col justify-center mt-[20vh] items-center w-[800px]">
+                <div className="mx-auto flex flex-col justify-center mt-[25vh] w-[800px]">
                     {/* <div className="text-xl font-bold">Define your Check</div> */}
-                    <div className="mt-4 text-3xl font-bold font-mackinac">
+                    <div className="text-4xl font-bold font-mackinac">
                         Check Name
                     </div>
-                    <div>
+                    <div className="mt-4">
                         Great names are simple, succinct, and describe what you
                         are checking
                     </div>

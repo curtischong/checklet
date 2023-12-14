@@ -187,7 +187,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                         },
                     ]}
                 />
-                <h1 className=" text-3xl font-bold">Create Check</h1>
+                <h1 className=" text-3xl font-bold mt-4">Create Check</h1>
                 <label className="text-lg mt-4 font-bold">Name</label>
                 <Input
                     value={name}
@@ -312,7 +312,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     flexBasis: "0",
                 }}
             >
-                <div className="fixed mx-auto w-[350px] left-[50%] right-0 mt-10">
+                <div className="fixed mx-auto w-[350px] left-[50%] right-0 mt-24">
                     {/* use flex-col to prevent thsi radio buttonf rom taking up the full width */}
                     <div className="flex flex-col">
                         <SlidingRadioButton
