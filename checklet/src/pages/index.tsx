@@ -3,6 +3,7 @@ import { StoreFront } from "@/components/CheckerStore";
 import { Footer } from "@/components/Footer";
 import ThinLine from "@/components/ThinLine";
 import { CheckPreview } from "@/components/create-check/CheckPreview";
+import { rizzumeDesc } from "@/components/create-check/DefaultTextForCheckType";
 import { CheckType } from "@/components/create-checker/CheckerTypes";
 import { CursorIcon } from "@/components/icons/CursorIcon";
 import { DownArrowWithTailIcon } from "@/components/icons/DownArrowWithTailIcon";
@@ -81,7 +82,7 @@ const HomePage: React.FC = () => {
                                 storefront={{
                                     objInfo: {
                                         name: "Rizzume",
-                                        desc: "Rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive.",
+                                        desc: rizzumeDesc,
                                         id: createShortId(),
                                         creatorId: "fakeuser",
                                     },

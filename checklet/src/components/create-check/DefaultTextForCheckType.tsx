@@ -41,6 +41,9 @@ export const defaultInstructions: DefaultTextForCheckType = {
     [CheckType.proposal]: "Proposal",
 };
 
+export const rizzumeDesc =
+    "Rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive";
+
 export const defaultCategory: DefaultTextForCheckType = {
     [CheckType.highlight]: "Clarity",
     [CheckType.rephrase]: "Whitespace",

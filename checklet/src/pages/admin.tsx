@@ -190,7 +190,11 @@ const AdminPage: React.FC = () => {
     );
 
     if (user === null || !ADMIN_EMAILS.includes(user.email ?? "")) {
-        return <div>Not logged in as an admin</div>;
+        return (
+            <div className="text-3xl font-mackinac mx-auto mt-32 text-center">
+                Not logged in as an admin
+            </div>
+        );
     }
 
     return (

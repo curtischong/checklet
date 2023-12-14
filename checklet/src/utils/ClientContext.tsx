@@ -6,7 +6,6 @@ import React from "react";
 import { FirebaseApp, initializeApp } from "firebase/app";
 import { Auth, User, getAuth } from "firebase/auth";
 import { Firestore, getFirestore } from "firebase/firestore";
-import { toast } from "react-toastify";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -27,7 +26,6 @@ export interface ClientContext {
     firebaseAuth: Auth;
     firestore: Firestore;
     user: User | null;
-    logout: () => void;
 }
 
 export interface ClientContextReact {
@@ -61,17 +59,6 @@ export const ClientContextProvider = ({
                     firebaseAuth: firebaseAuth,
                     firestore,
                     user: firebaseUser,
-                    logout: () => {
-                        firebaseAuth
-                            .signOut()
-                            .catch((error) => {
-                                console.error("Error signing out: ", error);
-                                toast.error("Error signing out");
-                            })
-                            .then(() => {
-                                // toast.success("Signed out");
-                            });
-                    },
                 },
             });
         });

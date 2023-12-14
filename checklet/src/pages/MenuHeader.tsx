@@ -1,10 +1,24 @@
 import { useClientContext } from "@/utils/ClientContext";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export const MenuHeader = () => {
-    const { user, logout } = useClientContext();
+    const { user, firebaseAuth } = useClientContext();
     const router = useRouter();
+
+    const logout = useCallback(() => {
+        firebaseAuth
+            .signOut()
+            .catch((error) => {
+                console.error("Error signing out: ", error);
+                toast.error("Error signing out");
+            })
+            .then(() => {
+                // refresh page so if we are on pages where auth matters, we refresh all the elements
+                router.reload();
+            });
+    }, [firebaseAuth, router]);
 
     // we need to use useEffect to get the window width so we don't get hydration errors (differing window width between server and client)
     const [isMobile, setIsMobile] = useState(false);
