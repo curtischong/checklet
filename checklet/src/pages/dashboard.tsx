@@ -2,7 +2,11 @@ import { Api } from "@api/apis";
 import { NormalButton } from "@components/Button";
 import { CheckerBlueprint } from "@components/create-checker/CheckerTypes";
 import { DashboardChecker } from "@components/create-checker/DashboardChecker";
+import DerpChecklet from "@public/checklets/derp.svg";
+import MushyChecklet from "@public/checklets/mushy.svg";
+import PennyChecklet from "@public/checklets/penny.svg";
 import { useClientContext } from "@utils/ClientContext";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -74,6 +78,27 @@ const Dashboard: React.FC = () => {
                 <NormalButton onClick={createChecker}>
                     Create Checker
                 </NormalButton>
+                <Image
+                    alt="PennyChecklet"
+                    src={PennyChecklet.src}
+                    width={200}
+                    height={200}
+                    className="h-[7rem] bottom-[15rem] right-[40%] absolute"
+                />
+                <Image
+                    alt="MushyChecklet"
+                    src={MushyChecklet.src}
+                    width={200}
+                    height={200}
+                    className="h-[5rem] top-[30vh] right-[30%] absolute"
+                />
+                <Image
+                    alt="DerpChecklet"
+                    src={DerpChecklet.src}
+                    width={200}
+                    height={200}
+                    className="h-[5rem] bottom-[10rem] right-[10%] absolute"
+                />
             </div>
         </div>
     );

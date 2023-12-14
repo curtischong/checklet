@@ -1,13 +1,17 @@
 import { CheckerStore } from "@components/CheckerStore";
+import LoveChecklet from "@public/checklets/love.svg";
+import PennyChecklet from "@public/checklets/penny.svg";
+import SpacyChecklet from "@public/checklets/spacy.svg";
+import Image from "next/image";
 import React from "react";
 
 const EditorHome: React.FC = () => {
     return (
         <div className="mx-auto container flex flex-col">
-            <div className="text-center text-3xl mt-12 font-bold font-mackinac">
+            <div className="text-center text-3xl mt-20 font-bold font-mackinac">
                 What do you want to check?
             </div>
-            <div className="mx-auto mt-4">
+            <div className="mx-auto mt-2">
                 Can&lsquo;t find a checker you like?{" "}
                 <a
                     href="/create/checker"
@@ -16,6 +20,27 @@ const EditorHome: React.FC = () => {
                     Create your own Checker
                 </a>
             </div>
+            <Image
+                alt="LoveChecklet"
+                src={LoveChecklet.src}
+                width={200}
+                height={200}
+                className="h-[6rem] bottom-[15rem] right-[0%] md:right-[1%] absolute"
+            />
+            <Image
+                alt="PennyChecklet"
+                src={PennyChecklet.src}
+                width={200}
+                height={200}
+                className="h-[7rem] top-[10rem] right-[7%] sm:right-[10%] md:right-[15%] absolute"
+            />
+            <Image
+                alt="SpacyChecklet"
+                src={SpacyChecklet.src}
+                width={200}
+                height={200}
+                className="h-[8rem] top-32 left-[5%] absolute"
+            />
             <CheckerStore />
             {/* <TextButton
                 className="fixed top-2 right-5"

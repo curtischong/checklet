@@ -1,6 +1,10 @@
 import { AuthBoxCss } from "@components/authBoxCss";
+import DockyChecklet from "@public/checklets/docky.svg";
+import LoveChecklet from "@public/checklets/love.svg";
+import SpacyChecklet from "@public/checklets/spacy.svg";
 import { useClientContext } from "@utils/ClientContext";
 import { GoogleAuthProvider } from "firebase/auth";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
@@ -21,12 +25,12 @@ const Login: React.FC = () => {
                     // firebase.auth.PhoneAuthProvider.PROVIDER_ID,
                     // firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID,
                 ],
-                tosUrl: () => {
-                    router.push("/terms-of-service");
-                },
-                privacyPolicyUrl: () => {
-                    router.push("/privacy-policy");
-                },
+                // tosUrl: () => {
+                //     router.push("/terms-of-service");
+                // },
+                // privacyPolicyUrl: () => {
+                //     router.push("/privacy-policy");
+                // },
             };
 
             // we need to import firebaseui here (rather at the top) so it isn't loaded on the server
@@ -47,10 +51,31 @@ const Login: React.FC = () => {
     return (
         <div className="flex flex-col justify-center">
             <div className="mt-60 mb-4">
-                <h1 className="text-4xl font-bold text-center">
-                    Your Writer Friend
+                <h1 className="text-4xl font-bold text-center font-mackinac">
+                    Checklet.page
                 </h1>
             </div>
+            <Image
+                alt="LoveChecklet"
+                src={LoveChecklet.src}
+                width={200}
+                height={200}
+                className="h-[6rem] bottom-[15rem] right-[5%] md:right-[20%] absolute"
+            />
+            <Image
+                alt="SpacyChecklet"
+                src={SpacyChecklet.src}
+                width={200}
+                height={200}
+                className="h-[8rem] top-32 left-[20%] absolute"
+            />
+            <Image
+                alt="DockyChecklet"
+                src={DockyChecklet.src}
+                width={200}
+                height={200}
+                className="h-[6rem] bottom-[10rem] left-[5%] md:left-[30%] absolute"
+            />
             {/* <TextButton
                 className="mx-auto mb-4"
                 onClick={() => {
@@ -60,7 +85,7 @@ const Login: React.FC = () => {
                 Go to Editor
             </TextButton> */}
             <div className="text-center">
-                Want to create a checker? Sign in below!
+                Want to create a checker? Sign in/sign up below!
             </div>
             <div id="firebaseui-auth-container"></div>
             <AuthBoxCss />
