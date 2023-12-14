@@ -1,16 +1,11 @@
 import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
-import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import {
     CheckDescObj,
     CheckerStorefront,
-    ModelType,
 } from "@components/create-checker/CheckerTypes";
 import { EditorHeader } from "@components/editor/EditorHeader";
-import { EnterApiKeyModal } from "@components/editor/EnterApiKeyModal";
 import { singleEditDistance } from "@components/editor/singleEditDistance";
-import { useClientContext } from "@utils/ClientContext";
-import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { RichTextareaHandle } from "rich-textarea";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textboxcontainer";
@@ -25,24 +20,8 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const [checkDescObj, setCheckDescObj] = useState<CheckDescObj>({});
     const [hasModifiedTextAfterChecking, setHasModifiedTextAfterChecking] =
         useState(false);
-    const router = useRouter();
-    const { user } = useClientContext();
     const [isLoading, setIsLoading] = React.useState(false);
     const editorRef = useRef<RichTextareaHandle | null>(null);
-    const [modelType, setModelType] = useState(ModelType.GPT35);
-    const [isEnterApiKeyOpen, setIsEnterApiKeyOpen] = useState(false);
-
-    useEffect(() => {
-        const modelType = localStorage.getItem("modelType");
-        if (modelType) {
-            setModelType(modelType as ModelType);
-        }
-    }, []);
-
-    const updateModelType = useCallback((newModelType: ModelType) => {
-        localStorage.setItem("modelType", newModelType);
-        setModelType(newModelType);
-    }, []);
 
     const updateEditorState = useCallback(
         (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
@@ -131,25 +110,16 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
 
     return (
         <div className="mx-auto max-w-screen-lg">
-            <div className="grid grid-cols-5 gap-5 px-5">
+            <div className="flex flex-rol px-5 space-x-10">
                 <div
-                    className="textbox col-span-3"
+                    className="textbox flex-grow"
                     style={{
                         maxHeight: "100vh",
                         overflow: "auto",
+                        flexBasis: 3,
                     }}
                 >
-                    <EditorHeader
-                        isLoading={isLoading}
-                        editorState={editorState}
-                        setHasModifiedTextAfterChecking={
-                            setHasModifiedTextAfterChecking
-                        }
-                        setSuggestions={setSuggestions}
-                        storefront={storefront}
-                        setIsLoading={setIsLoading}
-                        setCheckDescObj={setCheckDescObj}
-                    />
+                    <EditorHeader storefront={storefront} />
                     <TextboxContainer
                         storefront={storefront}
                         activeSuggestion={activeSuggestion}
@@ -168,30 +138,28 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         editorRef={editorRef}
                     />
                 </div>
-                <SuggestionsContainer
-                    suggestions={suggestions}
-                    activeSuggestion={activeSuggestion}
-                    setActiveSuggestion={setActiveSuggestion}
-                    editorState={editorState}
-                    acceptSuggestion={acceptSuggestion}
-                    checkDescObj={checkDescObj}
-                    hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
-                />
-                <div className="fixed top-4 right-32 flex-row flex space-x-8">
-                    <EnterApiKeyModal
-                        isOpen={isEnterApiKeyOpen}
-                        setIsOpen={setIsEnterApiKeyOpen}
-                        updateModelType={updateModelType}
-                    />
-                    <SlidingRadioButton
-                        setSelected={(newModelType) => {
-                            if (newModelType === ModelType.GPT4) {
-                                setIsEnterApiKeyOpen(true);
-                            }
-                            updateModelType(newModelType as ModelType);
-                        }}
-                        selected={modelType}
-                        options={[ModelType.GPT35, ModelType.GPT4]}
+                <div
+                    style={{
+                        flexBasis: 2,
+                    }}
+                >
+                    <SuggestionsContainer
+                        setCheckDescObj={setCheckDescObj}
+                        setHasModifiedTextAfterChecking={
+                            setHasModifiedTextAfterChecking
+                        }
+                        isLoading={isLoading}
+                        setIsLoading={setIsLoading}
+                        setSuggestions={setSuggestions}
+                        suggestions={suggestions}
+                        activeSuggestion={activeSuggestion}
+                        setActiveSuggestion={setActiveSuggestion}
+                        editorState={editorState}
+                        acceptSuggestion={acceptSuggestion}
+                        checkDescObj={checkDescObj}
+                        hasModifiedTextAfterChecking={
+                            hasModifiedTextAfterChecking
+                        }
                     />
                 </div>
             </div>

@@ -1,19 +1,33 @@
+import { LoadingButton } from "@/components/Button";
+import { SlidingRadioButton } from "@/components/SlidingRadioButton";
+import { EnterApiKeyModal } from "@/components/editor/EnterApiKeyModal";
+import { checkDocText } from "@/components/editor/checkDoc";
 import SuggestionCard from "@/components/editor/suggestions/SuggestionCard";
 import { SortIcon } from "@/components/icons/SortIcon";
+import { useClientContext } from "@/utils/ClientContext";
 import { Suggestion } from "@api/ApiTypes";
-import { CheckDescObj } from "@components/create-checker/CheckerTypes";
+import {
+    CheckDescObj,
+    ModelType,
+} from "@components/create-checker/CheckerTypes";
 import CoolChecklet from "@public/checklets/cool.svg";
 import PencilChecklet from "@public/checklets/pencil.svg";
 import YayChecklet from "@public/checklets/yay.svg";
 import { pluralize } from "@utils/strings";
 import { SetState } from "@utils/types";
 import { Tooltip } from "antd/lib";
+import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { mixpanelTrack } from "../../../utils";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
 import { SuggestionIdToRef } from "./suggestionsTypes";
 
 export type SuggestionsContainerProps = {
+    setIsLoading: SetState<boolean>;
+    isLoading: boolean;
+    setHasModifiedTextAfterChecking: SetState<boolean>;
+    setSuggestions: SetState<Suggestion[]>;
     suggestions: Suggestion[];
     activeSuggestion: Suggestion | undefined;
     setActiveSuggestion: SetState<Suggestion | undefined>;
@@ -21,6 +35,7 @@ export type SuggestionsContainerProps = {
     acceptSuggestion: (suggestion: Suggestion, acceptedOption: string) => void;
     checkDescObj: CheckDescObj;
     hasModifiedTextAfterChecking: boolean;
+    setCheckDescObj: SetState<CheckDescObj>;
 };
 
 export enum SortType {
@@ -41,6 +56,10 @@ export const Sorters = {
 };
 
 export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
+    setIsLoading,
+    isLoading,
+    setHasModifiedTextAfterChecking,
+    setSuggestions,
     suggestions,
     activeSuggestion,
     setActiveSuggestion,
@@ -48,14 +67,22 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
     acceptSuggestion,
     hasModifiedTextAfterChecking,
     checkDescObj,
+    setCheckDescObj,
 }: SuggestionsContainerProps) => {
     const [sortedSuggestions, setSortedSuggestions] = useState<Suggestion[]>(
         [],
     );
     const suggestionsContainerRef = useRef<HTMLDivElement>(null);
     const suggestionsRefs = useRef<SuggestionIdToRef>({});
-
     const [sortType, setSortType] = useState(SortType.TextOrder);
+    const [isEnterApiKeyOpen, setIsEnterApiKeyOpen] = useState(false);
+    const [modelType, setModelType] = useState(ModelType.GPT35);
+
+    const router = useRouter();
+    const onlyUseCheckId = router.query.onlyUseCheckId as string;
+    const checkerId = router.query.checkerId as string;
+    const { user } = useClientContext();
+
     useEffect(() => {
         const sorted = [...suggestions].sort(Sorters[sortType]);
         setSortedSuggestions(sorted);
@@ -174,8 +201,79 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
         acceptSuggestion,
     ]);
 
+    const checkDocument = useCallback(async (): Promise<void> => {
+        if (isLoading) {
+            return;
+        }
+        setIsLoading(true);
+        const plaintext = editorState;
+        const response = await checkDocText(
+            plaintext,
+            checkerId,
+            user,
+            onlyUseCheckId,
+        );
+        setIsLoading(false);
+        if (!response) {
+            toast.error("Something went wrong, please try again later");
+            return;
+        }
+        setHasModifiedTextAfterChecking(false);
+
+        const newSuggestions = response.suggestions;
+        newSuggestions.sort(Sorters[SortType.TextOrder]);
+        setCheckDescObj(response.checkDescs);
+        setSuggestions(newSuggestions);
+
+        mixpanelTrack("Check Document Clicked", {
+            "Number of suggestions generated": newSuggestions.length,
+            Suggestions: newSuggestions,
+            Input: plaintext,
+        });
+    }, [editorState, isLoading]);
+
+    useEffect(() => {
+        const modelType = localStorage.getItem("modelType");
+        if (modelType) {
+            setModelType(modelType as ModelType);
+        }
+    }, []);
+
+    const updateModelType = useCallback((newModelType: ModelType) => {
+        localStorage.setItem("modelType", newModelType);
+        setModelType(newModelType);
+    }, []);
+
     return (
-        <div className="col-span-2 mt-8">
+        <div className="flex flex-col mt-14 w-full">
+            <div className="flex-row flex space-x-8 justify-normal items-center mx-auto">
+                <LoadingButton
+                    onClick={checkDocument}
+                    loading={isLoading}
+                    className="h-9"
+                    disabled={editorState === ""}
+                >
+                    Check Document
+                </LoadingButton>
+                <EnterApiKeyModal
+                    isOpen={isEnterApiKeyOpen}
+                    setIsOpen={setIsEnterApiKeyOpen}
+                    updateModelType={updateModelType}
+                />
+                <div className="w-[142px]">
+                    <SlidingRadioButton
+                        setSelected={(newModelType) => {
+                            if (newModelType === ModelType.GPT4) {
+                                setIsEnterApiKeyOpen(true);
+                            }
+                            updateModelType(newModelType as ModelType);
+                        }}
+                        selected={modelType}
+                        options={[ModelType.GPT35, ModelType.GPT4]}
+                        className="py-1"
+                    />
+                </div>
+            </div>
             <SuggestionsHeader
                 suggestions={sortedSuggestions}
                 setSortType={setSortType}

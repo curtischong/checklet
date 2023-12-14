@@ -1,42 +1,19 @@
-import { Suggestion } from "@api/ApiTypes";
 import { Api } from "@api/apis";
-import { LoadingButton, NormalButton } from "@components/Button";
+import { NormalButton } from "@components/Button";
 import {
     CheckBlueprint,
-    CheckDescObj,
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
-import { checkDocText } from "@components/editor/checkDoc";
-import {
-    SortType,
-    Sorters,
-} from "@components/editor/suggestions/suggestionscontainer";
 import { useClientContext } from "@utils/ClientContext";
-import { SetState } from "@utils/types";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { mixpanelTrack } from "../../utils";
 
 interface Props {
-    setIsLoading: SetState<boolean>;
-    isLoading: boolean;
-    editorState: string;
-    setHasModifiedTextAfterChecking: SetState<boolean>;
     storefront: CheckerStorefront;
-    setCheckDescObj: SetState<CheckDescObj>;
-    setSuggestions: SetState<Suggestion[]>;
 }
 
-export const EditorHeader = ({
-    setIsLoading,
-    isLoading,
-    editorState,
-    setHasModifiedTextAfterChecking,
-    storefront,
-    setCheckDescObj,
-    setSuggestions,
-}: Props): JSX.Element => {
+export const EditorHeader = ({ storefront }: Props): JSX.Element => {
     const router = useRouter();
     const { user } = useClientContext();
     const [onlyUseCheckBlueprint, setOnlyUseCheckBlueprint] = useState<
@@ -45,37 +22,6 @@ export const EditorHeader = ({
 
     const onlyUseCheckId = router.query.onlyUseCheckId as string;
     const checkerId = router.query.checkerId as string;
-
-    const checkDocument = useCallback(async (): Promise<void> => {
-        if (isLoading) {
-            return;
-        }
-        setIsLoading(true);
-        const plaintext = editorState;
-        const response = await checkDocText(
-            plaintext,
-            checkerId,
-            user,
-            onlyUseCheckId,
-        );
-        setIsLoading(false);
-        if (!response) {
-            toast.error("Something went wrong, please try again later");
-            return;
-        }
-        setHasModifiedTextAfterChecking(false);
-
-        const newSuggestions = response.suggestions;
-        newSuggestions.sort(Sorters[SortType.TextOrder]);
-        setCheckDescObj(response.checkDescs);
-        setSuggestions(newSuggestions);
-
-        mixpanelTrack("Check Document Clicked", {
-            "Number of suggestions generated": newSuggestions.length,
-            Suggestions: newSuggestions,
-            Input: plaintext,
-        });
-    }, [editorState, isLoading]);
 
     useEffect(() => {
         (async () => {
@@ -104,14 +50,14 @@ export const EditorHeader = ({
                         {storefront.objInfo.name}
                     </div>
                     <div className="flex flex-col space-y-2">
-                        <LoadingButton
+                        {/* <LoadingButton
                             onClick={checkDocument}
                             loading={isLoading}
                             className="h-9 mt-2"
                             disabled={editorState === ""}
                         >
                             Check Document
-                        </LoadingButton>
+                        </LoadingButton> */}
 
                         {onlyUseCheckBlueprint && (
                             <NormalButton
