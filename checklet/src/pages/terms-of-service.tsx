@@ -5,11 +5,11 @@ const TermsOfService: React.FC = () => {
         <>
             <div className="container mx-auto mt-20">
                 <div className="flex flex-col justify-center">
-                    <div className="w-[700px] mx-auto">
-                        <h1 className="text-3xl font-bold font-mackinac text-center">
+                    <div className="mx-auto p-6">
+                        <h1 className="text-3xl font-bold font-mackinac text-center break-words">
                             Terms of Service
                         </h1>
-                        <ul className="list-disc mt-8  space-y-8">
+                        <ul className="list-disc mt-8 space-y-8 pl-4">
                             <li>Please don&apos;t spam the servers.</li>
                             <li>
                                 Please don&apos;t make checkers/checks that are
