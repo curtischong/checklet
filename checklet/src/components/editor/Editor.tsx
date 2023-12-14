@@ -8,8 +8,6 @@ import {
 import { EditorHeader } from "@components/editor/EditorHeader";
 import { EnterApiKeyModal } from "@components/editor/EnterApiKeyModal";
 import { singleEditDistance } from "@components/editor/singleEditDistance";
-import { useClientContext } from "@utils/ClientContext";
-import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { RichTextareaHandle } from "rich-textarea";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
@@ -25,8 +23,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     const [checkDescObj, setCheckDescObj] = useState<CheckDescObj>({});
     const [hasModifiedTextAfterChecking, setHasModifiedTextAfterChecking] =
         useState(false);
-    const router = useRouter();
-    const { user } = useClientContext();
     const [isLoading, setIsLoading] = React.useState(false);
     const editorRef = useRef<RichTextareaHandle | null>(null);
     const [modelType, setModelType] = useState(ModelType.GPT35);
@@ -139,17 +135,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         overflow: "auto",
                     }}
                 >
-                    <EditorHeader
-                        isLoading={isLoading}
-                        editorState={editorState}
-                        setHasModifiedTextAfterChecking={
-                            setHasModifiedTextAfterChecking
-                        }
-                        setSuggestions={setSuggestions}
-                        storefront={storefront}
-                        setIsLoading={setIsLoading}
-                        setCheckDescObj={setCheckDescObj}
-                    />
+                    <EditorHeader storefront={storefront} />
                     <TextboxContainer
                         storefront={storefront}
                         activeSuggestion={activeSuggestion}
@@ -169,6 +155,13 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     />
                 </div>
                 <SuggestionsContainer
+                    setCheckDescObj={setCheckDescObj}
+                    setHasModifiedTextAfterChecking={
+                        setHasModifiedTextAfterChecking
+                    }
+                    isLoading={isLoading}
+                    setIsLoading={setIsLoading}
+                    setSuggestions={setSuggestions}
                     suggestions={suggestions}
                     activeSuggestion={activeSuggestion}
                     setActiveSuggestion={setActiveSuggestion}
