@@ -19,4 +19,4 @@ docker push splacorn/yourwriterfriend
 #
 # sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
 # sudo chmod +x /usr/local/bin/docker-compose
-# OPENAI_API_KEY=<apikey> && docker-compose up
+# export OPENAI_API_KEY=<apikey> && sudo docker-compose up
