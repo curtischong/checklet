@@ -39,6 +39,7 @@ export const CheckOverview = ({
         setTmpChecked(checkStatuses[checkId].isEnabled);
     }, [checkStatuses[checkId]]);
 
+    // TODO: use the same function as in the backend
     const getIncompleteFormErr = useCallback(() => {
         if (checkBlueprint.objInfo.name === "") {
             return "Please enter a name";

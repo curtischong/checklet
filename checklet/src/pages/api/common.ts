@@ -163,6 +163,7 @@ export const validateCheckBlueprint = (
     return validatePositiveExamples(checkBlueprint);
 };
 
+// TODO: use this function in the client
 const validatePositiveExamples = (checkBlueprint: CheckBlueprint) => {
     const isRephraseCheck = checkBlueprint.checkType === CheckType.rephrase;
     for (const example of checkBlueprint.positiveExamples) {

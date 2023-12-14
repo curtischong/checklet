@@ -128,7 +128,7 @@ ${positiveExamples}
                     const suggestions: Suggestion[] = [];
                     for (let i = 0; i < argsObj.originalTexts.length; i++) {
                         if (argsObj.editedTexts.length - 1 < i) {
-                            console.error("editedText is too short");
+                            Log.error("editedText is too short");
                             break;
                         }
                         const originalEx = argsObj.originalTexts[i];
@@ -159,7 +159,7 @@ ${positiveExamples}
 
                         if (originalTextIdx === -1) {
                             // the model generated extra suggestions that exceed the length of the doc. just ignore them
-                            console.error("originalText not found in doc");
+                            Log.error("originalText not found in doc");
                             break;
                         }
                         const originalTextIdxRelativeToDoc =
@@ -185,7 +185,7 @@ ${positiveExamples}
                 })
                 .catch((err) => {
                     // the function call errored out. it's ok, just return no suggestions
-                    console.error(`function call failed. err=${err}`);
+                    Log.error(`function call failed. err=${err}`);
                     resolve([]);
                 });
         });
@@ -231,7 +231,7 @@ ${positiveExamples}
 
                         if (highlightedTextIdx === -1) {
                             // the model generated extra suggestions that exceed the length of the doc. just ignore them
-                            console.error("originalText not found in doc");
+                            Log.error("originalText not found in doc");
                             break;
                         }
                         const originalTextIdxRelativeToDoc =
@@ -258,7 +258,7 @@ ${positiveExamples}
                 })
                 .catch((err) => {
                     // the function call errored out. it's ok, just return no suggestions
-                    console.error(`function call failed. err=${err}`);
+                    Log.error(`function call failed. err=${err}`);
                     resolve([]);
                 });
         });
