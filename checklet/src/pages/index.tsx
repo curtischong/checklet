@@ -17,7 +17,7 @@ import { useRouter } from "next/router";
 const HomePage: React.FC = () => {
     const router = useRouter();
     return (
-        <>
+        <div>
             <div className="container mx-auto text-center px-3">
                 <div className="ml-0 h-[100vh] flex flex-col justify-center">
                     <Image
@@ -25,21 +25,28 @@ const HomePage: React.FC = () => {
                         src={SpacyChecklet.src}
                         width={200}
                         height={200}
-                        className="h-[8rem] top-32 left-[20%] absolute"
+                        className="h-[8rem] top-[10%] md:top-[20%] left-[5%] md:left-[20%] absolute"
                     />
                     <Image
                         alt="LoveChecklet"
                         src={LoveChecklet.src}
                         width={200}
                         height={200}
-                        className="h-[6rem] bottom-[15rem] right-[5%] md:right-[20%] absolute"
+                        className="h-[6rem] bottom-[25%] right-[5%] md:right-[20%] absolute"
                     />
                     <Image
                         alt="DockyChecklet"
                         src={DockyChecklet.src}
                         width={200}
                         height={200}
-                        className="h-[6rem] bottom-[10rem] left-[5%] md:left-[30%] absolute"
+                        className="h-[6rem] bottom-[15%] left-[5%] md:left-[30%] absolute"
+                    />
+                    <Image
+                        alt="DerpChecklet"
+                        src={DerpChecklet.src}
+                        width={200}
+                        height={200}
+                        className="h-[5rem] top-[5%] right-[5%] md:right-[30%] absolute"
                     />
                     <p className="text-5xl font-mackinac">Checklet.page</p>
                     <p className="mt-4">
@@ -90,30 +97,10 @@ const HomePage: React.FC = () => {
                 </div>
 
                 <div className="flex flex-row justify-center space-x-8 mt-40">
-                    <div className="text-2xl">
+                    <div className="text-lg">
                         2. Paste your writing into the editor
                     </div>
-                    <div className="relative">
-                        <StoreFront
-                            storefront={{
-                                objInfo: {
-                                    name: "Rizzume",
-                                    desc: "Rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive.",
-                                    id: createShortId(),
-                                    creatorId: "fakeuser",
-                                },
-                                placeholder: "paste yourresume",
-                            }}
-                        />
-                        <CursorIcon className="w-[40px] h-[40px] right-4  bottom-[-20px] absolute" />
-                        <Image
-                            alt="DerpChecklet"
-                            src={DerpChecklet.src}
-                            width={200}
-                            height={200}
-                            className="h-[5rem] top-[10rem] left-[30%] absolute"
-                        />
-                    </div>
+                    <div className="relative"></div>
                 </div>
                 <Image
                     alt="MushyChecklet"
@@ -155,7 +142,7 @@ const HomePage: React.FC = () => {
                 */}
             </div>
             <Footer isAbsolute={false} />
-        </>
+        </div>
     );
 };
 
