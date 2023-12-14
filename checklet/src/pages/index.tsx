@@ -1,6 +1,7 @@
 import { NormalButton } from "@/components/Button";
 import { StoreFront } from "@/components/CheckerStore";
 import ThinLine from "@/components/ThinLine";
+import { CursorIcon } from "@/components/icons/CursorIcon";
 import { DownArrowWithTailIcon } from "@/components/icons/DownArrowWithTailIcon";
 import { createShortId } from "@/utils/strings";
 import DerpChecklet from "@public/checklets/derp.svg";
@@ -58,11 +59,39 @@ const HomePage: React.FC = () => {
             </div>
             <div className="text-3xl mt-32 font-mackinac">How it works</div>
             <ThinLine />
-            <div className="flex flex-row">
-                <div className="text-2xl">
+            <div className="flex flex-row justify-center space-x-8 mt-10">
+                <div className="text-lg">
                     1. Select a Checker for your type of writing
                 </div>
-                <div>
+                <div className="relative">
+                    <StoreFront
+                        storefront={{
+                            objInfo: {
+                                name: "Rizzume",
+                                desc: "Rizz up your resume to dazzle any employer. It will make points sharp and salient. All to make you sound impressive.",
+                                id: createShortId(),
+                                creatorId: "fakeuser",
+                            },
+                            placeholder: "paste yourresume",
+                        }}
+                        isDemo={true}
+                    />
+                    <CursorIcon className="w-[40px] h-[40px] right-4  bottom-[-20px] absolute" />
+                    <Image
+                        alt="PennyChecklet"
+                        src={PennyChecklet.src}
+                        width={200}
+                        height={200}
+                        className="h-[7rem] top-[10rem] right-[20%] absolute"
+                    />
+                </div>
+            </div>
+
+            <div className="flex flex-row justify-center space-x-8 mt-40">
+                <div className="text-2xl">
+                    2. Paste your writing into the editor
+                </div>
+                <div className="relative">
                     <StoreFront
                         storefront={{
                             objInfo: {
@@ -74,22 +103,16 @@ const HomePage: React.FC = () => {
                             placeholder: "paste yourresume",
                         }}
                     />
+                    <CursorIcon className="w-[40px] h-[40px] right-4  bottom-[-20px] absolute" />
+                    <Image
+                        alt="DerpChecklet"
+                        src={DerpChecklet.src}
+                        width={200}
+                        height={200}
+                        className="h-[5rem] top-[20rem] left-[30%] absolute"
+                    />
                 </div>
             </div>
-            <Image
-                alt="PennyChecklet"
-                src={PennyChecklet.src}
-                width={200}
-                height={200}
-                className="h-[7rem] top-[60rem] right-[20%] absolute"
-            />
-            <Image
-                alt="DerpChecklet"
-                src={DerpChecklet.src}
-                width={200}
-                height={200}
-                className="h-[5rem] top-[100rem] right-[30%] absolute"
-            />
             <Image
                 alt="MushyChecklet"
                 src={MushyChecklet.src}
@@ -97,11 +120,6 @@ const HomePage: React.FC = () => {
                 height={200}
                 className="h-[5rem] top-[70rem] right-[30%] absolute"
             />
-            <div className="flex flex-row">
-                <div className="text-2xl">
-                    2. Paste your writing into the editor
-                </div>
-            </div>
             <div className="flex flex-row">
                 <div className="text-2xl">3. Receive instant feedback</div>
             </div>

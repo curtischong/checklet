@@ -147,6 +147,10 @@ ${positiveExamples}
                             }
                             prunedOptions.push(option);
                         }
+                        if (prunedOptions.length === 0) {
+                            // there were no valid options. just ignore it
+                            continue;
+                        }
 
                         // TODO: reenable if these are used
                         // const editOps = editDistanceOperationsWithClasses(

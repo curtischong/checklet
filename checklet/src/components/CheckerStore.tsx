@@ -1,6 +1,7 @@
 import { Api } from "@api/apis";
 import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
+import classNames from "classnames";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -34,14 +35,21 @@ export const CheckerStore = (): JSX.Element => {
 
 interface StorefrontProps {
     storefront: CheckerStorefront;
+    isDemo?: boolean;
 }
 
-export const StoreFront = ({ storefront }: StorefrontProps) => {
+export const StoreFront = ({ storefront, isDemo }: StorefrontProps) => {
     const router = useRouter();
     return (
         <div
-            className="bg-white rounded-md w-[350px] px-4 py-4 cursor-pointer shadow-around text-left"
+            className={classNames(
+                "bg-white rounded-md w-[350px] px-4 py-4  shadow-around text-left",
+                {
+                    "cursor-pointer": !isDemo,
+                },
+            )}
             onClick={() => {
+                if (isDemo) return;
                 router.push(`/editor/${storefront.objInfo.id}`);
             }}
         >
