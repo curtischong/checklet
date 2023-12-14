@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+    redis:
+        image: redis/redis-stack:latest
+        container_name: redis
+        # ports:
+        #     - "6379:6379"
+        restart: always
+        network_mode: "service:checklet"
+    checklet:
+        image: splacorn/yourwriterfriend:latest
+        container_name: yourwriterfriend
+        # ports:
+        #     - "3000:3000"
+        ports:
+            - "80:3000"
+            - "443:443"
+        restart: always
+        environment:
+            - OPENAI_API_KEY=sk-
+    nginx:
+        network_mode: "service:checklet"
+        image: nginx:latest
+        container_name: nginx
+        volumes:
+            - /etc/ssl:/etc/nginx/ssl:ro
+        restart: always
