@@ -2,14 +2,17 @@ import { Footer } from "@/components/Footer";
 
 const PrivacyPolicy: React.FC = () => {
     return (
-        <>
-            <div className="container mx-auto mt-20">
+        <div className=" flex flex-col h-screen">
+            <div
+                className="container mx-auto mt-20 grow"
+                style={{ flexBasis: 0 }}
+            >
                 <div className="flex flex-col justify-center">
-                    <div className="w-[700px] mx-auto">
+                    <div className="max-w-[700px] mx-auto p-6">
                         <h1 className="text-3xl font-bold font-mackinac text-center">
                             Privacy Policy
                         </h1>
-                        <ul className="list-disc mt-8 space-y-8">
+                        <ul className="list-disc mt-8 space-y-8 pl-4">
                             <li>
                                 We won&apos;t collect your private data and sell
                                 it to anybody
@@ -46,8 +49,8 @@ const PrivacyPolicy: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <Footer isAbsolute={true} />
-        </>
+            <Footer isAbsolute={false} />
+        </div>
     );
 };
 

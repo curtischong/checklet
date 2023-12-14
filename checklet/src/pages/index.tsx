@@ -14,10 +14,8 @@ import MushyChecklet from "@public/checklets/mushy.svg";
 import PennyChecklet from "@public/checklets/penny.svg";
 import SpacyChecklet from "@public/checklets/spacy.svg";
 import Image from "next/image";
-import { useRouter } from "next/router";
 
 const HomePage: React.FC = () => {
-    const router = useRouter();
     return (
         <div>
             <div className="container mx-auto text-center px-6">
@@ -34,7 +32,7 @@ const HomePage: React.FC = () => {
                         src={LoveChecklet.src}
                         width={200}
                         height={200}
-                        className="h-[6rem] bottom-[25%] right-[5%] md:right-[20%] absolute"
+                        className="h-[6rem] bottom-[25%] right-[0%] md:right-[20%] absolute"
                     />
                     <Image
                         alt="DockyChecklet"
