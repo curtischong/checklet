@@ -110,12 +110,13 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
 
     return (
         <div className="mx-auto max-w-screen-lg">
-            <div className="grid grid-cols-5 gap-5 px-5">
+            <div className="flex flex-rol px-5 space-x-10">
                 <div
-                    className="textbox col-span-3"
+                    className="textbox flex-grow"
                     style={{
                         maxHeight: "100vh",
                         overflow: "auto",
+                        flexBasis: 3,
                     }}
                 >
                     <EditorHeader storefront={storefront} />
@@ -137,22 +138,30 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         editorRef={editorRef}
                     />
                 </div>
-                <SuggestionsContainer
-                    setCheckDescObj={setCheckDescObj}
-                    setHasModifiedTextAfterChecking={
-                        setHasModifiedTextAfterChecking
-                    }
-                    isLoading={isLoading}
-                    setIsLoading={setIsLoading}
-                    setSuggestions={setSuggestions}
-                    suggestions={suggestions}
-                    activeSuggestion={activeSuggestion}
-                    setActiveSuggestion={setActiveSuggestion}
-                    editorState={editorState}
-                    acceptSuggestion={acceptSuggestion}
-                    checkDescObj={checkDescObj}
-                    hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
-                />
+                <div
+                    style={{
+                        flexBasis: 2,
+                    }}
+                >
+                    <SuggestionsContainer
+                        setCheckDescObj={setCheckDescObj}
+                        setHasModifiedTextAfterChecking={
+                            setHasModifiedTextAfterChecking
+                        }
+                        isLoading={isLoading}
+                        setIsLoading={setIsLoading}
+                        setSuggestions={setSuggestions}
+                        suggestions={suggestions}
+                        activeSuggestion={activeSuggestion}
+                        setActiveSuggestion={setActiveSuggestion}
+                        editorState={editorState}
+                        acceptSuggestion={acceptSuggestion}
+                        checkDescObj={checkDescObj}
+                        hasModifiedTextAfterChecking={
+                            hasModifiedTextAfterChecking
+                        }
+                    />
+                </div>
             </div>
         </div>
     );

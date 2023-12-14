@@ -260,7 +260,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
                     setIsOpen={setIsEnterApiKeyOpen}
                     updateModelType={updateModelType}
                 />
-                <div>
+                <div className="w-[142px]">
                     <SlidingRadioButton
                         setSelected={(newModelType) => {
                             if (newModelType === ModelType.GPT4) {
