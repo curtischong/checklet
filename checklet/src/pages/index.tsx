@@ -73,7 +73,7 @@ const HomePage: React.FC = () => {
                 <div className="text-3xl mt-32 font-mackinac">How it works</div>
                 <ThinLine />
                 <div className=" text-left max-w-[70%] justify-center flex flex-col mx-auto">
-                    <div className="flex flex-row justify-center space-x-8 mt-10 relative">
+                    <div className="flex flex-col md:flex-row justify-center gap-8 mt-10 relative">
                         <div className="text-lg flex-1">
                             1. Select a Checker for your type of writing
                         </div>
@@ -101,34 +101,36 @@ const HomePage: React.FC = () => {
                         />
                     </div>
 
-                    <div className="flex flex-row justify-center space-x-8 mt-32 relative">
+                    <div className="flex flex-col md:flex-row justify-center gap-8 mt-32 relative">
                         <div className="text-lg flex-1">
                             2. Paste your writing into the editor
                         </div>
-                        <div className="relative  w-[300px] flex-1">
-                            <div className="text-3xl font-mackinac text-gray-400">
-                                Rizzume
+                        <div className="flex-1 ">
+                            <div className="relative  max-w-[300px]">
+                                <div className="text-3xl font-mackinac text-gray-400">
+                                    Rizzume
+                                </div>
+                                <div className="text-md text-gray-400">
+                                    Rizz up your resume to dazzle...
+                                </div>
+                                <hr className="bg-black w-full h-[2px]" />
+                                <div>Grammarly • January 2021 - Present</div>
+                                <div>
+                                    • Expedited DynamoDB queries from 68 ms to
+                                    41 ms by optimizing the schema for reads
+                                </div>
+                                <div>...</div>
                             </div>
-                            <div className="text-md text-gray-400">
-                                Rizz up your resume to dazzle...
-                            </div>
-                            <hr className="bg-black w-full h-[2px]" />
-                            <div>Grammarly • January 2021 - Present</div>
-                            <div>
-                                • Expedited DynamoDB queries from 68 ms to 41 ms
-                                by optimizing the schema for reads
-                            </div>
-                            <div>...</div>
                         </div>
                         <Image
                             alt="PennyChecklet"
                             src={PennyChecklet.src}
                             width={200}
                             height={200}
-                            className="h-[7rem] top-[1rem] right-[-50%] md:right-[-30%] absolute"
+                            className="h-[7rem] top-[1rem] right-[50%] md:right-[-30%] absolute"
                         />
                     </div>
-                    <div className="flex flex-row justify-center space-x-8 mt-8 ">
+                    <div className="flex flex-col md:flex-row justify-center gap-8 mt-8 ">
                         <div className="text-lg flex-1">
                             3. Receive instant feedback
                         </div>
