@@ -12,6 +12,7 @@ docker push splacorn/yourwriterfriend
 # sudo docker run --env OPENAI_API_KEY=<apikey> --net=container:77d9570d6e26 splacorn/yourwriterfriend:latest
 	
 
+# following: https://stackoverflow.com/questions/74185594/how-to-deploy-a-next-js-app-on-https-ssl-connection-with-docker
 # deploy via docker compose:
 # yarn send-docker-compose
 #

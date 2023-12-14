@@ -8,8 +8,8 @@ services:
         restart: always
         network_mode: "service:checklet"
     checklet:
-        image: splacorn/yourwriterfriend:latest
-        container_name: yourwriterfriend
+        image: splacorn/checklet:latest
+        container_name: checklet
         # ports:
         #     - "3000:3000"
         ports:
@@ -20,7 +20,7 @@ services:
             - OPENAI_API_KEY=${OPENAI_API_KEY}
     nginx:
         network_mode: "service:checklet"
-        image: nginx:latest
+        image: splacorn/checklet-nginx:latest
         container_name: nginx
         volumes:
             - /etc/ssl:/etc/nginx/ssl:ro
