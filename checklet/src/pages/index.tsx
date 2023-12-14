@@ -154,7 +154,7 @@ const HomePage: React.FC = () => {
                 <p>Special thanks to Joseph Anderson and James Portnow for being fantastic writers and inspiring me to make this/write in general</p>
                 */}
             </div>
-            <Footer />
+            <Footer isAbsolute={false} />
         </>
     );
 };
