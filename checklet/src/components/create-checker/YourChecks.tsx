@@ -8,8 +8,10 @@ import {
     CheckStatuses,
 } from "@components/create-checker/CheckerTypes";
 import { HelpIcon } from "@components/icons/HelpIcon";
+import CoolChecklet from "@public/checklets/cool.svg";
 import { useClientContext } from "@utils/ClientContext";
 import { SetState } from "@utils/types";
+import Image from "next/image";
 import { useRouter } from "next/router";
 
 interface Props {
@@ -48,7 +50,7 @@ export const YourChecks = ({
                         }
                     />
                 </div>
-                <div className="mt-2 space-y-4">
+                <div className="mt-2 space-y-4 mb-12">
                     {checkBlueprints.map((checkBlueprint, idx) => (
                         <CheckOverview
                             key={`check-${idx}`}
@@ -88,8 +90,24 @@ export const YourChecks = ({
                     ))}
                 </div>
 
+                <div>
+                    {checkBlueprints.length === 0 && (
+                        <div>
+                            <Image
+                                alt="CoolChecklet"
+                                src={CoolChecklet.src}
+                                width={100}
+                                height={200}
+                                className="right-0 ml-40 mb-10"
+                            />
+                            <div className="text-gray-400 ml-32">
+                                You have no checks
+                            </div>
+                        </div>
+                    )}
+                </div>
                 <NormalButton
-                    className="mt-12 w-80 ml-10"
+                    className="w-80 ml-10 mt-4"
                     onClick={() => {
                         (async () => {
                             router.push({
