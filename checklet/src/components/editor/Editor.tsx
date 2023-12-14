@@ -1,14 +1,11 @@
 import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
-import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import {
     CheckDescObj,
     CheckerStorefront,
-    ModelType,
 } from "@components/create-checker/CheckerTypes";
 import { EditorHeader } from "@components/editor/EditorHeader";
-import { EnterApiKeyModal } from "@components/editor/EnterApiKeyModal";
 import { singleEditDistance } from "@components/editor/singleEditDistance";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { RichTextareaHandle } from "rich-textarea";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textboxcontainer";
@@ -25,20 +22,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
         useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
     const editorRef = useRef<RichTextareaHandle | null>(null);
-    const [modelType, setModelType] = useState(ModelType.GPT35);
-    const [isEnterApiKeyOpen, setIsEnterApiKeyOpen] = useState(false);
-
-    useEffect(() => {
-        const modelType = localStorage.getItem("modelType");
-        if (modelType) {
-            setModelType(modelType as ModelType);
-        }
-    }, []);
-
-    const updateModelType = useCallback((newModelType: ModelType) => {
-        localStorage.setItem("modelType", newModelType);
-        setModelType(newModelType);
-    }, []);
 
     const updateEditorState = useCallback(
         (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
@@ -170,23 +153,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     checkDescObj={checkDescObj}
                     hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
                 />
-                <div className="fixed top-4 right-32 flex-row flex space-x-8">
-                    <EnterApiKeyModal
-                        isOpen={isEnterApiKeyOpen}
-                        setIsOpen={setIsEnterApiKeyOpen}
-                        updateModelType={updateModelType}
-                    />
-                    <SlidingRadioButton
-                        setSelected={(newModelType) => {
-                            if (newModelType === ModelType.GPT4) {
-                                setIsEnterApiKeyOpen(true);
-                            }
-                            updateModelType(newModelType as ModelType);
-                        }}
-                        selected={modelType}
-                        options={[ModelType.GPT35, ModelType.GPT4]}
-                    />
-                </div>
             </div>
         </div>
     );

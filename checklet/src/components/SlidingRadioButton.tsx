@@ -15,7 +15,10 @@ export const SlidingRadioButton = ({
 }: Props): JSX.Element => {
     return (
         <div
-            className={`flex flex-row space-x-1 p-1 mx-auto border border-1 border-gray-600 rounded-lg ${className}`}
+            className={classNames(
+                `flex flex-row space-x-1 p-1 mx-auto border border-1 border-gray-600 rounded-lg`,
+                className,
+            )}
         >
             {options.map((option, idx) => {
                 return (
