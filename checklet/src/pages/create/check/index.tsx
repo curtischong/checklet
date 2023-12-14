@@ -40,7 +40,7 @@ const CreateCheckPage = (): JSX.Element => {
     }, [user, name, checkType]);
 
     if (!user) {
-        return <MustBeLoggedInMsg />;
+        return <MustBeLoggedInMsg isCheck={true} />;
     }
 
     if (name === "") {

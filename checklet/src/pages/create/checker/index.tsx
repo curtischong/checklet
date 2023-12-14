@@ -24,7 +24,7 @@ const CheckerCreatorPage = (): JSX.Element => {
         })();
     }, []);
     if (!user) {
-        return <MustBeLoggedInMsg />;
+        return <MustBeLoggedInMsg isCheck={false} />;
     }
     if (!checkerId) return <>loading...</>;
     return <CheckerCreator checkerId={checkerId} />;
