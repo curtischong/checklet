@@ -9,7 +9,7 @@ const TermsOfService: React.FC = () => {
                         <h1 className="text-3xl font-bold font-mackinac text-center">
                             Terms of Service
                         </h1>
-                        <ul className="list-disc mt-8">
+                        <ul className="list-disc mt-8  space-y-8">
                             <li>Please don&apos;t spam the servers.</li>
                             <li>
                                 Please don&apos;t make checkers/checks that are
@@ -23,7 +23,7 @@ const TermsOfService: React.FC = () => {
                         </ul>
                         <p className="mt-8">
                             If you break these terms of service I will ban you.
-                            Just don&apos;t be a jerk and we&apos;ll be fine.
+                            Just please don&apos;t be a jerk
                         </p>
                     </div>
                 </div>
