@@ -104,7 +104,6 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                     checkStatuses: newCheckStatuses,
                     isPublic: newIsPublic,
                 };
-                console.log("saving checker");
                 setSubmittingState(SubmittingState.Submitting);
                 (async () => {
                     const success = await Api.editChecker(checker, user);
