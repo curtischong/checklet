@@ -21,9 +21,7 @@ export default async function handler(
 
     const redisClient = await connectToRedis();
 
-    const checkerIds = new Set(
-        ...(await redisClient.sMembers("publicCheckerIds")),
-    );
+    const checkerIds = new Set(await redisClient.sMembers("publicCheckerIds"));
     if (userId !== null) {
         (await redisClient.sMembers(`users/${userId}/checkerIds`)).forEach(
             (checkerId) => {
