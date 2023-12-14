@@ -1,3 +1,4 @@
+import { Input } from "@/components/Input";
 import {
     ADMIN_EMAILS,
     MAX_CHECKER_DESC_LEN,
@@ -20,7 +21,6 @@ import {
 import { IsPublicSwitch } from "@components/create-checker/IsPublicSwitch";
 import { YourChecks } from "@components/create-checker/YourChecks";
 import { useClientContext } from "@utils/ClientContext";
-import { Input } from "antd/lib";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
@@ -34,6 +34,8 @@ export enum Page {
 interface Props {
     checkerId: string;
 }
+
+export const checkerCreatorMarginTop = 50;
 
 export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     const [name, setName] = React.useState("");
@@ -142,7 +144,9 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     };
 
     return (
-        <div className="flex justify-center mt-14">
+        <div
+            className={`flex justify-center mt-[${checkerCreatorMarginTop}px]`}
+        >
             <div className="container">
                 <div className="flex flex-row">
                     <div
@@ -163,7 +167,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                             ]}
                         />
 
-                        <div className="w-[450px] mx-auto flex flex-col">
+                        <div className="flex flex-col">
                             <h1 className="text-3xl mt-4 mb-4 font-bold">
                                 {/* <span className="border-b-2 border-blue-300"> */}
                                 Create Checker
@@ -228,24 +232,37 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 isPublic={isPublic}
                                 checkerId={checkerId}
                             />
-                            <div className="flex flex-row space-x-8">
-                                <NormalButton
-                                    className="mt-4 w-52 h-10"
-                                    onClick={() => {
-                                        router.push("/dashboard");
-                                    }}
-                                >
-                                    Return to Dashboard
-                                </NormalButton>
-                                <div className="mt-6">
-                                    {SaveStatusText[submittingState]}
+                            <div className="flex flex-col">
+                                <div className="flex flex-row space-x-8">
+                                    <NormalButton
+                                        className="mt-4 w-52 h-10"
+                                        onClick={() => {
+                                            router.push("/dashboard");
+                                        }}
+                                    >
+                                        Return to Dashboard
+                                    </NormalButton>
+                                    <NormalButton
+                                        className="mt-4 px-6 h-10 mx-auto"
+                                        onClick={() => {
+                                            router.push("/dashboard");
+                                        }}
+                                    >
+                                        Open checker in editor
+                                    </NormalButton>
+                                    <div className="mt-6">
+                                        {SaveStatusText[submittingState]}
+                                    </div>
                                 </div>
+                                {ADMIN_EMAILS.includes(user?.email ?? "") && (
+                                    <NormalButton
+                                        className="mt-4"
+                                        onClick={downloadChecker}
+                                    >
+                                        download
+                                    </NormalButton>
+                                )}
                             </div>
-                            {ADMIN_EMAILS.includes(user?.email ?? "") && (
-                                <NormalButton onClick={downloadChecker}>
-                                    download
-                                </NormalButton>
-                            )}
                             <div className="h-10"></div>
                         </div>
                     </div>

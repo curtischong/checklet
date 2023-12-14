@@ -1,3 +1,4 @@
+import { checkerCreatorMarginTop } from "@/components/create-checker/CheckerCreator";
 import { Api } from "@api/apis";
 import { CheckerId } from "@api/checker";
 import { NormalButton } from "@components/Button";
@@ -33,7 +34,8 @@ export const YourChecks = ({
             style={{
                 flexBasis: "0",
                 overflowY: "scroll",
-                height: "calc(100vh)",
+                height: `calc(100vh - ${checkerCreatorMarginTop}px)`,
+                top: 0,
             }}
         >
             <div className="flex flex-col ml-20">

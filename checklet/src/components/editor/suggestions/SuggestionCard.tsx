@@ -107,7 +107,7 @@ const SuggestionCard = React.forwardRef((props: SuggestionCard, ref) => {
             {/* This is the card details when you open up the card */}
             {isActive && (
                 <div className={"py-[15px] px-[10px]"}>
-                    <div className={"text-base pb-10 flex"}>
+                    <div className={"text-base pb-4 flex"}>
                         <SuggestionChange
                             suggestion={suggestion}
                             checkType={checkDesc.checkType}
