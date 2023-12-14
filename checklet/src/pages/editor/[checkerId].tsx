@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
-import { Editor } from "@components/editor/Editor";
 import { Api } from "@api/apis";
-import { useRouter } from "next/router";
 import { CheckerStore } from "@components/CheckerStore";
-import { TextButton } from "@components/Button";
-import { useClientContext } from "@utils/ClientContext";
 import { CheckerStorefront } from "@components/create-checker/CheckerTypes";
+import { Editor } from "@components/editor/Editor";
+import { useClientContext } from "@utils/ClientContext";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 
 const EditorPage: React.FC = () => {
     const router = useRouter();
@@ -33,25 +32,15 @@ const EditorPage: React.FC = () => {
         return <div>Loading...</div>;
     } else if (storefront === "not found") {
         return (
-            <div>
-                <div>
-                    Checker not found. It may have been made private. You can
-                    find other checkers below
+            <div className="flex flex-col">
+                <div className="mx-auto mt-20 text-2xl font-mackinac">
+                    Checker not found.
+                </div>
+                <div className="mx-auto mt-4text-lg font-mackinac">
+                    It may have been made private. You can find other checkers
+                    below
                 </div>
                 <CheckerStore />
-                <TextButton
-                    className="fixed top-2 right-5"
-                    onClick={() => {
-                        const isLoggedOut = user === null;
-                        if (isLoggedOut) {
-                            router.push("/login");
-                        } else {
-                            router.push("/dashboard");
-                        }
-                    }}
-                >
-                    Create Your Own Checker
-                </TextButton>
             </div>
         );
     } else {

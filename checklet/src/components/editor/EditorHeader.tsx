@@ -98,7 +98,7 @@ export const EditorHeader = ({
     return (
         <div>
             {/* <div className="bg-gradient-to-b from-[#fff0f1] via-[fff0f1] to-transparent pt-4"> */}
-            <div className="flex flex-col pt-4">
+            <div className="flex flex-col pt-4 mt-8">
                 <div className="flex flex-row">
                     <div className=" text-3xl my-auto flex-grow">
                         {storefront.objInfo.name}

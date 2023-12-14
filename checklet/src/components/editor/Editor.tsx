@@ -1,5 +1,4 @@
 import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
-import { TextButton } from "@components/Button";
 import { SlidingRadioButton } from "@components/SlidingRadioButton";
 import {
     CheckDescObj,
@@ -178,7 +177,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     checkDescObj={checkDescObj}
                     hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
                 />
-                <div className="fixed top-4 right-5 flex-row flex space-x-8">
+                <div className="fixed top-4 right-32 flex-row flex space-x-8">
                     <EnterApiKeyModal
                         isOpen={isEnterApiKeyOpen}
                         setIsOpen={setIsEnterApiKeyOpen}
@@ -194,18 +193,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         selected={modelType}
                         options={[ModelType.GPT35, ModelType.GPT4]}
                     />
-                    <TextButton
-                        onClick={() => {
-                            const isLoggedOut = user === null;
-                            if (isLoggedOut) {
-                                router.push("/login");
-                            } else {
-                                router.push("/dashboard");
-                            }
-                        }}
-                    >
-                        Create Your Own Checker
-                    </TextButton>
                 </div>
             </div>
         </div>

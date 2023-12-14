@@ -177,7 +177,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
     return (
         <div className="col-span-2 mt-8">
             <SuggestionsHeader
-                suggestions={suggestions}
+                suggestions={sortedSuggestions}
                 setSortType={setSortType}
             />
             <div
@@ -228,20 +228,20 @@ const SuggestionsHeader = ({
                             {pluralize("Suggestion", suggestions.length)}
                         </div>
                     </div>
+                    <div className="flex ml-auto mt-1 mr-10 space-x-2">
+                        {SortIconWithTooltip(
+                            SortType.TextOrder,
+                            "Sort by text order",
+                            setSortType,
+                        )}
+                        {SortIconWithTooltip(
+                            SortType.Category,
+                            "Sort by category",
+                            setSortType,
+                        )}
+                    </div>
                 </>
             )}
-            <div className="flex ml-auto mt-1 mr-10 space-x-2">
-                {SortIconWithTooltip(
-                    SortType.TextOrder,
-                    "Sort by text order",
-                    setSortType,
-                )}
-                {SortIconWithTooltip(
-                    SortType.Category,
-                    "Sort by category",
-                    setSortType,
-                )}
-            </div>
         </div>
     );
 };

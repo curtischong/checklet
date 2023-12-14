@@ -9,13 +9,13 @@ export const MenuHeader = () => {
             <a className="absolute left-4 mt-4 font-mackinac" href="/">
                 Checklet.page
             </a>
-            {router.pathname !== "/editor" && (
-                <div className="absolute mt-4 right-20">
-                    <a href="/editor">Editor</a>
-                </div>
-            )}
+            <div className="absolute mt-4 right-20">
+                {!router.pathname.startsWith("/editor") && (
+                    <a href="/editor">Checkers</a>
+                )}
+            </div>
             {router.pathname !== "/login" &&
-                (user!! ? (
+                (user === null ? (
                     <div className="absolute mt-4 right-4">
                         <a href="/login">login</a>
                     </div>
