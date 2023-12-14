@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 // used to show you your checkers.
 const Dashboard: React.FC = () => {
-    const { user, firebaseAuth } = useClientContext();
+    const { user } = useClientContext();
     const router = useRouter();
     const [checkers, setCheckers] = React.useState<CheckerBlueprint[]>([]);
     useEffect(() => {

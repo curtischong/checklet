@@ -50,15 +50,6 @@ export const EditorHeader = ({ storefront }: Props): JSX.Element => {
                         {storefront.objInfo.name}
                     </div>
                     <div className="flex flex-col space-y-2">
-                        {/* <LoadingButton
-                            onClick={checkDocument}
-                            loading={isLoading}
-                            className="h-9 mt-2"
-                            disabled={editorState === ""}
-                        >
-                            Check Document
-                        </LoadingButton> */}
-
                         {onlyUseCheckBlueprint && (
                             <NormalButton
                                 className="py-[4px]"
