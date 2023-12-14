@@ -1,5 +1,5 @@
 import { lora, mackinac } from "@/app/fonts";
-import { MenuHeader } from "@/pages/MenuHeader";
+import { MenuHeader } from "@/components/MenuHeader";
 import { mixpanelTrack } from "@/utils";
 import { ClientContextProvider } from "@utils/ClientContext";
 import mixpanel from "mixpanel-browser";

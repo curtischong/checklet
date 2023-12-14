@@ -1,4 +1,5 @@
 import { useClientContext } from "@/utils/ClientContext";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -28,20 +29,20 @@ export const MenuHeader = () => {
 
     return (
         <div className="fixed top-0 left-0 w-full z-10">
-            <a className="absolute left-4 mt-4 font-mackinac" href="/">
+            <Link className="absolute left-4 mt-4 font-mackinac" href="/">
                 Checklet.page
-            </a>
+            </Link>
             {!isMobile && (
                 <div className="absolute mt-4 flex flex-row right-4 space-x-8">
                     {!router.pathname.startsWith("/editor") && (
-                        <a href="/editor">Checkers</a>
+                        <Link href="/editor">Checkers</Link>
                     )}
                     {router.pathname.startsWith("/editor") && (
-                        <a href="/dashboard">Dashboard</a>
+                        <Link href="/dashboard">Dashboard</Link>
                     )}
                     {router.pathname !== "/login" &&
                         (user === null ? (
-                            <a href="/login">Login</a>
+                            <Link href="/login">Login</Link>
                         ) : (
                             <div className="cursor-pointer" onClick={logout}>
                                 Logout

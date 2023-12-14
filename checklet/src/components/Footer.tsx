@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import Link from "next/link";
 
 interface Props {
     isAbsolute: boolean;
@@ -14,8 +15,8 @@ export const Footer = ({ isAbsolute }: Props) => {
                 },
             )}
         >
-            <a href="/privacy-policy">Privacy Policy</a>
-            <a href="/terms-of-service">Terms of Service</a>
+            <Link href="/privacy-policy">Privacy Policy</Link>
+            <Link href="/terms-of-service">Terms of Service</Link>
         </div>
     );
 };

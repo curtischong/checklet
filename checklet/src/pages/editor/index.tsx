@@ -3,6 +3,7 @@ import LoveChecklet from "@public/checklets/love.svg";
 import PennyChecklet from "@public/checklets/penny.svg";
 import SpacyChecklet from "@public/checklets/spacy.svg";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const EditorHome: React.FC = () => {
@@ -13,12 +14,12 @@ const EditorHome: React.FC = () => {
             </div>
             <div className="mx-auto mt-2">
                 Can&lsquo;t find a checker you like?{" "}
-                <a
+                <Link
                     href="/create/checker"
                     className="mx-auto mt-4 border-b-2 border-blue-500 hover:text-blue-600"
                 >
                     Create your own Checker
-                </a>
+                </Link>
             </div>
             <Image
                 alt="LoveChecklet"
