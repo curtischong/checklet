@@ -1,4 +1,4 @@
-import { NormalButton } from "@/components/Button";
+import { LinkButton } from "@/components/Button";
 import { StoreFront } from "@/components/CheckerStore";
 import { Footer } from "@/components/Footer";
 import ThinLine from "@/components/ThinLine";
@@ -55,14 +55,9 @@ const HomePage: React.FC = () => {
                         Expert-written checkers to polish jokes, edit resumes,
                         revise emails... and check anything!
                     </p>
-                    <NormalButton
-                        onClick={() => {
-                            router.push("/editor");
-                        }}
-                        className="w-[200px] mt-4 mx-auto"
-                    >
-                        Try it out
-                    </NormalButton>
+                    <div className="w-[200px] mt-4 mx-auto">
+                        <LinkButton url={"/editor"}>Try it out</LinkButton>
+                    </div>
                     <div
                         className="border-[2px] border-gray-500 hover:border-gray-600 rounded-[100px] w-[40px] h-[40px] absolute bottom-8 left-[calc(50%-20px)] cursor-pointer"
                         onClick={() =>
@@ -161,13 +156,7 @@ const HomePage: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <NormalButton
-                    onClick={() => {
-                        router.push("/editor");
-                    }}
-                >
-                    Try it out
-                </NormalButton>
+                <LinkButton url={"/editor"}>Try it out</LinkButton>
                 {/* <CheckerStore /> */}
 
                 {/* <NormalButton
