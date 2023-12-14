@@ -225,14 +225,19 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                 maxLength={MAX_CHECKER_PLACEHOLDER_LEN}
                             />
 
-                            <IsPublicSwitch
-                                name={name}
-                                desc={desc}
-                                placeholder={placeholder}
-                                checkStatuses={checkStatuses}
-                                isPublic={isPublic}
-                                checkerId={checkerId}
-                            />
+                            <div className="flex flex-row mt-4">
+                                <IsPublicSwitch
+                                    name={name}
+                                    desc={desc}
+                                    placeholder={placeholder}
+                                    checkStatuses={checkStatuses}
+                                    isPublic={isPublic}
+                                    checkerId={checkerId}
+                                />
+                                <div className="ml-4">
+                                    {SaveStatusText[submittingState]}
+                                </div>
+                            </div>
                             <div className="flex flex-col">
                                 <div className="flex flex-row space-x-8">
                                     <NormalButton
@@ -246,14 +251,11 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                                     <NormalButton
                                         className="mt-4 px-6 h-10 mx-auto"
                                         onClick={() => {
-                                            router.push("/dashboard");
+                                            router.push(`/editor/${checkerId}`);
                                         }}
                                     >
                                         Open checker in editor
                                     </NormalButton>
-                                    <div className="mt-6">
-                                        {SaveStatusText[submittingState]}
-                                    </div>
                                 </div>
                                 {ADMIN_EMAILS.includes(user?.email ?? "") && (
                                     <NormalButton

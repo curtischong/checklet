@@ -1,8 +1,8 @@
+import { MustBeLoggedInMsg } from "@/components/MustBeLoggedInMsg";
 import { Api } from "@api/apis";
 import { CheckerId } from "@api/checker";
 import { CheckerCreator } from "@components/create-checker/CheckerCreator";
 import { useClientContext } from "@utils/ClientContext";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -24,12 +24,7 @@ const CheckerCreatorPage = (): JSX.Element => {
         })();
     }, []);
     if (!user) {
-        return (
-            <div>
-                <div>You must be logged in the create a checker</div>
-                <Link href="/login">Login here</Link>
-            </div>
-        );
+        return <MustBeLoggedInMsg isCheck={false} />;
     }
     if (!checkerId) return <>loading...</>;
     return <CheckerCreator checkerId={checkerId} />;

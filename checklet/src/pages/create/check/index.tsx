@@ -1,9 +1,9 @@
+import { MustBeLoggedInMsg } from "@/components/MustBeLoggedInMsg";
 import { Api } from "@api/apis";
 import { CreateCheckName } from "@components/create-check/CheckNameCreator";
 import { SelectCheckType } from "@components/create-check/SelectCheckType";
 import { CheckType } from "@components/create-checker/CheckerTypes";
 import { useClientContext } from "@utils/ClientContext";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -40,12 +40,7 @@ const CreateCheckPage = (): JSX.Element => {
     }, [user, name, checkType]);
 
     if (!user) {
-        return (
-            <div>
-                <div>You must be logged in the create a checker</div>
-                <Link href="/login">Login here</Link>
-            </div>
-        );
+        return <MustBeLoggedInMsg isCheck={true} />;
     }
 
     if (name === "") {

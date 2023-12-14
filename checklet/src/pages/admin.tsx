@@ -10,6 +10,7 @@ import {
     defaultInstructions,
     defaultName,
     defaultOriginalText,
+    rizzumeDesc,
 } from "@components/create-check/DefaultTextForCheckType";
 import {
     CheckBlueprint,
@@ -100,7 +101,7 @@ const AdminPage: React.FC = () => {
         const checkerBlueprint: CheckerBlueprint = {
             objInfo: {
                 name: "Rizzume",
-                desc: "Rizz up your resume",
+                desc: rizzumeDesc,
                 id: checkerId,
                 creatorId: user.uid,
             },
@@ -109,7 +110,10 @@ const AdminPage: React.FC = () => {
             placeholder: `• Expedited DynamoDB queries from 68 ms to 41 ms by optimizing the schema for reads
 • Unified request authorization logic by proxying requests through a Spring API Gateway`,
         };
-        await Api.editChecker(checkerBlueprint, user);
+        const res = await Api.editChecker(checkerBlueprint, user);
+        if (res) {
+            toast.success("Created checker");
+        }
     }, [createCheck, user]);
 
     const createChecker = useCallback(

@@ -20,10 +20,10 @@ export const NormalButton: React.FC<IButton> = ({
     return (
         <button
             className={classNames(
-                `bg-white  text-gray-600 border border-gray-300 py-2 px-4 rounded transition duration-300 ${className}`,
+                `text-gray-600 border border-gray-300 py-2 px-4 rounded transition duration-300 ${className}`,
                 {
                     // we need to specify these focus styles because antd's styles makes the button transparent
-                    " hover:bg-[#5384d4] hover:text-white focus:bg-[#43b56c] focus:text-white":
+                    " bg-white hover:bg-[#5384d4] hover:text-white focus:bg-[#43b56c] focus:text-white":
                         !rest.disabled,
                     " bg-[#dddddd] focus:bg-[#999999] cursor-not-allowed":
                         rest.disabled,
@@ -43,14 +43,25 @@ export const LoadingButton: React.FC<IButton & { loading: boolean }> = ({
     ...rest
 }) => {
     delete rest.type;
+    const isDisabled = loading || rest.disabled;
     return (
         <>
             <Button
-                className={`bg-white hover:bg-[#5384d4] text-gray-600 border border-gray-300 hover:text-white px-4 rounded transition duration-300 ${className}`}
+                className={classNames(
+                    ` text-gray-600 border border-gray-300 px-4 rounded transition duration-300`,
+                    className,
+                    {
+                        " bg-white focus:bg-[#999999] hover:bg-[#5384d4] hover:text-white":
+                            !isDisabled,
+                        " bg-[#dddddd] focus:bg-[#999999] cursor-not-allowed":
+                            isDisabled,
+                    },
+                )}
                 {...rest}
                 loading={loading}
                 ref={undefined}
                 type="text"
+                disabled={isDisabled}
             >
                 {children}
             </Button>
