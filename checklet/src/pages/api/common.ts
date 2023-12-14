@@ -173,10 +173,26 @@ const validatePositiveExamples = (checkBlueprint: CheckBlueprint) => {
         if (isRephraseCheck) {
             for (const option of example.editedText) {
                 if (example.originalText === option) {
-                    return "Positive example cannot have the same originalText and rephrased text";
+                    return `Positive example cannot have the same originalText and rephrased text. Original text: ${example.originalText}`;
                 }
             }
         }
+
+        const uniqueEditedTexts = new Set();
+        for (const option of example.editedText) {
+            if (uniqueEditedTexts.has(option)) {
+                return `Positive example rephrased texts must be unique. This rephrased text is duplicated: ${option}`;
+            }
+            uniqueEditedTexts.add(option);
+        }
+    }
+
+    const uniqueOriginalTexts = new Set();
+    for (const example of checkBlueprint.positiveExamples) {
+        if (uniqueOriginalTexts.has(example.originalText)) {
+            return `Positive example original texts must be unique. This original text is duplicated: ${example.originalText}`;
+        }
+        uniqueOriginalTexts.add(example.originalText);
     }
     return "";
 };

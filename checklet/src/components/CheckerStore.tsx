@@ -21,7 +21,7 @@ export const CheckerStore = (): JSX.Element => {
     }, []);
 
     return (
-        <div className="flex flex-col items-center mt-10 space-y-4">
+        <div className="flex flex-col items-center mt-10 space-y-6">
             {/* TODO: add a search bar */}
             {storefronts.map((storefront, idx) => {
                 return (
@@ -44,7 +44,7 @@ export const StoreFront = ({ storefront, isDemo }: StorefrontProps) => {
     return (
         <div
             className={classNames(
-                "bg-white rounded-md max-w-[350px] px-4 py-4  shadow-around text-left",
+                "bg-white rounded-md px-4 py-4 w-[350px] shadow-around text-left",
                 {
                     "cursor-pointer": !isDemo,
                 },
