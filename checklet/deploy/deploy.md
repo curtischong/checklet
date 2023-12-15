@@ -30,3 +30,7 @@ sudo apt install nginx
 # tips
 
 Before messing with ssl, or the domain, just try to visit the raw IP of the server to see if it runs
+
+# Redis backups
+
+make a /redis folder under /home/ubuntu/. This is where the backups are dumped
