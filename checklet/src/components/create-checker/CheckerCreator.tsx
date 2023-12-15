@@ -168,7 +168,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
                         />
 
                         <div className="flex flex-col">
-                            <h1 className="text-3xl mt-4 mb-4 font-bold">
+                            <h1 className="text-3xl mt-4 mb-4 font-bold font-mackinac">
                                 {/* <span className="border-b-2 border-blue-300"> */}
                                 Create Checker
                             </h1>

@@ -34,7 +34,7 @@ export const DashboardChecker = ({
     return (
         <div className=" flex flex-col shadow-around rounded-md px-6 pt-4 pb-3 mb-10 bg-white ">
             <div className="flex flex-row">
-                <div className="font-bold text-xl">
+                <div className="text-xl font-mackinac">
                     {blueprint.objInfo.name === ""
                         ? "Untitled Checker"
                         : blueprint.objInfo.name}

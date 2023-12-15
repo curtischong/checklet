@@ -14,6 +14,7 @@ const config: Config = {
             fontFamily: {
                 lora: ["var(--font-lora)"],
                 mackinac: ["var(--font-mackinac)"],
+                bricolage: ["var(--font-bricolage)"],
             },
             keyframes: {
                 open: {

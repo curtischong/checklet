@@ -44,9 +44,9 @@ export const EditorHeader = ({ storefront }: Props): JSX.Element => {
     return (
         <div>
             {/* <div className="bg-gradient-to-b from-[#fff0f1] via-[fff0f1] to-transparent pt-4"> */}
-            <div className="flex flex-col pt-4 mt-8">
+            <div className="flex flex-col pt-4 mt-6">
                 <div className="flex flex-row">
-                    <div className=" text-3xl my-auto flex-grow">
+                    <div className=" text-3xl my-auto flex-grow font-mackinac">
                         {storefront.objInfo.name}
                     </div>
                     <div className="flex flex-col space-y-2">

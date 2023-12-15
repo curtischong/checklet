@@ -60,7 +60,9 @@ const Dashboard: React.FC = () => {
         <div className="flex">
             <div className="container mx-auto mt-20">
                 {/* {user ? user.email : <></>} */}
-                <p className="text-2xl font-bold">Your Checkers</p>
+                <p className="text-2xl font-bold font-mackinac">
+                    Your Checkers
+                </p>
                 <div className="ml-0 w-[450px] mx-auto mt-4">
                     {checkers.map((checkerBlueprint, idx) => {
                         return (
