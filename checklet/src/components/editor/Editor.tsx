@@ -78,10 +78,6 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
         [setEditorState, setSuggestions],
     );
 
-    // const newEditorState =
-    // editorState.slice(0, s.range.start) +
-    // s.editedText +
-    // editorState.slice(s.range.end);
     const acceptSuggestion = useCallback(
         (suggestion: Suggestion, acceptedOption: string) => {
             if (!editorRef.current) {
@@ -116,7 +112,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                     style={{
                         display: "flex",
                         flexDirection: "column",
-                        height: "95vh", // 95vh so the bottom of the document is not at the bottom of the screen (there's padding)
+                        height: "100vh",
                     }}
                 >
                     <div

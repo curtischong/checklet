@@ -119,11 +119,12 @@ export const TextboxContainer = ({
                 ref={editorRef}
                 value={editorState}
                 onChange={(e) => updateEditorState(e.target.value)}
-                className="bg-white resize-none outline-none"
+                className="bg-white resize-none outline-none pb-32"
                 // the styling MUST be done via the style prop, not tailwind
                 style={{
                     width: "100%",
-                    height: "100%",
+                    height: "99%", // I couldn't remove the display-inline block. so I had to make this smaller to remove the scroll bar
+                    display: "block",
                 }}
                 disabled={isLoading}
                 maxLength={MAX_EDITOR_LEN}
