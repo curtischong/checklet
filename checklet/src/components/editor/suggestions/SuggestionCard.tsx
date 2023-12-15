@@ -44,7 +44,7 @@ const SuggestionCard = React.forwardRef((props: SuggestionCard, ref) => {
         <div
             ref={ref as React.RefObject<HTMLDivElement>}
             className={classnames(
-                "bg-white shadow-around",
+                "bg-white shadow-around max-w-[350px]",
                 {
                     "w-full rounded-lg  p-4 mb-8 animate-open": isActive,
                     "flex w-full rounded-md p-4 mb-5 opacity-100": !isActive,

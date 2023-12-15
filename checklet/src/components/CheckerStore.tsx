@@ -44,9 +44,10 @@ export const StoreFront = ({ storefront, isDemo }: StorefrontProps) => {
     return (
         <div
             className={classNames(
-                "bg-white rounded-md px-4 py-4 w-[350px] shadow-around text-left",
+                "bg-white rounded-md px-4 py-4 shadow-around text-left",
                 {
-                    "cursor-pointer": !isDemo,
+                    "cursor-pointer max-w-[475px] ": !isDemo,
+                    "max-w-[350px]": isDemo,
                 },
             )}
             onClick={() => {

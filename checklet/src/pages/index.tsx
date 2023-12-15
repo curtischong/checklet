@@ -138,7 +138,7 @@ const HomePage: React.FC = () => {
                         </div>
 
                         <div className="flex-1">
-                            <div className="w-[350px]">
+                            <div className="max-w-[350px]">
                                 <CheckPreview
                                     blueprint={{
                                         objInfo: {
