@@ -30,7 +30,7 @@ export const MenuHeader = () => {
     return (
         <div className="fixed top-0 left-0 w-full z-10">
             <Link className="absolute left-4 mt-4 font-mackinac" href="/">
-                Checklet.page
+                Checklet
             </Link>
             {!isMobile && (
                 <div className="absolute mt-4 flex flex-row right-4 space-x-8 font-bricolage">

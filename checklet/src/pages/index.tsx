@@ -33,14 +33,14 @@ const HomePage: React.FC = () => {
                         src={LoveChecklet.src}
                         width={100}
                         height={200}
-                        className="bottom-[25%] right-[2%] md:right-[20%] absolute"
+                        className="bottom-[5%] md:bottom-[25%] right-[2%] md:right-[20%] absolute"
                     />
                     <Image
                         alt="DockyChecklet"
                         src={DockyChecklet.src}
                         width={100}
                         height={200}
-                        className="bottom-[15%] left-[5%] md:left-[30%] absolute"
+                        className="bottom-[10%] left-[2%] md:left-[30%] absolute"
                     />
                     <Image
                         alt="DerpChecklet"
@@ -49,8 +49,8 @@ const HomePage: React.FC = () => {
                         height={200}
                         className="top-[5%] right-[5%] md:right-[30%] absolute"
                     />
-                    <p className="text-5xl font-mackinac">Checklet.page</p>
-                    <p className="mt-4">
+                    <p className="text-5xl font-mackinac">Checklet</p>
+                    <p className="mt-4 z-10">
                         Expert-written checkers to polish jokes, edit resumes,
                         revise emails... and check anything!
                     </p>
@@ -138,7 +138,7 @@ const HomePage: React.FC = () => {
                         </div>
 
                         <div className="flex-1">
-                            <div className="max-w-[350px]">
+                            <div className="w-[350px]">
                                 <CheckPreview
                                     blueprint={{
                                         objInfo: {

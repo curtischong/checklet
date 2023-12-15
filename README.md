@@ -1,4 +1,4 @@
-# Checklet.page
+# Checklet
 
 To run redis, look at this:
 
