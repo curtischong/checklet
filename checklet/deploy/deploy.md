@@ -5,7 +5,7 @@
 -   yarn deploy-all
 -   Then run sudo docker pull splacorn/checklet:latest and sudo docker compose up (do NOT use docker-compose)
 
-# On server install docker:
+# Next, pull the latest images on server:
 
 1. https://docs.docker.com/engine/install/ubuntu/
 2. sudo systemctl start docker
@@ -44,5 +44,5 @@ When you restart the server, the redis docker image will automatically read the 
 
 1. update the redis.conf in this repo
 2. run yarn build-redis (it'll build the redis docker img and send it to the server)
-3. run sudo docker pull splacorn/checklet-redis:latest
+3. (on the server, run:) sudo docker pull splacorn/checklet-redis:latest
 4. sudo docker compose up
