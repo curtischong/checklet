@@ -1,19 +1,22 @@
+# make sure you set the security rules on aws to allow https and http! (http for testing)
+
 # on server install docker:
 
 1. https://docs.docker.com/engine/install/ubuntu/
 2. sudo systemctl start docker
 
-    sudo docker pull redis/redis-stack:latest
-    sudo docker pull splacorn/checklet
-    sudo docker pull splacorn/checklet
-    sudo docker run -p 80:3000 redis/redis-stack:latest
-    sudo docker ps (to get the container id to put into the next command)
-    sudo docker run --env OPENAI_API_KEY=<apikey> --net=container:77d9570d6e26 splacorn/yourwriterfriend:latest
+sudo docker pull redis/redis-stack:latest
+sudo docker pull splacorn/checklet-nginx:latest
+sudo docker pull splacorn/checklet:latest
+sudo docker compose up (NOT docker-compose!)
 
-https://certbot.eff.org/instructions?ws=nginx&os=centosrhel8
+# now get the ssl cert
+
+https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal
 following: https://stackoverflow.com/questions/74185594/how-to-deploy-a-next-js-app-on-https-ssl-connection-with-docker
-deploy via docker compose:
-yarn send-docker-compose
+
+sudo apt install nginx
+sudo certbot certonly --nginx
 
 on server:
 
