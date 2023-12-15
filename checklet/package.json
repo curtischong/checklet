@@ -9,8 +9,6 @@
         "build-nginx": "docker build -t splacorn/checklet-nginx:latest -f deploy/nginx/Dockerfile deploy/nginx --platform linux/amd64 && docker push splacorn/checklet-nginx",
         "build-redis": "docker build -t splacorn/checklet-redis:latest -f deploy/redis/Dockerfile deploy/redis --platform linux/amd64 && docker push splacorn/checklet-redis",
         "send-docker-compose": "scp -i ~/.ssh/Transistor2.pem deploy/docker-compose.yml ubuntu@ec2-44-211-156-229.compute-1.amazonaws.com:/home/ubuntu/",
-        "send-nginx": "scp -i ~/.ssh/Transistor2.pem deploy/nginx/nginx.conf ubuntu@ec2-44-211-156-229.compute-1.amazonaws.com:/home/ubuntu/",
-        "send-redis": "scp -i ~/.ssh/Transistor2.pem deploy/redis/redis.conf ubuntu@ec2-44-211-156-229.compute-1.amazonaws.com:/home/ubuntu/",
         "send-env": "scp -i ~/.ssh/Transistor2.pem deploy/.env ubuntu@ec2-44-211-156-229.compute-1.amazonaws.com:/home/ubuntu/",
         "deploy-all": "yarn build-checklet && yarn build-nginx && yarn build-redis && yarn send-all",
         "send-all": "yarn send-docker-compose && yarn send-env",
