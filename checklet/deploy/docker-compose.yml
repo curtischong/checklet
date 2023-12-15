@@ -6,22 +6,22 @@ services:
         # ports:
         #     - "6379:6379"
         restart: always
-        network_mode: "service:checklet"
+        network_mode: "service:nginx"
     checklet:
         image: splacorn/checklet:latest
         container_name: checklet
         # ports:
         #     - "3000:3000"
-        ports:
-            - "80:3000"
-            - "443:443"
         restart: always
         environment:
             - OPENAI_API_KEY=${OPENAI_API_KEY}
+        network_mode: "service:nginx"
     nginx:
-        network_mode: "service:checklet"
         image: splacorn/checklet-nginx:latest
         container_name: nginx
         volumes:
             - /etc/ssl:/etc/nginx/ssl:ro
         restart: always
+        ports:
+            - "80:80"
+            - "443:443"
