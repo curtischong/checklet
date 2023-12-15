@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
         return (
             <>
                 <Head>
-                    <title>Checklet.page</title>
+                    <title>Checklet</title>
                     <link rel="icon" href="/favicon.svg" />
                 </Head>
                 <ClientContextProvider>

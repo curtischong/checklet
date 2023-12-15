@@ -57,7 +57,7 @@ const Login: React.FC = () => {
             >
                 <div className="mb-4">
                     <h1 className="text-4xl font-bold text-center font-mackinac">
-                        Checklet.page
+                        Checklet
                     </h1>
                 </div>
                 <Image
