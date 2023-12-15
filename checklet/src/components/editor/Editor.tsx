@@ -110,33 +110,49 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
 
     return (
         <div className="mx-auto max-w-screen-lg">
-            <div className="flex flex-rol px-5 space-x-10">
+            <div className="flex flex-row px-5 space-x-10">
                 <div
-                    className="textbox flex-grow"
+                    className="textbox"
                     style={{
-                        maxHeight: "100vh",
-                        overflow: "auto",
-                        flexBasis: 3,
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "95vh", // 95vh so the bottom of the document is not at the bottom of the screen (there's padding)
                     }}
                 >
-                    <EditorHeader storefront={storefront} />
-                    <TextboxContainer
-                        storefront={storefront}
-                        activeSuggestion={activeSuggestion}
-                        updateActiveSuggestion={setActiveSuggestion}
-                        suggestions={suggestions}
-                        editorState={editorState}
-                        updateEditorState={(newText) => {
-                            setHasModifiedTextAfterChecking(newText !== "");
-                            updateEditorState(
-                                editorState,
-                                newText,
-                                suggestions,
-                            );
+                    <div
+                        className="flex-0"
+                        style={{
+                            flexGrow: 0,
+                            flexBasis: "auto",
                         }}
-                        isLoading={isLoading}
-                        editorRef={editorRef}
-                    />
+                    >
+                        <EditorHeader storefront={storefront} />
+                    </div>
+                    <div
+                        className="flex-1"
+                        style={{
+                            flexGrow: 1,
+                            flexBasis: "auto",
+                        }}
+                    >
+                        <TextboxContainer
+                            storefront={storefront}
+                            activeSuggestion={activeSuggestion}
+                            updateActiveSuggestion={setActiveSuggestion}
+                            suggestions={suggestions}
+                            editorState={editorState}
+                            updateEditorState={(newText) => {
+                                setHasModifiedTextAfterChecking(newText !== "");
+                                updateEditorState(
+                                    editorState,
+                                    newText,
+                                    suggestions,
+                                );
+                            }}
+                            isLoading={isLoading}
+                            editorRef={editorRef}
+                        />
+                    </div>
                 </div>
                 <div
                     style={{
