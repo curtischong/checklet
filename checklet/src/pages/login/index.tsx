@@ -50,9 +50,12 @@ const Login: React.FC = () => {
     }, []);
 
     return (
-        <>
-            <div className="flex flex-col justify-center">
-                <div className="mt-60 mb-4">
+        <div className=" flex flex-col h-screen">
+            <div
+                className="container mx-auto mt-20 grow flex flex-col justify-center"
+                style={{ flexBasis: 0 }}
+            >
+                <div className="mb-4">
                     <h1 className="text-4xl font-bold text-center font-mackinac">
                         Checklet.page
                     </h1>
@@ -92,8 +95,8 @@ const Login: React.FC = () => {
                 <div id="firebaseui-auth-container"></div>
                 <AuthBoxCss />
             </div>
-            <Footer isAbsolute={true} />
-        </>
+            <Footer isAbsolute={false} />
+        </div>
     );
 };
 

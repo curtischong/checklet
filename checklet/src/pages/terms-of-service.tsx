@@ -2,8 +2,11 @@ import { Footer } from "@/components/Footer";
 
 const TermsOfService: React.FC = () => {
     return (
-        <>
-            <div className="container mx-auto mt-20">
+        <div className=" flex flex-col h-screen">
+            <div
+                className="container mx-auto mt-20 grow"
+                style={{ flexBasis: 0 }}
+            >
                 <div className="flex flex-col justify-center">
                     <div className="mx-auto p-6">
                         <h1 className="text-3xl font-bold font-mackinac text-center break-words">
@@ -28,8 +31,8 @@ const TermsOfService: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <Footer isAbsolute={true} />
-        </>
+            <Footer isAbsolute={false} />
+        </div>
     );
 };
 
