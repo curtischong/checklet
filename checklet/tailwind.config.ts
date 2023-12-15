@@ -12,9 +12,8 @@ const config: Config = {
                 around: "0px 10px 36px rgba(0, 0, 0, 0.08)",
             },
             fontFamily: {
-                lora: ["var(--font-lora)"],
                 mackinac: ["var(--font-mackinac)"],
-                bricolage: ["var(--font-bricolage)"],
+                basier: ["var(--font-basier)"],
             },
             keyframes: {
                 open: {

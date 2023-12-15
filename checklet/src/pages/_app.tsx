@@ -1,4 +1,4 @@
-import { bricolage, lora, mackinac } from "@/app/fonts";
+import { basier, mackinac } from "@/app/fonts";
 import { MenuHeader } from "@/components/MenuHeader";
 import { mixpanelTrack } from "@/utils";
 import { ClientContextProvider } from "@utils/ClientContext";
@@ -44,7 +44,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                 </Head>
                 <ClientContextProvider>
                     <div
-                        className={`${lora.variable} ${mackinac.variable} ${bricolage.variable} font-bricolage`}
+                        className={`${mackinac.variable} ${basier.variable} font-basier`}
                         style={{
                             WebkitFontSmoothing: "antialiased",
                         }}
