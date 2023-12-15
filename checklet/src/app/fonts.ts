@@ -9,6 +9,12 @@ export const mackinac = localFont({
     variable: "--font-mackinac",
 });
 
+export const bricolage = localFont({
+    // src: "../../public/fonts/BricolageGrotesque_72pt-Light.woff2",
+    src: "../../public/fonts/BricolageGrotesque-Regular.woff2",
+    variable: "--font-bricolage",
+});
+
 export const basier = localFont({
     src: "../../public/fonts/BasierCircle-Regular.woff2",
     variable: "--font-basier",

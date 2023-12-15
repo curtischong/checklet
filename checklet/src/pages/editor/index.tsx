@@ -43,19 +43,6 @@ const EditorHome: React.FC = () => {
                 className="h-[8rem] top-32 left-[5%] absolute"
             />
             <CheckerStore />
-            {/* <TextButton
-                className="fixed top-2 right-5"
-                onClick={() => {
-                    const isLoggedOut = user === null;
-                    if (isLoggedOut) {
-                        router.push("/login");
-                    } else {
-                        router.push("/dashboard");
-                    }
-                }}
-            >
-                Create Your Own Checker
-            </TextButton> */}
         </div>
     );
 };

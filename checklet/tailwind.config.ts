@@ -13,6 +13,7 @@ const config: Config = {
             },
             fontFamily: {
                 mackinac: ["var(--font-mackinac)"],
+                bricolage: ["var(--font-bricolage)"],
                 basier: ["var(--font-basier)"],
             },
             keyframes: {
