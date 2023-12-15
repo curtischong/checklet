@@ -42,7 +42,9 @@ export const YourChecks = ({
         >
             <div className="flex flex-col ml-20">
                 <div className="flex flex-row mt-24 w-full">
-                    <h1 className="font-bold text-lg mt-4 ml-1">Checks</h1>
+                    <h1 className="font-bold text-lg mt-4 ml-1 font-mackinac">
+                        Checks
+                    </h1>
                     <HelpIcon
                         className="mt-[22px] ml-2"
                         text={

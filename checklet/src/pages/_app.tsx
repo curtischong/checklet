@@ -1,4 +1,4 @@
-import { lora, mackinac } from "@/app/fonts";
+import { basier, mackinac } from "@/app/fonts";
 import { MenuHeader } from "@/components/MenuHeader";
 import { mixpanelTrack } from "@/utils";
 import { ClientContextProvider } from "@utils/ClientContext";
@@ -43,8 +43,13 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                     <link rel="icon" href="/favicon.svg" />
                 </Head>
                 <ClientContextProvider>
-                    <MenuHeader />
-                    <div className={`${lora.variable} ${mackinac.variable}`}>
+                    <div
+                        className={`${mackinac.variable} ${basier.variable} font-basier`}
+                        style={{
+                            WebkitFontSmoothing: "antialiased",
+                        }}
+                    >
+                        <MenuHeader />
                         <Component {...pageProps} />
                     </div>
                     <ToastContainer />
