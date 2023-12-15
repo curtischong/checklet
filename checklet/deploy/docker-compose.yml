@@ -7,6 +7,8 @@ services:
         #     - "6379:6379"
         restart: always
         network_mode: "service:nginx"
+        volumes:
+            - /home/ubuntu/redis:/home/redis
     checklet:
         image: splacorn/checklet:latest
         container_name: checklet
