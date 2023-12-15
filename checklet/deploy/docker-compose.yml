@@ -20,7 +20,7 @@ services:
         image: splacorn/checklet-nginx:latest
         container_name: nginx
         volumes:
-            - /etc/ssl:/etc/nginx/ssl:ro
+            - /etc/letsencrypt:/etc/letsencrypt:ro
         restart: always
         ports:
             - "80:80"
