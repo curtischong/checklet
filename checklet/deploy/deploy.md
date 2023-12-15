@@ -34,3 +34,6 @@ Before messing with ssl, or the domain, just try to visit the raw IP of the serv
 # Redis backups
 
 make a /redis folder under /home/ubuntu/. This is where the backups are dumped
+
+maybe follow this group advice: https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue
+sudo chmod -R 777 /home/ubuntu/redis
