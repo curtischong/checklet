@@ -25,8 +25,6 @@ export type TextboxContainerProps = {
     storefront: CheckerStorefront;
 };
 
-// const highlightColors = ["#CAE2F1", "#CCEAA5", "#DCBAE5", "#F5EBBB", "#DCBAB9"];
-
 export const TextboxContainer = ({
     suggestions,
     editorState,
@@ -110,7 +108,6 @@ export const TextboxContainer = ({
         <div
             className="textbox col-span-3"
             style={{
-                // maxHeight: "calc(100vh)",
                 overflow: "auto",
                 height: "100%",
             }}

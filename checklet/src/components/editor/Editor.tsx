@@ -123,7 +123,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         className="flex-0"
                         style={{
                             flexGrow: 0,
-                            flexBasis: "auto", // or you can remove this line
+                            flexBasis: "auto",
                         }}
                     >
                         <EditorHeader storefront={storefront} />
@@ -132,7 +132,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         className="flex-1"
                         style={{
                             flexGrow: 1,
-                            flexBasis: "auto", // or you can remove this line
+                            flexBasis: "auto",
                         }}
                     >
                         <TextboxContainer
