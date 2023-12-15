@@ -20,7 +20,13 @@ export const checkDocText = async (
         (localStorage.getItem("modelType") ?? ModelType.GPT35) ===
         ModelType.GPT35;
     if (isUsingServer) {
-        return await Api.checkDoc(doc, checkerId, user, onlyUseCheckId);
+        try {
+            return await Api.checkDoc(doc, checkerId, user, onlyUseCheckId);
+        } catch (err) {
+            toast.error(`Error checking doc ${err}`);
+            console.error(err);
+            return undefined;
+        }
     }
     let checkBlueprints: CheckBlueprint[] = [];
     if (onlyUseCheckId) {

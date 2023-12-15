@@ -113,16 +113,10 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
             <div className="flex flex-row px-5 space-x-10">
                 <div
                     className="textbox"
-                    // className="textbox flex-grow"
-                    // style={{
-                    //     height: "100vh",
-                    //     overflow: "auto",
-                    //     flexBasis: 3,
-                    // }}
                     style={{
                         display: "flex",
                         flexDirection: "column",
-                        height: "100vh",
+                        height: "95vh", // 95vh so the bottom of the document is not at the bottom of the screen (there's padding)
                     }}
                 >
                     <div
