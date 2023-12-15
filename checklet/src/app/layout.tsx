@@ -1,4 +1,4 @@
-import { lora, mackinac } from "@/app/fonts";
+import { mackinac } from "@/app/fonts";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
@@ -20,9 +20,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body
-                className={`${lora.variable} ${mackinac.variable} ${inter.className}`}
-            >
+            <body className={`${mackinac.variable} ${inter.className}`}>
                 {children}
             </body>
         </html>
