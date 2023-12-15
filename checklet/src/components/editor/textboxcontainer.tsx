@@ -109,7 +109,11 @@ export const TextboxContainer = ({
     return (
         <div
             className="textbox col-span-3"
-            style={{ maxHeight: "calc(100vhpx)", overflow: "auto" }}
+            style={{
+                // maxHeight: "calc(100vh)",
+                overflow: "auto",
+                height: "100%",
+            }}
         >
             <RichTextarea
                 placeholder={
@@ -118,10 +122,11 @@ export const TextboxContainer = ({
                 ref={editorRef}
                 value={editorState}
                 onChange={(e) => updateEditorState(e.target.value)}
-                className="bg-white resize-none  h-[76vh] outline-none"
+                className="bg-white resize-none outline-none"
                 // the styling MUST be done via the style prop, not tailwind
                 style={{
                     width: "100%",
+                    height: "100%",
                 }}
                 disabled={isLoading}
                 maxLength={MAX_EDITOR_LEN}
