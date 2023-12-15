@@ -16,7 +16,7 @@
         "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
         "prettier": "prettier --write '**/*.{js,jsx,ts,tsx}'",
         "redis": "docker run -d -p 6379:6379 -p 8001:8001 redis/redis-stack:latest",
-        "pull-backup": "ssh -i ~/.ssh/Transistor2.pem ubuntu@ec2-44-211-156-229.compute-1.amazonaws.com 'sudo tar -czf - /home/ubuntu/redis' > ./redis_backups/$(date +\"%Y-%m-%d_%H-%M-%S\").tar.gz"
+        "pull-backup": "ssh -i ~/.ssh/Transistor2.pem ubuntu@ec2-44-211-156-229.compute-1.amazonaws.com 'cd /home/ubuntu/redis && sudo tar -czf - .' > ./redis_backups/$(date +\"%Y-%m-%d_%H-%M-%S\").tar.gz"
     },
     "dependencies": {
         "@types/mixpanel": "^2.14.8",

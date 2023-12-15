@@ -109,7 +109,7 @@ export const TextboxContainer = ({
     return (
         <div
             className="textbox col-span-3"
-            style={{ maxHeight: "calc(100vh - 80px)", overflow: "auto" }}
+            style={{ maxHeight: "calc(100vhpx)", overflow: "auto" }}
         >
             <RichTextarea
                 placeholder={
