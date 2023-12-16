@@ -1,6 +1,14 @@
 # Checklet
 
-To run redis, look at this:
+### Getting Started
 
-https://redis.io/docs/install/install-stack/docker/
-docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+```
+yarn run redis
+yarn run dev
+```
+
+### Deployment
+
+To deploy checklet, you need to read the documentation under the `deploy/` directory
+
+Note: If you want to deploy your own Checklet with auth, make sure to setup firebase!
