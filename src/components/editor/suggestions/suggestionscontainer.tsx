@@ -250,7 +250,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
                 <LoadingButton
                     onClick={checkDocument}
                     loading={isLoading}
-                    className="h-9"
+                    className="h-9 w-40"
                     disabled={editorState === ""}
                 >
                     Check Document
