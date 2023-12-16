@@ -30,7 +30,8 @@ sudo apt install nginx
 
 # tips
 
-Before messing with ssl, or the domain, just try to visit the raw IP of the server to see if it runs
+-   Before messing with ssl, or the domain, just try to visit the raw IP of the server to see if it runs
+-   NOTE: We are using the redis image for production, but we are using the redis-stack image for development (so we can look into the db in the web browser to see data in the db). If you want to see the prod db, just download the .rdb backup from the server and look at it locally
 
 # Redis backups
 
