@@ -6,7 +6,7 @@ import {
     newEditOp,
 } from "@api/ApiTypes";
 
-// https://github.com/curtischong/yourwriterfriend/blob/68103728393eee11683b6268fa86a8c6a62ce7c9/oldbackend/edit_distance.py
+// https://github.com/curtischong/checklet/blob/68103728393eee11683b6268fa86a8c6a62ce7c9/oldbackend/edit_distance.py
 export function editDistanceOperationsWithClasses(
     str1: string,
     str2: string,
