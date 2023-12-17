@@ -19,7 +19,6 @@
         "pull-backup": "ssh -i ~/.ssh/Transistor2.pem ubuntu@ec2-44-211-156-229.compute-1.amazonaws.com 'cd /home/ubuntu/redis && sudo tar -czf - .' > ./redis_backups/$(date +\"%Y-%m-%d_%H-%M-%S\").tar.gz"
     },
     "dependencies": {
-        "@types/mixpanel": "^2.14.8",
         "antd": "^5.12.2",
         "firebase": "^10.7.1",
         "firebase-admin": "^11.11.1",
@@ -40,6 +39,7 @@
     },
     "devDependencies": {
         "@types/lodash.debounce": "^4.0.9",
+        "@types/mixpanel": "^2.14.8",
         "@types/mixpanel-browser": "^2.47.5",
         "@types/node": "^20",
         "@types/react": "^18",
