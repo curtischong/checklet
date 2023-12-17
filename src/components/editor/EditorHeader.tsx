@@ -66,7 +66,7 @@ export const EditorHeader = ({ storefront }: Props): JSX.Element => {
                         )}
                     </div>
                 </div>
-                <div className="text-md ">
+                <div className="text-md">
                     {onlyUseCheckBlueprint ? (
                         <>
                             <p>

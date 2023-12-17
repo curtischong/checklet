@@ -113,6 +113,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         display: "flex",
                         flexDirection: "column",
                         height: "100vh",
+                        flexGrow: 1,
                     }}
                 >
                     <div

@@ -80,6 +80,8 @@ const Dashboard: React.FC = () => {
                 <NormalButton onClick={createChecker}>
                     Create Checker
                 </NormalButton>
+                {/* the div is to provide some buffer */}
+                <div className="h-32" />
                 <Image
                     alt="PennyChecklet"
                     src={PennyChecklet.src}
