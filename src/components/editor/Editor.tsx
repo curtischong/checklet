@@ -1,11 +1,16 @@
+import { Api } from "@/api/apis";
+import { useClientContext } from "@/utils/ClientContext";
 import { Suggestion, isBefore, isIntersecting, shift } from "@api/ApiTypes";
 import {
+    CheckBlueprint,
     CheckDescObj,
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
 import { EditorHeader } from "@components/editor/EditorHeader";
 import { singleEditDistance } from "@components/editor/singleEditDistance";
-import React, { useCallback, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { RichTextareaHandle } from "rich-textarea";
 import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textboxcontainer";
@@ -22,6 +27,30 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
         useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
     const editorRef = useRef<RichTextareaHandle | null>(null);
+    const { user } = useClientContext();
+
+    const router = useRouter();
+    const onlyUseCheckId = router.query.onlyUseCheckId as string;
+    const [onlyUseCheckBlueprint, setOnlyUseCheckBlueprint] = useState<
+        CheckBlueprint | undefined
+    >();
+    useEffect(() => {
+        (async () => {
+            if (onlyUseCheckId && user) {
+                const checkBlueprint = await Api.getCheckBlueprint(
+                    onlyUseCheckId,
+                    user,
+                );
+                if (!checkBlueprint) {
+                    toast.error(
+                        `couldn't find the checkBlueprint for onlyUseCheckId=${onlyUseCheckId}`,
+                    );
+                    return;
+                }
+                setOnlyUseCheckBlueprint(checkBlueprint);
+            }
+        })();
+    }, []);
 
     const updateEditorState = useCallback(
         (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
@@ -123,7 +152,10 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                             flexBasis: "auto",
                         }}
                     >
-                        <EditorHeader storefront={storefront} />
+                        <EditorHeader
+                            storefront={storefront}
+                            onlyUseCheckBlueprint={onlyUseCheckBlueprint}
+                        />
                     </div>
                     <div
                         className="flex-1"
@@ -173,6 +205,8 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
                         hasModifiedTextAfterChecking={
                             hasModifiedTextAfterChecking
                         }
+                        onlyUseCheckBlueprint={onlyUseCheckBlueprint}
+                        storefront={storefront}
                     />
                 </div>
             </div>
