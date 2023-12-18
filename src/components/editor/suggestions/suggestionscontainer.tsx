@@ -1,4 +1,4 @@
-import { LoadingButton } from "@/components/Button";
+import { LoadingButton, NormalButton } from "@/components/Button";
 import { SlidingRadioButton } from "@/components/SlidingRadioButton";
 import { EnterApiKeyModal } from "@/components/editor/EnterApiKeyModal";
 import { checkDocText } from "@/components/editor/checkDoc";
@@ -7,7 +7,9 @@ import { SortIcon } from "@/components/icons/SortIcon";
 import { useClientContext } from "@/utils/ClientContext";
 import { Suggestion } from "@api/ApiTypes";
 import {
+    CheckBlueprint,
     CheckDescObj,
+    CheckerStorefront,
     ModelType,
 } from "@components/create-checker/CheckerTypes";
 import CoolChecklet from "@public/checklets/cool.svg";
@@ -36,6 +38,8 @@ export type SuggestionsContainerProps = {
     checkDescObj: CheckDescObj;
     hasModifiedTextAfterChecking: boolean;
     setCheckDescObj: SetState<CheckDescObj>;
+    onlyUseCheckBlueprint: CheckBlueprint | undefined;
+    storefront: CheckerStorefront;
 };
 
 export enum SortType {
@@ -68,6 +72,8 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
     hasModifiedTextAfterChecking,
     checkDescObj,
     setCheckDescObj,
+    onlyUseCheckBlueprint,
+    storefront,
 }: SuggestionsContainerProps) => {
     const [sortedSuggestions, setSortedSuggestions] = useState<Suggestion[]>(
         [],
@@ -246,6 +252,41 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
 
     return (
         <div className="flex flex-col mt-14 w-full">
+            <div>
+                <div className="flex flex-col space-y-2">
+                    {onlyUseCheckBlueprint && (
+                        <NormalButton
+                            className="py-[4px] mb-4"
+                            onClick={() => {
+                                router.push({
+                                    pathname: `/create/check/${onlyUseCheckId}`,
+                                    query: {
+                                        checkerId,
+                                    },
+                                });
+                            }}
+                        >
+                            Return to Check Editor
+                        </NormalButton>
+                    )}
+                    {!onlyUseCheckBlueprint &&
+                        user?.uid === storefront.objInfo.creatorId && (
+                            <NormalButton
+                                className="py-[4px] mb-4"
+                                onClick={() => {
+                                    router.push({
+                                        pathname: `/create/checker/${checkerId}`,
+                                        query: {
+                                            checkerId,
+                                        },
+                                    });
+                                }}
+                            >
+                                Edit this Checker
+                            </NormalButton>
+                        )}
+                </div>
+            </div>
             <div className="flex-row flex space-x-8 justify-normal items-center mx-auto">
                 <LoadingButton
                     onClick={checkDocument}

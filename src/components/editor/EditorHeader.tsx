@@ -1,45 +1,19 @@
-import { Api } from "@api/apis";
-import { NormalButton } from "@components/Button";
 import {
     CheckBlueprint,
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
-import { useClientContext } from "@utils/ClientContext";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 interface Props {
     storefront: CheckerStorefront;
+    onlyUseCheckBlueprint?: CheckBlueprint;
 }
 
-export const EditorHeader = ({ storefront }: Props): JSX.Element => {
+export const EditorHeader = ({
+    storefront,
+    onlyUseCheckBlueprint,
+}: Props): JSX.Element => {
     const router = useRouter();
-    const { user } = useClientContext();
-    const [onlyUseCheckBlueprint, setOnlyUseCheckBlueprint] = useState<
-        CheckBlueprint | undefined
-    >();
-
-    const onlyUseCheckId = router.query.onlyUseCheckId as string;
-    const checkerId = router.query.checkerId as string;
-
-    useEffect(() => {
-        (async () => {
-            if (onlyUseCheckId && user) {
-                const checkBlueprint = await Api.getCheckBlueprint(
-                    onlyUseCheckId,
-                    user,
-                );
-                if (!checkBlueprint) {
-                    toast.error(
-                        `couldn't find the checkBlueprint for onlyUseCheckId=${onlyUseCheckId}`,
-                    );
-                    return;
-                }
-                setOnlyUseCheckBlueprint(checkBlueprint);
-            }
-        })();
-    }, []);
 
     return (
         <div>
@@ -47,23 +21,6 @@ export const EditorHeader = ({ storefront }: Props): JSX.Element => {
                 <div className="flex flex-row">
                     <div className=" text-3xl my-auto flex-grow font-mackinac">
                         {storefront.objInfo.name}
-                    </div>
-                    <div className="flex flex-col space-y-2">
-                        {onlyUseCheckBlueprint && (
-                            <NormalButton
-                                className="py-[4px]"
-                                onClick={() => {
-                                    router.push({
-                                        pathname: `/create/check/${onlyUseCheckId}`,
-                                        query: {
-                                            checkerId,
-                                        },
-                                    });
-                                }}
-                            >
-                                Return to Check Editor
-                            </NormalButton>
-                        )}
                     </div>
                 </div>
                 <div className="text-md">
