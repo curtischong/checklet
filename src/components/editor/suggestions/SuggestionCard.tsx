@@ -55,7 +55,7 @@ const SuggestionCard = React.forwardRef((props: SuggestionCard, ref) => {
         const trimmedLine = line.trim();
         // the previous line is a list
         if (["*", "-", "+"].includes(prevTrimmedLine[0])) {
-            treatedContent += line + "\n";
+            treatedContent += "\n\n" + line; // If we don't do this, then all future lines undeneath the bullet point will be treated as a bullet point
             continue;
         }
 
@@ -63,10 +63,10 @@ const SuggestionCard = React.forwardRef((props: SuggestionCard, ref) => {
             treatedContent += "\\\n";
             continue;
         }
-        if (i !== lines.length - 1) {
-            treatedContent += line + "\\\n";
+        if (prevTrimmedLine.length === 0) {
+            treatedContent += "\\\n" + line;
         } else {
-            treatedContent += line + "\n";
+            treatedContent += "\n\n" + line;
         }
     }
 
