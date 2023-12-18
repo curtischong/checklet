@@ -164,6 +164,20 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
         );
     }, [name, checkType, instruction, desc, category, positiveExamples]);
 
+    const handleDescKeyDown = (
+        event: React.KeyboardEvent<HTMLTextAreaElement>,
+    ) => {
+        if (event.key === "Tab" && !event.shiftKey) {
+            event.preventDefault(); // so we don't go to the next textbox
+            // execCommand is deprecated but it works!
+            document.execCommand("insertText", false, "  ");
+
+            // I tried using setDesc but that would break the textarea's undo function
+            // also stackoverflow + gpt isn't very useful. this was the most elegant solution for now
+            // TODO: also support shift+tab
+        }
+    };
+
     return (
         <div className="flex flex-row mt-[50px] container mx-auto">
             <div
@@ -206,6 +220,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     placeholder={defaultDesc[checkType]}
                     minRows={3}
                     maxLength={MAX_CHECK_DESC_LEN}
+                    onKeyDown={handleDescKeyDown}
                 />
                 <CheckSectionHeader
                     label="Model Instructions"
