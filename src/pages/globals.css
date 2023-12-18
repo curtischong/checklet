@@ -46,6 +46,15 @@ body {
     }
 }
 
+/* so lists appear in react markdown */
+@layer base {
+    ul,
+    ol {
+        list-style: revert;
+        margin-left: 14px;
+    }
+}
+
 /* we need to manually do this since antd's styles breaks cause of tailwind preflight
 https://stackoverflow.com/questions/71715157/tailwinds-ant-design-button-color-is-white-but-has-own-color-wnen-i-hover-it */
 .ant-btn {

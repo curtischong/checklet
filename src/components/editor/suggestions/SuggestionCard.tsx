@@ -1,13 +1,11 @@
-import classnames from "classnames";
-import { useMemo } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-
 import { Suggestion } from "@api/ApiTypes";
 import { CheckDescObj } from "@components/create-checker/CheckerTypes";
 import { SuggestionChange } from "@components/editor/suggestions/SuggestionChange";
-import classNames from "classnames";
-import React from "react";
+import { default as classNames, default as classnames } from "classnames";
+import React, { useMemo } from "react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+// https://github.com/remarkjs/react-markdown/tree/website
 
 type SuggestionCard = {
     suggestion: Suggestion;
@@ -38,6 +36,38 @@ const SuggestionCard = React.forwardRef((props: SuggestionCard, ref) => {
         // if we pressed check document, then the author of the checker disabled a check, then we press check document again, we will be missing some checkDescs
         // So we just don't render the card
         return <></>;
+    }
+
+    // const treatedContent = checkDesc.objInfo.desc;
+    // const treatedContent = checkDesc.objInfo.desc.replace(
+    //     // /(?<=\n\n)(?![*-])\n/gi,
+    //     // /(?<=\n)(?![*-])\n/gi,
+    //     /(?<=\n)\n/gi,
+    //     "\\\n",
+    // );
+    // const treatedContent = checkDesc.objInfo.desc.replace(/\n/gi, "\n &nbsp;");
+    const lines = checkDesc.objInfo.desc.split("\n");
+    let treatedContent = lines.length > 0 ? lines[0] : "";
+    for (let i = 1; i < lines.length; i++) {
+        const prevLine = lines[i - 1];
+        const line = lines[i];
+        const prevTrimmedLine = prevLine.trim();
+        const trimmedLine = line.trim();
+        // the previous line is a list
+        if (["*", "-", "+"].includes(prevTrimmedLine[0])) {
+            treatedContent += "\n\n" + line; // If we don't do this, then all future lines undeneath the bullet point will be treated as a bullet point
+            continue;
+        }
+
+        if (trimmedLine.length === 0) {
+            treatedContent += "\\\n";
+            continue;
+        }
+        if (prevTrimmedLine.length === 0) {
+            treatedContent += "\\\n" + line;
+        } else {
+            treatedContent += "\n\n" + line;
+        }
     }
 
     return (
@@ -116,12 +146,13 @@ const SuggestionCard = React.forwardRef((props: SuggestionCard, ref) => {
                     </div>
                     <div className={`text-[13px]`}>
                         {" "}
-                        <ReactMarkdown
-                            className="whitespace-pre-wrap"
+                        <Markdown
+                            // className="whitespace-pre"
                             remarkPlugins={[remarkGfm]}
+                            // remarkPlugins={[remarkGfm]}
                         >
-                            {checkDesc.objInfo.desc}
-                        </ReactMarkdown>
+                            {treatedContent}
+                        </Markdown>
                     </div>
                 </div>
             )}

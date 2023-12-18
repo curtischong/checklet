@@ -1,4 +1,3 @@
-import { GithubIcon } from "@/components/icons/GithubIcon";
 import classNames from "classnames";
 import Link from "next/link";
 
@@ -19,9 +18,9 @@ export const Footer = ({ isAbsolute }: Props) => {
             <Link href="/privacy-policy">Privacy Policy</Link>
             <Link href="/terms-of-service">Terms of Service</Link>
             <div>curtischong5@gmail.com</div>
-            <Link href="https://github.com/curtischong/checklet">
+            {/* <Link href="https://github.com/curtischong/checklet">
                 <GithubIcon className="cursor-pointer" />
-            </Link>
+            </Link> */}
         </div>
     );
 };
