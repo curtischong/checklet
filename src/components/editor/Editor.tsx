@@ -134,7 +134,7 @@ export const Editor = ({ storefront }: Props): JSX.Element => {
     );
 
     return (
-        <div className="mx-auto max-w-screen-lg">
+        <div className="mx-auto max-w-screen-xl">
             <div className="flex flex-row px-5 space-x-10">
                 <div
                     className="textbox"

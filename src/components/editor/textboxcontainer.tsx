@@ -123,7 +123,7 @@ export const TextboxContainer = ({
                 // the styling MUST be done via the style prop, not tailwind
                 style={{
                     width: "100%",
-                    height: "99%", // I couldn't remove the display-inline block. so I had to make this smaller to remove the scroll bar
+                    height: "95%", // I couldn't remove the display-inline block. so I had to make this smaller to remove the scroll bar
                     display: "block",
                 }}
                 disabled={isLoading}
