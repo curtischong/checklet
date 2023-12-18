@@ -39,9 +39,11 @@ export class Check {
             .map(this.getRephraseCheckExamplePrompt)
             .join("\n");
 
-        return `You are a text document fixer. When given text, follow these instructions. ${this.blueprint.instruction}
+        return `You are a text document fixer. When given text, follow these instructions:
+        
+${this.blueprint.instruction}
 
-Call the function that converts the orginal text to the edited text. Be concise. Only output the edited text. Here are some positive examples of how you should change the original text into the edited text:
+Call the function that converts the orginal text to the edited text. Be concise. Only output the edited text. Here are some examples of how you should change the original text into the edited text:
 
 ${positiveExamples}
 `;
@@ -52,9 +54,11 @@ ${positiveExamples}
             .map(this.getHighlightCheckExamplePrompt)
             .join("\n");
 
-        return `You are a text document highlighter. When given text, follow these instructions. ${this.blueprint.instruction}
+        return `You are a text document highlighter. When given text, follow these instructions:
 
-Call the function that highlights the text you found. Here are some positive examples of how you should highlight the text:
+${this.blueprint.instruction}
+
+Call the function that highlights the text you found. Here are some examples of how you should highlight the text:
 
 ${positiveExamples}
 `;
@@ -69,7 +73,7 @@ ${positiveExamples}
     private getHighlightCheckExamplePrompt(
         positiveExample: PositiveCheckExample,
     ): string {
-        return `[Highlight Text]: ${positiveExample.originalText}`;
+        return `[Original Text]: ${positiveExample.originalText}\n[Highlighted Text]: ${positiveExample.originalText}`;
     }
 
     async checkDoc(doc: string): Promise<Suggestion[]> {
