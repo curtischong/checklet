@@ -1,5 +1,7 @@
 # Checklet
 
+![The Checklet Editor](./public/readme-img.png)
+
 ### Getting Started
 
 1. make a directory called .vscode/ and make a file in it called settings.json where the contents of settings.json is .example.vscode.settings.json
