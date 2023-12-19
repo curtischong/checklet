@@ -51,6 +51,8 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
         CheckBlueprint[]
     >([]);
     const { user } = useClientContext();
+    const [hasInitialCheckerBeenFetched, setHasInitialCheckerBeenFetched] =
+        React.useState(false);
 
     const router = useRouter();
 
@@ -75,6 +77,7 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
             setCheckStatuses(checkerBlueprint.checkStatuses);
             setIsPublic(checkerBlueprint.isPublic);
             setCheckBlueprints(checkBlueprints);
+            setHasInitialCheckerBeenFetched(true);
         })();
     }, [user]);
 
@@ -120,6 +123,9 @@ export const CheckerCreator = ({ checkerId }: Props): JSX.Element => {
     );
 
     useEffect(() => {
+        if (!hasInitialCheckerBeenFetched) {
+            return;
+        }
         saveChecker(name, desc, placeholder, checkStatuses, isPublic);
     }, [name, desc, placeholder, JSON.stringify(Object.values(checkStatuses))]);
 
