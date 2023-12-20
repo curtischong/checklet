@@ -8,6 +8,8 @@
         "build-checklet": "cp .env.prod .env.local && docker build -t splacorn/checklet . --platform linux/amd64 && docker push splacorn/checklet",
         "build-nginx": "docker build -t splacorn/checklet-nginx:latest -f deploy/nginx/Dockerfile deploy/nginx --platform linux/amd64 && docker push splacorn/checklet-nginx",
         "build-redis": "docker build -t splacorn/checklet-redis:latest -f deploy/redis/Dockerfile deploy/redis --platform linux/amd64 && docker push splacorn/checklet-redis",
+        "read-prod-redis": "echo 'unzip a backup and rename it from its datetime to current_backup first. Then run read-prod-redis2' &&  docker build -t splacorn/checklet-read-prod-redis:latest -f deploy/read-prod-db/Dockerfile deploy/read-prod-db && docker run -it -v \"$(pwd)/redis_backups/current_backup:/home/redis\" -p 6379:6379 splacorn/checklet-read-prod-redis:latest",
+        "read-prod-redis2": "redis-commander",
         "send-docker-compose": "scp -i ~/.ssh/Transistor2.pem deploy/docker-compose.yml ubuntu@ec2-44-211-156-229.compute-1.amazonaws.com:/home/ubuntu/",
         "send-env": "scp -i ~/.ssh/Transistor2.pem deploy/.env ubuntu@ec2-44-211-156-229.compute-1.amazonaws.com:/home/ubuntu/",
         "deploy-all": "yarn build-checklet && yarn build-nginx && yarn build-redis && yarn send-all",
@@ -15,7 +17,7 @@
         "start": "next start",
         "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
         "prettier": "prettier --write '**/*.{js,jsx,ts,tsx}'",
-        "redis": "docker run -d -p 6379:6379 -p 8001:8001 redis/redis-stack:latest",
+        "redis": "docker run -p 6379:6379 -p 8001:8001 redis/redis-stack:latest",
         "pull-backup": "ssh -i ~/.ssh/Transistor2.pem ubuntu@ec2-44-211-156-229.compute-1.amazonaws.com 'cd /home/ubuntu/redis && sudo tar -czf - .' > ./redis_backups/$(date +\"%Y-%m-%d_%H-%M-%S\").tar.gz"
     },
     "dependencies": {
@@ -49,6 +51,7 @@
         "eslint": "^8",
         "eslint-config-next": "14.0.4",
         "postcss": "^8",
+        "redis-commander": "^0.8.0",
         "tailwindcss": "^3.3.0",
         "typescript": "^5"
     }
