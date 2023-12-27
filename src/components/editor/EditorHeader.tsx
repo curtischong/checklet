@@ -2,7 +2,6 @@ import {
     CheckBlueprint,
     CheckerStorefront,
 } from "@components/create-checker/CheckerTypes";
-import { useRouter } from "next/router";
 
 interface Props {
     storefront: CheckerStorefront;
@@ -13,8 +12,6 @@ export const EditorHeader = ({
     storefront,
     onlyUseCheckBlueprint,
 }: Props): JSX.Element => {
-    const router = useRouter();
-
     return (
         <div>
             <div className="flex flex-col pt-[20px] mt-[20px]">

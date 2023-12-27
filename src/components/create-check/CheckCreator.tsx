@@ -34,6 +34,7 @@ import { HelpIcon } from "@components/icons/HelpIcon";
 import { useClientContext } from "@utils/ClientContext";
 import { SetState } from "@utils/types";
 import debounce from "lodash.debounce";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -233,6 +234,16 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                     label="Model Instructions"
                     helpText="Here is where you tell the model how to edit the text."
                 />
+                <p className="text-sm mb-1 mt-1">
+                    Want more help? Read our{" "}
+                    <Link
+                        href="/prompting-tips"
+                        target="_blank"
+                        className="mx-auto mt-4 border-b-2 border-blue-500 hover:text-blue-600"
+                    >
+                        prompting tips
+                    </Link>
+                </p>
                 <NormalTextArea
                     value={instruction}
                     onChange={(e) => setInstruction(e.target.value)}

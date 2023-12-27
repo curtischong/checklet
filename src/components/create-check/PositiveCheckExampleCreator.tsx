@@ -43,7 +43,7 @@ export const PositiveCheckExampleCreator = ({
             <div className="flex items-center mt-2">
                 <label className="text-md">Original Text</label>
                 <HelpIcon
-                    text="The model should follow your instructions when it sees this text"
+                    text="The model will follow your instructions when it sees this text. It will underline this text."
                     className="ml-2 "
                 />
             </div>
