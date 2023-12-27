@@ -38,11 +38,12 @@ const PrivacyPolicy: React.FC = () => {
                                 repo
                             </li>
                         </ul>
-                        <h2 className="text-2xl font-mackinac text-center font-bold mt-8">
+                        <h2 className="text-2xl font-mackinac text-center font-bold mt-12">
                             Examples
                         </h2>
-                        <p className="text-xl font-bricolage mt-4 font-bold">
-                            Increase Hyperbole (To make Jokes funnier)
+                        <p className="text-xl font-bricolage mt-6 font-bold">
+                            Reword Joke to Increase Hyperbole (To make Jokes
+                            funnier)
                         </p>
                         <p className="font-bold text-md mt-2">
                             Model Instructions
@@ -82,9 +83,9 @@ const PrivacyPolicy: React.FC = () => {
                             positiveExamples={[]}
                             isDemo={true}
                         />
-                        <p className="text-xl font-bricolage mt-8 font-bold">
-                            Comfort the Afflicted, Afflict the comfortable (To
-                            keep your Joke classy)
+                        {/* <p className="text-xl font-bricolage mt-8 font-bold">
+                            Reword Joke to Comfort the Afflicted (To keep your
+                            Joke classy)
                         </p>
                         <p className="font-bold text-md mt-2">
                             Model Instructions
@@ -112,6 +113,78 @@ const PrivacyPolicy: React.FC = () => {
                             example={{
                                 originalText:
                                     "You're as greedy as a homeless person",
+                                editedText: [],
+                            }}
+                            checkType={CheckType.highlight}
+                            setPositiveExamples={() => {}}
+                            positiveExamples={[]}
+                            isDemo={true}
+                        /> */}
+                        <p className="text-xl font-bricolage mt-16 font-bold">
+                            Highlight Unknown Acronyms (To keep your Joke
+                            classy)
+                        </p>
+                        <p className="font-bold text-md mt-2">
+                            Model Instructions
+                        </p>
+                        <p className="whitespace-pre">
+                            {
+                                "Highlight any acronyms that may be unclear to a recruiter.\n\nHowever, there are exceptions to this rule. Do not highlight:\n- common abbreviations like GPA or SAT.\n- Acronyms defined earlier in the text.\n- Measurements (e.g. μs or 50°C)\n- Names, even uncommon names. (e.g. Redis, Habringer, Yakasa, etc.)\n\nIn general, if the acronym is in all caps, and it isn't a common acronym, then highlight it."
+                            }
+                        </p>
+                        <p className="font-bold text-md mt-4 mb-2">
+                            Positive Examples
+                        </p>
+                        <FlattenedPositiveExamplePreview
+                            example={{
+                                originalText: "FSD",
+                                editedText: [],
+                            }}
+                            checkType={CheckType.highlight}
+                            setPositiveExamples={() => {}}
+                            positiveExamples={[]}
+                            isDemo={true}
+                        />
+                        <div className="h-2"></div>
+                        <FlattenedPositiveExamplePreview
+                            example={{
+                                originalText: "HSTS",
+                                editedText: [],
+                            }}
+                            checkType={CheckType.highlight}
+                            setPositiveExamples={() => {}}
+                            positiveExamples={[]}
+                            isDemo={true}
+                        />
+                        <p className="text-xl font-bricolage mt-16 font-bold">
+                            Order Resume Bullet Points by Impressiveness
+                        </p>
+                        <p className="font-bold text-md mt-2">
+                            Model Instructions
+                        </p>
+                        <p className="whitespace-pre">
+                            {
+                                "For each work position of the resume, identify the first bullet point of that work position.\nIf that bullet point isn't very impressive, then highlight the bullet point.\n\nHere is a framework to identify if this bullet point is impressive:\nImpressive points are those that express how:\n- The candidate made a big impact at that position.\n- The task was really hard. A task that requires specialized skills to accomplish.\n\nBefore highlighting any text, talk to yourself and reflect whether this bullet point is impressive or not."
+                            }
+                        </p>
+                        <p className="font-bold text-md mt-4 mb-2">
+                            Positive Examples
+                        </p>
+                        <FlattenedPositiveExamplePreview
+                            example={{
+                                originalText: "Communicated to our customers",
+                                editedText: [],
+                            }}
+                            checkType={CheckType.highlight}
+                            setPositiveExamples={() => {}}
+                            positiveExamples={[]}
+                            isDemo={true}
+                        />
+                        <div className="h-2"></div>
+                        <FlattenedPositiveExamplePreview
+                            example={{
+                                originalText:
+                                    "Documented the installation process for the AC.",
                                 editedText: [],
                             }}
                             checkType={CheckType.highlight}

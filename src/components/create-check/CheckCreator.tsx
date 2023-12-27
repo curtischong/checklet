@@ -241,7 +241,7 @@ export const CheckCreator = ({ checkId }: Props): JSX.Element => {
                         target="_blank"
                         className="mx-auto mt-4 border-b-2 border-blue-500 hover:text-blue-600"
                     >
-                        prompting tips
+                        prompting tips and example instructions
                     </Link>
                 </p>
                 <NormalTextArea
