@@ -16,11 +16,13 @@ export const FlattenedPositiveExamplePreview = ({
     checkType,
     setPositiveExamples, // this is only here so when we change hte positive exampe, we update the preview card
     positiveExamples,
+    isDemo = false,
 }: {
     example: PositiveCheckExample;
     checkType: CheckType;
     setPositiveExamples: SetState<PositiveCheckExample[]>;
     positiveExamples: PositiveCheckExample[];
+    isDemo?: boolean;
 }): JSX.Element => {
     const [isAddingRephrase, setIsAddingRephrase] = useState(false);
     const [rephraseOption, setRephraseOption] = useState("");
@@ -61,16 +63,18 @@ export const FlattenedPositiveExamplePreview = ({
                                     );
                                 })}
                             </div>
-                            <Tooltip
-                                className="mt-[-1px]"
-                                title="Add rephrase option. This teaches the model to generate multiple options"
-                            >
-                                <PlusButton
-                                    onClick={() => {
-                                        setIsAddingRephrase(true);
-                                    }}
-                                />
-                            </Tooltip>
+                            {!isDemo && (
+                                <Tooltip
+                                    className="mt-[-1px]"
+                                    title="Add rephrase option. This teaches the model to generate multiple options"
+                                >
+                                    <PlusButton
+                                        onClick={() => {
+                                            setIsAddingRephrase(true);
+                                        }}
+                                    />
+                                </Tooltip>
+                            )}
                         </>
                     )}
             </div>
