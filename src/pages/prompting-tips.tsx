@@ -83,14 +83,15 @@ const PrivacyPolicy: React.FC = () => {
                             isDemo={true}
                         />
                         <p className="text-xl font-bricolage mt-8 font-bold">
-                            Comfort the Afflicted, Afflict the comfortable (To keep your Joke classy)
+                            Comfort the Afflicted, Afflict the comfortable (To
+                            keep your Joke classy)
                         </p>
                         <p className="font-bold text-md mt-2">
                             Model Instructions
                         </p>
                         <p className="whitespace-pre">
                             {
-                                "For each joke:\n1) Identify if it is making fun of an afflicted group. Note: wealthy/successful people are not part of an afflicted group.\n2) If the joke is, then highlight it.
+                                "For each joke:\n1) Identify if it is making fun of an afflicted group. Note: wealthy/successful people are not part of an afflicted group.\n2) If the joke is, then highlight it."
                             }
                         </p>
                         <p className="font-bold text-md mt-4 mb-2">
@@ -98,8 +99,7 @@ const PrivacyPolicy: React.FC = () => {
                         </p>
                         <FlattenedPositiveExamplePreview
                             example={{
-                                originalText:
-                                    "You are as sloppy as a refugee.",
+                                originalText: "You are as sloppy as a refugee.",
                                 editedText: [],
                             }}
                             checkType={CheckType.highlight}
