@@ -11,8 +11,11 @@
 2. sudo systemctl start docker
 
 sudo docker pull splacorn/checklet-redis:latest
+
 sudo docker pull splacorn/checklet-nginx:latest
+
 sudo docker pull splacorn/checklet:latest
+
 sudo docker compose up
 
 # If you need to get ssl cert beforehand
