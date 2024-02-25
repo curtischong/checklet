@@ -29,6 +29,10 @@ sudo certbot certonly --nginx
 (note: you may need to install nginx in the interim. But you can delete it afterwards since we're running nginx via docker)
 sudo apt install nginx
 
+-   do this after:
+    sudo systemctl stop nginx.service
+    sudo systemctl disable nginx.service
+
 -   NOTE: we are using the nginx config in ~/ (as defined by the nginx Dockerfile - under deploy/), when you install nginx, it may create a new config file underneath /etc/nginx. we are NOT using that one
 
 # tips
