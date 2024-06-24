@@ -3,7 +3,6 @@
 # If you make a client-side change, you can build and send the files to the server via:
 
 -   yarn deploy-all
--   Then run sudo docker pull splacorn/checklet:latest and sudo docker compose up (do NOT use docker-compose)
 
 # Next, pull the latest images on server:
 
@@ -14,9 +13,14 @@ sudo docker pull splacorn/checklet-redis:latest
 
 sudo docker pull splacorn/checklet-nginx:latest
 
-sudo docker pull splacorn/checklet:latest
+sudo docker pull splacorn/checklet:latest (note: if you only made client changes, you can skip the above steps and start here)
 
-sudo docker compose up
+sudo docker compose up (do NOT use docker-compose)
+
+# If you need to change your openai api key, do this:
+
+on the server, open the .env file and change OPENAI_API_KEY to your openai api key
+on my mac, change the .zshrc OPENAI_API_KEY env variable
 
 # If you need to get ssl cert beforehand
 
