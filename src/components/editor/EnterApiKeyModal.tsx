@@ -45,7 +45,7 @@ export const EnterApiKeyModal = ({
             <div>
                 {apiKeyExists
                     ? "If you want to change your API key, paste it below. Otherwise, you're good!"
-                    : "Paste your OpenAI API key to run the checker using GPT-4."}
+                    : "Paste your OpenAI API key to run the checker using GPT-4o."}
                 <br />
                 <br />
                 <span className="font-bold">Note: </span>Your API key{" "}

@@ -53,12 +53,12 @@ export const checkDocText = async (
     const apiKey = localStorage.getItem("openai-api-key");
     if (!apiKey) {
         toast.error(
-            "No OpenAI API key found. Please set it first by clicking on the GPT-4 option in the top right",
+            "No OpenAI API key found. Please set it first by clicking on the GPT-4o option in the top right",
         );
         return undefined;
     }
 
-    const checker = new Checker(checkBlueprints, "gpt-4", undefined, apiKey);
+    const checker = new Checker(checkBlueprints, "gpt-4o", undefined, apiKey);
 
     const suggestions = await checker.checkDoc(doc);
 
