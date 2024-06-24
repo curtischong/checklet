@@ -84,5 +84,5 @@ export const SaveStatusText: {
 
 export enum ModelType {
     GPT35 = "GPT-3.5",
-    GPT4 = "GPT-4",
+    GPT4 = "GPT-4o",
 }

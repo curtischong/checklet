@@ -1,14 +1,14 @@
-import os 
+import os
 from string import Formatter
-from typing import Union, Type
+from typing import Type, Union
+
+import chatgpt
 from pydantic import BaseModel
 from pydantic.main import create_model
 
-import chatgpt
-
 os.environ["OPENAI_API_KEY"] = open('openai_key.txt', 'r').read().strip('\n')
 class Reasoner:
-    def __init__(self, system_prompt=None, model='gpt-4'):
+    def __init__(self, system_prompt=None, model='gpt-4o'):
         self.model = model
         self.messages = []
         if system_prompt:
@@ -45,7 +45,7 @@ class Reasoner:
 
 
 class StructuredReasoner(Reasoner):
-    def __init__(self, system_prompt=None, model='gpt-4'):
+    def __init__(self, system_prompt=None, model='gpt-4o'):
         super().__init__(system_prompt, model)
     
     def extract_info(self, info_format, output_type: Union[BaseModel, Type]):
@@ -131,6 +131,8 @@ class StructuredReasoner(Reasoner):
     
 
 from colorama import Fore, Style
+
+
 def printc(*args, color='reset', **kwargs):
     color_code = getattr(Fore, color.upper(), Fore.RESET)
     text = ' '.join(str(arg) for arg in args)
