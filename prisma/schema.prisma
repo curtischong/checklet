@@ -14,16 +14,18 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
+model Checker {
+    id        String      @id  // we should pass in a cuid into here
     name      String
+    desc      String
+    prompt    String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     createdBy   User   @relation(fields: [createdById], references: [id])
     createdById String
 
-    @@index([name])
+    @@index([name]) // speed up queries that filter or sort by the name field
 }
 
 // Necessary for Next auth
@@ -62,7 +64,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    checkers      Checker[]
 }
 
 model VerificationToken {
