@@ -15,10 +15,12 @@ datasource db {
 }
 
 model Checker {
-    id        String      @id  // we should pass in a cuid into here
+    id        String      @id  @default(cuid())
     name      String
     desc      String
     prompt    String
+    isPublic  Boolean     @default(false)
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
