@@ -1,4 +1,4 @@
-import { CheckerPage } from "@/app/edit/checker/[checkerId]/CheckerPage";
+import { CheckerPage } from "@/app/checker/[checkerId]/edit/CheckerPage";
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
 
