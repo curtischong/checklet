@@ -1,67 +1,157 @@
-import Link from "next/link";
+// import { StoreFront } from "@/app/_components/CheckerStore";
+import { ScrollDownButton } from "@/app/ScrollDownButton";
+import { Footer } from "@/app/_components/Footer";
+import ThinLine from "@/app/_components/ThinLine";
+// import { CheckPreview } from "@/app/_components/create-check/CheckPreview";
+// import { rizzumeDesc } from "@/app/_components/create-check/DefaultTextForCheckType";
+// import { CheckType } from "@/app/_components/create-checker/CheckerTypes";
+import { CursorIcon } from "@/app/_components/icons/CursorIcon";
+import { LinkButton } from "@/app/_components/ui/Button";
+import DerpChecklet from "@public/checklets/derp.svg";
+import DockyChecklet from "@public/checklets/docky.svg";
+import LoveChecklet from "@public/checklets/love.svg";
+import MushyChecklet from "@public/checklets/mushy.svg";
+import PennyChecklet from "@public/checklets/penny.svg";
+import SpacyChecklet from "@public/checklets/spacy.svg";
+import Image from "next/image";
 
-import { LatestPost } from "@/app/_components/post";
-import { getServerAuthSession } from "@/server/auth";
-import { api, HydrateClient } from "@/trpc/server";
+const HomePage: React.FC = () => {
+    return (
+        <div>
+            <div className="container mx-auto text-center px-6">
+                <div className="ml-0 h-[100vh] flex flex-col justify-center">
+                    <Image
+                        alt="SpacyChecklet"
+                        src={SpacyChecklet.src}
+                        width={100}
+                        height={100}
+                        className="top-[10%] md:top-[20%] left-[5%] md:left-[20%] absolute"
+                    />
+                    <Image
+                        alt="LoveChecklet"
+                        src={LoveChecklet.src}
+                        width={100}
+                        height={200}
+                        className="bottom-[5%] md:bottom-[25%] right-[2%] md:right-[20%] absolute"
+                    />
+                    <Image
+                        alt="DockyChecklet"
+                        src={DockyChecklet.src}
+                        width={100}
+                        height={200}
+                        className="bottom-[10%] left-[2%] md:left-[30%] absolute"
+                    />
+                    <Image
+                        alt="DerpChecklet"
+                        src={DerpChecklet.src}
+                        width={100}
+                        height={200}
+                        className="top-[5%] right-[5%] md:right-[30%] absolute"
+                    />
+                    <p className="text-5xl font-mackinac">Checklet</p>
+                    <p className="mt-4 z-10">
+                        Expert-written checkers to polish jokes, edit resumes,
+                        revise emails... and check anything!
+                    </p>
+                    <div className="w-[200px] mt-4 mx-auto">
+                        <LinkButton url={"/editor"}>Try it out</LinkButton>
+                    </div>
+                    <ScrollDownButton />
+                </div>
+                <div className="text-3xl mt-32 font-mackinac">How it works</div>
+                <ThinLine />
+                <div className=" text-left md:max-w-[70%] justify-center flex flex-col mx-auto">
+                    <div className="flex flex-col md:flex-row justify-center gap-8 mt-10 relative">
+                        <div className="text-lg flex-1">
+                            1. Select a Checker for your type of writing
+                        </div>
+                        <div className="flex-1">
+                            {/* <StoreFront
+                                storefront={{
+                                    objInfo: {
+                                        name: "Rizzume",
+                                        desc: rizzumeDesc,
+                                        id: createShortId(),
+                                        creatorId: "fakeuser",
+                                    },
+                                    placeholder: "paste yourresume",
+                                }}
+                                isDemo={true}
+                            /> */}
+                            <CursorIcon className="w-[40px] h-[40px] right-32 bottom-[-20px] absolute" />
+                        </div>
+                        <Image
+                            alt="MushyChecklet"
+                            src={MushyChecklet.src}
+                            width={100}
+                            height={200}
+                            className="md:top-[4rem] right-0 top-[32px] md:left-[10%] absolute"
+                        />
+                    </div>
 
-export default async function Home() {
-  const hello = await api.post.hello({ text: "from tRPC" });
-  const session = await getServerAuthSession();
+                    <div className="flex flex-col md:flex-row justify-center gap-8 mt-10 relative">
+                        <div className="text-lg flex-1">
+                            2. Paste your writing into the editor
+                        </div>
+                        <div className="flex-1 ">
+                            <div className="relative  max-w-[300px]">
+                                <div className="text-3xl font-mackinac text-gray-400">
+                                    Rizzume
+                                </div>
+                                <div className="text-md text-gray-400">
+                                    Rizz up your resume to dazzle...
+                                </div>
+                                <hr className="bg-black w-full h-[2px]" />
+                                <div>Grammarly • January 2021 - Present</div>
+                                <div>
+                                    • Expedited DynamoDB queries from 68 ms to
+                                    41 ms by optimizing the schema for reads
+                                </div>
+                                <div>...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="relative h-32 justify-center">
+                        <Image
+                            alt="PennyChecklet"
+                            src={PennyChecklet.src}
+                            width={100}
+                            height={100}
+                            className="top-[0px] md:top-[1rem] right-[30%] absolute"
+                        />
+                    </div>
+                    <div className="flex flex-col md:flex-row justify-center gap-8">
+                        <div className="text-lg flex-1">
+                            3. Receive instant feedback
+                        </div>
 
-  void api.post.getLatest.prefetch();
-
-  return (
-    <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-          </h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
-              <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
-              </div>
-            </Link>
-            <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
-              target="_blank"
-            >
-              <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
-              </div>
-            </Link>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello ? hello.greeting : "Loading tRPC query..."}
-            </p>
-
-            <div className="flex flex-col items-center justify-center gap-4">
-              <p className="text-center text-2xl text-white">
-                {session && <span>Logged in as {session.user?.name}</span>}
-              </p>
-              <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="rounded-full bg-white/10 px-10 py-3 font-semibold no-underline transition hover:bg-white/20"
-              >
-                {session ? "Sign out" : "Sign in"}
-              </Link>
+                        <div className="flex-1">
+                            <div className="max-w-[350px]">
+                                {/* <CheckPreview
+                                    blueprint={{
+                                        objInfo: {
+                                            id: "",
+                                            name: "",
+                                            desc: "",
+                                            creatorId: "",
+                                        },
+                                        instruction: "",
+                                        category: "",
+                                        checkType: CheckType.rephrase,
+                                        positiveExamples: [],
+                                    }}
+                                    originalText=""
+                                    editedText=""
+                                /> */}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <LinkButton url={"/editor"}>Try it out</LinkButton>
             </div>
-          </div>
-
-          {session?.user && <LatestPost />}
+            <Footer isAbsolute={false} />
         </div>
-      </main>
-    </HydrateClient>
-  );
-}
+    );
+};
+
+export default HomePage;
