@@ -1,3 +1,13 @@
+### install Instructions
+
+Next steps:
+  cd checklet
+  Start up a database, if needed using './start-database.sh'
+  npm run db:push
+  npm run dev
+  git commit -m "initial commit"
+
+
 # Create T3 App
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
