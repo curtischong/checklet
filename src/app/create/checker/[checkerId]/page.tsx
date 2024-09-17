@@ -20,5 +20,5 @@ export default async function Page({
     return <p>You must be logged in to view this checker</p>;
   }
 
-  return <CheckerPage originalChecker={checker} user={session.user} />;
+  return <CheckerPage originalChecker={checker} userCtx={session.user} />;
 }

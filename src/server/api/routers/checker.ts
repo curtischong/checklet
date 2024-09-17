@@ -33,6 +33,9 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ prompt: z.string() }))
     .input(z.object({ isPublic: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
+      const isValid =
+        input.name !== "" && input.desc !== "" && input.prompt !== "";
+
       return ctx.db.checker.update({
         where: {
           id: input.id,
@@ -41,6 +44,21 @@ export const checkerRouter = createTRPCRouter({
           name: input.name,
           desc: input.desc,
           prompt: input.prompt,
+          isPublic: input.isPublic,
+          isValid,
+        },
+      });
+    }),
+
+  updateIsPublic: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .input(z.object({ isPublic: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.checker.update({
+        where: {
+          id: input.id,
+        },
+        data: {
           isPublic: input.isPublic,
         },
       });

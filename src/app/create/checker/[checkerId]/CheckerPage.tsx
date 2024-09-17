@@ -8,6 +8,7 @@ import {
   SubmittingState,
 } from "@/app/create/checker/[checkerId]/CheckerTypes";
 import { IsPublicSwitch } from "@/app/create/checker/[checkerId]/IsPublicSwitch";
+import { IsValidWarning } from "@/app/create/checker/[checkerId]/IsValidWarning";
 import { Editor } from "@/app/editor/Editor";
 import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
 import { api } from "@/trpc/react";
@@ -24,12 +25,15 @@ export enum Page {
 
 interface Props {
   originalChecker: Checker;
-  user: UserCtx;
+  userCtx: UserCtx;
 }
 
 export const checkerCreatorMarginTop = 50;
 
-export const CheckerPage = ({ originalChecker, user }: Props): JSX.Element => {
+export const CheckerPage = ({
+  originalChecker,
+  userCtx,
+}: Props): JSX.Element => {
   const [name, setName] = React.useState(originalChecker.name);
   const [desc, setDesc] = React.useState(originalChecker.desc);
   const [prompt, setPrompt] = React.useState(originalChecker.prompt);
@@ -142,7 +146,7 @@ export const CheckerPage = ({ originalChecker, user }: Props): JSX.Element => {
                     name: name,
                     desc: desc,
                     id: originalChecker.id,
-                    creatorId: user?.id ?? "",
+                    creatorId: userCtx.id ?? "",
                   },
                   placeholder: "test",
                 }}
@@ -162,12 +166,11 @@ export const CheckerPage = ({ originalChecker, user }: Props): JSX.Element => {
                             /> */}
 
               <div className="flex flex-row mt-4">
+                <IsValidWarning name={name} desc={desc} prompt={prompt} />
                 <IsPublicSwitch
-                  name={name}
-                  desc={desc}
-                  placeholder={placeholder}
-                  isPublic={isPublic}
                   checkerId={originalChecker.id}
+                  isPublic={isPublic}
+                  setIsPublic={setIsPublic}
                 />
                 <div className="ml-4">{SaveStatusText[submittingState]}</div>
               </div>
