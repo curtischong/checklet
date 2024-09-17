@@ -1,7 +1,7 @@
 "use client";
 import { api } from "@/trpc/react";
 import { UserCtx } from "next-auth";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface Props {
   user?: UserCtx;
@@ -18,21 +18,18 @@ export const CreateOwnChecker = ({ user }: Props) => {
   return (
     <div className="mx-auto mt-2">
       Can&lsquo;t find a checker you like?{" "}
-      <div
-        // ref="/create/checker"
-        className="mx-auto mt-4 border-b-2 border-blue-500 hover:text-blue-600"
+      <span
+        className="mx-auto mt-4 border-b-2 border-blue-500 hover:text-blue-600 cursor-pointer"
         onClick={() => {
           if (!user) {
-            router.push(
-              "/login?err='you must be logged in to create a checker'",
-            );
+            router.push("/api/auth/signin");
           } else {
             createChecker.mutate();
           }
         }}
       >
         Create your own Checker
-      </div>
+      </span>
     </div>
   );
 };

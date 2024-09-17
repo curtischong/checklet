@@ -25,8 +25,8 @@ declare module "next-auth" {
     id: string;
     // ...other properties
     // role: UserRole;
-  // } & DefaultSession["user"];
-  } &  DefaultSession["user"]
+    // } & DefaultSession["user"];
+  } & DefaultSession["user"];
 }
 
 /**
@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
-    })
+    }),
     /**
      * ...add more providers here.
      *
@@ -64,6 +64,9 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  pages: {
+    signIn: "/signin",
+  },
 };
 
 /**
