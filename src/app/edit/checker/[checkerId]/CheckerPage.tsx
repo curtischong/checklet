@@ -6,9 +6,9 @@ import { NormalTextArea } from "@/app/_components/ui/TextArea";
 import {
   SaveStatusText,
   SubmittingState,
-} from "@/app/create/checker/[checkerId]/CheckerTypes";
-import { IsPublicSwitch } from "@/app/create/checker/[checkerId]/IsPublicSwitch";
-import { IsValidWarning } from "@/app/create/checker/[checkerId]/IsValidWarning";
+} from "@/app/edit/checker/[checkerId]/CheckerTypes";
+import { IsPublicSwitch } from "@/app/edit/checker/[checkerId]/IsPublicSwitch";
+import { IsValidWarning } from "@/app/edit/checker/[checkerId]/IsValidWarning";
 import { Editor } from "@/app/editor/Editor";
 import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
 import { api } from "@/trpc/react";
