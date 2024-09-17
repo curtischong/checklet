@@ -14,16 +14,21 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
+model Checker {
+    id        String      @id  @default(cuid())
     name      String
+    desc      String
+    prompt    String
+    isPublic  Boolean     @default(false)
+    isValid   Boolean     @default(false) // has all of the required fields been filled out? if it's not valid, it cannot be public even if they want it to be
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
     createdBy   User   @relation(fields: [createdById], references: [id])
     createdById String
 
-    @@index([name])
+    @@index([name]) // speed up queries that filter or sort by the name field
 }
 
 // Necessary for Next auth
@@ -62,7 +67,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    checkers      Checker[]
 }
 
 model VerificationToken {
