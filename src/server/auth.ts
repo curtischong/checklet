@@ -18,17 +18,15 @@ import { db } from "@/server/db";
  */
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    user: {
-      id: string;
-      // ...other properties
-      // role: UserRole;
-    } & DefaultSession["user"];
+    user: UserCtx;
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  type UserCtx = {
+    id: string;
+    // ...other properties
+    // role: UserRole;
+  // } & DefaultSession["user"];
+  } &  DefaultSession["user"]
 }
 
 /**
