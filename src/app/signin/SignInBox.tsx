@@ -32,9 +32,10 @@ export default function SignInBox() {
         },
       });
 
-      router.push("/");
+      router.push("/checkers/edit");
     } catch (e) {
       const message = (e as Error).message;
+      console.error(message); // TODO: log error
       setError(makeErrMsgReadable(message));
     }
   }
@@ -107,12 +108,23 @@ export default function SignInBox() {
             >
               Sign In
             </button>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-primary hover:underline">
-                Register here
-              </Link>
-            </p>
+            <div className="flex flex-col items-center space-y-1">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Forgot your password?{" "}
+                <Link
+                  href="/forgot-password"
+                  className="text-primary hover:underline"
+                >
+                  Reset your password here
+                </Link>
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Don&apos;t have an account?{" "}
+                <Link href="/register" className="text-primary hover:underline">
+                  Register here
+                </Link>
+              </p>
+            </div>
           </form>
         </div>
       </div>
