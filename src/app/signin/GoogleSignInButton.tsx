@@ -1,3 +1,4 @@
+"use client";
 import Google from "@public/logos/google.svg";
 import Image from "next/image";
 
@@ -6,25 +7,23 @@ const provider = new GoogleAuthProvider();
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useCallback } from "react";
 import { app } from "@/server/firebase/firebase";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const auth = getAuth(app);
 export const GoogleSignInButton = () => {
+  const router = useRouter();
+
   const signInWithGoogle = useCallback(async () => {
     signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        console.log(token);
-        // // The signed-in user info.
-        // const user = result.user;
-        // // IdP data available using getAdditionalUserInfo(result)
-        // // ...
+      .then((_result) => {
+        router.push("/checkers");
       })
       .catch((error) => {
         console.log(error);
+        toast.error(error as string);
       });
-  }, []);
+  }, [router]);
 
   return (
     <button
@@ -33,7 +32,7 @@ export const GoogleSignInButton = () => {
     >
       <span className="font-medium text-gray-700">Sign in with Google</span>
       <Image
-        src={Google.src}
+        src={Google as string}
         alt={`Google logo`}
         className="w-6 h-6 ml-4"
         width={40}
