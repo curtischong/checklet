@@ -1,6 +1,6 @@
 "use client";
-import { auth } from "@/server/firebase/firebase";
-import { type UserCtx } from "@/server/firebase/user_ctx";
+import { auth } from "@/firebase/firebase";
+import { type UserCtx } from "@/firebase/user_ctx";
 import { signOut } from "firebase/auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

@@ -5,7 +5,7 @@ import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { MenuHeader } from "@/app/_components/MenuHeader";
-import { getUserCtx } from "@/server/firebase/user_ctx";
+import { getUserCtx } from "@/firebase/user_ctx";
 
 export const metadata: Metadata = {
   title: "Checklet",

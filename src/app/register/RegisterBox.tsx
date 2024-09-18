@@ -5,7 +5,7 @@ import type { FormEvent } from "react";
 import Link from "next/link";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { auth } from "@/server/firebase/firebase";
+import { auth } from "@/firebase/firebase";
 import { LoadingButton } from "@/app/_components/ui/Button";
 
 export const RegisterBox = () => {

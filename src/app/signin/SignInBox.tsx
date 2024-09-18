@@ -2,7 +2,7 @@
 import ThinLine from "@/app/_components/ThinLine";
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { GoogleSignInButton } from "@/app/signin/GoogleSignInButton";
-import { auth } from "@/server/firebase/firebase";
+import { auth } from "@/firebase/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

@@ -1,7 +1,7 @@
 import { CheckerStore } from "@/app/checkers/CheckerStore";
 import { CreateOwnChecker } from "@/app/checkers/CreateOwnChecker";
 import { db } from "@/server/db";
-import { getUserCtx } from "@/server/firebase/user_ctx";
+import { getUserCtx } from "@/firebase/user_ctx";
 import LoveChecklet from "@public/checklets/love.svg";
 import PennyChecklet from "@public/checklets/penny.svg";
 import SpacyChecklet from "@public/checklets/spacy.svg";

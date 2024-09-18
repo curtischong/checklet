@@ -8,7 +8,7 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { auth } from "@/server/firebase/firebase";
+import { auth } from "@/firebase/firebase";
 
 export const GoogleSignInButton = () => {
   const router = useRouter();

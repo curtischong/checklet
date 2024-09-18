@@ -1,4 +1,4 @@
-import { clientConfig, serverConfig } from "@/server/firebase/config";
+import { clientConfig, serverConfig } from "@/firebase/config";
 import { getTokens } from "next-firebase-auth-edge";
 import { cookies } from "next/headers";
 

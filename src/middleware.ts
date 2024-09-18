@@ -8,8 +8,8 @@ import { FORBIDDEN } from "@/utils/status_codes";
 import { NextRequest, NextResponse } from "next/server";
 
 import { authMiddleware } from "next-firebase-auth-edge";
-import { clientConfig, serverConfig } from "@/server/firebase/config";
-import { UserCtx } from "@/server/firebase/user_ctx";
+import { clientConfig, serverConfig } from "@/firebase/config";
+import { UserCtx } from "@/firebase/user_ctx";
 
 const adminPagePrefix = "/admin";
 const adminApiPrefix = "/api/authenticated/admin";

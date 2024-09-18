@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
-import { auth } from "@/server/firebase/firebase";
+import { auth } from "@/firebase/firebase";
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { sendPasswordResetEmail } from "firebase/auth";
 
