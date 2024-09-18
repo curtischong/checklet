@@ -71,6 +71,20 @@ const getIsInvalidAdminResponse = (
 };
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Check if user is trying to access the "/login" or "/logout" page
+  if (pathname === "/login") {
+    // Redirect to the actual sign-in page
+    return NextResponse.redirect(new URL("/signin", request.url));
+  }
+
+  if (pathname === "/logout") {
+    // Redirect to the actual sign-out page
+    return NextResponse.redirect(new URL("/signout", request.url));
+  }
+
+  // Default auth middleware behavior for other paths
   return authMiddleware(request, {
     loginPath: "/api/login",
     logoutPath: "/api/logout",
