@@ -1,7 +1,7 @@
 import { CheckerStore } from "@/app/checkers/CheckerStore";
 import { CreateOwnChecker } from "@/app/checkers/CreateOwnChecker";
-import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
+import { getUserCtx } from "@/server/firebase/user_ctx";
 import LoveChecklet from "@public/checklets/love.svg";
 import PennyChecklet from "@public/checklets/penny.svg";
 import SpacyChecklet from "@public/checklets/spacy.svg";
@@ -18,8 +18,9 @@ const Page = async () => {
       },
     },
   });
-  const session = await getServerAuthSession();
-  const user = session?.user;
+  const user = await getUserCtx();
+  console.log("user");
+  console.log(user);
 
   return (
     <div className="mx-auto container flex flex-col">

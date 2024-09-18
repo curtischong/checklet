@@ -1,20 +1,12 @@
 "use client";
 import { Footer } from "@/app/_components/Footer";
-import ProviderList from "@/app/signin/ProviderList";
+import ProviderList from "@/app/signin/SignInBox";
 import DockyChecklet from "@public/checklets/docky.svg";
 import LoveChecklet from "@public/checklets/love.svg";
 import SpacyChecklet from "@public/checklets/spacy.svg";
-import { getProviders } from "next-auth/react";
 import Image from "next/image";
 
-interface Props {
-  providers: Awaited<ReturnType<typeof getProviders>>;
-}
-export default function SignInPage({ providers }: Props) {
-  if (!providers) {
-    return <div>No providers available</div>;
-  }
-
+export default function SignInPage() {
   return (
     <div className=" flex flex-col h-screen">
       <div
@@ -58,7 +50,7 @@ export default function SignInPage({ providers }: Props) {
         <div className="text-center mb-4">
           Want to create a checker? Sign in/sign up below!
         </div>
-        <ProviderList providers={providers} />
+        <ProviderList />
       </div>
       <Footer isAbsolute={false} />
     </div>
