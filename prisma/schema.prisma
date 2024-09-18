@@ -26,8 +26,7 @@ model Checker {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    // createdBy   User   @relation(fields: [createdById], references: [id])
-    // createdById String
+    createdById String // firebase Ids are strings
 
     @@index([name]) // speed up queries that filter or sort by the name field
 }

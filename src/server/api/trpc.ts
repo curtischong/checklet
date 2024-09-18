@@ -12,7 +12,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
-import { getUserCtx } from "@/server/firebase/user_ctx";
+import { getUserCtx } from "@/firebase/user_ctx";
 
 /**
  * 1. CONTEXT

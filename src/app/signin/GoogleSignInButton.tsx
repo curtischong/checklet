@@ -4,18 +4,18 @@ import Image from "next/image";
 
 // https://firebase.google.com/docs/auth/web/google-signin
 const provider = new GoogleAuthProvider();
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useCallback } from "react";
-import { app } from "@/server/firebase/firebase";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useClientCtx } from "@/app/ClientCtx";
 
-const auth = getAuth(app);
 export const GoogleSignInButton = () => {
   const router = useRouter();
+  const { firebaseAuth } = useClientCtx();
 
   const signInWithGoogle = useCallback(async () => {
-    signInWithPopup(auth, provider)
+    signInWithPopup(firebaseAuth, provider)
       .then((_result) => {
         router.push("/checkers");
       })
@@ -23,7 +23,7 @@ export const GoogleSignInButton = () => {
         console.log(error);
         toast.error(error as string);
       });
-  }, [router]);
+  }, [router, firebaseAuth]);
 
   return (
     <button

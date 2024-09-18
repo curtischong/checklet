@@ -1,6 +1,6 @@
 import { CheckerPage } from "@/app/checker/[checkerId]/edit/CheckerPage";
 import { db } from "@/server/db";
-import { getUserCtx } from "@/server/firebase/user_ctx";
+import { getUserCtx } from "@/firebase/user_ctx";
 
 export default async function Page({
   params,

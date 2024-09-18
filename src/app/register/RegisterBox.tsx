@@ -3,10 +3,10 @@
 import { useCallback, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { app } from "@/server/firebase/firebase";
 import { LoadingButton } from "@/app/_components/ui/Button";
+import { useClientCtx } from "@/app/ClientCtx";
 
 export const RegisterBox = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +15,7 @@ export const RegisterBox = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { firebaseAuth } = useClientCtx();
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -29,7 +30,7 @@ export const RegisterBox = () => {
       }
 
       try {
-        await createUserWithEmailAndPassword(getAuth(app), email, password);
+        await createUserWithEmailAndPassword(firebaseAuth, email, password);
         router.push("/checkers/edit");
       } catch (e) {
         const message = (e as Error).message;
@@ -38,7 +39,7 @@ export const RegisterBox = () => {
       }
       setIsLoading(false);
     },
-    [confirmation, email, password, router],
+    [confirmation, email, password, router, firebaseAuth],
   );
 
   return (

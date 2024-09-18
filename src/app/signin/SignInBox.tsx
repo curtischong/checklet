@@ -1,9 +1,9 @@
 "use client";
 import ThinLine from "@/app/_components/ThinLine";
 import { LoadingButton } from "@/app/_components/ui/Button";
+import { useClientCtx } from "@/app/ClientCtx";
 import { GoogleSignInButton } from "@/app/signin/GoogleSignInButton";
-import { app } from "@/server/firebase/firebase";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
@@ -15,6 +15,7 @@ export default function SignInBox() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { firebaseAuth } = useClientCtx();
 
   const makeErrMsgReadable = useCallback((message: string) => {
     if (
@@ -34,7 +35,7 @@ export default function SignInBox() {
 
       try {
         const credential = await signInWithEmailAndPassword(
-          getAuth(app),
+          firebaseAuth,
           email,
           password,
         );
@@ -55,7 +56,7 @@ export default function SignInBox() {
         setIsLoading(false);
       }
     },
-    [email, makeErrMsgReadable, password, router],
+    [email, makeErrMsgReadable, password, router, firebaseAuth],
   );
 
   return (
