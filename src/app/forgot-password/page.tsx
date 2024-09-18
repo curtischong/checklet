@@ -1,4 +1,4 @@
-import SignInBox from "@/app/signin/SignInBox";
+import { ForgotPasswordBox } from "@/app/forgot-password/ForgotPasswordBox";
 import { SignInPageBackground } from "@/app/signin/SignInPageBackground";
 
 export default async function Page() {
@@ -10,7 +10,7 @@ export default async function Page() {
       <div className="mb-4 text-center">
         Want to create a checker? Sign in/sign up below!
       </div>
-      <SignInBox />
+      <ForgotPasswordBox />
     </SignInPageBackground>
   );
 }

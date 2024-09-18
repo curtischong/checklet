@@ -13,6 +13,10 @@ export default {
         nunitolight: ["var(--font-nunito-light)"],
         nunito: ["var(--font-nunito)"],
       },
+      colors: {
+        primary: "#ff7066",
+        primary2: "#f05146",
+      },
     },
   },
   plugins: [],
