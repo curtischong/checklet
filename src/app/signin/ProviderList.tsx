@@ -1,23 +1,20 @@
 "use client";
 import Google from "@public/logos/google.svg";
-import { getProviders, signIn } from "next-auth/react";
 import Image from "next/image";
+// import supabase from '@supabase/supabase-js'
+import {signInWithOAuth} from '@supabase/supabase-js'
 
-interface Props {
-  providers: Awaited<ReturnType<typeof getProviders>>;
-}
-export default function ProviderList({ providers }: Props) {
-  if (!providers) {
-    return <div>No providers available</div>;
-  }
+export default function ProviderList() {
 
   return (
     <div className="flex flex-col items-center justify-center ">
       <div className="space-y-4">
-        {Object.values(providers).map((provider) => (
           <button
-            key={provider.name}
-            onClick={() => signIn(provider.id)}
+            onClick={() => {
+              supabase.auth.signInWithOAuth({
+                provider: 'google',
+              })
+            }}
             className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition"
           >
             <span className="font-medium text-gray-700">
@@ -32,7 +29,6 @@ export default function ProviderList({ providers }: Props) {
               height={40}
             />
           </button>
-        ))}
       </div>
     </div>
   );

@@ -6,9 +6,16 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
+import { createClient } from '@supabase/supabase-js';
 
 import { env } from "@/env";
 import { db } from "@/server/db";
+
+// Replace these values with your Supabase project URL and anon key
+const supabaseUrl = 'https://your-supabase-url.supabase.co';
+const supabaseKey = 'your-anon-key';
+
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
