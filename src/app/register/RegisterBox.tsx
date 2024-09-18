@@ -1,45 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { app } from "@/server/firebase/firebase";
+import { LoadingButton } from "@/app/_components/ui/Button";
 
 export const RegisterBox = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    async (event: FormEvent) => {
+      event.preventDefault();
 
-    setError("");
+      setError("");
+      setIsLoading(true);
 
-    if (password !== confirmation) {
-      setError("Passwords don't match");
-      return;
-    }
+      if (password !== confirmation) {
+        setError("Passwords don't match");
+        return;
+      }
 
-    try {
-      await createUserWithEmailAndPassword(getAuth(app), email, password);
-      router.push("/checkers/edit");
-    } catch (e) {
-      const message = (e as Error).message;
-      console.error(message); // TODO: log error in logging app
-      setError(message);
-    }
-  }
+      try {
+        await createUserWithEmailAndPassword(getAuth(app), email, password);
+        router.push("/checkers/edit");
+      } catch (e) {
+        const message = (e as Error).message;
+        console.error(message); // TODO: log error in logging app
+        setError(message);
+      }
+      setIsLoading(false);
+    },
+    [confirmation, email, password, router],
+  );
 
   return (
     <main className="flex flex-col items-center justify-center p-8">
       <div className="w-full rounded-lg bg-white shadow sm:max-w-md md:mt-0 xl:p-0 dark:border">
         <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
           <form
-            onSubmit={handleSubmit}
+            // onSubmit={handleSubmit}
             className="space-y-4 md:space-y-6"
             action="#"
           >
@@ -105,12 +112,14 @@ export const RegisterBox = () => {
                 <span className="block sm:inline">{error}</span>
               </div>
             )}
-            <button
+            <LoadingButton
+              onClick={handleSubmit}
+              loading={isLoading}
               type="submit"
-              className="focus:ring-primary-300 dark:focus:ring-primary-800 hover:bg-primary2 w-full rounded-lg bg-primary px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4"
+              className="focus:ring-primary-300 dark:focus:ring-primary-800 h-10 w-full rounded-lg px-5 py-2.5 text-center text-sm text-white focus:outline-none"
             >
               Create an account
-            </button>
+            </LoadingButton>
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
               Already have an account?{" "}
               <Link

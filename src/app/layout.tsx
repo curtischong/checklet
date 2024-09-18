@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body
-        className={`${mackinac.variable} ${bricolage.variable} ${nunito.variable} font-nunito tracking-[0.01em] bg-[#fff0f1]`}
+        className={`${mackinac.variable} ${bricolage.variable} ${nunito.variable} bg-[#fff0f1] font-nunito tracking-[0.01em]`}
         style={{
           WebkitFontSmoothing: "antialiased",
         }}

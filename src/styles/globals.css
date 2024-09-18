@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* we need to manually do this since antd's styles breaks cause of tailwind preflight
+https://stackoverflow.com/questions/71715157/tailwinds-ant-design-button-color-is-white-but-has-own-color-wnen-i-hover-it */
+/* .ant-btn {
+  color: #444444;
+  border: 1px solid #aaaaaa;
+}
+.ant-popconfirm-buttons button:first-child {
+  background-color: #f7315a;
+  border: none;
+  color: white;
+}
+.ant-popconfirm-buttons button:first-child:hover {
+  background-color: #de2c51;
+  border: none;
+  color: white !important;
+} */

@@ -1,39 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { useRouter } from "next/navigation";
 import { app } from "@/server/firebase/firebase";
+import { LoadingButton } from "@/app/_components/ui/Button";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 export const ForgotPasswordBox = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
+  const [isSent, setIsSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    async (event: FormEvent) => {
+      event.preventDefault();
 
-    setError("");
-    sendPasswordResetEmail(auth, email)
-      .then(() => {
-        // Password reset email sent!
-        // ..
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
-  }
+      setError("");
+      setIsLoading(true);
+      setIsSent(false);
+
+      try {
+        await sendPasswordResetEmail(getAuth(app), email);
+        setIsSent(true);
+      } catch (e) {
+        const message = (e as Error).message;
+        console.error(message); // TODO: log error in logging app
+        setError(message);
+      }
+      setIsLoading(false);
+    },
+    [email],
+  );
 
   return (
     <main className="flex flex-col items-center justify-center p-8">
       <div className="w-full rounded-lg bg-white shadow sm:max-w-md md:mt-0 xl:p-0 dark:border">
         <div className="space-y-4 p-6 sm:p-8 md:space-y-6">
           <form
-            onSubmit={handleSubmit}
+            // onSubmit={handleSubmit}
             className="space-y-4 md:space-y-6"
             action="#"
           >
@@ -55,6 +61,11 @@ export const ForgotPasswordBox = () => {
                 required
               />
             </div>
+            {isSent && (
+              <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+                Check your email for a password reset link!
+              </div>
+            )}
             {error && (
               <div
                 className="relative rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
@@ -63,12 +74,14 @@ export const ForgotPasswordBox = () => {
                 <span className="block sm:inline">{error}</span>
               </div>
             )}
-            <button
+            <LoadingButton
+              onClick={handleSubmit}
+              loading={isLoading}
               type="submit"
-              className="focus:ring-primary-300 dark:focus:ring-primary-800 hover:bg-primary2 w-full rounded-lg bg-primary px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4"
+              className="focus:ring-primary-300 dark:focus:ring-primary-800 hover:bg-primary2 h-10 w-full rounded-lg bg-primary px-5 py-2.5 text-center text-sm text-white focus:outline-none"
             >
               Send Reset password email
-            </button>
+            </LoadingButton>
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
               Remembered your password?{" "}
               <Link
