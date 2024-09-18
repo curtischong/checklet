@@ -20,6 +20,7 @@ const Page = async () => {
     },
   ];
   const user = await getUserCtx();
+  console.log("user", user);
   if (user) {
     const yourCheckerClause: Prisma.CheckerWhereInput = {
       createdById: {
