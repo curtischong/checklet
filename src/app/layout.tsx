@@ -5,7 +5,7 @@ import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { MenuHeader } from "@/app/_components/MenuHeader";
-import { getUserCtx } from "@/firebase/user_ctx";
+import { ClientCtxProvider } from "@/app/ClientCtx";
 
 export const metadata: Metadata = {
   title: "Checklet",
@@ -17,7 +17,6 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const user = await getUserCtx();
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <TRPCReactProvider>
@@ -27,8 +26,10 @@ export default async function RootLayout({
             WebkitFontSmoothing: "antialiased",
           }}
         >
-          <MenuHeader user={user} />
-          {children}
+          <ClientCtxProvider>
+            <MenuHeader />
+            {children}
+          </ClientCtxProvider>
         </body>
       </TRPCReactProvider>
     </html>

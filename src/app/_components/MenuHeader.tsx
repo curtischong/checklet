@@ -1,22 +1,18 @@
 "use client";
-import { auth } from "@/firebase/firebase";
-import { type UserCtx } from "@/firebase/user_ctx";
-import { signOut } from "firebase/auth";
+import { useClientCtx } from "@/app/ClientCtx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-interface Props {
-  user?: UserCtx;
-}
-export const MenuHeader = ({ user }: Props) => {
+export const MenuHeader = () => {
   const pathname = usePathname();
+  const { user, firebaseAuth } = useClientCtx();
 
   const handleSignOut = useCallback(() => {
-    signOut(auth)
+    firebaseAuth
+      .signOut()
       .then(() => {
-        console.log("signed out");
         // refresh page so if we are on pages where auth matters, we refresh all the elements
         location.reload();
       })
@@ -24,7 +20,7 @@ export const MenuHeader = ({ user }: Props) => {
         console.error("Error signing out: ", error);
         toast.error("Error signing out");
       });
-  }, []);
+  }, [firebaseAuth]);
 
   // we need to use useEffect to get the window width so we don't get hydration errors (differing window width between server and client)
   const [isMobile, setIsMobile] = useState(false);
