@@ -8,7 +8,7 @@ export interface UserCtx {
   email_verified: boolean;
 }
 
-export const getUserCtx = async (): Promise<UserCtx | null> => {
+export const getUserCtx = async (): Promise<UserCtx | undefined> => {
   const tokens = await getTokens(cookies(), {
     apiKey: clientConfig.apiKey,
     cookieName: serverConfig.cookieName,
@@ -16,8 +16,9 @@ export const getUserCtx = async (): Promise<UserCtx | null> => {
     serviceAccount: serverConfig.serviceAccount,
   });
   const userToken = tokens?.decodedToken;
+  console.log("userToken", userToken);
   if (!userToken) {
-    return null;
+    return undefined;
   }
   const userCtx: UserCtx = {
     id: userToken.uid,

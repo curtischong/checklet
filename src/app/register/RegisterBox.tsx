@@ -3,9 +3,9 @@
 import { useCallback, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { app } from "@/server/firebase/firebase";
+import { auth } from "@/server/firebase/firebase";
 import { LoadingButton } from "@/app/_components/ui/Button";
 
 export const RegisterBox = () => {
@@ -29,7 +29,7 @@ export const RegisterBox = () => {
       }
 
       try {
-        await createUserWithEmailAndPassword(getAuth(app), email, password);
+        await createUserWithEmailAndPassword(auth, email, password);
         router.push("/checkers/edit");
       } catch (e) {
         const message = (e as Error).message;

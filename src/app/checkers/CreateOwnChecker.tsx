@@ -1,6 +1,6 @@
 "use client";
+import { type UserCtx } from "@/server/firebase/user_ctx";
 import { api } from "@/trpc/react";
-import { UserCtx } from "next-auth";
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -19,10 +19,10 @@ export const CreateOwnChecker = ({ user }: Props) => {
     <div className="mx-auto mt-2">
       Can&lsquo;t find a checker you like?{" "}
       <span
-        className="mx-auto mt-4 border-b-2 border-blue-500 hover:text-blue-600 cursor-pointer"
+        className="mx-auto mt-4 cursor-pointer border-b-2 border-blue-500 hover:text-blue-600"
         onClick={() => {
           if (!user) {
-            router.push("/api/auth/signin");
+            router.push("/signin");
           } else {
             createChecker.mutate();
           }

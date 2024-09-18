@@ -4,13 +4,12 @@ import Image from "next/image";
 
 // https://firebase.google.com/docs/auth/web/google-signin
 const provider = new GoogleAuthProvider();
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useCallback } from "react";
-import { app } from "@/server/firebase/firebase";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { auth } from "@/server/firebase/firebase";
 
-const auth = getAuth(app);
 export const GoogleSignInButton = () => {
   const router = useRouter();
 

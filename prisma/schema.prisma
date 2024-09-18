@@ -26,7 +26,7 @@ model Checker {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    createdById String @db.Uuid
+    createdById String // firebase Ids are strings
 
     @@index([name]) // speed up queries that filter or sort by the name field
 }

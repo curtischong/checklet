@@ -2,8 +2,8 @@
 import ThinLine from "@/app/_components/ThinLine";
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { GoogleSignInButton } from "@/app/signin/GoogleSignInButton";
-import { app } from "@/server/firebase/firebase";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/server/firebase/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
@@ -34,7 +34,7 @@ export default function SignInBox() {
 
       try {
         const credential = await signInWithEmailAndPassword(
-          getAuth(app),
+          auth,
           email,
           password,
         );

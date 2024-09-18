@@ -3,9 +3,9 @@
 import { useCallback, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
-import { app } from "@/server/firebase/firebase";
+import { auth } from "@/server/firebase/firebase";
 import { LoadingButton } from "@/app/_components/ui/Button";
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 // TODO: when I have time, setup a reset password page (so users can reset their passwords in the same url - helps password managers)
 // https://stackoverflow.com/questions/37932983/customize-reset-password-landing-page-in-firebase
@@ -24,7 +24,7 @@ export const ForgotPasswordBox = () => {
       setIsSent(false);
 
       try {
-        await sendPasswordResetEmail(getAuth(app), email);
+        await sendPasswordResetEmail(auth, email);
         setIsSent(true);
       } catch (e) {
         const message = (e as Error).message;
