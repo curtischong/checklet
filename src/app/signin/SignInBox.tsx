@@ -5,7 +5,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useState } from "react";
 
 export default function SignInBox() {
   const [email, setEmail] = useState("");
@@ -33,9 +33,17 @@ export default function SignInBox() {
 
       router.push("/");
     } catch (e) {
-      setError((e as Error).message);
+      const message = (e as Error).message;
+      setError(makeErrMsgReadable(message));
     }
   }
+
+  const makeErrMsgReadable = useCallback((message: string) => {
+    if (message === "Firebase: Error (auth/invalid-credential).") {
+      return "Invalid email or password (did you register?)";
+    }
+    return message;
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center ">
