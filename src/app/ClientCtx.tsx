@@ -1,13 +1,14 @@
 "use client";
 import React from "react";
 import { type FirebaseApp, initializeApp } from "firebase/app";
-import { type Auth, type User, getAuth } from "firebase/auth";
+import { getAuth, type Auth, type User } from "firebase/auth";
 import { clientConfig } from "@/firebase/config";
+import { type UserCtx } from "@/firebase/user_ctx";
 
 export interface ClientCtx {
   firebaseApp: FirebaseApp;
   firebaseAuth: Auth;
-  user: User | null;
+  user: UserCtx | null;
 }
 
 export interface ClientCtxReact {
@@ -18,6 +19,17 @@ export interface ClientCtxReact {
 const ClientCtxReactContext = React.createContext<ClientCtxReact>({
   ClientCtx: null,
 });
+
+const firebaseUserToUserCtx = (user: User | null): UserCtx | null => {
+  if (!user) {
+    return null;
+  }
+  return {
+    id: user.uid,
+    email: user.email ?? "error: no email",
+    email_verified: user.emailVerified,
+  };
+};
 
 // Create a provider component
 export const ClientCtxProvider = ({
@@ -38,7 +50,7 @@ export const ClientCtxProvider = ({
         ClientCtx: {
           firebaseApp: firebaseApp,
           firebaseAuth: firebaseAuth,
-          user: firebaseUser,
+          user: firebaseUserToUserCtx(firebaseUser),
         },
       });
     });

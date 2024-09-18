@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 export const MenuHeader = () => {
   const pathname = usePathname();
   const { user, firebaseAuth } = useClientCtx();
+  console.log("user", user);
 
   const handleSignOut = useCallback(() => {
     firebaseAuth

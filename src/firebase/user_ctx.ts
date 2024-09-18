@@ -17,6 +17,7 @@ export const getUserCtx = async (): Promise<UserCtx | undefined> => {
   });
   const userToken = tokens?.decodedToken;
   console.log("userToken", userToken);
+  console.log("hi");
   if (!userToken) {
     return undefined;
   }
