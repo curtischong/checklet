@@ -1,5 +1,6 @@
-import { Checker } from "@prisma/client";
+import { type Checker } from "@prisma/client";
 import classNames from "classnames";
+import Link from "next/link";
 
 interface Props {
   checkers: Checker[];
@@ -7,7 +8,7 @@ interface Props {
 
 export const CheckerStore = ({ checkers }: Props): JSX.Element => {
   return (
-    <div className="flex flex-col items-center mt-10 space-y-6">
+    <div className="mt-10 flex flex-col items-center space-y-6">
       {/* TODO: add a search bar */}
       {checkers.map((checker, idx) => {
         return (
@@ -29,15 +30,15 @@ export const StoreFront = ({ checker, isDemo }: StorefrontProps) => {
   return (
     <Link
       className={classNames(
-        "bg-white rounded-md px-4 py-4 shadow-around text-left",
+        "shadow-around rounded-md bg-white px-4 py-4 text-left",
         {
-          "cursor-pointer max-w-[475px] ": !isDemo,
+          "max-w-[475px] cursor-pointer": !isDemo,
           "max-w-[350px]": isDemo,
         },
       )}
       href={isDemo ? "" : `/checker/${checker.id}`}
     >
-      <div className="text-xl font-bold mb-1 font-mackinac">{checker.name}</div>
+      <div className="mb-1 font-mackinac text-xl font-bold">{checker.name}</div>
       <div>{checker.desc}</div>
     </Link>
   );
