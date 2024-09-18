@@ -28,16 +28,16 @@ export const GoogleSignInButton = () => {
   return (
     <button
       onClick={signInWithGoogle}
-      className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition"
+      className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition mt-8 mx-auto"
     >
-      <span className="font-medium text-gray-700">Sign in with Google</span>
       <Image
         src={Google as string}
         alt={`Google logo`}
-        className="w-6 h-6 ml-4"
+        className="w-6 h-6 mr-4"
         width={40}
         height={40}
       />
+      <span className="font-medium text-gray-700">Sign in with Google</span>
     </button>
   );
 };

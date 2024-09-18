@@ -1,4 +1,5 @@
 "use client";
+import ThinLine from "@/app/_components/ThinLine";
 import { GoogleSignInButton } from "@/app/signin/GoogleSignInButton";
 import { app } from "@/server/firebase/firebase";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -49,7 +50,8 @@ export default function SignInBox() {
     <div className="flex flex-col items-center justify-center ">
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
         <GoogleSignInButton />
-        <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <ThinLine className="mt-8" color={"gray-800"} />
+        <div className="p-8 space-y-4 md:space-y-6 pt-6">
           <form
             onSubmit={handleSubmit}
             className="space-y-4 md:space-y-6"

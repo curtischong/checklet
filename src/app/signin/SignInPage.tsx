@@ -1,6 +1,6 @@
 "use client";
 import { Footer } from "@/app/_components/Footer";
-import ProviderList from "@/app/signin/SignInBox";
+import SignInBox from "@/app/signin/SignInBox";
 import DockyChecklet from "@public/checklets/docky.svg";
 import LoveChecklet from "@public/checklets/love.svg";
 import SpacyChecklet from "@public/checklets/spacy.svg";
@@ -50,7 +50,7 @@ export default function SignInPage() {
         <div className="text-center mb-4">
           Want to create a checker? Sign in/sign up below!
         </div>
-        <ProviderList />
+        <SignInBox />
       </div>
       <Footer isAbsolute={false} />
     </div>

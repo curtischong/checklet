@@ -7,7 +7,8 @@ import { TRPCReactProvider } from "@/trpc/react";
 
 export const metadata: Metadata = {
   title: "Checklet",
-  description: "Polish Jokes, Edit Resumes, Revise Emails... and Check Anything!",
+  description:
+    "Polish Jokes, Edit Resumes, Revise Emails... and Check Anything!",
   icons: [{ rel: "icon", url: "/favicon.svg" }],
 };
 
@@ -17,10 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body
-          className={`${mackinac.variable} ${bricolage.variable} ${nunito.variable} font-nunito tracking-[0.01em]`}
-          style={{
-              WebkitFontSmoothing: "antialiased",
-          }}
+        className={`${mackinac.variable} ${bricolage.variable} ${nunito.variable} font-nunito tracking-[0.01em] bg-[#fff0f1]`}
+        style={{
+          WebkitFontSmoothing: "antialiased",
+        }}
       >
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
