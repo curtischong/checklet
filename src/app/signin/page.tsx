@@ -1,10 +1,16 @@
-import SignInPage from "@/app/signin/SignInPage";
-import { getUserCtx } from "@/server/firebase/user_ctx";
+import SignInBox from "@/app/signin/SignInBox";
+import { SignInPageBackground } from "@/app/signin/SignInPageBackground";
 
 export default async function Page() {
-  const userCtx = await getUserCtx();
   // TODO: what to do if the user is already signed in?
   // this should be handled in the middleware. redirect to /checkers
 
-  return <SignInPage />;
+  return (
+    <SignInPageBackground>
+      <div className="mb-4 text-center">
+        Want to create a checker? Sign in/sign up below!
+      </div>
+      <SignInBox />
+    </SignInPageBackground>
+  );
 }

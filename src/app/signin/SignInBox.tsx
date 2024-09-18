@@ -105,14 +105,11 @@ export default function SignInBox() {
               type="submit"
               className="focus:ring-primary-300 dark:focus:ring-primary-800 hover:bg-primary2 w-full rounded-lg bg-primary px-5 py-2.5 text-center text-sm text-white focus:outline-none focus:ring-4"
             >
-              Enter
+              Sign In
             </button>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Don&apos;t have an account?{" "}
-              <Link
-                href="/register"
-                className="text-gray-600 hover:underline dark:text-gray-500"
-              >
+              <Link href="/register" className="text-primary hover:underline">
                 Register here
               </Link>
             </p>
