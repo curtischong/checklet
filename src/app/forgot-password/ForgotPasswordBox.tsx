@@ -7,6 +7,8 @@ import { app } from "@/server/firebase/firebase";
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
+// TODO: when I have time, setup a reset password page (so users can reset their passwords in the same url - helps password managers)
+// https://stackoverflow.com/questions/37932983/customize-reset-password-landing-page-in-firebase
 export const ForgotPasswordBox = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
