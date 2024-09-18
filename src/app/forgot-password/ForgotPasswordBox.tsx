@@ -62,7 +62,7 @@ export const ForgotPasswordBox = () => {
               />
             </div>
             {isSent && (
-              <div className="text-center text-sm text-gray-500 dark:text-gray-400">
+              <div className="text-center text-sm text-gray-900">
                 Check your email for a password reset link!
               </div>
             )}

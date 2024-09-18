@@ -98,7 +98,14 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
 
   return (
     <Button
-      className={`rounded border border-gray-400 px-4 py-2 text-white transition duration-300 ${className} ${!isDisabled ? "hover:bg-primary2 bg-primary hover:text-white" : "cursor-not-allowed bg-gray-300 focus:bg-gray-400"} `}
+      className={classNames(
+        "rounded border border-gray-400 px-4 py-2 text-white transition duration-300",
+        className,
+        {
+          "hover:bg-primary2 bg-primary hover:text-white": !isDisabled,
+          "cursor-not-allowed bg-gray-300 focus:bg-gray-400": isDisabled,
+        },
+      )}
       loading={loading}
       disabled={isDisabled}
       {...rest}
