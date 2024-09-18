@@ -1,11 +1,11 @@
 "use client";
+import { GoogleSignInButton } from "@/app/signin/GoogleSignInButton";
 import { app } from "@/server/firebase/firebase";
-import Google from "@public/logos/google.svg";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
+import type { FormEvent } from "react";
 
 export default function SignInBox() {
   const [email, setEmail] = useState("");
@@ -48,10 +48,8 @@ export default function SignInBox() {
   return (
     <div className="flex flex-col items-center justify-center ">
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <GoogleSignInButton />
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-            Speak thy secret word!
-          </h1>
           <form
             onSubmit={handleSubmit}
             className="space-y-4 md:space-y-6"
@@ -62,7 +60,7 @@ export default function SignInBox() {
                 htmlFor="email"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                Your email
+                Email
               </label>
               <input
                 type="email"
@@ -122,12 +120,3 @@ export default function SignInBox() {
     </div>
   );
 }
-
-// // Utility function to get provider logos based on the provider ID
-// function getProviderLogo(providerId: string): string {
-//   switch (providerId) {
-//     case "google":
-//       return Google.src;
-//   }
-//   return "unknown url";
-// }
