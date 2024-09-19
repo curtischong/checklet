@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "@/trpc/react";
 import { MenuHeader } from "@/app/_components/MenuHeader";
 import { ClientCtxProvider } from "@/app/ClientCtx";
+import { parseAuthHeader } from "@/networking_helpers";
 
 export const metadata: Metadata = {
   title: "Checklet",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const user = await getUserCtx();
+  const user = parseAuthHeader();
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <TRPCReactProvider>

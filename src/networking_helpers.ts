@@ -25,13 +25,11 @@ export const serializeAuthHeader = (
 };
 
 // to be used in server-side components
-export const parseAuthHeader = (): UserCtx | undefined => {
+export const parseAuthHeader = (): UserCtx | null => {
   const myBase64Str = headers().get(headerName);
   if (!myBase64Str) {
-    console.warn(
-      "No userCtx found in request. this shoudn't happen since the middleware should've authenticated the user",
-    );
-    return undefined;
+    console.warn("No userCtx found in request");
+    return null;
   }
   const myJsonStr = Buffer.from(myBase64Str, "base64").toString("utf8");
   return JSON.parse(myJsonStr) as UserCtx;

@@ -7,7 +7,7 @@ import { type UserCtx } from "@/firebase/edge_env";
 
 export interface ClientCtx {
   // firebaseApp: FirebaseApp;
-  // firebaseAuth: Auth;
+  firebaseAuth: Auth;
   user: UserCtx | null;
 }
 
@@ -33,7 +33,7 @@ const ClientCtxReactContext = React.createContext<ClientCtxReact>({
 
 interface ClientCtxProviderProps {
   children: React.ReactNode | React.ReactNode[];
-  user: UserCtx;
+  user: UserCtx | null;
 }
 
 // Create a provider component
@@ -41,11 +41,27 @@ export const ClientCtxProvider = ({
   children,
   user,
 }: ClientCtxProviderProps): JSX.Element => {
-  const [value, setValue] = React.useState<ClientCtxReact | undefined>();
+  // const [value, setValue] = React.useState<ClientCtxReact | undefined>();
+  const [firebaseAuth, setFirebaseAuth] = React.useState<Auth | undefined>();
 
   React.useEffect(() => {
-    setValue({ ClientCtx: { user } });
-  }, [user]);
+    const firebaseApp = initializeApp(clientConfig);
+    const firebaseAuth = getAuth(firebaseApp);
+    setValue({
+      ClientCtx: { firebaseAuth, user: null },
+    });
+  }, []);
+
+  React.useEffect(() => {
+    // only update the userCtx if the userCtx is already set, so we only set the firebaseAuth once
+    if (!value?.ClientCtx) {
+      return;
+    }
+
+    setValue({
+      ClientCtx: { user, firebaseAuth: value.ClientCtx.firebaseAuth },
+    });
+  }, [user, value?.ClientCtx?.firebaseAuth]);
 
   if (value) {
     return (
