@@ -29,6 +29,7 @@ import { getUserCtx } from "@/firebase/edge_env";
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   // TODO: curtis - verify this method of getUserCtx works. I don't think so? I should see the headers?
   const user = await getUserCtx();
+  console.log("usertrpc", user);
 
   return {
     db,
