@@ -40,6 +40,7 @@ export default function SignInBox() {
           password,
         );
         const idToken = await credential.user.getIdToken();
+        // await credential.user.getIdToken(true);
 
         await fetch("/api/login", {
           headers: {
@@ -48,7 +49,7 @@ export default function SignInBox() {
         });
 
         setIsLoading(false);
-        router.push("/checkers/edit");
+        router.push("/checkers");
       } catch (e) {
         const message = (e as Error).message;
         console.error(message); // TODO: log error

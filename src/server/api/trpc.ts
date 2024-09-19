@@ -35,7 +35,7 @@ import { type UserCtx } from "@/firebase/edge_env";
  * @see https://trpc.io/docs/server/context
  */
 
-// Check if Firebase app has already been initialized
+// only init the app once
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount as ServiceAccount),
@@ -62,7 +62,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     // cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     // serviceAccount: serverConfig.serviceAccount,
   });
-  // console.log("tokens", tokens);
+  console.log("tokens", tokens);
 
   let user = null;
 

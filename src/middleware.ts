@@ -103,6 +103,7 @@ export async function middleware(request: NextRequest) {
     cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     serviceAccount: serverConfig.serviceAccount,
     handleValidToken: async ({ token, decodedToken }, headers) => {
+      console.log("handleValidToken", decodedToken);
       const requestPath = request.nextUrl.pathname;
       // if (PUBLIC_PATHS.includes(requestPath)) {
       //   return redirectToHome(request); // simplifies to NextResponse.redirect(new URL(“/“))
@@ -143,27 +144,21 @@ export async function middleware(request: NextRequest) {
         },
       });
     },
-    // handleInvalidToken: async (reason) => {
-    //   console.info("Missing or malformed credentials", { reason });
-
-    //   // return redirectToLogin(request, {
-    //   //   path: "/login",
-    //   //   publicPaths: PUBLIC_PATHS,
-    //   // });
-    // },
-    // handleError: async (error) => {
-    //   console.error("Unhandled authentication error", { error });
-    //   // return redirectToLogin(request, {
-    //   //   path: "/login",
-    //   //   publicPaths: PUBLIC_PATHS,
-    //   // });
-    // },
+    handleInvalidToken: async (reason) => {
+      console.info("Missing or malformed credentials", { reason });
+      return NextResponse.next();
+    },
+    handleError: async (error) => {
+      console.error("Unhandled authentication error", { error });
+      return NextResponse.next();
+    },
   });
 }
 
-export const config = {
-  matcher: ["/", "/((?!_next|api|.*\\.).*)", "/api/login", "/api/logout"],
-};
+// we want to match ALL routes. so comment this out
+// export const conficonfigg = {
+//   // matcher: ["/", "/((?!_next|api|.*\\.).*)", "/*"],
+// };
 
 // // all requests that requre authentication go through this middleware
 // // I tried to get mixpanel tracking to be IN THIS MIDDLEWARE layer (so we don't need to put it in every page)

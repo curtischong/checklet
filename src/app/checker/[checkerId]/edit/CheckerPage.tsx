@@ -14,7 +14,6 @@ import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
 import { api } from "@/trpc/react";
 import { Checker } from "@prisma/client";
 import debounce from "lodash.debounce";
-import { UserCtx } from "next-auth";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
 
@@ -88,7 +87,7 @@ export const CheckerPage = ({
       <div className="container">
         <div className="flex flex-row">
           <div
-            className="flex flex-col flex-grow"
+            className="flex flex-grow flex-col"
             style={{
               flexBasis: "0",
             }}
@@ -106,12 +105,12 @@ export const CheckerPage = ({
             />
 
             <div className="flex flex-col">
-              <h1 className="text-3xl mt-4 mb-4 font-bold font-mackinac">
+              <h1 className="mb-4 mt-4 font-mackinac text-3xl font-bold">
                 {/* <span className="border-b-2 border-blue-300"> */}
                 Create Checker
               </h1>
 
-              <label className="text-lg font-bold ml-1 mb-1">Name</label>
+              <label className="mb-1 ml-1 text-lg font-bold">Name</label>
               <Input
                 placeholder="Grammar Checker"
                 onChange={(e) => {
@@ -122,7 +121,7 @@ export const CheckerPage = ({
                 maxLength={MAX_CHECKER_NAME_LEN}
               />
 
-              <label className="text-lg font-bold mt-4 ml-1">Description</label>
+              <label className="ml-1 mt-4 text-lg font-bold">Description</label>
               <NormalTextArea
                 placeholder={"description"}
                 onChange={(e) => {
@@ -135,7 +134,7 @@ export const CheckerPage = ({
               />
 
               <LabelWithHelp
-                className="text-lg font-bold mt-4 ml-1"
+                className="ml-1 mt-4 text-lg font-bold"
                 label="Example Document with mistakes"
                 helpText="Use this to test your prompt."
                 helpIconClassName="mt-[7px]"
@@ -165,7 +164,7 @@ export const CheckerPage = ({
                                 maxLength={MAX_CHECKER_PLACEHOLDER_LEN}
                             /> */}
 
-              <div className="flex flex-row mt-4">
+              <div className="mt-4 flex flex-row">
                 <IsValidWarning name={name} desc={desc} prompt={prompt} />
                 <IsPublicSwitch
                   checkerId={originalChecker.id}
@@ -177,7 +176,7 @@ export const CheckerPage = ({
               <div className="flex flex-col">
                 <div className="flex flex-row space-x-8">
                   <NormalButton
-                    className="mt-4 w-52 h-10"
+                    className="mt-4 h-10 w-52"
                     onClick={() => {
                       router.push("/dashboard");
                     }}
@@ -185,7 +184,7 @@ export const CheckerPage = ({
                     Return to Dashboard
                   </NormalButton>
                   <NormalButton
-                    className="mt-4 px-6 h-10 mx-auto"
+                    className="mx-auto mt-4 h-10 px-6"
                     onClick={() => {
                       router.push(`/editor/${originalChecker.id}`);
                     }}

@@ -13,7 +13,8 @@ export const MenuHeader = () => {
   const handleSignOut = useCallback(() => {
     firebaseAuth
       .signOut()
-      .then(() => {
+      .then(async () => {
+        await firebaseAuth.currentUser?.getIdToken(true);
         // refresh page so if we are on pages where auth matters, we refresh all the elements
         location.reload();
       })
