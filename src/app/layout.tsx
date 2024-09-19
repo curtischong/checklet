@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const user = await getUserCtx();
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <TRPCReactProvider>
@@ -26,7 +27,7 @@ export default async function RootLayout({
             WebkitFontSmoothing: "antialiased",
           }}
         >
-          <ClientCtxProvider>
+          <ClientCtxProvider user={user}>
             <MenuHeader />
             {children}
           </ClientCtxProvider>

@@ -6,8 +6,8 @@ import { clientConfig } from "@/firebase/config";
 import { type UserCtx } from "@/firebase/edge_env";
 
 export interface ClientCtx {
-  firebaseApp: FirebaseApp;
-  firebaseAuth: Auth;
+  // firebaseApp: FirebaseApp;
+  // firebaseAuth: Auth;
   user: UserCtx | null;
 }
 
@@ -20,42 +20,32 @@ const ClientCtxReactContext = React.createContext<ClientCtxReact>({
   ClientCtx: null,
 });
 
-const firebaseUserToUserCtx = (user: User | null): UserCtx | null => {
-  if (!user) {
-    return null;
-  }
-  return {
-    id: user.uid,
-    email: user.email ?? "error: no email",
-    email_verified: user.emailVerified,
-  };
-};
+// const firebaseUserToUserCtx = (user: User | null): UserCtx | null => {
+//   if (!user) {
+//     return null;
+//   }
+//   return {
+//     id: user.uid,
+//     email: user.email ?? "error: no email",
+//     email_verified: user.emailVerified,
+//   };
+// };
+
+interface ClientCtxProviderProps {
+  children: React.ReactNode | React.ReactNode[];
+  user: UserCtx;
+}
 
 // Create a provider component
 export const ClientCtxProvider = ({
   children,
-}: {
-  children: React.ReactNode | React.ReactNode[];
-}): JSX.Element => {
+  user,
+}: ClientCtxProviderProps): JSX.Element => {
   const [value, setValue] = React.useState<ClientCtxReact | undefined>();
 
   React.useEffect(() => {
-    const firebaseApp = initializeApp(clientConfig);
-    const firebaseAuth = getAuth(firebaseApp);
-    // const analytics = getAnalytics(firebaseApp);
-
-    const unsubscribe = firebaseAuth.onAuthStateChanged((firebaseUser) => {
-      // only set the value after the user's login status is known, so we render the page knowing
-      setValue({
-        ClientCtx: {
-          firebaseApp: firebaseApp,
-          firebaseAuth: firebaseAuth,
-          user: firebaseUserToUserCtx(firebaseUser),
-        },
-      });
-    });
-    return unsubscribe;
-  }, []);
+    setValue({ ClientCtx: { user } });
+  }, [user]);
 
   if (value) {
     return (
