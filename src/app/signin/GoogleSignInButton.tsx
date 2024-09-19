@@ -17,7 +17,7 @@ export const GoogleSignInButton = () => {
   const signInWithGoogle = useCallback(async () => {
     signInWithPopup(firebaseAuth, provider)
       .then((_result) => {
-        router.push("/checkers");
+        router.push("/checkers/edit");
       })
       .catch((error) => {
         console.log(error);
