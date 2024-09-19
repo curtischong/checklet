@@ -9,7 +9,7 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 export const requestPathHeaderName = "x-request-path";
-const headerName = "da-user-ctx";
+const headerName = "checklet-user-ctx";
 
 // we can actually make this more general. so we can store arbitrary info in headers, not just userCtx (since we're encoding json data)
 // however, for now, this is fine

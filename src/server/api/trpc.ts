@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /**
  * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
  * 1. You want to modify request context (see Part 1).
@@ -12,7 +15,12 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
-import { getUserCtx } from "@/firebase/edge_env";
+import { serverConfig } from "@/firebase/config";
+import { getCookiesTokens } from "next-firebase-auth-edge/lib/next/tokens";
+import { parse } from "cookie";
+import admin, { type ServiceAccount } from "firebase-admin";
+import serviceAccount from "@/firebase/checkletapp-firebase-adminsdk-25jmk-cd91baf75e.json";
+import { UserCtx } from "@/firebase/edge_env";
 
 /**
  * 1. CONTEXT
@@ -26,14 +34,51 @@ import { getUserCtx } from "@/firebase/edge_env";
  *
  * @see https://trpc.io/docs/server/context
  */
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as ServiceAccount),
+});
+
+const convertToUserCtx = (user: admin.auth.DecodedIdToken): UserCtx => {
+  return {
+    id: user.uid,
+    email: user.email!,
+    email_verified: user.email_verified!,
+  };
+};
+
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  // TODO: curtis - verify this method of getUserCtx works. I don't think so? I should see the headers?
-  const user = await getUserCtx();
+  // const firebaseApp = initializeApp(clientConfig);
+  const cookies = opts.headers.get("cookie")!;
+
+  // Retrieve tokens using next-firebase-auth-edge
+  const tokens = await getCookiesTokens(parse(cookies), {
+    // apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    // cookieSerializeOptions: serverConfig.cookieSerializeOptions,
+    // serviceAccount: serverConfig.serviceAccount,
+  });
+  // console.log("tokens", tokens);
+
+  let user = null;
+
+  // Verify the ID token if it exists
+  if (tokens.idToken) {
+    try {
+      // const firebaseAuth = getAuth(firebaseApp);
+      user = convertToUserCtx(await admin.auth().verifyIdToken(tokens.idToken));
+    } catch (error) {
+      console.error("Error verifying ID token:", error);
+    }
+  }
 
   return {
     db,
-    user,
     ...opts,
+    user,
+    // req,
+    // res,
   };
 };
 
@@ -122,13 +167,14 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
 export const protectedProcedure = t.procedure
   .use(timingMiddleware)
   .use(({ ctx, next }) => {
-    if (!ctx.session || !ctx.session.user) {
+    if (!ctx.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
+    console.log("ctx.user", ctx.user);
     return next({
       ctx: {
         // infers the `session` as non-nullable
-        session: { ...ctx.session, user: ctx.session.user },
+        user: ctx.user,
       },
     });
   });
