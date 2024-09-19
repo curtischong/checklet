@@ -1,15 +1,12 @@
 // https://github.com/auth0/nextjs-auth0/blob/main/EXAMPLES.md#protecting-a-server-side-rendered-ssr-page
-import {
-  getUserCtxFromUserClaims,
-  requestPathHeaderName,
-  serializeAuthHeader,
-} from "@/networking_helpers";
+import { serializeAuthHeader } from "@/networking_helpers";
 import { FORBIDDEN } from "@/utils/status_codes";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 import { authMiddleware } from "next-firebase-auth-edge";
 import { clientConfig, serverConfig } from "@/firebase/config";
-import { UserCtx } from "@/firebase/user_ctx";
+import { type UserCtx } from "@/firebase/edge_env";
+import { type DecodedIdToken } from "next-firebase-auth-edge/lib/auth/token-verifier";
 
 const adminPagePrefix = "/admin";
 const adminApiPrefix = "/api/authenticated/admin";
@@ -44,6 +41,14 @@ const isAdminPath = (path: string) => {
 
 const redirectTo = (req: NextRequest, path: string) => {
   return NextResponse.redirect(new URL(path, req.url));
+};
+
+const decodedIdTokenToUserCtx = (decodedToken: DecodedIdToken): UserCtx => {
+  return {
+    id: decodedToken.uid,
+    email: decodedToken.email!,
+    email_verified: decodedToken.email_verified!,
+  };
 };
 
 const getIsInvalidAdminResponse = (
@@ -85,6 +90,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/signout", request.url));
   }
 
+  // const res = NextResponse.next();
+  // serializeAuthHeader(res, userCtx);
+
   // Default auth middleware behavior for other paths
   return authMiddleware(request, {
     loginPath: "/api/login",
@@ -94,6 +102,62 @@ export async function middleware(request: NextRequest) {
     cookieSignatureKeys: serverConfig.cookieSignatureKeys,
     cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     serviceAccount: serverConfig.serviceAccount,
+    handleValidToken: async ({ token, decodedToken }, headers) => {
+      const requestPath = request.nextUrl.pathname;
+      // if (PUBLIC_PATHS.includes(requestPath)) {
+      //   return redirectToHome(request); // simplifies to NextResponse.redirect(new URL(“/“))
+      // }
+
+      // // only allow admins to access the admin paths
+      // if (isAdminPath(requestPath)) {
+      //   const isValidAdmin =
+      //     decodedToken.email && VALID_ADMIN_EMAILS.includes(decodedToken.email);
+
+      //   if (!isValidAdmin) {
+      //     const isFetchingAdminPage = requestPath.startsWith(adminPagePrefix);
+      //     if (isFetchingAdminPage) {
+      //       return redirectToHome(request); // just send them to a different page (if they are not an admin)
+      //     }
+
+      //     const isQueryingAdminAPi = requestPath.startsWith(adminApiPrefix);
+      //     if (isQueryingAdminAPi) {
+      //       return errorResponse("You cannot query admin APIs!", headers);
+      //     }
+
+      //     console.error(
+      //       `user ${decodedToken.uid} is accessing an unknown admin endpoint: ${requestPath}! We need to handle this case!`,
+      //     );
+      //     return errorResponse(
+      //       "You do not have access to this admin endpoint!",
+      //       headers,
+      //     );
+      //   }
+      // }
+
+      // by serializing the auth header, we can pass the user's info to server-side-components
+      // I got the idea after reading the first comment: https://stackoverflow.com/questions/78312633/how-to-get-firebase-auth-id-token-in-server-component-in-nextjs-firebase
+      serializeAuthHeader(headers, decodedIdTokenToUserCtx(decodedToken));
+      return NextResponse.next({
+        request: {
+          headers,
+        },
+      });
+    },
+    // handleInvalidToken: async (reason) => {
+    //   console.info("Missing or malformed credentials", { reason });
+
+    //   // return redirectToLogin(request, {
+    //   //   path: "/login",
+    //   //   publicPaths: PUBLIC_PATHS,
+    //   // });
+    // },
+    // handleError: async (error) => {
+    //   console.error("Unhandled authentication error", { error });
+    //   // return redirectToLogin(request, {
+    //   //   path: "/login",
+    //   //   publicPaths: PUBLIC_PATHS,
+    //   // });
+    // },
   });
 }
 

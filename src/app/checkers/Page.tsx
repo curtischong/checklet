@@ -1,12 +1,12 @@
 import { CheckerStore } from "@/app/checkers/CheckerStore";
 import { CreateOwnChecker } from "@/app/checkers/CreateOwnChecker";
 import { db } from "@/server/db";
-import { getUserCtx } from "@/firebase/user_ctx";
 import LoveChecklet from "@public/checklets/love.svg";
 import PennyChecklet from "@public/checklets/penny.svg";
 import SpacyChecklet from "@public/checklets/spacy.svg";
 import Image from "next/image";
 import { type Prisma } from "@prisma/client";
+import { parseAuthHeader } from "@/networking_helpers";
 
 const Page = async () => {
   const targetClauses: Prisma.CheckerWhereInput[] = [
@@ -19,8 +19,7 @@ const Page = async () => {
       },
     },
   ];
-  const user = await getUserCtx();
-  console.log("user", user);
+  const user = parseAuthHeader();
   if (user) {
     const yourCheckerClause: Prisma.CheckerWhereInput = {
       createdById: {

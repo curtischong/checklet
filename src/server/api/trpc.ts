@@ -12,7 +12,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "@/server/db";
-import { getUserCtx } from "@/firebase/user_ctx";
+import { getUserCtx } from "@/firebase/edge_env";
 
 /**
  * 1. CONTEXT
@@ -27,6 +27,7 @@ import { getUserCtx } from "@/firebase/user_ctx";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  // TODO: curtis - verify this method of getUserCtx works. I don't think so? I should see the headers?
   const user = await getUserCtx();
 
   return {

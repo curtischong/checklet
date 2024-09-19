@@ -1,5 +1,5 @@
 "use client";
-import { type UserCtx } from "@/firebase/user_ctx";
+import { type UserCtx } from "@/firebase/edge_env";
 import { api } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
