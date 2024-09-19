@@ -134,6 +134,8 @@ export async function middleware(request: NextRequest) {
       //   }
       // }
 
+      // by serializing the auth header, we can pass the user's info to server-side-components
+      // I got the idea after reading the first comment: https://stackoverflow.com/questions/78312633/how-to-get-firebase-auth-id-token-in-server-component-in-nextjs-firebase
       serializeAuthHeader(headers, decodedIdTokenToUserCtx(decodedToken));
       return NextResponse.next({
         request: {
