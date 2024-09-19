@@ -16,8 +16,17 @@ export const GoogleSignInButton = () => {
 
   const signInWithGoogle = useCallback(async () => {
     signInWithPopup(firebaseAuth, provider)
-      .then((_result) => {
-        router.push("/checkers/edit");
+      .then(async (result) => {
+        const idToken = await result.user.getIdToken();
+
+        // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
+        // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
+        await fetch("/api/login", {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+        router.push("/checkers");
       })
       .catch((error) => {
         console.log(error);

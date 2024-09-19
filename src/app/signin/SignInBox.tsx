@@ -41,6 +41,8 @@ export default function SignInBox() {
         );
         const idToken = await credential.user.getIdToken();
 
+        // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
+        // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
         await fetch("/api/login", {
           headers: {
             Authorization: `Bearer ${idToken}`,
@@ -48,7 +50,7 @@ export default function SignInBox() {
         });
 
         setIsLoading(false);
-        router.push("/checkers/edit");
+        router.push("/checkers");
       } catch (e) {
         const message = (e as Error).message;
         console.error(message); // TODO: log error

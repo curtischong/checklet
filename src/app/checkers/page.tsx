@@ -20,6 +20,7 @@ const Page = async () => {
     },
   ];
   const user = parseAuthHeader();
+  console.log("user", user);
   if (user) {
     const yourCheckerClause: Prisma.CheckerWhereInput = {
       createdById: {

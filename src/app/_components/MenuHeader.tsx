@@ -13,7 +13,11 @@ export const MenuHeader = () => {
   const handleSignOut = useCallback(() => {
     firebaseAuth
       .signOut()
-      .then(() => {
+      .then(async () => {
+        // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
+        // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
+        await fetch("/api/logout");
+
         // refresh page so if we are on pages where auth matters, we refresh all the elements
         location.reload();
       })

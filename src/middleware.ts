@@ -93,6 +93,8 @@ export async function middleware(request: NextRequest) {
   // const res = NextResponse.next();
   // serializeAuthHeader(res, userCtx);
 
+  // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
+
   // Default auth middleware behavior for other paths
   return authMiddleware(request, {
     loginPath: "/api/login",
@@ -143,27 +145,21 @@ export async function middleware(request: NextRequest) {
         },
       });
     },
-    // handleInvalidToken: async (reason) => {
-    //   console.info("Missing or malformed credentials", { reason });
-
-    //   // return redirectToLogin(request, {
-    //   //   path: "/login",
-    //   //   publicPaths: PUBLIC_PATHS,
-    //   // });
-    // },
-    // handleError: async (error) => {
-    //   console.error("Unhandled authentication error", { error });
-    //   // return redirectToLogin(request, {
-    //   //   path: "/login",
-    //   //   publicPaths: PUBLIC_PATHS,
-    //   // });
-    // },
+    handleInvalidToken: async (reason) => {
+      console.info("Missing or malformed credentials", { reason });
+      return NextResponse.next();
+    },
+    handleError: async (error) => {
+      console.error("Unhandled authentication error", { error });
+      return NextResponse.next();
+    },
   });
 }
 
-export const config = {
-  matcher: ["/", "/((?!_next|api|.*\\.).*)", "/api/login", "/api/logout"],
-};
+// we want to match ALL routes. so comment this out
+// export const config = {
+//   matcher: ["/", "/((?!_next|api|.*\\.).*)", "/api/login", "/api/logout"],
+// };
 
 // // all requests that requre authentication go through this middleware
 // // I tried to get mixpanel tracking to be IN THIS MIDDLEWARE layer (so we don't need to put it in every page)
