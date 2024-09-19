@@ -93,6 +93,8 @@ export async function middleware(request: NextRequest) {
   // const res = NextResponse.next();
   // serializeAuthHeader(res, userCtx);
 
+  // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
+
   // Default auth middleware behavior for other paths
   return authMiddleware(request, {
     loginPath: "/api/login",
