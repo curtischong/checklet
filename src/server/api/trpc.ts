@@ -20,7 +20,7 @@ import { getCookiesTokens } from "next-firebase-auth-edge/lib/next/tokens";
 import { parse } from "cookie";
 import admin, { type ServiceAccount } from "firebase-admin";
 import serviceAccount from "@/firebase/checkletapp-firebase-adminsdk-25jmk-cd91baf75e.json";
-import { UserCtx } from "@/firebase/edge_env";
+import { type UserCtx } from "@/firebase/edge_env";
 
 /**
  * 1. CONTEXT
@@ -35,9 +35,12 @@ import { UserCtx } from "@/firebase/edge_env";
  * @see https://trpc.io/docs/server/context
  */
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as ServiceAccount),
-});
+// Check if Firebase app has already been initialized
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount as ServiceAccount),
+  });
+}
 
 const convertToUserCtx = (user: admin.auth.DecodedIdToken): UserCtx => {
   return {
