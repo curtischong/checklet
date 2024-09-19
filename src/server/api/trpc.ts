@@ -20,6 +20,7 @@ import { getCookiesTokens } from "next-firebase-auth-edge/lib/next/tokens";
 import { parse } from "cookie";
 import admin, { type ServiceAccount } from "firebase-admin";
 import serviceAccount from "@/firebase/checkletapp-firebase-adminsdk-25jmk-cd91baf75e.json";
+import { UserCtx } from "@/firebase/edge_env";
 
 /**
  * 1. CONTEXT
@@ -37,6 +38,14 @@ import serviceAccount from "@/firebase/checkletapp-firebase-adminsdk-25jmk-cd91b
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as ServiceAccount),
 });
+
+const convertToUserCtx = (user: admin.auth.DecodedIdToken): UserCtx => {
+  return {
+    id: user.uid,
+    email: user.email!,
+    email_verified: user.email_verified!,
+  };
+};
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   // const firebaseApp = initializeApp(clientConfig);
@@ -58,7 +67,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   if (tokens.idToken) {
     try {
       // const firebaseAuth = getAuth(firebaseApp);
-      user = await admin.auth().verifyIdToken(tokens.idToken);
+      user = convertToUserCtx(await admin.auth().verifyIdToken(tokens.idToken));
     } catch (error) {
       console.error("Error verifying ID token:", error);
     }

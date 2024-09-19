@@ -21,7 +21,7 @@ export const checkerRouter = createTRPCRouter({
         name: "",
         desc: "",
         prompt: "",
-        createdBy: { connect: { id: ctx.session.user.id } },
+        createdById: ctx.user.id,
       },
     });
   }),
