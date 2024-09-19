@@ -1,13 +1,13 @@
 import { CheckerPage } from "@/app/checker/[checkerId]/edit/CheckerPage";
+import { parseAuthHeader } from "@/networking_helpers";
 import { db } from "@/server/db";
-import { getUserCtx } from "@/firebase/user_ctx";
 
 export default async function Page({
   params,
 }: {
   params: { checkerId: string };
 }) {
-  const userCtx = await getUserCtx();
+  const user = parseAuthHeader();
 
   const checker = await db.checker.findUnique({
     where: {
@@ -17,10 +17,10 @@ export default async function Page({
   if (!checker) {
     return <p>unknown checker</p>;
   }
-  if (!userCtx) {
+  if (!user) {
     return <p>You must be logged in to edit this checker</p>;
   }
-  if (userCtx.uid !== checker.creatorId) {
+  if (user.id !== checker.creatorId) {
     return <p>You must be logged in to edit this checker</p>;
   }
 

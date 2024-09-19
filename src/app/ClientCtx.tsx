@@ -3,7 +3,7 @@ import React from "react";
 import { type FirebaseApp, initializeApp } from "firebase/app";
 import { getAuth, type Auth, type User } from "firebase/auth";
 import { clientConfig } from "@/firebase/config";
-import { type UserCtx } from "@/firebase/user_ctx";
+import { type UserCtx } from "@/firebase/edge_env";
 
 export interface ClientCtx {
   firebaseApp: FirebaseApp;
