@@ -39,29 +39,26 @@ interface ClientCtxProviderProps {
 // Create a provider component
 export const ClientCtxProvider = ({
   children,
-  user,
+  user, // the user is passed in from the server. I think this saves an extra call so we don't need to always get the user from the firebase auth
 }: ClientCtxProviderProps): JSX.Element => {
-  // const [value, setValue] = React.useState<ClientCtxReact | undefined>();
   const [firebaseAuth, setFirebaseAuth] = React.useState<Auth | undefined>();
+  const [value, setValue] = React.useState<ClientCtxReact | undefined>();
 
   React.useEffect(() => {
     const firebaseApp = initializeApp(clientConfig);
     const firebaseAuth = getAuth(firebaseApp);
-    setValue({
-      ClientCtx: { firebaseAuth, user: null },
-    });
+    setFirebaseAuth(firebaseAuth);
   }, []);
 
   React.useEffect(() => {
-    // only update the userCtx if the userCtx is already set, so we only set the firebaseAuth once
-    if (!value?.ClientCtx) {
+    if (!firebaseAuth) {
       return;
     }
 
     setValue({
-      ClientCtx: { user, firebaseAuth: value.ClientCtx.firebaseAuth },
+      ClientCtx: { user, firebaseAuth },
     });
-  }, [user, value?.ClientCtx?.firebaseAuth]);
+  }, [user, firebaseAuth]);
 
   if (value) {
     return (
