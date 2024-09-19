@@ -62,7 +62,6 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     // cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     // serviceAccount: serverConfig.serviceAccount,
   });
-  console.log("tokens", tokens);
 
   let user = null;
 

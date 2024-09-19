@@ -11,10 +11,9 @@ export const CreateOwnChecker = ({ user }: Props) => {
   const router = useRouter();
   const createChecker = api.checker.create.useMutation({
     onSuccess: async (checker) => {
-      // router.push(`/checker/create/${checker.id}`);
+      router.push(`/checker/create/${checker.id}`);
     },
   });
-  console.log("user exists?", user);
 
   return (
     <div className="mx-auto mt-2">

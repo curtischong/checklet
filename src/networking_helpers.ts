@@ -18,7 +18,6 @@ export const serializeAuthHeader = (
   headers: Headers,
   userCtx: UserCtx,
 ): void => {
-  console.log("serializing userCtx", userCtx);
   const myJsonStr = JSON.stringify(userCtx);
   // the user's email is in the json object. so it may not be in ascii format? Eitherway, it's safer to convert it to base64 first
   const headerFriendlyStr = Buffer.from(myJsonStr, "utf8").toString("base64");
