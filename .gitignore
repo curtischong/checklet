@@ -44,3 +44,5 @@ yarn-error.log*
 
 # idea files
 .idea
+
+/src/firebase/checkletapp-firebase-adminsdk-25jmk-cd91baf75e.json
