@@ -2,7 +2,7 @@
 
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { useClientCtx } from "@/app/ClientCtx";
-import { api } from "@/trpc/react";
+import { apiClient } from "@/trpc/react";
 import {
   createUserWithEmailAndPassword,
   getAdditionalUserInfo,
@@ -20,15 +20,6 @@ export const RegisterBox = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { firebaseAuth } = useClientCtx();
-
-  const onSignup = api.user.onSignup.useMutation({
-    onSuccess: (res) => {
-      console.log("success onsignup", res);
-    },
-    onError: (err) => {
-      console.log("err onsignup", err);
-    },
-  });
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -65,7 +56,7 @@ export const RegisterBox = () => {
           console.warn("additionalUserInfo is null");
         } else {
           if (additionalUserInfo.isNewUser) {
-            onSignup.mutate();
+            await apiClient.user.onSignup.mutate();
           }
         }
 
@@ -77,7 +68,7 @@ export const RegisterBox = () => {
       }
       setIsLoading(false);
     },
-    [confirmation, email, password, router, firebaseAuth, onSignup],
+    [confirmation, email, password, router, firebaseAuth],
   );
 
   return (

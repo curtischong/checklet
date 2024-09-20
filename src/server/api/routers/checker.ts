@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from "zod";
 
 import {
@@ -5,6 +8,9 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
+import { TRPCError } from "@trpc/server";
+
+const MAX_CHECKERS = 10;
 
 export const checkerRouter = createTRPCRouter({
   getBlueprint: publicProcedure
@@ -16,7 +22,25 @@ export const checkerRouter = createTRPCRouter({
     }),
 
   create: protectedProcedure.mutation(async ({ ctx }) => {
-    return ctx.db.checker.create({
+    const user = await ctx.db.user.findUnique({
+      where: {
+        id: ctx.user.id,
+      },
+    });
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "user not found",
+      });
+    }
+    if (user.checkerIds.length >= MAX_CHECKERS) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: `you can only have ${MAX_CHECKERS} checkers! Contact Curtis if you want more`,
+      });
+    }
+
+    const newChecker = await ctx.db.checker.create({
       data: {
         name: "",
         desc: "",
@@ -24,6 +48,19 @@ export const checkerRouter = createTRPCRouter({
         createdById: ctx.user.id,
       },
     });
+
+    await ctx.db.user.update({
+      where: {
+        id: ctx.user.id,
+      },
+      data: {
+        checkerIds: {
+          push: newChecker.id,
+        },
+      },
+    });
+
+    return newChecker;
   }),
 
   update: protectedProcedure
@@ -36,6 +73,24 @@ export const checkerRouter = createTRPCRouter({
       // TODO: veritfy that YOU own the checker
       const isValid =
         input.name !== "" && input.desc !== "" && input.prompt !== "";
+
+      const checker = await ctx.db.checker.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+      if (!checker) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "checker not found",
+        });
+      }
+      if (checker.createdById !== ctx.user.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "you are not the creator of this checker",
+        });
+      }
 
       return ctx.db.checker.update({
         where: {
@@ -64,8 +119,4 @@ export const checkerRouter = createTRPCRouter({
         },
       });
     }),
-
-  ensureTypeInferenceWorks: protectedProcedure.query(() => {
-    return "makes the router's return types clear because TypeScript can infer the type of the response from this procedure";
-  }),
 });
