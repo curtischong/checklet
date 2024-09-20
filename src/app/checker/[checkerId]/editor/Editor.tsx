@@ -7,11 +7,9 @@ import {
   shift,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-import { useClientCtx } from "@/app/ClientCtx";
 import { useRouter } from "next/router";
 import React, { useCallback, useRef, useState } from "react";
 import { type RichTextareaHandle } from "rich-textarea";
-import { SuggestionsContainer } from "./suggestions/suggestionscontainer";
 import { TextboxContainer } from "./textboxcontainer";
 
 interface Props {
@@ -25,7 +23,6 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
     useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const editorRef = useRef<RichTextareaHandle | null>(null);
-  const { user } = useClientCtx();
 
   const router = useRouter();
   const onlyUseCheckId = router.query.onlyUseCheckId as string;
@@ -154,7 +151,7 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
             />
           </div>
         </div>
-        <div
+        {/* <div
           style={{
             flexBasis: 2,
           }}
@@ -175,7 +172,7 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
             onlyUseCheckBlueprint={onlyUseCheckBlueprint}
             storefront={storefront}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
