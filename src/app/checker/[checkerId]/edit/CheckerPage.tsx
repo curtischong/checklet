@@ -6,13 +6,14 @@ import { NormalTextArea } from "@/app/_components/ui/TextArea";
 import {
   SaveStatusText,
   SubmittingState,
-} from "@/app/edit/checker/[checkerId]/CheckerTypes";
-import { IsPublicSwitch } from "@/app/edit/checker/[checkerId]/IsPublicSwitch";
-import { IsValidWarning } from "@/app/edit/checker/[checkerId]/IsValidWarning";
-import { Editor } from "@/app/editor/Editor";
+} from "@/app/checker/[checkerId]/edit/CheckerTypes";
+import { IsPublicSwitch } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
+import { IsValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
+import { Editor } from "@/app/checker/[checkerId]/Editor";
 import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
+import { type UserCtx } from "@/firebase/edge_env";
 import { api } from "@/trpc/react";
-import { Checker } from "@prisma/client";
+import { type Checker } from "@prisma/client";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect } from "react";
@@ -177,16 +178,16 @@ export const CheckerPage = ({
                 <div className="flex flex-row space-x-8">
                   <NormalButton
                     className="mt-4 h-10 w-52"
-                    onClick={() => {
-                      router.push("/dashboard");
+                    onClick={async () => {
+                      await router.push("/dashboard");
                     }}
                   >
                     Return to Dashboard
                   </NormalButton>
                   <NormalButton
                     className="mx-auto mt-4 h-10 px-6"
-                    onClick={() => {
-                      router.push(`/editor/${originalChecker.id}`);
+                    onClick={async () => {
+                      await router.push(`/editor/${originalChecker.id}`);
                     }}
                   >
                     Open checker in editor
