@@ -10,7 +10,7 @@ interface Props {
 export const CreateOwnChecker = ({ user }: Props) => {
   const router = useRouter();
   const createChecker = api.checker.create.useMutation({
-    onSuccess: async (checker) => {
+    onSuccess: (checker) => {
       router.push(`/checker/create/${checker.id}`);
     },
   });

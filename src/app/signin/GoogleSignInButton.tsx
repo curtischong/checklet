@@ -1,6 +1,6 @@
 "use client";
 import { useClientCtx } from "@/app/ClientCtx";
-import { api } from "@/trpc/react";
+import { apiClient } from "@/trpc/react";
 import Google from "@public/logos/google.svg";
 import {
   getAdditionalUserInfo,
@@ -18,15 +18,6 @@ const provider = new GoogleAuthProvider();
 export const GoogleSignInButton = () => {
   const router = useRouter();
   const { firebaseAuth } = useClientCtx();
-
-  const onSignup = api.user.onSignup.useMutation({
-    onSuccess: (res) => {
-      console.log("success onsignup", res);
-    },
-    onError: (err) => {
-      console.log("err onsignup", err);
-    },
-  });
 
   const signInWithGoogle = useCallback(() => {
     signInWithPopup(firebaseAuth, provider)
@@ -47,7 +38,7 @@ export const GoogleSignInButton = () => {
           console.warn("additionalUserInfo is null");
         } else {
           if (additionalUserInfo.isNewUser) {
-            onSignup.mutate();
+            await apiClient.user.onSignup.mutate();
           }
         }
         router.push("/checkers");
@@ -56,7 +47,7 @@ export const GoogleSignInButton = () => {
         console.log(error);
         toast.error(error as string);
       });
-  }, [router, firebaseAuth, onSignup]);
+  }, [router, firebaseAuth]);
 
   return (
     <button

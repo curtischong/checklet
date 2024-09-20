@@ -16,6 +16,12 @@ export const userRouter = createTRPCRouter({
       console.warn(
         `${user.email} called onSignup. but their user already exists in the db`,
       );
+      if (existingUser.id !== user.id) {
+        console.warn(
+          `existing user id is ${existingUser.id} but the new user id is ${user.id}. Maybe we cleared their account on firebase, but not the DB`,
+        );
+        // honestly. do nothing. I think this ppl can't abuse this endpoint since the only way to get the UserCtx is ia an authenticated token
+      }
       return;
     }
 
