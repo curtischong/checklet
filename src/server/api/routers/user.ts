@@ -26,15 +26,4 @@ export const userRouter = createTRPCRouter({
       },
     });
   }),
-
-  // create: protectedProcedure.mutation(async ({ ctx }) => {
-  //   return ctx.db.checker.create({
-  //     data: {
-  //       name: "",
-  //       desc: "",
-  //       prompt: "",
-  //       createdById: ctx.user.id,
-  //     },
-  //   });
-  // }),
 });

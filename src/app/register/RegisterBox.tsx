@@ -77,7 +77,7 @@ export const RegisterBox = () => {
       }
       setIsLoading(false);
     },
-    [confirmation, email, password, router, firebaseAuth],
+    [confirmation, email, password, router, firebaseAuth, onSignup],
   );
 
   return (
