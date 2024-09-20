@@ -30,6 +30,10 @@ export type Suggestion = {
   suggestionId: SuggestionId;
 };
 
+export type CheckDesc = {
+  heuristicName: string;
+};
+
 // this is not a class because when it's serialized to JSON, we can easily deseralize it (and use all the helpful functions below)
 export type DocRange = {
   start: number;

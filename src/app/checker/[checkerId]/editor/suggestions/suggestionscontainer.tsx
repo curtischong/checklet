@@ -1,7 +1,7 @@
 import { SortIcon } from "@/app/_components/icons/SortIcon";
 import { LoadingButton, NormalButton } from "@/app/_components/ui/Button";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
-import SuggestionCard from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
+import { SuggestionCard } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
 import { useClientCtx } from "@/app/ClientCtx";
 import { apiClient } from "@/trpc/react";
 import { pluralize } from "@/utils/strings";
@@ -125,7 +125,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
               onReplaceClick={(acceptedOption) =>
                 acceptSuggestion(s, acceptedOption)
               }
-              checkDescObj={checkDescObj}
               ref={ref}
             />
           );
