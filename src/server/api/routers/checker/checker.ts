@@ -3,14 +3,30 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from "zod";
 
+import { checkDoc } from "@/server/api/routers/checker/checkDoc";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
+import { type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 const MAX_CHECKERS = 10;
+
+const getCheckerById = async (db: PrismaClient, id: string) => {
+  const checker = await db.checker.findUnique({
+    where: { id },
+  });
+  if (!checker) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "checker not found",
+    });
+  }
+  return checker;
+};
+export type CheckerType = ReturnType<typeof getCheckerById>;
 
 export const checkerRouter = createTRPCRouter({
   getBlueprint: publicProcedure
@@ -119,5 +135,35 @@ export const checkerRouter = createTRPCRouter({
           isPublic: input.isPublic,
         },
       });
+    }),
+  checkDoc: publicProcedure
+    .input(z.object({ doc: z.string() }))
+    .input(z.object({ checkerId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const checker = await getCheckerById(ctx.db, input.checkerId);
+      if (!checker) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "checker not found",
+        });
+      }
+      if (
+        !checker.isPublic &&
+        (!ctx.user || checker.createdById !== ctx.user.id) // if you are not logged in, or not the cretor, you can't use this private checker
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "you are not the creator of this checker",
+        });
+      }
+      if (!checker.isValid) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "this checker is not valid",
+        });
+      }
+
+      // now that we've validated everything, we can actually check the doc
+      return await checkDoc(input.doc, checker);
     }),
 });

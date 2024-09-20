@@ -1,6 +1,7 @@
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { EditorHeader } from "@/app/checker/[checkerId]/editor/EditorHeader";
 import { singleEditDistance } from "@/app/checker/[checkerId]/editor/singleEditDistance";
+import { SuggestionsContainer } from "@/app/checker/[checkerId]/editor/suggestions/suggestionscontainer";
 import {
   isBefore,
   isIntersecting,
@@ -105,7 +106,7 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
   );
 
   return (
-    <div className="mx-auto max-w-screen-xl">
+    <div className="mx-auto w-full max-w-screen-xl">
       <div className="flex flex-row space-x-10 px-5">
         <div
           className="textbox"
@@ -147,13 +148,12 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
             />
           </div>
         </div>
-        {/* <div
+        <div
           style={{
             flexBasis: 2,
           }}
         >
           <SuggestionsContainer
-            setCheckDescObj={setCheckDescObj}
             setHasModifiedTextAfterChecking={setHasModifiedTextAfterChecking}
             isLoading={isLoading}
             setIsLoading={setIsLoading}
@@ -163,12 +163,10 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
             setActiveSuggestion={setActiveSuggestion}
             editorState={editorState}
             acceptSuggestion={acceptSuggestion}
-            checkDescObj={checkDescObj}
             hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
-            onlyUseCheckBlueprint={onlyUseCheckBlueprint}
-            storefront={storefront}
+            storefront={checkerStorefront}
           />
-        </div> */}
+        </div>
       </div>
     </div>
   );

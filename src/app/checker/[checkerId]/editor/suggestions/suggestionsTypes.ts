@@ -1,8 +1,6 @@
-import { RefObject } from "react";
+import { type RefObject } from "react";
 
-export type SuggestionIdToRef = {
-  [key: string]: RefObject<HTMLSpanElement>;
-};
+export type SuggestionIdToRef = Record<string, RefObject<HTMLSpanElement>>;
 
 // export type FeedbackResponse = {
 //     feedback: Suggestion[];
@@ -18,6 +16,10 @@ export const newEditOp = (range: DocRange, newString: string): EditOp => {
 };
 
 export type SuggestionId = string;
+
+export interface FeedbackResponse {
+  suggestions: Suggestion[];
+}
 
 export type Suggestion = {
   range: DocRange; // range of the original text

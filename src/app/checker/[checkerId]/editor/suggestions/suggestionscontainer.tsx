@@ -1,5 +1,10 @@
+import { SortIcon } from "@/app/_components/icons/SortIcon";
+import { LoadingButton, NormalButton } from "@/app/_components/ui/Button";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import SuggestionCard from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
+import { useClientCtx } from "@/app/ClientCtx";
+import { apiClient } from "@/trpc/react";
+import { pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
 import CoolChecklet from "@public/checklets/cool.svg";
 import PencilChecklet from "@public/checklets/pencil.svg";
@@ -11,7 +16,7 @@ import { toast } from "react-toastify";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
 import { type Suggestion, type SuggestionIdToRef } from "./suggestionsTypes";
 
-export type SuggestionsContainerProps = {
+export type Props = {
   setIsLoading: SetState<boolean>;
   isLoading: boolean;
   setHasModifiedTextAfterChecking: SetState<boolean>;
@@ -21,9 +26,7 @@ export type SuggestionsContainerProps = {
   setActiveSuggestion: SetState<Suggestion | undefined>;
   editorState: string;
   acceptSuggestion: (suggestion: Suggestion, acceptedOption: string) => void;
-  checkDescObj: CheckDescObj;
   hasModifiedTextAfterChecking: boolean;
-  setCheckDescObj: SetState<CheckDescObj>;
   storefront: CheckerStorefront;
 };
 
@@ -44,7 +47,7 @@ export const Sorters = {
     a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
 };
 
-export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
+export const SuggestionsContainer: React.FC<Props> = ({
   setIsLoading,
   isLoading,
   setHasModifiedTextAfterChecking,
@@ -55,39 +58,35 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
   editorState,
   acceptSuggestion,
   hasModifiedTextAfterChecking,
-  checkDescObj,
-  setCheckDescObj,
-  onlyUseCheckBlueprint,
   storefront,
-}: SuggestionsContainerProps) => {
+}: Props) => {
   const [sortedSuggestions, setSortedSuggestions] = useState<Suggestion[]>([]);
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
   const [sortType, setSortType] = useState(SortType.TextOrder);
-  const [isEnterApiKeyOpen, setIsEnterApiKeyOpen] = useState(false);
-  const [modelType, setModelType] = useState(ModelType.o1);
 
   const router = useRouter();
   const onlyUseCheckId = router.query.onlyUseCheckId as string;
   const checkerId = router.query.checkerId as string;
-  const { user } = useClientContext();
 
   useEffect(() => {
     const sorted = [...suggestions].sort(Sorters[sortType]);
     setSortedSuggestions(sorted);
   }, [suggestions, sortType]);
 
+  const { user } = useClientCtx();
+
   const onCollapseClick = useCallback(
     (s: Suggestion) => {
       if (activeSuggestion === s) {
-        mixpanelTrack("Suggestion closed", {
-          suggestion: s,
-        });
+        // mixpanelTrack("Suggestion closed", {
+        //   suggestion: s,
+        // });
         setActiveSuggestion(undefined);
       } else {
-        mixpanelTrack("Suggestion opened", {
-          suggestion: s,
-        });
+        // mixpanelTrack("Suggestion opened", {
+        //   suggestion: s,
+        // });
         setActiveSuggestion(s);
       }
     },
@@ -137,7 +136,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
       if (!hasModifiedTextAfterChecking) {
         return (
           <NoSuggestionMessage
-            imageSrc={YayChecklet.src}
+            imageSrc={YayChecklet as string}
             header={"No issues found"}
             content={
               <>
@@ -151,7 +150,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
       } else {
         return (
           <NoSuggestionMessage
-            imageSrc={CoolChecklet.src}
+            imageSrc={CoolChecklet as string}
             header={"Ready to check?"}
             content={
               <>
@@ -168,7 +167,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
 
     return (
       <NoSuggestionMessage
-        imageSrc={PencilChecklet.src}
+        imageSrc={PencilChecklet as string}
         header={"Nothing to check yet"}
         content={
           <div className={"w-[70%]"}>Start writing or paste your document.</div>
@@ -191,7 +190,7 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
     }
     setIsLoading(true);
     const plaintext = editorState;
-    const response = await checkDocText(
+    const response = apiClient.checker await checkDocText(
       plaintext,
       checkerId,
       user,
@@ -209,78 +208,32 @@ export const SuggestionsContainer: React.FC<SuggestionsContainerProps> = ({
     setCheckDescObj(response.checkDescs);
     setSuggestions(newSuggestions);
 
-    mixpanelTrack("Check Document Clicked", {
-      "Number of suggestions generated": newSuggestions.length,
-      Suggestions: newSuggestions,
-      Input: plaintext,
-    });
+    // mixpanelTrack("Check Document Clicked", {
+    //   "Number of suggestions generated": newSuggestions.length,
+    //   Suggestions: newSuggestions,
+    //   Input: plaintext,
+    // });
   }, [editorState, isLoading]);
-
-  // useEffect(() => {
-  //     const modelType = localStorage.getItem("modelType");
-  //     if (modelType) {
-  //         setModelType(modelType as ModelType);
-  //     }
-  // }, []);
-
-  const updateModelType = useCallback((newModelType: ModelType) => {
-    localStorage.setItem("modelType", newModelType);
-    setModelType(newModelType);
-  }, []);
-
-  const modelTypeToName = useCallback((modelType: ModelType) => {
-    switch (modelType) {
-      case ModelType.GPT4o:
-        return "GPT-4o";
-      case ModelType.o1:
-        return "o1";
-    }
-  }, []);
-
-  const nameToModelType = useCallback((name: string) => {
-    switch (name) {
-      case "GPT-4o":
-        return ModelType.GPT4o;
-      case "o1":
-        return ModelType.o1;
-    }
-  }, []);
 
   return (
     <div className="mt-14 flex w-[300px] flex-col">
       <div>
         <div className="flex flex-col space-y-2">
-          {onlyUseCheckBlueprint && (
+          {user?.id === storefront.creatorId && (
             <NormalButton
               className="mb-4 py-[4px]"
-              onClick={() => {
-                router.push({
-                  pathname: `/create/check/${onlyUseCheckId}`,
+              onClick={async () => {
+                await router.push({
+                  pathname: `/create/checker/${checkerId}`,
                   query: {
                     checkerId,
                   },
                 });
               }}
             >
-              Return to Check Editor
+              Edit this Checker
             </NormalButton>
           )}
-          {!onlyUseCheckBlueprint &&
-            user?.uid === storefront.objInfo.creatorId && (
-              <NormalButton
-                className="mb-4 py-[4px]"
-                onClick={() => {
-                  router.push({
-                    pathname: `/create/checker/${checkerId}`,
-                    query: {
-                      checkerId,
-                    },
-                  });
-                }}
-              >
-                Edit this Checker
-              </NormalButton>
-            )}
         </div>
       </div>
       <div className="mx-auto flex flex-row items-center justify-normal space-x-8">
