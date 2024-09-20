@@ -6,8 +6,8 @@ import { GoogleSignInButton } from "@/app/signin/GoogleSignInButton";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
 import type { FormEvent } from "react";
+import { useCallback, useState } from "react";
 
 export default function SignInBox() {
   const [email, setEmail] = useState("");
@@ -34,12 +34,12 @@ export default function SignInBox() {
       setIsLoading(true);
 
       try {
-        const credential = await signInWithEmailAndPassword(
+        const userCredential = await signInWithEmailAndPassword(
           firebaseAuth,
           email,
           password,
         );
-        const idToken = await credential.user.getIdToken();
+        const idToken = await userCredential.user.getIdToken();
 
         // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
         // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
@@ -126,18 +126,18 @@ export default function SignInBox() {
             </LoadingButton>
             <div className="flex flex-col items-center space-y-1">
               <p className="text-sm text-gray-500 dark:text-gray-400">
+                Don&apos;t have an account?{" "}
+                <Link href="/register" className="text-primary hover:underline">
+                  Register here
+                </Link>
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Forgot your password?{" "}
                 <Link
                   href="/forgot-password"
                   className="text-primary hover:underline"
                 >
                   Reset your password here
-                </Link>
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Don&apos;t have an account?{" "}
-                <Link href="/register" className="text-primary hover:underline">
-                  Register here
                 </Link>
               </p>
             </div>

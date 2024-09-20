@@ -33,6 +33,7 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ prompt: z.string() }))
     .input(z.object({ isPublic: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
+      // TODO: veritfy that YOU own the checker
       const isValid =
         input.name !== "" && input.desc !== "" && input.prompt !== "";
 

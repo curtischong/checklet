@@ -30,3 +30,12 @@ model Checker {
 
     @@index([name]) // speed up queries that filter or sort by the name field
 }
+
+model User {
+    id            String      @id @default(uuid())
+    email         String      @unique
+    // I'll comment this out for now, since it's super easy for us to get the isVerified data. it's just from the firebase token
+    // isEmailVerified Boolean? // Note: I think if they reset their password, firebase sends them an email and if they click on the link, they WILL be verified. we need to figure out some way to handle this
+    checkerIds    String[]    @db.Uuid
+    createdAt     DateTime    @default(now())
+}
