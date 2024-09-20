@@ -1,34 +1,35 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
-  onSignup: protectedProcedure.query(async ({ ctx }) => {
+  onSignup: protectedProcedure.mutation(async ({ ctx }) => {
+    console.log("onSignup");
     const user = ctx.user;
-    const res = await ctx.db.user.findUnique({
+    const existingUser = await ctx.db.user.findUnique({
       where: {
         email: user.email,
       },
     });
-    // const res = ctx.db.user.findUnique({
-    //   where: {
-    //     email: user.email,
-    //   },
-    // });
-    if (!res) {
-      try {
-        return (await ctx.db.user.create({
-          data: {
-            id: user.id,
-            email: user.email,
-          },
-        })) as User;
-      } catch (error) {
-        console.error("Error creating user:", error);
-        return { error: "Failed to create user" }; // Customize the return value as needed
-      }
+    if (!existingUser) {
+      await ctx.db.user.create({
+        data: {
+          id: user.id,
+          email: user.email,
+        },
+      });
     }
   }),
 
-  ensureTypeInferenceWorks: protectedProcedure.query(() => {
-    return "makes the router's return types clear because TypeScript can infer the type of the response from this procedure";
-  }),
+  // create: protectedProcedure.mutation(async ({ ctx }) => {
+  //   return ctx.db.checker.create({
+  //     data: {
+  //       name: "",
+  //       desc: "",
+  //       prompt: "",
+  //       createdById: ctx.user.id,
+  //     },
+  //   });
+  // }),
 });
