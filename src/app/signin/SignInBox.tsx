@@ -3,11 +3,7 @@ import ThinLine from "@/app/_components/ThinLine";
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { useClientCtx } from "@/app/ClientCtx";
 import { GoogleSignInButton } from "@/app/signin/GoogleSignInButton";
-import { api } from "@/trpc/react";
-import {
-  getAdditionalUserInfo,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
@@ -31,15 +27,6 @@ export default function SignInBox() {
     return message;
   }, []);
 
-  const onSignup = api.user.onSignup.useMutation({
-    onSuccess: (res) => {
-      console.log("success onsignup", res);
-    },
-    onError: (err) => {
-      console.log("err onsignup", err);
-    },
-  });
-
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
       event.preventDefault();
@@ -62,16 +49,6 @@ export default function SignInBox() {
           },
         });
 
-        // now that we've updated our credentials, we create a new user
-        const additionalUserInfo = getAdditionalUserInfo(userCredential);
-        if (!additionalUserInfo) {
-          console.warn("additionalUserInfo is null");
-        } else {
-          if (additionalUserInfo.isNewUser) {
-            onSignup.mutate();
-          }
-        }
-
         setIsLoading(false);
         router.push("/checkers");
       } catch (e) {
@@ -81,7 +58,7 @@ export default function SignInBox() {
         setIsLoading(false);
       }
     },
-    [email, makeErrMsgReadable, password, router, firebaseAuth, onSignup],
+    [email, makeErrMsgReadable, password, router, firebaseAuth],
   );
 
   return (
@@ -149,18 +126,18 @@ export default function SignInBox() {
             </LoadingButton>
             <div className="flex flex-col items-center space-y-1">
               <p className="text-sm text-gray-500 dark:text-gray-400">
+                Don&apos;t have an account?{" "}
+                <Link href="/register" className="text-primary hover:underline">
+                  Register here
+                </Link>
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Forgot your password?{" "}
                 <Link
                   href="/forgot-password"
                   className="text-primary hover:underline"
                 >
                   Reset your password here
-                </Link>
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Don&apos;t have an account?{" "}
-                <Link href="/register" className="text-primary hover:underline">
-                  Register here
                 </Link>
               </p>
             </div>

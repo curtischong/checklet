@@ -1,12 +1,16 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import type { FormEvent } from "react";
-import Link from "next/link";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useRouter } from "next/navigation";
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { useClientCtx } from "@/app/ClientCtx";
+import { api } from "@/trpc/react";
+import {
+  createUserWithEmailAndPassword,
+  getAdditionalUserInfo,
+} from "firebase/auth";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { FormEvent } from "react";
+import { useCallback, useState } from "react";
 
 export const RegisterBox = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +20,15 @@ export const RegisterBox = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { firebaseAuth } = useClientCtx();
+
+  const onSignup = api.user.onSignup.useMutation({
+    onSuccess: (res) => {
+      console.log("success onsignup", res);
+    },
+    onError: (err) => {
+      console.log("err onsignup", err);
+    },
+  });
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -30,8 +43,33 @@ export const RegisterBox = () => {
       }
 
       try {
-        await createUserWithEmailAndPassword(firebaseAuth, email, password);
-        router.push("/checkers/edit");
+        const userCredential = await createUserWithEmailAndPassword(
+          firebaseAuth,
+          email,
+          password,
+        );
+
+        const idToken = await userCredential.user.getIdToken();
+
+        // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
+        // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
+        await fetch("/api/login", {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+
+        // now that we've updated our credentials, we create a new user
+        const additionalUserInfo = getAdditionalUserInfo(userCredential);
+        if (!additionalUserInfo) {
+          console.warn("additionalUserInfo is null");
+        } else {
+          if (additionalUserInfo.isNewUser) {
+            onSignup.mutate();
+          }
+        }
+
+        router.push("/checkers");
       } catch (e) {
         const message = (e as Error).message;
         console.error(message); // TODO: log error in logging app
