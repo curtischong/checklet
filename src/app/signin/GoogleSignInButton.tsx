@@ -1,6 +1,6 @@
 "use client";
 import { useClientCtx } from "@/app/ClientCtx";
-import { apiClient } from "@/trpc/react";
+import { apiClient, withDefaultErrorHandling } from "@/trpc/react";
 import Google from "@public/logos/google.svg";
 import {
   getAdditionalUserInfo,
@@ -38,7 +38,7 @@ export const GoogleSignInButton = () => {
           console.warn("additionalUserInfo is null");
         } else {
           if (additionalUserInfo.isNewUser) {
-            await apiClient.user.onSignup.mutate();
+            withDefaultErrorHandling(apiClient.user.onSignup.mutate());
           }
         }
         router.push("/checkers");

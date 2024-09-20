@@ -46,7 +46,7 @@ export const apiClient = createTRPCClient<AppRouter>({
 
 export function withDefaultErrorHandling<T>(
   promise: Promise<T>,
-  onSuccess: (res: T) => void,
+  onSuccess?: (res: T) => void,
 ) {
   promise.then(onSuccess).catch((err: TRPCError) => {
     toast.error(err.message);
