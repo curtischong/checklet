@@ -10,7 +10,7 @@ import CoolChecklet from "@public/checklets/cool.svg";
 import PencilChecklet from "@public/checklets/pencil.svg";
 import YayChecklet from "@public/checklets/yay.svg";
 import { Tooltip } from "antd/lib";
-import { useRouter } from "next/router";
+import { useParams, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
@@ -44,7 +44,8 @@ export const Sorters = {
     return a.range.end - b.range.end; // if they have the same start, sort by end. We want the shorter suggestions to be first, so their underlines are visible
   },
   [SortType.Category]: (a: Suggestion, b: Suggestion): number =>
-    a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
+    // a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
+    a.check.name.localeCompare(b.check.name),
 };
 
 export const SuggestionsContainer: React.FC<Props> = ({
@@ -66,7 +67,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const [sortType, setSortType] = useState(SortType.TextOrder);
 
   const router = useRouter();
-  const checkerId = router.query.checkerId as string;
+  const { checkerId } = useParams();
 
   useEffect(() => {
     const sorted = [...suggestions].sort(Sorters[sortType]);
@@ -188,7 +189,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
     setIsLoading(true);
     const response = await apiClient.checker.checkDoc.query({
       doc: editorState,
-      checkerId,
+      checkerId: checkerId as string,
     });
     setIsLoading(false);
     if (!response) {
@@ -222,13 +223,8 @@ export const SuggestionsContainer: React.FC<Props> = ({
           {user?.id === storefront.creatorId && (
             <NormalButton
               className="mb-4 py-[4px]"
-              onClick={async () => {
-                await router.push({
-                  pathname: `/create/checker/${checkerId}`,
-                  query: {
-                    checkerId,
-                  },
-                });
+              onClick={() => {
+                router.push(`/create/checker/${checkerId as string}`);
               }}
             >
               Edit this Checker
