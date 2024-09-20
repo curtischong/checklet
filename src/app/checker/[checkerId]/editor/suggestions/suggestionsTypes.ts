@@ -25,13 +25,21 @@ export type Suggestion = {
   range: DocRange; // range of the original text
   originalText: string;
   editedText: string[];
-  editOps: EditOp[]; // NOTE: these are relative to suggestion.range
-  checkId: string;
+  check: CheckDesc;
   suggestionId: SuggestionId;
 };
 
+export enum CheckType {
+  highlight = "Highlight",
+  rephrase = "Rephrase",
+  // TODO: global check types? but I think those would just be a diff Suggestion in general
+}
+
 export type CheckDesc = {
-  heuristicName: string;
+  name: string; // this is the name of the heuristic/tip/trick
+  reason: string;
+  checkType: CheckType;
+  //   heuristicCategory????
 };
 
 // this is not a class because when it's serialized to JSON, we can easily deseralize it (and use all the helpful functions below)

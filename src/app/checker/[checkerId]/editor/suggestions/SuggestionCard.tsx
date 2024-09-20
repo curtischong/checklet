@@ -29,6 +29,7 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
   }, [suggestion, activeSuggestion]);
 
   const originalText = suggestion.originalText;
+  const checkDesc = suggestion.check;
 
   //   const checkDesc = props.checkDescObj[suggestion.checkId];
   //   if (!checkDesc) {
@@ -102,12 +103,12 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
                 flexBasis: "0",
               }}
             >
-              {checkDesc.objInfo.name}
+              {checkDesc.name}
             </div>
             {/* <span
                                 className={"p-[3px] rounded-xl bg-red-800 mx-8"}
                             /> */}
-            <div className="">{checkDesc.category}</div>
+            {/* <div className="">{checkDesc.category}</div> */}
           </div>
         ) : (
           <>
@@ -120,7 +121,7 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
             </div>
             <span className={"mx-2 my-auto h-1 w-1 rounded-full bg-red-600"} />
             <div className={"overflow-hidden font-normal text-gray-600"}>
-              {checkDesc.objInfo.name}
+              {checkDesc.name}
             </div>
           </>
         )}
@@ -142,7 +143,7 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
               remarkPlugins={[remarkGfm]}
               // remarkPlugins={[remarkGfm]}
             >
-              {treatedContent}
+              {checkDesc.reason}
             </Markdown>
           </div>
         </div>
