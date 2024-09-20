@@ -10,7 +10,7 @@ import {
 } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
-const MAX_CHECKERS = 10;
+const MAX_CHECKERS = 0;
 
 export const checkerRouter = createTRPCRouter({
   getBlueprint: publicProcedure
