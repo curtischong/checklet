@@ -1,4 +1,4 @@
-import { checkerRouter } from "@/server/api/routers/checker";
+import { checkerRouter } from "@/server/api/routers/checker/checker";
 import { postRouter } from "@/server/api/routers/post";
 import { userRouter } from "@/server/api/routers/user";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";

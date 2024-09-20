@@ -66,7 +66,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const [sortType, setSortType] = useState(SortType.TextOrder);
 
   const router = useRouter();
-  const onlyUseCheckId = router.query.onlyUseCheckId as string;
   const checkerId = router.query.checkerId as string;
 
   useEffect(() => {
@@ -95,7 +94,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
 
   useEffect(() => {
     if (activeSuggestion) {
-      const ref = suggestionsRefs.current[activeSuggestion.suggestionId];
+      const ref = suggestionsRefs.current[activeSuggestion.suggestionId]!;
       // we cannot use scrollIntoView because there is a bug in its implementation in chrome
       // I even tried wrapping it in a requestAnimationFrame but it doesn't work
       // https://github.com/facebook/react/issues/23396
@@ -179,7 +178,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
     sortedSuggestions,
     hasModifiedTextAfterChecking,
     activeSuggestion,
-    checkDescObj,
     onCollapseClick,
     acceptSuggestion,
   ]);
@@ -189,13 +187,10 @@ export const SuggestionsContainer: React.FC<Props> = ({
       return;
     }
     setIsLoading(true);
-    const plaintext = editorState;
-    const response = apiClient.checker await checkDocText(
-      plaintext,
+    const response = await apiClient.checker.checkDoc.query({
+      doc: editorState,
       checkerId,
-      user,
-      onlyUseCheckId,
-    );
+    });
     setIsLoading(false);
     if (!response) {
       toast.error("Something went wrong, please try again later");
@@ -205,7 +200,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
 
     const newSuggestions = response.suggestions;
     newSuggestions.sort(Sorters[SortType.TextOrder]);
-    setCheckDescObj(response.checkDescs);
     setSuggestions(newSuggestions);
 
     // mixpanelTrack("Check Document Clicked", {
@@ -213,7 +207,14 @@ export const SuggestionsContainer: React.FC<Props> = ({
     //   Suggestions: newSuggestions,
     //   Input: plaintext,
     // });
-  }, [editorState, isLoading]);
+  }, [
+    checkerId,
+    editorState,
+    isLoading,
+    setHasModifiedTextAfterChecking,
+    setIsLoading,
+    setSuggestions,
+  ]);
 
   return (
     <div className="mt-14 flex w-[300px] flex-col">
