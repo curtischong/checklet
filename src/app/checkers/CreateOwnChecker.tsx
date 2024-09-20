@@ -1,6 +1,6 @@
 "use client";
 import { type UserCtx } from "@/firebase/edge_env";
-import { api } from "@/trpc/react";
+import { apiClient, handleErr } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -9,11 +9,6 @@ interface Props {
 
 export const CreateOwnChecker = ({ user }: Props) => {
   const router = useRouter();
-  const createChecker = api.checker.create.useMutation({
-    onSuccess: (checker) => {
-      router.push(`/checker/create/${checker.id}`);
-    },
-  });
 
   return (
     <div className="mx-auto mt-2">
@@ -24,7 +19,9 @@ export const CreateOwnChecker = ({ user }: Props) => {
           if (!user) {
             router.push("/signin");
           } else {
-            createChecker.mutate();
+            handleErr(apiClient.checker.create.mutate(), (checker) => {
+              router.push(`/checker/create/${checker.id}`);
+            });
           }
         }}
       >

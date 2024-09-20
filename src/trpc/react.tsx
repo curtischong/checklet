@@ -13,6 +13,8 @@ import { useState } from "react";
 import SuperJSON from "superjson";
 
 import { type AppRouter } from "@/server/api/root";
+import { type TRPCError } from "@trpc/server";
+import { toast } from "react-toastify";
 import { createQueryClient } from "./query-client";
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
@@ -41,6 +43,16 @@ export const apiClient = createTRPCClient<AppRouter>({
     }),
   ],
 });
+
+export function handleErr<T>(
+  promise: Promise<T>,
+  onSuccess?: (res: T) => void,
+) {
+  promise.then(onSuccess).catch((err: TRPCError) => {
+    toast.error(err.message);
+    console.error("An error occurred:", err);
+  });
+}
 
 /**
  * Inference helper for inputs.
