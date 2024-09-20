@@ -2,7 +2,7 @@
 
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { useClientCtx } from "@/app/ClientCtx";
-import { apiClient, withDefaultErrorHandling } from "@/trpc/react";
+import { apiClient, handleErr } from "@/trpc/react";
 import {
   createUserWithEmailAndPassword,
   getAdditionalUserInfo,
@@ -56,7 +56,7 @@ export const RegisterBox = () => {
           console.warn("additionalUserInfo is null");
         } else {
           if (additionalUserInfo.isNewUser) {
-            withDefaultErrorHandling(apiClient.user.onSignup.mutate());
+            handleErr(apiClient.user.onSignup.mutate());
           }
         }
 

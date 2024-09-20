@@ -44,7 +44,7 @@ export const apiClient = createTRPCClient<AppRouter>({
   ],
 });
 
-export function withDefaultErrorHandling<T>(
+export function handleErr<T>(
   promise: Promise<T>,
   onSuccess?: (res: T) => void,
 ) {

@@ -1,6 +1,6 @@
 "use client";
 import { type UserCtx } from "@/firebase/edge_env";
-import { apiClient, withDefaultErrorHandling } from "@/trpc/react";
+import { apiClient, handleErr } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -19,12 +19,9 @@ export const CreateOwnChecker = ({ user }: Props) => {
           if (!user) {
             router.push("/signin");
           } else {
-            withDefaultErrorHandling(
-              apiClient.checker.create.mutate(),
-              (checker) => {
-                router.push(`/checker/create/${checker.id}`);
-              },
-            );
+            handleErr(apiClient.checker.create.mutate(), (checker) => {
+              router.push(`/checker/create/${checker.id}`);
+            });
           }
         }}
       >
