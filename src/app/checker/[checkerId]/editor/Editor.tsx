@@ -7,7 +7,6 @@ import {
   shift,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-import { useRouter } from "next/router";
 import React, { useCallback, useRef, useState } from "react";
 import { type RichTextareaHandle } from "rich-textarea";
 import { TextboxContainer } from "./textboxcontainer";
@@ -23,9 +22,6 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
     useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const editorRef = useRef<RichTextareaHandle | null>(null);
-
-  const router = useRouter();
-  const onlyUseCheckId = router.query.onlyUseCheckId as string;
 
   const updateEditorState = useCallback(
     (oldText: string, newText: string, curSuggestions: Suggestion[]) => {

@@ -16,7 +16,7 @@ import { type UserCtx } from "@/firebase/edge_env";
 import { api } from "@/trpc/react";
 import { type Checker } from "@prisma/client";
 import debounce from "lodash.debounce";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
 
 export enum Page {

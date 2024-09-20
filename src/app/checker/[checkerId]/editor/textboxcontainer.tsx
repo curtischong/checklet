@@ -1,9 +1,20 @@
-import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
+import {
+  isWithinRange,
+  newDocRange,
+  type Suggestion,
+  type SuggestionId,
+  type SuggestionIdToRef,
+} from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { MAX_EDITOR_LEN } from "@/constants";
 import { type SetState } from "@/utils/types";
 import debounce from "lodash.debounce";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { type Ref, useCallback, useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
+import { RichTextarea, type RichTextareaHandle } from "rich-textarea";
 
 export type TextboxContainerProps = {
   suggestions: Suggestion[];
@@ -34,17 +45,17 @@ export const TextboxContainer = ({
   const suggestionIdToRef = React.useRef<SuggestionIdToRef>({});
 
   useEffect(() => {
-    editorRef.current?.focus();
+    editorRef?.current?.focus();
 
     const prevDocument = localStorage.getItem("editorText");
     if (prevDocument) {
       updateEditorState(prevDocument);
     }
-  }, [editorRef]);
+  }, [editorRef, updateEditorState]);
 
   const debouncedSave = useMemo(
     () =>
-      debounce((newState) => {
+      debounce((newState: string) => {
         localStorage.setItem("editorText", newState);
       }, 1000),
     [],
@@ -62,9 +73,9 @@ export const TextboxContainer = ({
         // I even tried wrapping it in a requestAnimationFrame but it doesn't work
         // https://github.com/facebook/react/issues/23396
         const scrollHeight = ref.current.offsetTop;
-        editorRef.current?.scrollTo({
+        editorRef?.current?.scrollTo({
           left: 0,
-          top: scrollHeight - editorRef.current.offsetHeight / 2,
+          top: scrollHeight - editorRef?.current.offsetHeight / 2,
           behavior: "smooth",
         });
       }
@@ -87,11 +98,11 @@ export const TextboxContainer = ({
       }
 
       updateActiveSuggestion(suggestion);
-      mixpanelTrack("Underlined text selected", {
-        suggestion,
-      });
+      //   mixpanelTrack("Underlined text selected", {
+      //     suggestion,
+      //   });
     },
-    [suggestions],
+    [suggestions, updateActiveSuggestion],
   );
 
   return (
@@ -162,8 +173,8 @@ export const TextboxContainer = ({
           const activeSuggestions = new Set<SuggestionId>();
           const res: JSX.Element[] = [];
           for (let i = 0; i < sortedPoints.length - 1; i++) {
-            const start = sortedPoints[i];
-            const end = sortedPoints[i + 1];
+            const start = sortedPoints[i]!;
+            const end = sortedPoints[i + 1]!;
             const sSuggestions = starts.get(start) ?? [];
             const eSuggestions = ends.get(start) ?? []; // yes. start. not end. this is not a typo
             sSuggestions.forEach((item) => activeSuggestions.add(item));
@@ -206,10 +217,10 @@ export const TextboxContainer = ({
           }
 
           // we need to append the (non-underlined) text from the last suggestion to the end of the string
-          if (sortedPoints[sortedPoints.length - 1] < v.length) {
+          if (sortedPoints[sortedPoints.length - 1]! < v.length) {
             res.push(
               <span key={res.length}>
-                {v.substring(sortedPoints[sortedPoints.length - 1])}
+                {v.substring(sortedPoints[sortedPoints.length - 1]!)}
               </span>,
             );
           }

@@ -8,6 +8,9 @@ export default async function Page({
   params: { checkerId: string };
 }) {
   const user = parseAuthHeader();
+  if (!user) {
+    return <ErrorMsg message={"You must be logged in to edit this checker"} />;
+  }
 
   const checker = await db.checker.findUnique({
     where: {
@@ -17,12 +20,23 @@ export default async function Page({
   if (!checker) {
     return <p>unknown checker</p>;
   }
-  if (!user) {
-    return <p>You must be logged in to edit this checker</p>;
-  }
-  if (user.id !== checker.creatorId) {
-    return <p>You must be logged in to edit this checker</p>;
+  if (user.id !== checker.createdById) {
+    return (
+      <ErrorMsg
+        message={
+          "You are not the creator of this checker. So you cannot edit it!"
+        }
+      />
+    );
   }
 
-  return <CheckerPage originalChecker={checker} userCtx={session.user} />;
+  return <CheckerPage originalChecker={checker} userCtx={user} />;
 }
+
+const ErrorMsg = ({ message }: { message: string }) => {
+  return (
+    <div className="mx-auto mt-10 text-center">
+      <p>{message}</p>
+    </div>
+  );
+};
