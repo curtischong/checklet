@@ -1,3 +1,4 @@
+"use client";
 import { NormalButton } from "@/app/_components/ui/Button";
 import { Input } from "@/app/_components/ui/Input";
 import { LabelWithHelp } from "@/app/_components/ui/LabelWithHelp";
@@ -9,7 +10,7 @@ import {
 } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { IsPublicSwitch } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
 import { IsValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
-import { Editor } from "@/app/checker/[checkerId]/Editor";
+import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
 import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
 import { type UserCtx } from "@/firebase/edge_env";
 import { api } from "@/trpc/react";
@@ -58,7 +59,7 @@ export const CheckerPage = ({
 
   const saveChecker = useCallback(
     debounce(
-      async (
+      (
         newName: string,
         newDesc: string,
         newPrompt: string,
@@ -81,7 +82,7 @@ export const CheckerPage = ({
 
   useEffect(() => {
     saveChecker(name, desc, prompt, isPublic);
-  }, [name, desc, prompt, isPublic]);
+  }, [name, desc, prompt, isPublic, saveChecker]);
 
   return (
     <div className={`flex justify-center mt-[${checkerCreatorMarginTop}px]`}>
@@ -133,6 +134,17 @@ export const CheckerPage = ({
                 minRows={4}
                 maxLength={MAX_CHECKER_DESC_LEN}
               />
+              <label className="ml-1 mt-4 text-lg font-bold">Prompt</label>
+              <NormalTextArea
+                placeholder={"what are the tips / tricks you use?"}
+                onChange={(e) => {
+                  setSubmittingState(SubmittingState.ChangesDetected);
+                  setPrompt(e.target.value);
+                }}
+                value={desc}
+                minRows={4}
+                maxLength={MAX_CHECKER_DESC_LEN}
+              />
 
               <LabelWithHelp
                 className="ml-1 mt-4 text-lg font-bold"
@@ -141,14 +153,12 @@ export const CheckerPage = ({
                 helpIconClassName="mt-[7px]"
               />
               <Editor
-                storefront={{
-                  objInfo: {
-                    name: name,
-                    desc: desc,
-                    id: originalChecker.id,
-                    creatorId: userCtx.id ?? "",
-                  },
-                  placeholder: "test",
+                checkerStorefront={{
+                  name: name,
+                  desc: desc,
+                  checkerId: originalChecker.id,
+                  creatorId: userCtx.id,
+                  placeholder: "place your test document here",
                 }}
               ></Editor>
               {/* <NormalTextArea
