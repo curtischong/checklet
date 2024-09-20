@@ -20,26 +20,18 @@ export const GoogleSignInButton = () => {
   const { firebaseAuth } = useClientCtx();
 
   const onSignup = api.user.onSignup.useMutation({
-    onSuccess: () => {
-      console.log("success onsignup");
+    onSuccess: (res) => {
+      console.log("success onsignup", res);
     },
-    onError: () => {
-      console.log("err onsignup");
+    onError: (err) => {
+      console.log("err onsignup", err);
     },
   });
 
   const signInWithGoogle = useCallback(() => {
     signInWithPopup(firebaseAuth, provider)
-      .then(async (result) => {
-        const additionalUserInfo = getAdditionalUserInfo(result);
-        if (!additionalUserInfo) {
-          console.warn("additionalUserInfo is null");
-          return;
-        }
-        if (additionalUserInfo.isNewUser) {
-          onSignup.mutate();
-        }
-        const idToken = await result.user.getIdToken();
+      .then(async (userCredential) => {
+        const idToken = await userCredential.user.getIdToken();
 
         // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
         // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
@@ -48,6 +40,16 @@ export const GoogleSignInButton = () => {
             Authorization: `Bearer ${idToken}`,
           },
         });
+
+        // now that we've updated our credentials, we create a new user
+        const additionalUserInfo = getAdditionalUserInfo(userCredential);
+        if (!additionalUserInfo) {
+          console.warn("additionalUserInfo is null");
+        } else {
+          if (additionalUserInfo.isNewUser) {
+            onSignup.mutate();
+          }
+        }
         router.push("/checkers");
       })
       .catch((error) => {

@@ -3,11 +3,15 @@ import ThinLine from "@/app/_components/ThinLine";
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { useClientCtx } from "@/app/ClientCtx";
 import { GoogleSignInButton } from "@/app/signin/GoogleSignInButton";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { api } from "@/trpc/react";
+import {
+  getAdditionalUserInfo,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
 import type { FormEvent } from "react";
+import { useCallback, useState } from "react";
 
 export default function SignInBox() {
   const [email, setEmail] = useState("");
@@ -27,6 +31,15 @@ export default function SignInBox() {
     return message;
   }, []);
 
+  const onSignup = api.user.onSignup.useMutation({
+    onSuccess: (res) => {
+      console.log("success onsignup", res);
+    },
+    onError: (err) => {
+      console.log("err onsignup", err);
+    },
+  });
+
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
       event.preventDefault();
@@ -34,12 +47,12 @@ export default function SignInBox() {
       setIsLoading(true);
 
       try {
-        const credential = await signInWithEmailAndPassword(
+        const userCredential = await signInWithEmailAndPassword(
           firebaseAuth,
           email,
           password,
         );
-        const idToken = await credential.user.getIdToken();
+        const idToken = await userCredential.user.getIdToken();
 
         // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
         // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
@@ -48,6 +61,16 @@ export default function SignInBox() {
             Authorization: `Bearer ${idToken}`,
           },
         });
+
+        // now that we've updated our credentials, we create a new user
+        const additionalUserInfo = getAdditionalUserInfo(userCredential);
+        if (!additionalUserInfo) {
+          console.warn("additionalUserInfo is null");
+        } else {
+          if (additionalUserInfo.isNewUser) {
+            onSignup.mutate();
+          }
+        }
 
         setIsLoading(false);
         router.push("/checkers");
@@ -58,7 +81,7 @@ export default function SignInBox() {
         setIsLoading(false);
       }
     },
-    [email, makeErrMsgReadable, password, router, firebaseAuth],
+    [email, makeErrMsgReadable, password, router, firebaseAuth, onSignup],
   );
 
   return (
