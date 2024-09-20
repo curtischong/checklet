@@ -49,6 +49,7 @@ export const checkerRouter = createTRPCRouter({
       },
     });
 
+    // finally push the new checker to the user's checkerIds array
     await ctx.db.user.update({
       where: {
         id: ctx.user.id,
