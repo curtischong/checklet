@@ -20,7 +20,7 @@ model Checker {
     name      String
     desc      String
     prompt    String
-    isPublic  Boolean     @default(true)
+    isPublic  Boolean     @default(false)
     isValid   Boolean     @default(false) // has all of the required fields been filled out? if it's not valid, it cannot be public even if they want it to be
 
     createdAt DateTime @default(now())
