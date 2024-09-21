@@ -9,7 +9,7 @@ import {
   SubmittingState,
 } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { IsPublicSwitch } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
-import { IsValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
+import { isValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
 import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
 import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
 import { type UserCtx } from "@/firebase/edge_env";
@@ -81,6 +81,8 @@ export const CheckerPage = ({
   useEffect(() => {
     saveChecker(name, desc, prompt, isPublic);
   }, [name, desc, prompt, isPublic, saveChecker]);
+
+  const isInvalidWarningMsg = isValidWarning(name, desc, prompt);
 
   return (
     <div className={`mt-14 flex justify-center`}>
@@ -174,9 +176,11 @@ export const CheckerPage = ({
                             /> */}
 
               <div className="mt-4 flex flex-row space-x-8">
-                <div>
-                  <IsValidWarning name={name} desc={desc} prompt={prompt} />
-                </div>
+                {isInvalidWarningMsg != "" && (
+                  <div className="rounded-md bg-red-200 px-2 py-1">
+                    {isInvalidWarningMsg}
+                  </div>
+                )}
                 <IsPublicSwitch
                   checkerId={originalChecker.id}
                   isPublic={isPublic}
