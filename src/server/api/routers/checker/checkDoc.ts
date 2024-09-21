@@ -9,7 +9,7 @@ import { tinySimpleHash } from "@/utils/strings";
 import { type PrismaClient } from "@prisma/client";
 import path from "path";
 
-export class Checker {
+export class CheckerWorker {
   systemPrompt = "";
   modelName = "gpt-3.5-turbo";
   llm: Llm;
