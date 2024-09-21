@@ -37,9 +37,10 @@ export const GoogleSignInButton = () => {
         if (!additionalUserInfo) {
           console.warn("additionalUserInfo is null");
         } else {
-          if (additionalUserInfo.isNewUser) {
-            handleErr(apiClient.user.onSignup.mutate());
-          }
+          // if (additionalUserInfo.isNewUser) {
+          // honestly, just always try to signup. cause when developing, I always clear the db
+          handleErr(apiClient.user.onSignup.mutate());
+          // }
         }
         router.push("/checkers");
       })
