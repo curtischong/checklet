@@ -10,7 +10,7 @@ import CoolChecklet from "@public/checklets/cool.svg";
 import PencilChecklet from "@public/checklets/pencil.svg";
 import YayChecklet from "@public/checklets/yay.svg";
 import { Tooltip } from "antd/lib";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
@@ -223,12 +223,13 @@ export const SuggestionsContainer: React.FC<Props> = ({
     setSuggestions,
     sortType,
   ]);
+  const pathName = usePathname();
 
   return (
     <div className="mt-14 flex w-[300px] flex-col">
       <div>
         <div className="flex flex-col space-y-2">
-          {user?.id === storefront.creatorId && (
+          {user?.id === storefront.creatorId && !pathName.endsWith("/edit") && (
             <NormalButton
               className="mb-4 py-[4px]"
               onClick={() => {

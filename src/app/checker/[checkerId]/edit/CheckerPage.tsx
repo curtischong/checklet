@@ -148,7 +148,7 @@ export const CheckerPage = ({
 
               <LabelWithHelp
                 className="ml-1 mt-4 text-lg font-bold"
-                label="Example Document with mistakes"
+                label="Test Your Checker!"
                 helpText="Use this to test your prompt."
                 helpIconClassName="mt-[7px]"
               />
@@ -188,16 +188,16 @@ export const CheckerPage = ({
                 <div className="flex flex-row space-x-8">
                   <NormalButton
                     className="mt-4 h-10 w-52"
-                    onClick={async () => {
-                      await router.push("/dashboard");
+                    onClick={() => {
+                      router.push("/dashboard");
                     }}
                   >
                     Return to Dashboard
                   </NormalButton>
                   <NormalButton
                     className="mx-auto mt-4 h-10 px-6"
-                    onClick={async () => {
-                      await router.push(`/editor/${originalChecker.id}`);
+                    onClick={() => {
+                      router.push(`/editor/${originalChecker.id}`);
                     }}
                   >
                     Open checker in editor

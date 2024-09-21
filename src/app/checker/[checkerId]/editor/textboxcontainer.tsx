@@ -51,7 +51,8 @@ export const TextboxContainer = ({
     if (prevDocument) {
       updateEditorState(prevDocument);
     }
-  }, [editorRef, updateEditorState]);
+    console.log("editorRef update?");
+  }, [updateEditorState]);
 
   const debouncedSave = useMemo(
     () =>
@@ -68,12 +69,12 @@ export const TextboxContainer = ({
   useEffect(() => {
     if (activeSuggestion) {
       const ref = suggestionIdToRef.current[activeSuggestion.suggestionId];
-      if (ref?.current) {
+      if (ref.current) {
         // we cannot use scrollIntoView because there is a bug in its implementation in chrome
         // I even tried wrapping it in a requestAnimationFrame but it doesn't work
         // https://github.com/facebook/react/issues/23396
         const scrollHeight = ref.current.offsetTop;
-        editorRef?.current?.scrollTo({
+        editorRef.current?.scrollTo({
           left: 0,
           top: scrollHeight - editorRef?.current.offsetHeight / 2,
           behavior: "smooth",
@@ -117,7 +118,10 @@ export const TextboxContainer = ({
         placeholder={storefront.placeholder || "Write your document here!"}
         ref={editorRef}
         value={editorState}
-        onChange={(e) => updateEditorState(e.target.value)}
+        onChange={(e) => {
+          console.log("rich text area new", e.target.value);
+          updateEditorState(e.target.value);
+        }}
         className="resize-none bg-white pb-32 tracking-[0.01em] outline-none" // tracking increases letter spacing
         // the styling MUST be done via the style prop, not tailwind
         style={{
