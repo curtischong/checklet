@@ -1,5 +1,5 @@
 import { type CheckerType } from "@/server/api/routers/checker/checker";
-import { Llm } from "@/server/api/routers/checker/llm";
+import { Llm2 } from "@/server/api/routers/checker/llm2";
 import { extractTipsAndReasons } from "@/server/api/routers/checker/llmOutputHelpers";
 import {
   inferenceInstructions,
@@ -13,7 +13,7 @@ import path from "path";
 export class CheckerWorker {
   systemPrompt = "";
   modelName = "gpt-3.5-turbo";
-  llm: Llm;
+  llm: Llm2;
   db: PrismaClient;
 
   constructor(db: PrismaClient) {
@@ -22,7 +22,7 @@ export class CheckerWorker {
       "/cache",
     );
     const apiKey = process.env.OPENAI_API_KEY;
-    this.llm = new Llm(this.systemPrompt, this.modelName, cache, apiKey);
+    this.llm = new Llm2(this.systemPrompt, this.modelName, cache, apiKey);
     this.db = db;
   }
 
