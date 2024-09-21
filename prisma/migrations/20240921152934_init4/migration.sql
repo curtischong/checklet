@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Checker" ADD COLUMN     "promptHash" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "refinedPrompt" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "sampleDoc" TEXT NOT NULL DEFAULT '',
+ALTER COLUMN "name" SET DEFAULT '',
+ALTER COLUMN "desc" SET DEFAULT '',
+ALTER COLUMN "prompt" SET DEFAULT '';
