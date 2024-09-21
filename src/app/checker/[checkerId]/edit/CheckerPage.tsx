@@ -29,8 +29,6 @@ interface Props {
   userCtx: UserCtx;
 }
 
-export const checkerCreatorMarginTop = 50;
-
 export const CheckerPage = ({
   originalChecker,
   userCtx,
@@ -85,7 +83,7 @@ export const CheckerPage = ({
   }, [name, desc, prompt, isPublic, saveChecker]);
 
   return (
-    <div className={`flex justify-center mt-[${checkerCreatorMarginTop}px]`}>
+    <div className={`mt-14 flex justify-center`}>
       <div className="container">
         <div className="flex flex-row">
           <div
@@ -141,14 +139,14 @@ export const CheckerPage = ({
                   setSubmittingState(SubmittingState.ChangesDetected);
                   setPrompt(e.target.value);
                 }}
-                value={desc}
+                value={prompt}
                 minRows={4}
                 maxLength={MAX_CHECKER_DESC_LEN}
               />
 
               <LabelWithHelp
                 className="ml-1 mt-4 text-lg font-bold"
-                label="Test Your Checker!"
+                label="Test Your Checker below!"
                 helpText="Use this to test your prompt."
                 helpIconClassName="mt-[7px]"
               />
@@ -175,8 +173,10 @@ export const CheckerPage = ({
                                 maxLength={MAX_CHECKER_PLACEHOLDER_LEN}
                             /> */}
 
-              <div className="mt-4 flex flex-row">
-                <IsValidWarning name={name} desc={desc} prompt={prompt} />
+              <div className="mt-4 flex flex-row space-x-8">
+                <div>
+                  <IsValidWarning name={name} desc={desc} prompt={prompt} />
+                </div>
                 <IsPublicSwitch
                   checkerId={originalChecker.id}
                   isPublic={isPublic}

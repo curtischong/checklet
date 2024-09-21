@@ -1,6 +1,6 @@
 import { LabelWithSwitch } from "@/app/_components/ui/Switch";
 import { api } from "@/trpc/react";
-import { SetState } from "@/utils/types";
+import { type SetState } from "@/utils/types";
 import { toast } from "react-toastify";
 
 interface Props {
@@ -31,15 +31,13 @@ export const IsPublicSwitch = ({
   });
 
   return (
-    <div className="flex flex-col">
-      <LabelWithSwitch
-        text="Is Public:"
-        helpText="Public checkers are discoverable and usable by anybody. People may reverse-engineer your prompts if you make it public"
-        isChecked={isPublic}
-        setChecked={(newIsPublic: boolean) => {
-          updateIsPublic.mutate({ id: checkerId, isPublic: newIsPublic });
-        }}
-      />
-    </div>
+    <LabelWithSwitch
+      text="Is Public:"
+      helpText="Share your Checker with friends by making it public!"
+      isChecked={isPublic}
+      setChecked={(newIsPublic: boolean) => {
+        updateIsPublic.mutate({ id: checkerId, isPublic: newIsPublic });
+      }}
+    />
   );
 };
