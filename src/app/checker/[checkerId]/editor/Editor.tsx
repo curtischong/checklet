@@ -26,7 +26,6 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
 
   const updateEditorState = useCallback(
     (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
-      console.log(oldText, newText);
       // if the text changed, we need to shift all the suggestions.
       if (oldText !== newText) {
         // PERF: look into rich-textarea to see if we can get the diff of the text change so it's O(1) instead of O(n)
@@ -141,7 +140,6 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
               suggestions={suggestions}
               editorState={editorState}
               updateEditorState={(newText) => {
-                console.log("updateEditorState");
                 setHasModifiedTextAfterChecking(newText !== "");
                 updateEditorState(editorState, newText, suggestions);
               }}
