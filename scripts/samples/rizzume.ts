@@ -33,8 +33,7 @@ Seeing c++ at the start makes you seem more technical
 - if your resume has a newline with only one or 2 words on that line, it looks bad because you're wasting so much space on that empty line. try to shorten
 the sentence so it doesn't dangle over.
 - try to stick with past tense (even if you're currently working at the job), since it's easier for humans to read
-- try to keep it to one page. you want to be consise and only put the most impressive points down. There's always stuff to prune
-`;
+- try to keep it to one page. you want to be consise and only put the most impressive points down. There's always stuff to prune`;
 
 export const sample_resume_2019 = `Curtis Chong
 

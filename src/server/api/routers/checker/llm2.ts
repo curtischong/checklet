@@ -39,13 +39,30 @@ export class Llm2 {
   }
 
   async prompt(message: string): Promise<string> {
-    return this.promptMessages([], message);
+    return (await this.promptMessages([], message)).message.content!;
+  }
+
+  async promptMessagesExtendChain(
+    prevMessages: ChatCompletionMessageParam[],
+    newMessage: string,
+  ): Promise<ChatCompletionMessageParam[]> {
+    const chatCompletion = await this.promptMessages(prevMessages, newMessage);
+    return [
+      ...prevMessages,
+
+      // these two messages are the Q and A of the chat
+      {
+        role: "user",
+        content: newMessage,
+      },
+      chatCompletion.message,
+    ];
   }
 
   async promptMessages(
     prevMessages: ChatCompletionMessageParam[],
     newMessage: string,
-  ): Promise<string> {
+  ): Promise<OpenAI.Chat.Completions.ChatCompletion.Choice> {
     const newMessages: ChatCompletionMessageParam[] = [
       ...prevMessages,
       {
@@ -57,7 +74,9 @@ export class Llm2 {
     if (this.cache) {
       const cachedValue = this.cacheGet(newMessages);
       if (cachedValue) {
-        return cachedValue;
+        return JSON.parse(
+          cachedValue,
+        ) as OpenAI.Chat.Completions.ChatCompletion.Choice;
       }
     }
 
@@ -65,10 +84,11 @@ export class Llm2 {
       model: this.model,
       messages: [this.systemPromptMessage, ...newMessages],
     });
-    const result =
-      value.choices[0]?.message.content ??
-      "no message returned. please investigate. this was untested";
-    this.cacheSet(newMessages, result);
-    return result;
+    const choice = value.choices[0];
+    if (!choice) {
+      throw new Error("no choice returned. couldn't generate response");
+    }
+    this.cacheSet(newMessages, JSON.stringify(choice));
+    return choice;
   }
 }

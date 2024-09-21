@@ -1,8 +1,10 @@
+import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type CheckerType } from "@/server/api/routers/checker/checker";
 import { Llm2 } from "@/server/api/routers/checker/llm2";
 import { extractTipsAndReasons } from "@/server/api/routers/checker/llmOutputHelpers";
 import {
-  inferenceInstructions,
+  inferenceInstructions1,
+  inferenceInstructions2,
   preprocessInstructions,
 } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
@@ -51,13 +53,8 @@ export class CheckerWorker {
     // this will be a problem to solve later
     const newChecker = await this.updateRefinedPrompt(checker);
 
-    const tipsAndReasons = extractTipsAndReasons(newChecker.refinedPrompt);
-    const res = await this.llm.prompt(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      inferenceInstructions(newChecker.refinedPrompt, doc),
-    );
-    console.log("res", res);
-
+    const suggestions = await checkDoc(this.llm, newChecker.refinedPrompt, doc);
+    console.log("suggestions", suggestions);
     // TODO: I need to parse it and turn it into suggestions
 
     // console.log("checkDoc", checker, doc);
@@ -67,3 +64,28 @@ export class CheckerWorker {
     };
   };
 }
+
+export const checkDoc = async (
+  llm: Llm2,
+  refinedPrompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const editsChain = await llm.promptMessagesExtendChain(
+    [],
+    inferenceInstructions1(refinedPrompt, doc),
+  );
+  const newChat = await llm.promptMessages(
+    editsChain,
+    inferenceInstructions2(doc),
+  );
+  const newDoc = newChat.message.content!;
+  const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
+  console.log("newDoc", newDoc);
+  console.log(tipsAndReasons);
+
+  // TODO: I need to parse it and turn it into suggestions
+
+  // console.log("checkDoc", checker, doc);
+
+  return [];
+};
