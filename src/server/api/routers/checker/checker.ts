@@ -82,11 +82,15 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ name: z.string() }))
     .input(z.object({ desc: z.string() }))
     .input(z.object({ prompt: z.string() }))
+    .input(z.object({ sampleDoc: z.string() }))
     .input(z.object({ isPublic: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       // TODO: veritfy that YOU own the checker
       const isValid =
-        input.name !== "" && input.desc !== "" && input.prompt !== "";
+        input.name !== "" &&
+        input.desc !== "" &&
+        input.prompt !== "" &&
+        input.sampleDoc !== "";
 
       const checker = await ctx.db.checker.findUnique({
         where: {
@@ -114,6 +118,7 @@ export const checkerRouter = createTRPCRouter({
           name: input.name,
           desc: input.desc,
           prompt: input.prompt,
+          sampleDoc: input.sampleDoc,
           isPublic: input.isPublic,
           isValid,
         },

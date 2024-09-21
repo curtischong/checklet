@@ -36,13 +36,13 @@ export const CheckerPage = ({
   const [name, setName] = React.useState(originalChecker.name);
   const [desc, setDesc] = React.useState(originalChecker.desc);
   const [prompt, setPrompt] = React.useState(originalChecker.prompt);
+  const [editorState, setEditorState] = React.useState(
+    originalChecker.sampleDoc,
+  );
   const [submittingState, setSubmittingState] = React.useState(
     SubmittingState.NotSubmitting,
   );
   const [isPublic, setIsPublic] = React.useState(originalChecker.isPublic);
-  const [editorState, setEditorState] = React.useState(
-    originalChecker.sampleDoc,
-  );
 
   const router = useRouter();
 
@@ -64,6 +64,7 @@ export const CheckerPage = ({
         newName: string,
         newDesc: string,
         newPrompt: string,
+        newSampleDoc: string,
         newIsPublic: boolean,
       ) => {
         // const checkerId =
@@ -73,6 +74,7 @@ export const CheckerPage = ({
           name: newName,
           desc: newDesc,
           prompt: newPrompt,
+          sampleDoc: newSampleDoc,
           isPublic: newIsPublic,
         });
       },
@@ -82,8 +84,8 @@ export const CheckerPage = ({
   );
 
   useEffect(() => {
-    saveChecker(name, desc, prompt, isPublic);
-  }, [name, desc, prompt, isPublic, saveChecker]);
+    saveChecker(name, desc, prompt, editorState, isPublic);
+  }, [name, desc, prompt, editorState, isPublic, saveChecker]);
 
   const isInvalidWarningMsg = isValidWarning(name, desc, prompt);
 
@@ -169,7 +171,9 @@ export const CheckerPage = ({
                   creatorId: userCtx.id,
                   placeholder: "place your test document here",
                 }}
-              ></Editor>
+                editorState={editorState}
+                setEditorState={setEditorState}
+              />
               {/* <NormalTextArea
                                 placeholder={`• Expedited DynamoDB queries from 68 ms to 41 ms by optimizing the schema for reads
 • Unified request authorization logic by proxying requests through a Spring API Gateway`}

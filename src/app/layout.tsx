@@ -21,20 +21,20 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <TRPCReactProvider>
-        <body
-          className={`${mackinac.variable} ${bricolage.variable} ${nunito.variable} bg-[#fff0f1] font-nunito tracking-[0.01em]`}
-          style={{
-            WebkitFontSmoothing: "antialiased",
-          }}
-        >
+      <body
+        className={`${mackinac.variable} ${bricolage.variable} ${nunito.variable} bg-[#fff0f1] font-nunito tracking-[0.01em]`}
+        style={{
+          WebkitFontSmoothing: "antialiased",
+        }}
+      >
+        <TRPCReactProvider>
           <ClientCtxProvider>
             <MenuHeader />
             {children}
           </ClientCtxProvider>
-        </body>
+        </TRPCReactProvider>
         <ToastContainer />
-      </TRPCReactProvider>
+      </body>
     </html>
   );
 }
