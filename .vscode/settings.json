@@ -1,6 +1,21 @@
 {
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": "always"
-  }
+    "source.organizeImports": "always",
+    "source.fixAll.eslint": "always"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.enable": true,
+  "python.autoComplete.extraPaths": ["${workspaceFolder}/job-runner/pkg"],
+  // so we don't get swiggly lines when looking at css files with tailwind
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.formatOnPaste": true
 }

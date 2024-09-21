@@ -20,7 +20,7 @@ export const CreateOwnChecker = ({ user }: Props) => {
             router.push("/signin");
           } else {
             handleErr(apiClient.checker.create.mutate(), (checker) => {
-              router.push(`/checker/create/${checker.id}`);
+              router.push(`/checker/${checker.id}/edit`);
             });
           }
         }}

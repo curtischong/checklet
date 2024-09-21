@@ -1,10 +1,8 @@
-interface Props {
-  name: string;
-  desc: string;
-  prompt: string;
-}
-
-export const IsValidWarning = ({ name, desc, prompt }: Props) => {
+export const isValidWarning = (
+  name: string,
+  desc: string,
+  prompt: string,
+): string => {
   if (name === "") {
     return "Please enter a name";
   } else if (desc === "") {

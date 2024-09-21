@@ -36,7 +36,7 @@ export const StoreFront = ({ checker, isDemo }: StorefrontProps) => {
           "max-w-[350px]": isDemo,
         },
       )}
-      href={isDemo ? "" : `/checker/${checker.id}`}
+      href={isDemo ? "" : `/checker/${checker.id}/edit`}
     >
       <div className="mb-1 font-mackinac text-xl font-bold">{checker.name}</div>
       <div>{checker.desc}</div>

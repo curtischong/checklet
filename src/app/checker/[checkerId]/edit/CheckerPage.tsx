@@ -1,3 +1,4 @@
+"use client";
 import { NormalButton } from "@/app/_components/ui/Button";
 import { Input } from "@/app/_components/ui/Input";
 import { LabelWithHelp } from "@/app/_components/ui/LabelWithHelp";
@@ -6,15 +7,16 @@ import { NormalTextArea } from "@/app/_components/ui/TextArea";
 import {
   SaveStatusText,
   SubmittingState,
-} from "@/app/edit/checker/[checkerId]/CheckerTypes";
-import { IsPublicSwitch } from "@/app/edit/checker/[checkerId]/IsPublicSwitch";
-import { IsValidWarning } from "@/app/edit/checker/[checkerId]/IsValidWarning";
-import { Editor } from "@/app/editor/Editor";
+} from "@/app/checker/[checkerId]/edit/CheckerTypes";
+import { IsPublicSwitch } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
+import { isValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
+import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
 import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
+import { type UserCtx } from "@/firebase/edge_env";
 import { api } from "@/trpc/react";
-import { Checker } from "@prisma/client";
+import { type Checker } from "@prisma/client";
 import debounce from "lodash.debounce";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
 
 export enum Page {
@@ -27,8 +29,6 @@ interface Props {
   userCtx: UserCtx;
 }
 
-export const checkerCreatorMarginTop = 50;
-
 export const CheckerPage = ({
   originalChecker,
   userCtx,
@@ -36,6 +36,9 @@ export const CheckerPage = ({
   const [name, setName] = React.useState(originalChecker.name);
   const [desc, setDesc] = React.useState(originalChecker.desc);
   const [prompt, setPrompt] = React.useState(originalChecker.prompt);
+  const [editorState, setEditorState] = React.useState(
+    originalChecker.sampleDoc,
+  );
   const [submittingState, setSubmittingState] = React.useState(
     SubmittingState.NotSubmitting,
   );
@@ -57,10 +60,11 @@ export const CheckerPage = ({
 
   const saveChecker = useCallback(
     debounce(
-      async (
+      (
         newName: string,
         newDesc: string,
         newPrompt: string,
+        newSampleDoc: string,
         newIsPublic: boolean,
       ) => {
         // const checkerId =
@@ -70,6 +74,7 @@ export const CheckerPage = ({
           name: newName,
           desc: newDesc,
           prompt: newPrompt,
+          sampleDoc: newSampleDoc,
           isPublic: newIsPublic,
         });
       },
@@ -79,11 +84,13 @@ export const CheckerPage = ({
   );
 
   useEffect(() => {
-    saveChecker(name, desc, prompt, isPublic);
-  }, [name, desc, prompt, isPublic]);
+    saveChecker(name, desc, prompt, editorState, isPublic);
+  }, [name, desc, prompt, editorState, isPublic, saveChecker]);
+
+  const isInvalidWarningMsg = isValidWarning(name, desc, prompt);
 
   return (
-    <div className={`flex justify-center mt-[${checkerCreatorMarginTop}px]`}>
+    <div className={`mt-14 flex justify-center`}>
       <div className="container">
         <div className="flex flex-row">
           <div
@@ -132,24 +139,41 @@ export const CheckerPage = ({
                 minRows={4}
                 maxLength={MAX_CHECKER_DESC_LEN}
               />
+              <label className="ml-1 mt-4 text-lg font-bold">Prompt</label>
+              <NormalTextArea
+                placeholder={"what are the tips / tricks you use?"}
+                onChange={(e) => {
+                  setSubmittingState(SubmittingState.ChangesDetected);
+                  setPrompt(e.target.value);
+                }}
+                value={prompt}
+                minRows={4}
+                maxLength={MAX_CHECKER_DESC_LEN}
+              />
+
+              {isInvalidWarningMsg != "" && (
+                <div className="mt-4 max-w-80 rounded-md bg-red-200 px-2 py-1">
+                  {isInvalidWarningMsg}
+                </div>
+              )}
 
               <LabelWithHelp
                 className="ml-1 mt-4 text-lg font-bold"
-                label="Example Document with mistakes"
+                label="Test Your Checker below!"
                 helpText="Use this to test your prompt."
                 helpIconClassName="mt-[7px]"
               />
               <Editor
-                storefront={{
-                  objInfo: {
-                    name: name,
-                    desc: desc,
-                    id: originalChecker.id,
-                    creatorId: userCtx.id ?? "",
-                  },
-                  placeholder: "test",
+                checkerStorefront={{
+                  name: name,
+                  desc: desc,
+                  checkerId: originalChecker.id,
+                  creatorId: userCtx.id,
+                  placeholder: "place your test document here",
                 }}
-              ></Editor>
+                editorState={editorState}
+                setEditorState={setEditorState}
+              />
               {/* <NormalTextArea
                                 placeholder={`• Expedited DynamoDB queries from 68 ms to 41 ms by optimizing the schema for reads
 • Unified request authorization logic by proxying requests through a Spring API Gateway`}
@@ -164,8 +188,7 @@ export const CheckerPage = ({
                                 maxLength={MAX_CHECKER_PLACEHOLDER_LEN}
                             /> */}
 
-              <div className="mt-4 flex flex-row">
-                <IsValidWarning name={name} desc={desc} prompt={prompt} />
+              <div className="mt-4 flex flex-row space-x-8">
                 <IsPublicSwitch
                   checkerId={originalChecker.id}
                   isPublic={isPublic}
