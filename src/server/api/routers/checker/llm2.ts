@@ -10,7 +10,6 @@ export class Llm2 {
 
   constructor(
     systemPrompt: string,
-    model: string,
     private cache: SimpleCache | undefined,
     apiKey: string | undefined,
   ) {
@@ -18,7 +17,6 @@ export class Llm2 {
       apiKey,
       dangerouslyAllowBrowser: false,
     });
-    this.model = model;
     this.systemPromptMessage = {
       role: "system",
       content: systemPrompt,
@@ -38,15 +36,20 @@ export class Llm2 {
     this.cache?.set(this.getKey(messages), value);
   }
 
-  async prompt(message: string): Promise<string> {
-    return (await this.promptMessages([], message)).message.content!;
+  async prompt(message: string, model: string): Promise<string> {
+    return (await this.promptMessages([], message, model)).message.content!;
   }
 
   async promptMessagesExtendChain(
     prevMessages: ChatCompletionMessageParam[],
     newMessage: string,
+    model: string,
   ): Promise<ChatCompletionMessageParam[]> {
-    const chatCompletion = await this.promptMessages(prevMessages, newMessage);
+    const chatCompletion = await this.promptMessages(
+      prevMessages,
+      newMessage,
+      model,
+    );
     return [
       ...prevMessages,
 
@@ -62,6 +65,7 @@ export class Llm2 {
   async promptMessages(
     prevMessages: ChatCompletionMessageParam[],
     newMessage: string,
+    model: string,
   ): Promise<OpenAI.Chat.Completions.ChatCompletion.Choice> {
     const newMessages: ChatCompletionMessageParam[] = [
       ...prevMessages,
@@ -81,7 +85,7 @@ export class Llm2 {
     }
 
     const value = await this.client.chat.completions.create({
-      model: this.model,
+      model: model,
       messages: [this.systemPromptMessage, ...newMessages],
     });
     const choice = value.choices[0];

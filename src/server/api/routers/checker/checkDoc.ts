@@ -14,7 +14,8 @@ import path from "path";
 
 export class CheckerWorker {
   systemPrompt = "";
-  modelName = "gpt-3.5-turbo";
+  smartModel = "gpt-4o";
+  cheapModel = "gpt-4o-mini";
   llm: Llm2;
   db: PrismaClient;
 
@@ -24,7 +25,7 @@ export class CheckerWorker {
       "/cache",
     );
     const apiKey = process.env.OPENAI_API_KEY;
-    this.llm = new Llm2(this.systemPrompt, this.modelName, cache, apiKey);
+    this.llm = new Llm2(this.systemPrompt, cache, apiKey);
     this.db = db;
   }
 
@@ -36,6 +37,7 @@ export class CheckerWorker {
 
     const refinedPrompt = await this.llm.prompt(
       preprocessInstructions(checker.prompt),
+      this.cheapModel,
     );
     return await this.db.checker.update({
       where: {
@@ -53,7 +55,13 @@ export class CheckerWorker {
     // this will be a problem to solve later
     const newChecker = await this.updateRefinedPrompt(checker);
 
-    const suggestions = await checkDoc(this.llm, newChecker.refinedPrompt, doc);
+    const suggestions = await checkDoc(
+      this.llm,
+      newChecker.refinedPrompt,
+      doc,
+      this.smartModel,
+      this.cheapModel,
+    );
     console.log("suggestions", suggestions);
     // TODO: I need to parse it and turn it into suggestions
 
@@ -69,14 +77,18 @@ export const checkDoc = async (
   llm: Llm2,
   refinedPrompt: string,
   doc: string,
+  smartModel: string,
+  cheapModel: string,
 ): Promise<Suggestion[]> => {
   const editsChain = await llm.promptMessagesExtendChain(
     [],
     inferenceInstructions1(refinedPrompt, doc),
+    smartModel,
   );
   const newChat = await llm.promptMessages(
     editsChain,
     inferenceInstructions2(doc),
+    cheapModel,
   );
   const newDoc = newChat.message.content!;
   const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
