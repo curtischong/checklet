@@ -8,17 +8,23 @@ import {
   shift,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import { type SetState } from "@/utils/types";
 import React, { useCallback, useRef, useState } from "react";
 import { type RichTextareaHandle } from "rich-textarea";
 import { TextboxContainer } from "./textboxcontainer";
 
 interface Props {
   checkerStorefront: CheckerStorefront;
+  editorState: string;
+  setEditorState: SetState<string>;
 }
-export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
+export const Editor = ({
+  checkerStorefront,
+  editorState,
+  setEditorState,
+}: Props): JSX.Element => {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
-  const [editorState, setEditorState] = useState<string>("");
   const [hasModifiedTextAfterChecking, setHasModifiedTextAfterChecking] =
     useState(false);
   const [isLoading, setIsLoading] = React.useState(false);

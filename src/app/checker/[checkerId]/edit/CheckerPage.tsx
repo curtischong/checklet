@@ -40,6 +40,9 @@ export const CheckerPage = ({
     SubmittingState.NotSubmitting,
   );
   const [isPublic, setIsPublic] = React.useState(originalChecker.isPublic);
+  const [editorState, setEditorState] = React.useState(
+    originalChecker.sampleDoc,
+  );
 
   const router = useRouter();
 

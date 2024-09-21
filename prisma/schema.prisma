@@ -16,12 +16,13 @@ datasource db {
 
 model Checker {
     // id        String      @id  @db.Uuid @default(uuid())
-    id        String      @id @default(uuid())
-    name      String
-    desc      String
-    prompt    String
-    isPublic  Boolean     @default(false)
-    isValid   Boolean     @default(false) // has all of the required fields been filled out? if it's not valid, it cannot be public even if they want it to be
+    id        String  @id @default(uuid())
+    name      String  @default("")
+    desc      String  @default("")
+    prompt    String  @default("")
+    sampleDoc String  @default("") // ppl will use this when developing their checkers. I thihnk I'l also auto-populate the checker with this sample doc when ppl go to the checker?
+    isPublic  Boolean @default(false)
+    isValid   Boolean @default(false) // has all of the required fields been filled out? if it's not valid, it cannot be public even if they want it to be
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -32,10 +33,10 @@ model Checker {
 }
 
 model User {
-    id            String      @id @default(uuid())
-    email         String      @unique
+    id         String   @id @default(uuid())
+    email      String   @unique
     // I'll comment this out for now, since it's super easy for us to get the isVerified data. it's just from the firebase token
     // isEmailVerified Boolean? // Note: I think if they reset their password, firebase sends them an email and if they click on the link, they WILL be verified. we need to figure out some way to handle this
-    checkerIds    String[]    @db.Uuid
-    createdAt     DateTime    @default(now())
+    checkerIds String[] @db.Uuid
+    createdAt  DateTime @default(now())
 }

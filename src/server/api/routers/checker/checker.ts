@@ -58,9 +58,6 @@ export const checkerRouter = createTRPCRouter({
 
     const newChecker = await ctx.db.checker.create({
       data: {
-        name: "",
-        desc: "",
-        prompt: "",
         createdById: ctx.user.id,
       },
     });
