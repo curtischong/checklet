@@ -27,3 +27,6 @@ reset-db:
 
 studio:
 	npm run db:studio
+
+prompt-test:
+	npx tsx ./scripts/prompt-test.ts

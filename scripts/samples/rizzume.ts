@@ -2,7 +2,7 @@
 // checks I'd like to do later:
 // order bullet points from most to least important
 // too much bolding
-export const prompt = `- Try to phrase sentences in this format: (what you did, what impact it had)
+export const rizzumePrompt = `- Try to phrase sentences in this format: (what you did, what impact it had)
 - If you see weak action verbs (like "used", or "worked"), suggest alternatives
 - identify metrics that sound fake (e.g. if someone says they improved something 1000000x, that seems suspicious)
 - use contractions since that leads to more white space
