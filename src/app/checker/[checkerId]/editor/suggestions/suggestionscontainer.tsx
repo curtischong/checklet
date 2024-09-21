@@ -3,7 +3,7 @@ import { LoadingButton, NormalButton } from "@/app/_components/ui/Button";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { SuggestionCard } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
 import { useClientCtx } from "@/app/ClientCtx";
-import { apiClient } from "@/trpc/react";
+import { apiClient, handleErr } from "@/trpc/react";
 import { pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
 import CoolChecklet from "@public/checklets/cool.svg";
@@ -135,7 +135,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
       if (!hasModifiedTextAfterChecking) {
         return (
           <NoSuggestionMessage
-            imageSrc={YayChecklet as string}
+            imageSrc={YayChecklet.src as string}
             header={"No issues found"}
             content={
               <>
@@ -149,7 +149,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
       } else {
         return (
           <NoSuggestionMessage
-            imageSrc={CoolChecklet as string}
+            imageSrc={CoolChecklet.src as string}
             header={"Ready to check?"}
             content={
               <>
@@ -166,7 +166,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
 
     return (
       <NoSuggestionMessage
-        imageSrc={PencilChecklet as string}
+        imageSrc={PencilChecklet.src as string}
         header={"Nothing to check yet"}
         content={
           <div className={"w-[70%]"}>Start writing or paste your document.</div>
@@ -182,31 +182,38 @@ export const SuggestionsContainer: React.FC<Props> = ({
     acceptSuggestion,
   ]);
 
-  const checkDocument = useCallback(async (): Promise<void> => {
+  const checkDocument = useCallback((): void => {
     if (isLoading) {
       return;
     }
     setIsLoading(true);
-    const response = await apiClient.checker.checkDoc.query({
-      doc: editorState,
-      checkerId: checkerId as string,
-    });
-    setIsLoading(false);
-    if (!response) {
-      toast.error("Something went wrong, please try again later");
-      return;
-    }
-    setHasModifiedTextAfterChecking(false);
+    handleErr(
+      apiClient.checker.checkDoc.query({
+        doc: editorState,
+        checkerId: checkerId as string,
+      }),
+      (response) => {
+        setIsLoading(false);
+        if (!response) {
+          toast.error("Something went wrong, please try again later");
+          return;
+        }
+        setHasModifiedTextAfterChecking(false);
 
-    const newSuggestions = response.suggestions;
-    newSuggestions.sort(Sorters[SortType.TextOrder]);
-    setSuggestions(newSuggestions);
+        const newSuggestions = response.suggestions;
+        newSuggestions.sort(Sorters[sortType]);
+        setSuggestions(newSuggestions);
 
-    // mixpanelTrack("Check Document Clicked", {
-    //   "Number of suggestions generated": newSuggestions.length,
-    //   Suggestions: newSuggestions,
-    //   Input: plaintext,
-    // });
+        // mixpanelTrack("Check Document Clicked", {
+        //   "Number of suggestions generated": newSuggestions.length,
+        //   Suggestions: newSuggestions,
+        //   Input: plaintext,
+        // });
+      },
+      () => {
+        setIsLoading(false);
+      },
+    );
   }, [
     checkerId,
     editorState,
@@ -214,6 +221,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
     setHasModifiedTextAfterChecking,
     setIsLoading,
     setSuggestions,
+    sortType,
   ]);
 
   return (
