@@ -1,4 +1,4 @@
-import { Llm } from "@/server/api/routers/checker/llm";
+import { AzureLlm } from "@/server/api/routers/checker/azureLlm";
 import {
   inferenceInstructions,
   preprocessInstructions,
@@ -15,7 +15,8 @@ const cache = new SimpleCache(
   "/cache",
 );
 const apiKey = process.env.OPENAI_API_KEY;
-const llm = new Llm(systemPrompt, modelName, cache, apiKey);
+// const llm = new Llm(systemPrompt, modelName, cache, apiKey);
+const llm = new AzureLlm(cache);
 
 const tips = await llm.prompt(preprocessInstructions(rizzumePrompt));
 console.log(tips);
