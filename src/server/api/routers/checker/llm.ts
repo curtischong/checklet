@@ -15,7 +15,7 @@ export class Llm {
   ) {
     this.client = new OpenAI({
       apiKey,
-      dangerouslyAllowBrowser: true,
+      dangerouslyAllowBrowser: false,
     });
     this.model = model;
     this.systemPromptMessage = {
