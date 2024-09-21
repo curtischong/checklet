@@ -159,7 +159,8 @@ export const checkerRouter = createTRPCRouter({
       if (!checker.isValid) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "this checker is not valid",
+          message:
+            "This checker is not valid. Does it have a name, description, and prompt?",
         });
       }
 

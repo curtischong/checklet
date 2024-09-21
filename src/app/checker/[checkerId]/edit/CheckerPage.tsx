@@ -146,6 +146,12 @@ export const CheckerPage = ({
                 maxLength={MAX_CHECKER_DESC_LEN}
               />
 
+              {isInvalidWarningMsg != "" && (
+                <div className="mt-4 max-w-80 rounded-md bg-red-200 px-2 py-1">
+                  {isInvalidWarningMsg}
+                </div>
+              )}
+
               <LabelWithHelp
                 className="ml-1 mt-4 text-lg font-bold"
                 label="Test Your Checker below!"
@@ -176,11 +182,6 @@ export const CheckerPage = ({
                             /> */}
 
               <div className="mt-4 flex flex-row space-x-8">
-                {isInvalidWarningMsg != "" && (
-                  <div className="rounded-md bg-red-200 px-2 py-1">
-                    {isInvalidWarningMsg}
-                  </div>
-                )}
                 <IsPublicSwitch
                   checkerId={originalChecker.id}
                   isPublic={isPublic}
