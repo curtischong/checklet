@@ -1,6 +1,9 @@
-export function extractTipsAndReasons(
-  input: string,
-): { tip: string; reason: string }[] {
+export interface Tip {
+  tip: string;
+  reason: string;
+}
+
+export function extractTipsAndReasons(input: string): Tip[] {
   const tipReasonPairs: { tip: string; reason: string }[] = [];
   let i = 0;
   const length = input.length;

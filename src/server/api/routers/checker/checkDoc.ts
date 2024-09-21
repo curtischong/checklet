@@ -1,5 +1,6 @@
 import { type CheckerType } from "@/server/api/routers/checker/checker";
 import { Llm } from "@/server/api/routers/checker/llm";
+import { extractTipsAndReasons } from "@/server/api/routers/checker/llmOutputHelpers";
 import {
   inferenceInstructions,
   preprocessInstructions,
@@ -46,7 +47,11 @@ export class CheckerWorker {
   };
 
   checkDoc = async (doc: string, checker: Awaited<CheckerType>) => {
+    // TODO: do this elsewhere? it's hard though. I think it's fine. I'm just worried that 20 ppl will spam, and we're going to refine the prompt 20 times
+    // this will be a problem to solve later
     const newChecker = await this.updateRefinedPrompt(checker);
+
+    const tipsAndReasons = extractTipsAndReasons(newChecker.refinedPrompt);
     const res = await this.llm.prompt(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       inferenceInstructions(newChecker.refinedPrompt, doc),

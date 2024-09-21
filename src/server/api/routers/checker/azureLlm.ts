@@ -1,3 +1,4 @@
+// wip getting azure llm towork. it doesn't :'(
 import { type SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import { AzureKeyCredential, OpenAIClient } from "@azure/openai";
 
