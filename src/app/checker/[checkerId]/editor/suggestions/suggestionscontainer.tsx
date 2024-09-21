@@ -195,12 +195,15 @@ export const SuggestionsContainer: React.FC<Props> = ({
       (response) => {
         setIsLoading(false);
         if (!response) {
-          toast.error("Something went wrong, please try again later");
+          toast.error(
+            "Something went wrong, please let Curtis know on Discord!",
+          );
           return;
         }
         setHasModifiedTextAfterChecking(false);
 
         const newSuggestions = response.suggestions;
+        console.log("newSuggestions", newSuggestions);
         newSuggestions.sort(Sorters[sortType]);
         setSuggestions(newSuggestions);
 
