@@ -106,14 +106,6 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
     [],
   );
 
-  const updateEditorStateNewText = useCallback(
-    (newText: string) => {
-      setHasModifiedTextAfterChecking(newText !== "");
-      updateEditorState(editorState, newText, suggestions);
-    },
-    [editorState, suggestions, updateEditorState],
-  );
-
   return (
     <div className="mx-auto w-full max-w-screen-xl">
       <div className="flex flex-row space-x-10 px-5">
@@ -148,7 +140,11 @@ export const Editor = ({ checkerStorefront }: Props): JSX.Element => {
               updateActiveSuggestion={setActiveSuggestion}
               suggestions={suggestions}
               editorState={editorState}
-              updateEditorState={updateEditorStateNewText}
+              updateEditorState={(newText) => {
+                console.log("updateEditorState");
+                setHasModifiedTextAfterChecking(newText !== "");
+                updateEditorState(editorState, newText, suggestions);
+              }}
               isLoading={isLoading}
               editorRef={editorRef}
             />

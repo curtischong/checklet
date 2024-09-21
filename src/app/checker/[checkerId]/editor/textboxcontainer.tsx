@@ -51,8 +51,10 @@ export const TextboxContainer = ({
     if (prevDocument) {
       updateEditorState(prevDocument);
     }
-    console.log("editorRef update?");
-  }, [updateEditorState]);
+
+    // not sure why updateEditorState keeps changing. but it does. But we only want this useEffect to run once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const debouncedSave = useMemo(
     () =>
@@ -119,7 +121,6 @@ export const TextboxContainer = ({
         ref={editorRef}
         value={editorState}
         onChange={(e) => {
-          console.log("rich text area new", e.target.value);
           updateEditorState(e.target.value);
         }}
         className="resize-none bg-white pb-32 tracking-[0.01em] outline-none" // tracking increases letter spacing
