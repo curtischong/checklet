@@ -11,8 +11,9 @@ export const getDocEdits = (
   const n1 = d1.length;
   const n2 = d2.length;
 
-  for (let i = 0; i < n1; i++) {
-    for (let j = 0; j < n2; j++) {}
-  }
+  // I think we can do it in lienar time. we just need to
+  // first align the two strings.
+  // this is multiple sequence alignment
+  for (let i = 0; i < n1; i++) {}
   return editOps;
 };
