@@ -6,7 +6,7 @@ import path from "path";
 import { rizzumePrompt, sample_resume_2019 } from "scripts/samples/rizzume";
 
 const systemPrompt = "";
-const smartModel = "gpt-4o";
+const smartModel = "gpt-4o-mini";
 const cheapModel = "gpt-4o-mini";
 
 const cache = new SimpleCache(
@@ -21,6 +21,7 @@ const refinedPrompt = await llm.prompt(
   preprocessInstructions(rizzumePrompt),
   cheapModel,
 );
+console.log("refined prompt");
 
 const suggestions = await checkDoc(
   llm,

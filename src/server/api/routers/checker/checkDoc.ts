@@ -14,7 +14,7 @@ import path from "path";
 
 export class CheckerWorker {
   systemPrompt = "";
-  smartModel = "gpt-4o";
+  smartModel = "gpt-4o-mini";
   cheapModel = "gpt-4o-mini";
   llm: Llm2;
   db: PrismaClient;
@@ -85,6 +85,7 @@ export const checkDoc = async (
     inferenceInstructions1(refinedPrompt, doc),
     smartModel,
   );
+  console.log("editsChain done", editsChain);
   const newChat = await llm.promptMessages(
     editsChain,
     inferenceInstructions2(doc),

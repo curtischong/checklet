@@ -27,19 +27,11 @@ export function extractTipsAndReasons(input: string): Tip[] {
   return tipReasonPairs;
 }
 
-// // Example usage:
-// const inputString = `
-// 1. <tip>Phrase sentences in the format: (what you did, what impact it had)</tip>
-//    <reason>This creates clarity and demonstrates the value of your actions.</reason>
-
-// 2. <tip>Suggest alternatives to weak action verbs (like "used" or "worked")</tip>
-//    <reason>Stronger verbs enhance the impression of your contributions.</reason>
-
-// 3. <tip>Identify metrics that sound fake (e.g. "improved something 1000000x")</tip>
-//    <reason>This avoids skepticism from reviewers about your claims.</reason>
-
-// 4. <tip>Use contractions for more whitespace</tip>
-//    <reason>Contractions lead to brevity and a more conversational tone.</reason>
-// `;
-
-// console.log(extractTipsAndReasons(inputString));
+export function removeAllDiffsOnEndsNotInTags(
+  doc: string,
+  editedDoc: string,
+): string {
+  // 1) just calculate the edit distance
+  // 2) if there is an edit that is NOT part of a tag, remove it
+  return "";
+}
