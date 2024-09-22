@@ -1,9 +1,5 @@
-import {
-  type EditOp,
-  type Suggestion,
-} from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import { type EditOp } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
-import { createShortId } from "@/utils/strings";
 
 /*
 design decisions:
@@ -85,42 +81,42 @@ export const getEditedDocWithOnlyEdits = (
   return editedDocWithOnlyEdits;
 };
 
-const getSuggestions = (editedDocWithOnlyEdits: string): Suggestion[] => {
-  const tipStarts = new Map<number, number>(); // locationOftip -> tip number
-  const tipEnds = new Map<number, number>(); // locationOfTip -> tip number
+// const getSuggestions = (editedDocWithOnlyEdits: string): Suggestion[] => {
+//   const tipStarts = new Map<number, number>(); // locationOftip -> tip number
+//   const tipEnds = new Map<number, number>(); // locationOfTip -> tip number
 
-  let match;
-  while ((match = tipStartRegex.exec(editedDocWithOnlyEdits)) !== null) {
-    tipStarts.set(match.index, parseInt(match[1]!));
-  }
-  while ((match = tipEndRegex.exec(editedDocWithOnlyEdits)) !== null) {
-    tipEnds.set(match.index, parseInt(match[1]!));
-  }
+//   let match;
+//   while ((match = tipStartRegex.exec(editedDocWithOnlyEdits)) !== null) {
+//     tipStarts.set(match.index, parseInt(match[1]!));
+//   }
+//   while ((match = tipEndRegex.exec(editedDocWithOnlyEdits)) !== null) {
+//     tipEnds.set(match.index, parseInt(match[1]!));
+//   }
 
-  const suggestions = [];
-  const tipStack = [];
-  for (let i = 0; i < editedDocWithOnlyEdits.length; i++) {
-    if (tipStarts.has(i)) {
-      const tipNum = tipStarts.get(i)!;
-      tipStack.push({ tipNum, startIdx: i });
-    }
-    if (tipEnds.has(i)) {
-      const endTipNum = tipEnds.get(i)!;
-      const { tipNum, startIdx } = tipStack.pop()!;
-      if (tipNum != endTipNum) {
-        throw new Error("mismatched tip numbers");
-      }
+//   const suggestions = [];
+//   const tipStack = [];
+//   for (let i = 0; i < editedDocWithOnlyEdits.length; i++) {
+//     if (tipStarts.has(i)) {
+//       const tipNum = tipStarts.get(i)!;
+//       tipStack.push({ tipNum, startIdx: i });
+//     }
+//     if (tipEnds.has(i)) {
+//       const endTipNum = tipEnds.get(i)!;
+//       const { tipNum, startIdx } = tipStack.pop()!;
+//       if (tipNum != endTipNum) {
+//         throw new Error("mismatched tip numbers");
+//       }
 
-      const suggestion: Suggestion = {
-        tip: tipNum,
-        range: {
-          start: startIdx,
-          end: i,
-        },
-        suggestionId: createShortId(),
-      };
-      suggestions.push(suggestion);
-    }
-  }
-  return suggestions;
-};
+//       const suggestion: Suggestion = {
+//         tip: tipNum,
+//         range: {
+//           start: startIdx,
+//           end: i,
+//         },
+//         suggestionId: createShortId(),
+//       };
+//       suggestions.push(suggestion);
+//     }
+//   }
+//   return suggestions;
+// };
