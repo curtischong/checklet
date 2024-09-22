@@ -42,7 +42,6 @@ export const CheckerPage = ({
   const [submittingState, setSubmittingState] = React.useState(
     SubmittingState.NotSubmitting,
   );
-  const [isPublic, setIsPublic] = React.useState(originalChecker.isPublic);
 
   const router = useRouter();
 
@@ -65,7 +64,6 @@ export const CheckerPage = ({
         newDesc: string,
         newPrompt: string,
         newSampleDoc: string,
-        newIsPublic: boolean,
       ) => {
         // const checkerId =
         //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
@@ -75,7 +73,6 @@ export const CheckerPage = ({
           desc: newDesc,
           prompt: newPrompt,
           sampleDoc: newSampleDoc,
-          isPublic: newIsPublic,
         });
       },
       1000,
@@ -84,8 +81,8 @@ export const CheckerPage = ({
   );
 
   useEffect(() => {
-    saveChecker(name, desc, prompt, editorState, isPublic);
-  }, [name, desc, prompt, editorState, isPublic, saveChecker]);
+    saveChecker(name, desc, prompt, editorState);
+  }, [name, desc, prompt, editorState, saveChecker]);
 
   const isInvalidWarningMsg = isValidWarning(name, desc, prompt);
 
@@ -191,8 +188,7 @@ export const CheckerPage = ({
               <div className="mt-4 flex flex-row space-x-8">
                 <IsPublicSwitch
                   checkerId={originalChecker.id}
-                  isPublic={isPublic}
-                  setIsPublic={setIsPublic}
+                  isInitiallyPublic={originalChecker.isPublic}
                 />
                 <div className="ml-4">{SaveStatusText[submittingState]}</div>
               </div>

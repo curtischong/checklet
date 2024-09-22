@@ -1,25 +1,28 @@
 import { LabelWithSwitch } from "@/app/_components/ui/Switch";
 import { api } from "@/trpc/react";
-import { type SetState } from "@/utils/types";
+import React from "react";
 import { toast } from "react-toastify";
 
 interface Props {
   checkerId: string;
-  setIsPublic: SetState<boolean>;
-  isPublic: boolean;
+  isInitiallyPublic: boolean;
 }
 
 export const IsPublicSwitch = ({
   checkerId,
-  isPublic,
-  setIsPublic,
+  isInitiallyPublic,
 }: Props): JSX.Element => {
+  const [isPublic, setIsPublic] = React.useState(isInitiallyPublic);
+
   const updateIsPublic = api.checker.updateIsPublic.useMutation({
+    onMutate: () => {
+      setIsPublic(!isPublic); // optimistically update the UI
+    },
     onSuccess: (data) => {
       if (data.isPublic) {
-        toast.error("Your checker is now public!");
+        toast.success("Your checker is now public!");
       } else {
-        toast.info("Your checker is now private");
+        toast.success("Your checker is now private");
       }
       setIsPublic(data.isPublic);
     },

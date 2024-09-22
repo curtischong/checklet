@@ -4,7 +4,7 @@ import { EditIcon } from "@/app/_components/icons/EditIcon";
 import { LinkArrowIcon } from "@/app/_components/icons/LinkArrowIcon";
 import { PlusIcon } from "@/app/_components/icons/PlusIcon";
 import { TrashIcon } from "@/app/_components/icons/TrashIcon";
-import { Popconfirm } from "antd/lib";
+import Popconfirm from "@/app/_components/ui/PopConfirm";
 import classNames from "classnames";
 import React from "react";
 
@@ -102,7 +102,7 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
         "rounded border border-gray-400 px-4 py-2 text-white transition duration-300",
         className,
         {
-          "hover:bg-primary2 bg-primary hover:text-white": !isDisabled,
+          "bg-primary hover:bg-primary2 hover:text-white": !isDisabled,
           "cursor-not-allowed bg-gray-300 focus:bg-gray-400": isDisabled,
         },
       )}
@@ -213,7 +213,11 @@ export const DeleteButtonWithConfirm: React.FC<
   }
 > = ({ onDelete, ...rest }) => {
   return (
-    <Popconfirm title="Confirm Delete" onConfirm={onDelete}>
+    <Popconfirm
+      title="Delete Checker?"
+      onConfirm={onDelete}
+      isDeleteConfirm={true}
+    >
       <DeleteButton {...rest} />
     </Popconfirm>
   );

@@ -1,6 +1,5 @@
 "use client";
 import { type UserCtx } from "@/firebase/edge_env";
-import { apiClient, handleErr } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -19,9 +18,7 @@ export const CreateOwnChecker = ({ user }: Props) => {
           if (!user) {
             router.push("/signin");
           } else {
-            handleErr(apiClient.checker.create.mutate(), (checker) => {
-              router.push(`/checker/${checker.id}/edit`);
-            });
+            router.push(`/dashboard`);
           }
         }}
       >
