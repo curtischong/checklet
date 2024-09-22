@@ -1,33 +1,25 @@
 "use client";
 
+import { NormalButton } from "@/app/_components/ui/Button";
+import { DashboardChecker } from "@/app/dashboard/DashboardChecker";
+import { type UserCheckersType } from "@/app/dashboard/getUserCheckers";
 import { type UserCtx } from "@/firebase/edge_env";
 import { apiClient, handleErr } from "@/trpc/react";
-import { type PrismaClient } from "@prisma/client";
 import DerpChecklet from "@public/checklets/derp.svg";
 import MushyChecklet from "@public/checklets/mushy.svg";
 import PennyChecklet from "@public/checklets/penny.svg";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
-
-export const getUserCheckers = async (db: PrismaClient, user: UserCtx) => {
-  return await db.checker.findMany({
-    where: {
-      createdById: {
-        equals: user.id,
-      },
-    },
-  });
-};
-
-type UserCheckersType = Awaited<ReturnType<typeof getUserCheckers>>;
+import { useCallback, useState } from "react";
 
 interface Props {
+  user: UserCtx;
   checkers: UserCheckersType;
 }
 
 // used to show you your checkers.
-export const Dashboard = ({ checkers }: Props) => {
+export const Dashboard = ({ checkers, user }: Props) => {
+  const [currCheckers, setCurrCheckers] = useState(checkers);
   const router = useRouter();
 
   const createChecker = useCallback(() => {
@@ -42,12 +34,17 @@ export const Dashboard = ({ checkers }: Props) => {
         {/* {user ? user.email : <></>} */}
         <p className="font-mackinac text-2xl font-bold">Your Checkers</p>
         <div className="mx-auto ml-0 mt-4 w-[450px]">
-          {checkers.map((checkerBlueprint, idx) => {
+          {currCheckers.map((checkerBlueprint, idx) => {
             return (
               <div key={`checker-${idx}`}>
                 <DashboardChecker
+                  user={user}
                   blueprint={checkerBlueprint}
-                  fetchCheckerBlueprints={fetchCheckerBlueprints}
+                  onDeleteChecker={() => {
+                    setCurrCheckers(
+                      currCheckers.filter((c) => c.id !== checkerBlueprint.id),
+                    );
+                  }}
                 />
               </div>
             );

@@ -14,14 +14,14 @@ import { toast } from "react-toastify";
 interface Props {
   user: UserCtx;
   blueprint: Checker;
-  fetchCheckerBlueprints: () => void;
+  onDeleteChecker: () => void;
 }
 
 // this is how your checker looks like in your dashboard page
 export const DashboardChecker = ({
   user,
   blueprint,
-  fetchCheckerBlueprints,
+  onDeleteChecker,
 }: Props): JSX.Element => {
   const router = useRouter();
 
@@ -51,7 +51,7 @@ export const DashboardChecker = ({
                   checkerId: blueprint.id,
                 }),
                 () => {
-                  fetchCheckerBlueprints();
+                  onDeleteChecker();
                 },
               );
             }}
