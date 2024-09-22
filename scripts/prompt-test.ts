@@ -1,5 +1,5 @@
-import { checkDoc3 } from "@/server/api/routers/checker/checkDoc";
-import { Llm3 } from "@/server/api/routers/checker/llm3";
+import { checkDoc2 } from "@/server/api/routers/checker/checkDoc";
+import { Llm2 } from "@/server/api/routers/checker/llm2";
 import { preprocessInstructions } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import path from "path";
@@ -14,8 +14,8 @@ const cache = new SimpleCache(
   "/cache",
 );
 const apiKey = process.env.OPENAI_API_KEY;
-// const llm = new Llm2(systemPrompt, cache, apiKey);
-const llm = new Llm3(smartModel, systemPrompt, cache, apiKey);
+const llm = new Llm2(systemPrompt, cache, apiKey);
+// const llm = new Llm3(smartModel, systemPrompt, cache, apiKey);
 // const llm = new Llm(systemPrompt, smartModel, cache, apiKey);
 // const llm = new AzureLlm(cache);
 
@@ -26,11 +26,18 @@ const refinedPrompt = await llm.prompt(
 );
 console.log("refined prompt");
 
-const suggestions = await checkDoc3(
+// const suggestions = await checkDoc3(
+//   llm,
+//   refinedPrompt,
+//   sample_resume_2019,
+//   smartModel,
+// );
+// const suggestions = await checkDoc1(llm, refinedPrompt, sample_resume_2019);
+const suggestions = await checkDoc2(
   llm,
   refinedPrompt,
   sample_resume_2019,
   smartModel,
+  cheapModel,
 );
-// const suggestions = await checkDoc1(llm, refinedPrompt, sample_resume_2019);
 console.log(suggestions);

@@ -1,5 +1,6 @@
 import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type CheckerType } from "@/server/api/routers/checker/checker";
+import { getDocEdits } from "@/server/api/routers/checker/docEdits";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
 import { Llm2 } from "@/server/api/routers/checker/llm2";
 import { type Llm3 } from "@/server/api/routers/checker/llm3";
@@ -101,7 +102,7 @@ export class CheckerWorker {
 //   return [];
 // };
 
-export const checkDoc = async (
+export const checkDoc2 = async (
   llm: Llm2,
   refinedPrompt: string,
   doc: string,
@@ -113,7 +114,8 @@ export const checkDoc = async (
     inferenceInstructions1(refinedPrompt, doc),
     smartModel,
   );
-  console.log("editsChain done", editsChain);
+  console.log("refinedPrompt", refinedPrompt);
+  console.log("editsChain done", editsChain[editsChain.length - 1]?.content);
   const newChat = await llm.promptMessages(
     editsChain,
     inferenceInstructions2(doc),
@@ -122,9 +124,10 @@ export const checkDoc = async (
   const newDoc = newChat.message.content!;
   const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
 
-  const edits = editDistanceOperationsWithClasses(doc, newDoc);
+  getDocEdits(doc, newDoc);
+
   console.log("newDoc", newDoc);
-  console.log("edits", edits);
+  // console.log("edits", edits);
 
   // console.log("newDoc", newDoc);
   // console.log(tipsAndReasons);
