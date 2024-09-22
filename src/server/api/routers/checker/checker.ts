@@ -176,7 +176,14 @@ export const checkerRouter = createTRPCRouter({
           id: input.checkerId,
         },
       });
-      if (checker?.createdById !== ctx.user.id) {
+      if (!checker) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "checker not found",
+        });
+      }
+
+      if (checker.createdById !== ctx.user.id) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message:

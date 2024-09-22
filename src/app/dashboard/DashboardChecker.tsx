@@ -50,9 +50,7 @@ export const DashboardChecker = ({
                 apiClient.checker.delete.mutate({
                   checkerId: blueprint.id,
                 }),
-                () => {
-                  onDeleteChecker();
-                },
+                onDeleteChecker,
               );
             }}
           />
