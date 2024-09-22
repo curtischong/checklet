@@ -14,7 +14,6 @@ export function editDistanceOperationsWithClasses(
   str1: string,
   str2: string,
 ): EditOp[] {
-  // Create a matrix for storing edit distances
   const m = str1.length,
     n = str2.length;
   const dp: number[][] = Array(m + 1)
@@ -40,8 +39,8 @@ export function editDistanceOperationsWithClasses(
           Math.min(
             dp[i - 1][j], // Delete
             dp[i][j - 1], // Insert
-            dp[i - 1][j - 1],
-          ); // Replace
+            dp[i - 1][j - 1], // Replace
+          );
       }
     }
   }
@@ -50,34 +49,34 @@ export function editDistanceOperationsWithClasses(
   const operations = [];
   let i = m,
     j = n;
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && str1[i - 1] === str2[j - 1]) {
+      // Characters match, move diagonally
       i--;
       j--;
-    } else if (dp[i][j] === dp[i - 1][j - 1] + 1) {
+    } else if (i > 0 && j > 0 && dp[i][j] === dp[i - 1][j - 1] + 1) {
       // Replace
       operations.push(newEditOp(newDocRange(i - 1, i), str2[j - 1]));
       i--;
       j--;
-    } else if (dp[i][j] === dp[i - 1][j] + 1) {
+    } else if (i > 0 && dp[i][j] === dp[i - 1][j] + 1) {
       // Delete
       operations.push(newEditOp(newDocRange(i - 1, i), ""));
       i--;
-    } else if (dp[i][j] === dp[i][j - 1] + 1) {
+    } else if (j > 0 && dp[i][j] === dp[i][j - 1] + 1) {
       // Insert
-      operations.push(newEditOp(newDocRange(j - 1, j), str2[j - 1]));
+      operations.push(newEditOp(newDocRange(i, i), str2[j - 1]));
       j--;
+    } else {
+      // Fallback for any remaining insertions or deletions
+      if (i > 0) {
+        operations.push(newEditOp(newDocRange(i - 1, i), ""));
+        i--;
+      } else if (j > 0) {
+        operations.push(newEditOp(newDocRange(i, i), str2[j - 1]));
+        j--;
+      }
     }
-  }
-
-  // Handle remaining characters in str1 (deletions) or str2 (insertions)
-  while (i > 0) {
-    operations.push(newEditOp(newDocRange(i - 1, i), ""));
-    i--;
-  }
-  while (j > 0) {
-    operations.push(newEditOp(newDocRange(j - 1, j), str2[j - 1]));
-    j--;
   }
 
   // Consolidate adjacent operations
@@ -100,6 +99,3 @@ export function editDistanceOperationsWithClasses(
 
   return merged_ops;
 }
-
-// Example usage
-// console.log(editDistanceOperationsWithClasses("kitten", "sittinggg"));
