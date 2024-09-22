@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from "zod";
 
-import { checkDoc } from "@/server/api/routers/checker/checkDoc";
+import { CheckerWorker } from "@/server/api/routers/checker/checkDoc";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -167,6 +167,7 @@ export const checkerRouter = createTRPCRouter({
       }
 
       // now that we've validated everything, we can actually check the doc
-      return await checkDoc(input.doc, checker);
+      const checkerWorker = new CheckerWorker(ctx.db);
+      return await checkerWorker.checkDoc(input.doc, checker);
     }),
 });
