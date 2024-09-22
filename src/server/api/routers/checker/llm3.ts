@@ -1,15 +1,8 @@
 import { type SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import { cyrb53 } from "@/utils/strings";
 import OpenAI from "openai";
+import { type JSONSchema } from "openai/lib/jsonschema";
 import { type ChatCompletionMessageParam } from "openai/resources/index.mjs";
-
-interface FunctionCallData {
-  functionName: string;
-  functionDesc: string;
-  functionParams: string;
-}
-
-type SendMessageResult = OpenAI.Chat.Completions.ChatCompletion.Choice | string;
 
 export class Llm3 {
   client: OpenAI;
@@ -17,10 +10,12 @@ export class Llm3 {
   systemPromptMessage: OpenAI.ChatCompletionMessageParam;
 
   constructor(
+    model: string,
     systemPrompt: string,
     private cache: SimpleCache | undefined,
     apiKey: string | undefined,
   ) {
+    this.model = model;
     this.client = new OpenAI({
       apiKey,
       dangerouslyAllowBrowser: false,
@@ -70,18 +65,25 @@ export class Llm3 {
     ];
   }
 
-  async promptMessages(
+  getNewMessages(
     prevMessages: ChatCompletionMessageParam[],
     newMessage: string,
-    model: string,
-  ): Promise<OpenAI.Chat.Completions.ChatCompletion.Choice> {
-    const newMessages: ChatCompletionMessageParam[] = [
+  ): ChatCompletionMessageParam[] {
+    return [
       ...prevMessages,
       {
         role: "user",
         content: newMessage,
       },
     ];
+  }
+
+  async promptMessages(
+    prevMessages: ChatCompletionMessageParam[],
+    newMessage: string,
+    model: string,
+  ): Promise<OpenAI.Chat.Completions.ChatCompletion.Choice> {
+    const newMessages = this.getNewMessages(prevMessages, newMessage);
 
     if (this.cache) {
       const cachedValue = this.cacheGet(newMessages);
@@ -104,106 +106,76 @@ export class Llm3 {
     return choice;
   }
 
-  async sendMessage(
+  // returns params for the function call (these params are a json obj)
+  async callFunction(
     prevMessages: ChatCompletionMessageParam[],
-    newMessage: string,
-    model: string,
-    functionCallData?: FunctionCallData,
-  ): Promise<SendMessageResult> {
-    const newMessages: ChatCompletionMessageParam[] = [
-      ...prevMessages,
-      {
-        role: "user",
-        content: newMessage,
-      },
-    ];
-
-    // Determine cache key based on whether it's a function call or a regular message
-    const cacheKey = functionCallData
-      ? { type: "function", messages: newMessages }
-      : { type: "message", messages: newMessages };
-
+    prompt: string,
+    callData: {
+      functionName: string;
+      functionDesc: string;
+      functionParams: JSONSchema;
+    },
+  ): Promise<string> {
+    const newMessages = this.getNewMessages(prevMessages, prompt);
     if (this.cache) {
-      const cachedValue = this.cacheGet(cacheKey);
-      if (cachedValue) {
-        return functionCallData
-          ? cachedValue // Assuming cachedValue is a string for function calls
-          : (JSON.parse(
-              cachedValue,
-            ) as OpenAI.Chat.Completions.ChatCompletion.Choice);
+      const cachedArgStr = this.cacheGet(callData.prompt);
+      if (cachedArgStr) {
+        // console.log("cache success");
+        return cachedArgStr;
       }
+      // console.log("cache miss", callData.prompt);
     }
 
-    if (functionCallData) {
-      // Handle Function Call Scenario
-      const { functionName, functionDesc, functionParams } = functionCallData;
+    const result = new Promise<string>((resolve, reject) => {
+      // resolve the promise after 10 seconds. cause if the API fails to call our function, we'll be stuck here forever
+      const timeoutId = setTimeout(() => {
+        reject(new Error("API call timed out after 10 seconds"));
+      }, 60000);
 
-      const result = new Promise<string>((resolve, reject) => {
-        // Set a timeout to prevent hanging
-        const timeoutId = setTimeout(() => {
-          reject(new Error("API call timed out after 60 seconds"));
-        }, 60000);
-
-        this.client.beta.chat.completions
-          .runFunctions({
-            model: model,
-            messages: [this.systemPromptMessage, ...newMessages],
-            functions: [
-              {
-                name: functionName,
-                description: functionDesc,
-                parameters: functionParams,
-                // The actual function implementation is optional here
-                // since we're handling the function call manually
-                function: () => {},
+      this.client.beta.chat.completions
+        .runFunctions({
+          model: this.model,
+          messages: [
+            this.systemPromptMessage,
+            {
+              role: "user",
+              content: callData.prompt,
+            },
+          ],
+          functions: [
+            {
+              function: (...args: any[]) => {
+                // this is an empty function call because we will manually call the function when we get the assistant response
               },
-            ],
-          })
-          .on("message", (message: any) => {
-            if (message.role !== "assistant") {
-              return;
-            }
+              name: callData.functionName,
+              description: callData.functionDesc,
+              parse: JSON.parse, // or use a validation library like zod for typesafe parsing.
+              parameters: callData.functionParams,
+            },
+          ],
+        })
+        // do not care about this onMessage thing since it triggers for the systmemessage as well
+        .on("message", (message) => {
+          if (message.role !== "assistant") {
+            // we need to filter for the assistant message since the systemprompt and user messages will also be here
+            return;
+          }
 
-            clearTimeout(timeoutId);
+          clearTimeout(timeoutId);
+          if (message.function_call) {
+            const args = message.function_call.arguments;
+            this.cacheSet(callData.prompt, args);
+            resolve(args);
+          } else {
+            reject(
+              Error(
+                `no function_call made. content=${message.content?.toString()}}`,
+              ),
+            );
+          }
+        });
+    });
 
-            if (message.function_call) {
-              const args = message.function_call.arguments;
-              if (this.cache) {
-                this.cacheSet(cacheKey, args);
-              }
-              resolve(args);
-            } else {
-              reject(
-                new Error(
-                  `No function call made. Content: ${message.content?.toString()}`,
-                ),
-              );
-            }
-          })
-          .on("error", (err: any) => {
-            clearTimeout(timeoutId);
-            reject(err);
-          });
-      });
-
-      return result;
-    } else {
-      // Handle Regular Message Scenario
-      const response = await this.client.chat.completions.create({
-        model: model,
-        messages: [this.systemPromptMessage, ...newMessages],
-      });
-
-      const choice = response.choices[0];
-      if (!choice) {
-        throw new Error("No choice returned. Couldn't generate response.");
-      }
-
-      if (this.cache) {
-        this.cacheSet(cacheKey, JSON.stringify(choice));
-      }
-
-      return choice;
-    }
+    return result;
   }
 }
