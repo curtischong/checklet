@@ -1,6 +1,6 @@
 // with a <reason></reason> tag.
 
-export const documentDelimiter = "---breakpoint---";
+export const documentDelimiter = "<Fixed Doc>";
 
 export const preprocessInstructions = (unprocessedTips: string) => {
   return `Given the below instructions, extract all of the tips/tricks/heuristics into a numbered list.
@@ -22,6 +22,8 @@ export const inferenceInstructions = (tips: string, doc: string) => {
 This is a <tip:#>great sentence that </tip:#> was in the original text.
 
 Note: The # is the tip number you followed above. You only want to change words and short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
+
+4) Output </Fixed Doc>
 
 ---TIPS---
 ${tips}

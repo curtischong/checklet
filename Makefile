@@ -30,3 +30,6 @@ studio:
 
 prompt-test:
 	npx tsx ./scripts/prompt-test.ts
+
+edit-distance-test:
+	npx tsx ./scripts/edit-distance-test.ts
