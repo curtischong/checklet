@@ -28,6 +28,8 @@ function tokenizeDoc(doc: string, isDoc2 = false): string[] {
   return tokens;
 }
 
+// https://en.wikipedia.org/wiki/Gestalt_pattern_matching
+// PERF: "The execution time of the algorithm is O ( n 3 ) {displaystyle O(n^{3})} in a worst case and O ( n 2 ) {displaystyle O(n^{2})} in an average case."
 export function postprocessDoc(doc1: string, doc2: string): string {
   // Tokenize both documents
   const tokens1 = Array.from(doc1); // For doc1, we can tokenize by character
