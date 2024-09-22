@@ -42,6 +42,17 @@ ${tips}
 ${doc}`;
 };
 
+// export const inferenceInstructions2 = (doc: string) => {
+//   return `Repeat the entire original text, but with the edits. For each edit, explicitly surround your edit with tip tags. Also use the <old:#:new> delimiter to specify the old text and new text like so:
+
+// This is a <tip:#>old text before your edit<old:#:new>new text after yoru edit</tip:#> sentence.
+
+// Note: The # is the tip number you followed above. You only want to change words and short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
+
+// ---DOCUMENT---
+// ${doc}`;
+// };
+
 export const inferenceInstructions2 = (doc: string) => {
   return `Repeat the entire original text, but with the edits. For each edit, explicitly surround your edit with tip tags like so:
 

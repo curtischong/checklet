@@ -1,6 +1,5 @@
 import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type CheckerType } from "@/server/api/routers/checker/checker";
-import { getDocEdits } from "@/server/api/routers/checker/docEdits";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
 import { Llm2 } from "@/server/api/routers/checker/llm2";
 import { type Llm3 } from "@/server/api/routers/checker/llm3";
@@ -124,7 +123,7 @@ export const checkDoc2 = async (
   const newDoc = newChat.message.content!;
   const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
 
-  getDocEdits(doc, newDoc);
+  // getDocEdits(doc, newDoc);
 
   console.log("newDoc", newDoc);
   // console.log("edits", edits);
