@@ -16,7 +16,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   children,
   isDeleteConfirm = false,
 }) => {
-  const [visible, setVisible] = useState(false);
+  const [isMounted, setIsMounted] = useState(false); // Controls rendering
   const [isVisible, setIsVisible] = useState(false); // Controls opacity
   const triggerRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -24,14 +24,13 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   const animationDuration = 300; // in milliseconds
 
   const showPopconfirm = () => {
-    setVisible(true);
+    setIsMounted(true);
   };
 
   const hidePopconfirm = () => {
     setIsVisible(false); // Start fade-out
     setTimeout(() => {
-      setVisible(false); // Unmount after animation
-      setIsAnimating(false);
+      setIsMounted(false); // Unmount after animation
     }, animationDuration);
   };
 
@@ -46,11 +45,12 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   };
 
   useEffect(() => {
-    if (visible) {
+    if (isMounted) {
       // Trigger fade-in after mount
-      setTimeout(() => {
+      // Using requestAnimationFrame to ensure the class is applied after the component is rendered
+      requestAnimationFrame(() => {
         setIsVisible(true);
-      }, 10); // Slight delay to allow initial render with opacity-0
+      });
 
       const handleClickOutside = (event: MouseEvent) => {
         if (
@@ -80,7 +80,7 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
         document.removeEventListener("keydown", handleEscape);
       };
     }
-  }, [visible]);
+  }, [isMounted]);
 
   return (
     <div className="relative inline-block">
@@ -88,18 +88,17 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
         {children}
       </div>
 
-      {(visible || isVisible) && (
+      {isMounted && (
         <div
           ref={dialogRef}
           role="dialog"
           aria-modal="true"
           className={classNames(
-            "absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 transform rounded-md border border-gray-300 bg-white p-4 shadow-md transition-opacity duration-300",
+            "absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 transform rounded-md border border-gray-300 bg-white p-4 opacity-0 shadow-md transition-opacity duration-300",
             {
               "opacity-100": isVisible,
-              "opacity-0": !isVisible,
             },
-            "w-full max-w-xs", // Ensures responsive width
+            "min-w-[200px]", // Sets a minimum width; adjust as needed
           )}
         >
           <div className="mb-3 text-center text-sm">{title}</div>
