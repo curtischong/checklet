@@ -17,9 +17,9 @@ export const IsPublicSwitch = ({
   const updateIsPublic = api.checker.updateIsPublic.useMutation({
     onSuccess: (data) => {
       if (data.isPublic) {
-        toast.error("Your checker is now public!");
+        toast.success("Your checker is now public!");
       } else {
-        toast.info("Your checker is now private");
+        toast.success("Your checker is now private");
       }
       setIsPublic(data.isPublic);
     },
