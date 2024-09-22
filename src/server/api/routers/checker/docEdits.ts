@@ -1,4 +1,5 @@
 import { type EditOp } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
 
 /*
 design decisions:
@@ -7,6 +8,11 @@ design decisions:
     - becuase the edits derived from edit distance are not good. e.g. </tip:32> may be split into two edits: </t and p:32> (because there was an i that did NOT need to be edited)
     - edit distance is only the minimal edits. but to display grammarly-like suggestions, we shouldn't use the minimal edit distance
     - this is why we DIRECTLY return the EditOps array (which contains all n edits and the corresponding tips)
+
+
+    we need edit distance to create editedDocWithOnlyEdits
+if you build the editedDocWithOnlyEdits, the job becomes much easier. since you can TRUST the location of the tipStarts and ends
+
 
 */
 
@@ -18,7 +24,7 @@ export const getDocEdits = (
   originalDoc: string,
   editedDoc: string,
 ): EditOp[] => {
-  // const editOps = editDistanceOperationsWithClasses(originalDoc, editedDoc);
+  const editOps = editDistanceOperationsWithClasses(originalDoc, editedDoc);
 
   let match;
 
@@ -26,8 +32,8 @@ export const getDocEdits = (
   // const tipEnds: Tip[] = [];
 
   // the problem is that tipStarts is NOT accurate
-  const tipStarts = new Map<number, number>(); // idx -> tip number
-  const tipEnds = new Map<number, number>(); // idx -> tip number
+  const tipStarts = new Map<number, number>(); // locationOftip -> tip number
+  const tipEnds = new Map<number, number>(); // locationOfTip -> tip number
   while ((match = tipStartRegex.exec(editedDoc)) !== null) {
     tipStarts.set(match.index, parseInt(match[1]!));
   }
