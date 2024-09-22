@@ -33,3 +33,6 @@ prompt-test:
 
 edit-distance-test:
 	npx tsx ./scripts/edit-distance-test.ts
+
+edit-distance-test2:
+	npx tsx ./scripts/edit-distance-test/run7.ts
