@@ -41,7 +41,7 @@ ${doc}`;
 };
 
 export const inferenceInstructions2 = (doc: string) => {
-  return `Repeat the entire fixed text, and for each edit, explicitly surround your edit with tip tags like so:
+  return `Repeat the entire original text, but with the edits. For each edit, explicitly surround your edit with tip tags like so:
 
 This is a <tip:#>great sentence that </tip:#> was in the original text.
 

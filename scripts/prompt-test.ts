@@ -15,11 +15,13 @@ const cache = new SimpleCache(
 );
 const apiKey = process.env.OPENAI_API_KEY;
 const llm = new Llm2(systemPrompt, cache, apiKey);
+// const llm = new Llm(systemPrompt, smartModel, cache, apiKey);
 // const llm = new AzureLlm(cache);
 
+// const refinedPrompt = await llm.prompt(preprocessInstructions(rizzumePrompt));
 const refinedPrompt = await llm.prompt(
   preprocessInstructions(rizzumePrompt),
-  cheapModel,
+  smartModel,
 );
 console.log("refined prompt");
 
@@ -30,4 +32,5 @@ const suggestions = await checkDoc(
   smartModel,
   cheapModel,
 );
+// const suggestions = await checkDoc1(llm, refinedPrompt, sample_resume_2019);
 console.log(suggestions);

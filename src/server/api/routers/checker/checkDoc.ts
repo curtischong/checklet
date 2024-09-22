@@ -1,5 +1,6 @@
 import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type CheckerType } from "@/server/api/routers/checker/checker";
+import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
 import { Llm2 } from "@/server/api/routers/checker/llm2";
 import { extractTipsAndReasons } from "@/server/api/routers/checker/llmOutputHelpers";
 import {
@@ -73,6 +74,31 @@ export class CheckerWorker {
   };
 }
 
+// export const checkDoc1 = async (
+//   llm: Llm,
+//   refinedPrompt: string,
+//   doc: string,
+// ): Promise<Suggestion[]> => {
+//   const newDoc = await llm.prompt(inferenceInstructions(refinedPrompt, doc));
+//   const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
+
+//   const edits = editDistanceOperationsWithClasses(doc, newDoc);
+//   edits.sort((a, b) => {
+//     return a.range.start - b.range.start;
+//   });
+//   console.log("newDoc", newDoc);
+//   console.log("edits", edits);
+
+//   // console.log("newDoc", newDoc);
+//   // console.log(tipsAndReasons);
+
+//   // TODO: I need to parse it and turn it into suggestions
+
+//   // console.log("checkDoc", checker, doc);
+
+//   return [];
+// };
+
 export const checkDoc = async (
   llm: Llm2,
   refinedPrompt: string,
@@ -93,8 +119,13 @@ export const checkDoc = async (
   );
   const newDoc = newChat.message.content!;
   const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
+
+  const edits = editDistanceOperationsWithClasses(doc, newDoc);
   console.log("newDoc", newDoc);
-  console.log(tipsAndReasons);
+  console.log("edits", edits);
+
+  // console.log("newDoc", newDoc);
+  // console.log(tipsAndReasons);
 
   // TODO: I need to parse it and turn it into suggestions
 
