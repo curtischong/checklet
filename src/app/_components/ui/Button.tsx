@@ -4,8 +4,9 @@ import { EditIcon } from "@/app/_components/icons/EditIcon";
 import { LinkArrowIcon } from "@/app/_components/icons/LinkArrowIcon";
 import { PlusIcon } from "@/app/_components/icons/PlusIcon";
 import { TrashIcon } from "@/app/_components/icons/TrashIcon";
+import Popconfirm from "@/app/_components/ui/PopConfirm";
 import classNames from "classnames";
-import React, { useState } from "react";
+import React from "react";
 
 export type IButton = React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -212,64 +213,13 @@ export const DeleteButtonWithConfirm: React.FC<
   }
 > = ({ onDelete, ...rest }) => {
   return (
-    <Popconfirm title="Confirm Delete" onConfirm={onDelete}>
+    <Popconfirm
+      title="Delete Checker?"
+      onConfirm={onDelete}
+      isDeleteConfirm={true}
+    >
       <DeleteButton {...rest} />
     </Popconfirm>
-  );
-};
-
-interface PopconfirmProps {
-  title: string;
-  onConfirm: () => void;
-  onCancel?: () => void;
-  children: React.ReactNode;
-}
-
-const Popconfirm: React.FC<PopconfirmProps> = ({
-  title,
-  onConfirm,
-  onCancel,
-  children,
-}) => {
-  const [visible, setVisible] = useState(false);
-
-  const showPopconfirm = () => setVisible(true);
-  const hidePopconfirm = () => setVisible(false);
-
-  const handleConfirm = () => {
-    onConfirm();
-    hidePopconfirm();
-  };
-
-  const handleCancel = () => {
-    onCancel?.();
-    hidePopconfirm();
-  };
-
-  return (
-    <div className="relative inline-block">
-      <div onClick={showPopconfirm}>{children}</div>
-
-      {visible && (
-        <div className="absolute z-10 mt-2 w-64 rounded-md border border-gray-300 bg-white p-4 shadow-md">
-          <div className="mb-3 text-sm">{title}</div>
-          <div className="flex justify-end space-x-2">
-            <button
-              className="rounded bg-gray-100 px-3 py-1 text-gray-600 hover:bg-gray-200"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
-            <button
-              className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
-              onClick={handleConfirm}
-            >
-              Confirm
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
   );
 };
 
