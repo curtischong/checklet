@@ -83,14 +83,12 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ desc: z.string() }))
     .input(z.object({ prompt: z.string() }))
     .input(z.object({ sampleDoc: z.string() }))
-    .input(z.object({ isPublic: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      // TODO: veritfy that YOU own the checker
       const isValid =
         input.name !== "" &&
         input.desc !== "" &&
         input.prompt !== "" &&
-        input.sampleDoc !== "";
+        input.sampleDoc !== ""; // TODO: should we care about the sample doc?
 
       const checker = await ctx.db.checker.findUnique({
         where: {
@@ -119,7 +117,6 @@ export const checkerRouter = createTRPCRouter({
           desc: input.desc,
           prompt: input.prompt,
           sampleDoc: input.sampleDoc,
-          isPublic: input.isPublic,
           isValid,
         },
       });
@@ -169,5 +166,54 @@ export const checkerRouter = createTRPCRouter({
       // now that we've validated everything, we can actually check the doc
       const checkerWorker = new CheckerWorker(ctx.db);
       return await checkerWorker.checkDoc(input.doc, checker);
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ checkerId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const checker = await ctx.db.checker.findUnique({
+        where: {
+          id: input.checkerId,
+        },
+      });
+      if (checker?.createdById !== ctx.user.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message:
+            "you are not the creator of this checker. You cannot delete it",
+        });
+      }
+
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: ctx.user.id,
+        },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "user not found",
+        });
+      }
+
+      // remove the checker
+      await ctx.db.checker.delete({
+        where: {
+          id: input.checkerId,
+        },
+      });
+
+      // remove this checker id from the user's checkerIds array
+      const newUserCheckerIds = user.checkerIds.filter(
+        (id) => id !== input.checkerId,
+      );
+      await ctx.db.user.update({
+        where: {
+          id: ctx.user.id,
+        },
+        data: {
+          checkerIds: newUserCheckerIds,
+        },
+      });
     }),
 });
