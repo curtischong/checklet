@@ -15,6 +15,9 @@ export const IsPublicSwitch = ({
   const [isPublic, setIsPublic] = React.useState(isInitiallyPublic);
 
   const updateIsPublic = api.checker.updateIsPublic.useMutation({
+    onMutate: () => {
+      setIsPublic(!isPublic); // optimistically update the UI
+    },
     onSuccess: (data) => {
       if (data.isPublic) {
         toast.success("Your checker is now public!");
