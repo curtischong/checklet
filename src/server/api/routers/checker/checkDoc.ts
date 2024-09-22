@@ -2,6 +2,7 @@ import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/su
 import { type CheckerType } from "@/server/api/routers/checker/checker";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
 import { Llm2 } from "@/server/api/routers/checker/llm2";
+import { type Llm3 } from "@/server/api/routers/checker/llm3";
 import { extractTipsAndReasons } from "@/server/api/routers/checker/llmOutputHelpers";
 import {
   inferenceInstructions1,
@@ -11,6 +12,7 @@ import {
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import { tinySimpleHash } from "@/utils/strings";
 import { type PrismaClient } from "@prisma/client";
+import { type ChatCompletionTool } from "openai/resources/index.mjs";
 import path from "path";
 
 export class CheckerWorker {
@@ -131,5 +133,51 @@ export const checkDoc = async (
 
   // console.log("checkDoc", checker, doc);
 
+  return [];
+};
+
+export const checkDoc3 = async (
+  llm: Llm3,
+  refinedPrompt: string,
+  doc: string,
+  smartModel: string,
+): Promise<Suggestion[]> => {
+  const editsChain = await llm.promptMessagesExtendChain(
+    [],
+    inferenceInstructions1(refinedPrompt, doc),
+    smartModel,
+  );
+  console.log("editsChain done", editsChain);
+
+  const tools: ChatCompletionTool[] = [
+    {
+      type: "function",
+      function: {
+        name: "submit_edited_doc",
+        description:
+          "Submit the edited doc with the edits annotated with <tip:#>your edit</tip:#> tags",
+        parameters: {
+          type: "object",
+          properties: {
+            editedDoc: {
+              type: "string",
+              description: "The edited document with the annotations",
+            },
+          },
+          required: ["editedDoc"],
+        },
+      },
+    },
+  ];
+  const newDoc = await llm.callFunction(
+    editsChain,
+    inferenceInstructions2(doc),
+    tools,
+  );
+
+  const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
+  const edits = editDistanceOperationsWithClasses(doc, newDoc);
+  console.log("newDoc", newDoc);
+  console.log("edits", edits);
   return [];
 };

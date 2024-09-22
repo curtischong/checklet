@@ -94,6 +94,10 @@ export function editDistanceOperationsWithClasses(
     }
   }
 
+  merged_ops.sort((a, b) => {
+    return a.range.start - b.range.start;
+  });
+
   return merged_ops;
 }
 

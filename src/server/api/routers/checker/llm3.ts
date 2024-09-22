@@ -1,8 +1,10 @@
 import { type SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import { cyrb53 } from "@/utils/strings";
 import OpenAI from "openai";
-import { type JSONSchema } from "openai/lib/jsonschema";
-import { type ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import {
+  type ChatCompletionMessageParam,
+  type ChatCompletionTool,
+} from "openai/resources/index.mjs";
 
 export class Llm3 {
   client: OpenAI;
@@ -70,6 +72,7 @@ export class Llm3 {
     newMessage: string,
   ): ChatCompletionMessageParam[] {
     return [
+      this.systemPromptMessage,
       ...prevMessages,
       {
         role: "user",
@@ -96,7 +99,7 @@ export class Llm3 {
 
     const value = await this.client.chat.completions.create({
       model: model,
-      messages: [this.systemPromptMessage, ...newMessages],
+      messages: newMessages,
     });
     const choice = value.choices[0];
     if (!choice) {
@@ -110,15 +113,11 @@ export class Llm3 {
   async callFunction(
     prevMessages: ChatCompletionMessageParam[],
     prompt: string,
-    callData: {
-      functionName: string;
-      functionDesc: string;
-      functionParams: JSONSchema;
-    },
+    tools: ChatCompletionTool[],
   ): Promise<string> {
     const newMessages = this.getNewMessages(prevMessages, prompt);
     if (this.cache) {
-      const cachedArgStr = this.cacheGet(callData.prompt);
+      const cachedArgStr = this.cacheGet(newMessages);
       if (cachedArgStr) {
         // console.log("cache success");
         return cachedArgStr;
@@ -126,56 +125,16 @@ export class Llm3 {
       // console.log("cache miss", callData.prompt);
     }
 
-    const result = new Promise<string>((resolve, reject) => {
-      // resolve the promise after 10 seconds. cause if the API fails to call our function, we'll be stuck here forever
-      const timeoutId = setTimeout(() => {
-        reject(new Error("API call timed out after 10 seconds"));
-      }, 60000);
-
-      this.client.beta.chat.completions
-        .runFunctions({
-          model: this.model,
-          messages: [
-            this.systemPromptMessage,
-            {
-              role: "user",
-              content: callData.prompt,
-            },
-          ],
-          functions: [
-            {
-              function: (...args: any[]) => {
-                // this is an empty function call because we will manually call the function when we get the assistant response
-              },
-              name: callData.functionName,
-              description: callData.functionDesc,
-              parse: JSON.parse, // or use a validation library like zod for typesafe parsing.
-              parameters: callData.functionParams,
-            },
-          ],
-        })
-        // do not care about this onMessage thing since it triggers for the systmemessage as well
-        .on("message", (message) => {
-          if (message.role !== "assistant") {
-            // we need to filter for the assistant message since the systemprompt and user messages will also be here
-            return;
-          }
-
-          clearTimeout(timeoutId);
-          if (message.function_call) {
-            const args = message.function_call.arguments;
-            this.cacheSet(callData.prompt, args);
-            resolve(args);
-          } else {
-            reject(
-              Error(
-                `no function_call made. content=${message.content?.toString()}}`,
-              ),
-            );
-          }
-        });
+    const completion = await this.client.chat.completions.create({
+      model: this.model,
+      messages: newMessages,
+      tool_choice: "required",
+      tools: tools,
     });
 
-    return result;
+    const res =
+      completion.choices[0]?.message.tool_calls![0]!.function.arguments!;
+    this.cacheSet(newMessages, res);
+    return res;
   }
 }
