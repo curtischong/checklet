@@ -1,5 +1,9 @@
-import { type EditOp } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import {
+  type EditOp,
+  type Suggestion,
+} from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
+import { createShortId } from "@/utils/strings";
 
 /*
 design decisions:
@@ -20,10 +24,10 @@ const tipStartRegex = /<tip:(\d+)>/g;
 const tipEndRegex = /<\/tip:(\d+)>/g;
 
 // lets just handle insertions for now. we'll handle deletions later
-export const getDocEdits = (
+export const getEditedDocWithOnlyEdits = (
   originalDoc: string,
   editedDoc: string,
-): EditOp[] => {
+): string => {
   const editOps = editDistanceOperationsWithClasses(originalDoc, editedDoc);
 
   let match;
@@ -41,8 +45,15 @@ export const getDocEdits = (
     tipEnds.set(match.index, parseInt(match[1]!));
   }
 
+  const editStarts = new Map<number, EditOp>(); // locationOftip -> editOp
+  for (const edit of editOps) {
+    editStarts.set(edit.range.start, edit);
+  }
+
   console.log("tipStarts", tipStarts);
   console.log("tipEnds", tipEnds);
+
+  let editedDocWithOnlyEdits = "";
 
   const d1 = originalDoc;
   const d2 = editedDoc;
@@ -57,9 +68,11 @@ export const getDocEdits = (
     if (d1[p1] === d2[p2]) {
       p1++;
       p2++;
+      editedDocWithOnlyEdits += d1[p1];
       continue;
     }
     // the two docs don't match
+
     if (tipStarts.has(p1)) {
       // we're in a tip
       const tipNum = tipStarts.get(p1)!;
@@ -69,7 +82,45 @@ export const getDocEdits = (
     }
   }
 
-  // we cna return tis, or just an array of editOps
-  const editedDocWithOnlyEdits = "";
-  return [];
+  return editedDocWithOnlyEdits;
+};
+
+const getSuggestions = (editedDocWithOnlyEdits: string): Suggestion[] => {
+  const tipStarts = new Map<number, number>(); // locationOftip -> tip number
+  const tipEnds = new Map<number, number>(); // locationOfTip -> tip number
+
+  let match;
+  while ((match = tipStartRegex.exec(editedDocWithOnlyEdits)) !== null) {
+    tipStarts.set(match.index, parseInt(match[1]!));
+  }
+  while ((match = tipEndRegex.exec(editedDocWithOnlyEdits)) !== null) {
+    tipEnds.set(match.index, parseInt(match[1]!));
+  }
+
+  const suggestions = [];
+  const tipStack = [];
+  for (let i = 0; i < editedDocWithOnlyEdits.length; i++) {
+    if (tipStarts.has(i)) {
+      const tipNum = tipStarts.get(i)!;
+      tipStack.push({ tipNum, startIdx: i });
+    }
+    if (tipEnds.has(i)) {
+      const endTipNum = tipEnds.get(i)!;
+      const { tipNum, startIdx } = tipStack.pop()!;
+      if (tipNum != endTipNum) {
+        throw new Error("mismatched tip numbers");
+      }
+
+      const suggestion: Suggestion = {
+        tip: tipNum,
+        range: {
+          start: startIdx,
+          end: i,
+        },
+        suggestionId: createShortId(),
+      };
+      suggestions.push(suggestion);
+    }
+  }
+  return suggestions;
 };
