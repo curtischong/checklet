@@ -1,12 +1,10 @@
 import * as difflib from "difflib";
 // from https://chatgpt.com/share/66f0be8c-2d1c-800e-a2e3-79eb22f5d80d
 
-function tokenizeDoc(doc: string, isDoc2 = false): string[] {
+function tokenizeDoc(doc: string): string[] {
   // Regular expression to match tip tags
-  const tipTagPattern = new RegExp(
-    "<tip|([^|]+)|([^>]+)><old>([^<]+)</old><new>([^<]+)</new></tip>",
-    "s",
-  );
+  const tipTagPattern =
+    /<tip\|([^|]+)\|([^>]+)><old>([^<]+)<\/old><new>([^<]+)<\/new><\/tip>/s;
 
   // Tokenize the document, keeping tip tags as single tokens
   const tokens: string[] = [];
@@ -34,7 +32,8 @@ function tokenizeDoc(doc: string, isDoc2 = false): string[] {
 export function postprocessDoc(doc1: string, doc2: string): string {
   // Tokenize both documents
   const tokens1 = Array.from(doc1); // For doc1, we can tokenize by character
-  const tokens2 = tokenizeDoc(doc2, true);
+  const tokens2 = tokenizeDoc(doc2);
+  console.log(tokens2.filter((t) => t.length > 1));
 
   // Use SequenceMatcher to align the tokens
   const matcher = new difflib.SequenceMatcher(null, tokens1, tokens2);
