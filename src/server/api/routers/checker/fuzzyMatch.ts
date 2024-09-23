@@ -3,9 +3,10 @@ export function fuzzyMatch(
   doc: string,
   query: string,
   idx: number,
+  allowedDeviation: number,
 ): { matchingSubstring: string; actualIndex: number } {
   const lenQuery = query.length;
-  const delta = 10; // Allowed deviation
+  const delta = allowedDeviation;
   const windowSize = lenQuery + 2 * delta;
 
   // Define search window in doc
@@ -81,6 +82,8 @@ export function fuzzyMatch(
     actualIndex,
     actualIndex + matchLength,
   );
+  console.log("actualIndex", actualIndex);
+  console.log("originalIndex", idx);
 
   return { matchingSubstring, actualIndex };
 }

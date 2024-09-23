@@ -93,7 +93,8 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   const lengthOfChainOfThought =
     doc2.length - doc1.length - sumOfAllTipTagsWithoutOldText; // doc2 added all the extra tip tags, so we need to subtract that length (since it's not included in doc1's length)
 
-  for (const match of allMatches) {
+  for (let i = 0; i < allMatches.length; i++) {
+    const match = allMatches[i];
     const [fullMatch, tipName, reason, rawOldText, newText] = match;
     const tipStartIndexInDoc2 = match.index;
     // NOTE: since there may be chain of thought at the start of doc2, this is a big number^
@@ -113,10 +114,12 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
 
     console.log("tipStartIndexInDoc2", tipStartIndexInDoc2);
     console.log("indexInDoc1", indexInDoc1);
+    const allowedDeviation = i === 0 ? 500 : 200; // allow a LOT of deviation for the first match (since it can be low in the document and we want to match it)
     const { matchingSubstring, actualIndex } = fuzzyMatch(
       doc1,
       oldText,
       indexInDoc1,
+      allowedDeviation,
     );
     console.log("matching substring", matchingSubstring, "oldText", oldText);
 
