@@ -16,7 +16,7 @@ export const HelpIcon: React.FC<HelpIconProps> = ({ text, className = "" }) => {
           width="16"
           height="16"
           viewBox="0 0 1024 1024"
-          className={`help-icon ${className} cursor-pointer text-gray-500 hover:text-blue-500 focus:outline-none`}
+          className={`help-icon ${className} cursor-normal text-gray-500 hover:text-blue-500 focus:outline-none`}
           aria-label="Help"
           role="img"
           tabIndex={0} // Make it focusable
