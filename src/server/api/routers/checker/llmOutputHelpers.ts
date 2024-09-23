@@ -71,14 +71,15 @@ const offsetOfOldTextInDoc1 = (
 export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   // Define the regex pattern with capturing groups:
   // <tip:number>oldText<old:id:new>newText</tip:number>
-  const tipTagPattern = /<tip:(\d+)>([^<]*)<delimiter>([^<]*)<\/tip:\1>/g;
+  const tipTagPattern =
+    /<tip\|([^|]+)\|([^>]+)><old>([^<]+)<\/old><new>([^<]+)<\/new><\/tip>/g;
 
   const suggestions: Suggestion[] = []; // Array to hold the resulting tip objects
   let match;
   let cumulativeInsertedLength = 0; // To track the total length of inserted tip patterns
 
   while ((match = tipTagPattern.exec(doc2)) !== null) {
-    const [fullMatch, tipNumber, rawOldText, newText] = match;
+    const [fullMatch, tipName, reason, rawOldText, newText] = match;
     const tipStartIndexInDoc2 = match.index;
 
     // Calculate the corresponding index in doc1 by subtracting the cumulative inserted lengths
@@ -100,9 +101,10 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
 
     // Push the extracted information into the tips array
     suggestions.push({
+      tipName,
+      reason,
       oldText: matchingSubstring,
       newText: newText,
-      tipNumber: parseInt(tipNumber!, 10),
       range: {
         start: realIndexInDoc1,
         end: realIndexInDoc1 + matchingSubstring.length,

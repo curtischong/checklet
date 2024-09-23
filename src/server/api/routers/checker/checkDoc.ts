@@ -17,6 +17,7 @@ import {
   inferenceInstructions1dot5,
   inferenceInstructions1dot6,
   inferenceInstructions1dot7,
+  inferenceInstructions1dot8,
   inferenceInstructions2,
   preprocessInstructions,
 } from "@/server/api/routers/checker/prompts";
@@ -134,6 +135,24 @@ export const checkDoc1dot7 = async (
 ): Promise<Suggestion[]> => {
   const rawEditedDoc = await llm.prompt(
     inferenceInstructions1dot7(prompt, doc),
+  );
+  console.log("rawEditedDoc", rawEditedDoc);
+  // const tips = extractTips(prompt);
+
+  const docWithOnlyEdits = postprocessDoc(doc, rawEditedDoc); // removes extraneous whitespace / removals the llm made
+  // console.log("docWithOnlyEdits", docWithOnlyEdits);
+  const suggestions = extractSuggestions(doc, docWithOnlyEdits);
+
+  return suggestions;
+};
+
+export const checkDoc1dot8 = async (
+  llm: Llm,
+  prompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const rawEditedDoc = await llm.prompt(
+    inferenceInstructions1dot8(prompt, doc),
   );
   console.log("rawEditedDoc", rawEditedDoc);
   // const tips = extractTips(prompt);

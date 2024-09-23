@@ -4,7 +4,7 @@ import * as difflib from "difflib";
 function tokenizeDoc(doc: string, isDoc2 = false): string[] {
   // Regular expression to match tip tags
   const tipTagPattern = new RegExp(
-    "<tip:\\d+>.*?<delimiter>.*?</tip:\\d+>",
+    "<tip|([^|]+)|([^>]+)><old>([^<]+)</old><new>([^<]+)</new></tip>",
     "s",
   );
 
@@ -52,7 +52,7 @@ export function postprocessDoc(doc1: string, doc2: string): string {
       // Tokens inserted in doc2
       const insertedTokens = tokens2.slice(j1, j2);
       for (const token of insertedTokens) {
-        if (token.startsWith("<tip:")) {
+        if (token.startsWith("<tip|")) {
           // Insert the tip tag into doc3
           doc3Tokens.push(token);
         }
@@ -65,7 +65,7 @@ export function postprocessDoc(doc1: string, doc2: string): string {
       // Tokens replaced
       const replacedTokens = tokens2.slice(j1, j2);
       const insertedTipTags = replacedTokens.filter((token) =>
-        token.startsWith("<tip:"),
+        token.startsWith("<tip|"),
       );
 
       if (insertedTipTags.length > 0) {
