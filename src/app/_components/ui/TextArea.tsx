@@ -18,7 +18,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   onChange,
   className = "",
   autoSize = false,
-  maxRows = 16, // Default maxRows (slightly increased from previous)
+  maxRows = 300, // Default maxRows (slightly increased from previous)
   rows = 4, // Increased default height
   ...rest
 }) => {

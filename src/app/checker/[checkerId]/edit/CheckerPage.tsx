@@ -9,6 +9,7 @@ import {
 } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { IsPublicSwitch } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
 import { isValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
+import useUnsavedChangesWarning from "@/app/checker/[checkerId]/edit/useUnsavedChangesWarning";
 import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
 import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
 import { type UserCtx } from "@/firebase/edge_env";
@@ -82,6 +83,8 @@ export const CheckerPage = ({
   useEffect(() => {
     saveChecker(name, desc, prompt, editorState);
   }, [name, desc, prompt, editorState, saveChecker]);
+  const isFormDirty = submittingState !== SubmittingState.NotSubmitting;
+  useUnsavedChangesWarning({ hasUnsavedChanges: isFormDirty });
 
   const isInvalidWarningMsg = isValidWarning(name, desc, prompt);
 
