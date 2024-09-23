@@ -27,18 +27,57 @@ export function extractTips(input: string): Tip[] {
   return tipReasonPairs;
 }
 
+const getDoc1Substring = (doc1: string, index: number, oldText: string) => {
+  return doc1.substring(index, index + oldText.length);
+};
+
+// TODO: we need to wiggle a bit. offer a tollerance of += 1 for the window
+// this is because the model may put invalid chars inside the <tip> tags
+const idxOfOldTextInDoc1 = (
+  doc1: string,
+  indexInDoc1: number,
+  oldText: string,
+) => {
+  const calculatedOldText = getDoc1Substring(doc1, indexInDoc1, oldText);
+  if (calculatedOldText === oldText) {
+    console.log("used indexInDoc1");
+    return indexInDoc1;
+  }
+  const calculatedOldTextPlus1 = getDoc1Substring(
+    doc1,
+    indexInDoc1 + 1,
+    oldText,
+  );
+  if (calculatedOldTextPlus1 === oldText) {
+    console.log("used indexInDoc1 + 1");
+    return indexInDoc1 + 1;
+  }
+  const calculatedOldTextSub1 = getDoc1Substring(
+    doc1,
+    indexInDoc1 - 1,
+    oldText,
+  );
+  if (calculatedOldTextSub1 === oldText) {
+    console.log("used indexInDoc1 - 1");
+    return indexInDoc1 - 1;
+  }
+  throw new Error(
+    `Old text mismatch at index ${indexInDoc1}: expected "${oldText}", found "${calculatedOldText}"`,
+  );
+};
+
 // https://chatgpt.com/share/66f0c180-e6a0-800e-a55a-99862d193b2f
 export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   // Define the regex pattern with capturing groups:
   // <tip:number>oldText<old:id:new>newText</tip:number>
   const tipTagPattern = /<tip:(\d+)>([^<]*)<delimiter>([^<]*)<\/tip:\1>/g;
 
-  const tips = []; // Array to hold the resulting tip objects
+  const suggestions: Suggestion[] = []; // Array to hold the resulting tip objects
   let match;
   let cumulativeInsertedLength = 0; // To track the total length of inserted tip patterns
 
   while ((match = tipTagPattern.exec(doc2)) !== null) {
-    const [fullMatch, tipNumber, oldText, newText] = match;
+    const [fullMatch, tipNumber, rawOldText, newText] = match;
     const tipStartIndexInDoc2 = match.index;
 
     // Calculate the corresponding index in doc1 by subtracting the cumulative inserted lengths
@@ -46,28 +85,19 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
 
     // Verify that the oldText at indexInDoc1 in doc1 matches the expected oldText
     console.log("--------");
+    const oldText = rawOldText ?? "";
     console.log(`${oldText}`);
-    const substringInDoc1 = doc1.substring(
-      indexInDoc1,
-      indexInDoc1 + (oldText?.length ?? 0),
-    );
 
-    // TODO: we need to wiggle a bit. offer a tollerance of += 1 for the window
-    // this is because the model may put invalid chars inside the <tip> tags
-    if (substringInDoc1 !== oldText) {
-      throw new Error(
-        `Old text mismatch at index ${indexInDoc1}: expected "${oldText}", found "${substringInDoc1}"`,
-      );
-    }
+    const realIndexInDoc1 = idxOfOldTextInDoc1(doc1, indexInDoc1, oldText);
 
     // Push the extracted information into the tips array
-    tips.push({
+    suggestions.push({
       oldText: oldText,
       newText: newText,
       tipNumber: parseInt(tipNumber!, 10),
       range: {
-        start: indexInDoc1,
-        end: indexInDoc1 + oldText.length,
+        start: realIndexInDoc1,
+        end: realIndexInDoc1 + oldText.length,
       },
     });
 
@@ -76,5 +106,5 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     cumulativeInsertedLength += fullMatch.length - oldText.length;
   }
 
-  return tips;
+  return suggestions;
 }

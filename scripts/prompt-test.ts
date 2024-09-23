@@ -1,4 +1,4 @@
-import { checkDoc1dot5 } from "@/server/api/routers/checker/checkDoc";
+import { checkDoc1 } from "@/server/api/routers/checker/checkDoc";
 import { Llm } from "@/server/api/routers/checker/llm";
 import { preprocessInstructions } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
@@ -30,16 +30,16 @@ const refinedPrompt = await llm.prompt(
 );
 console.log("refined prompt", refinedPrompt);
 
-const feedbackResponse = await checkDoc1dot5(
-  llm,
-  refinedPrompt,
-  sample_resume_2019,
-);
-// const feedbackResponse = await checkDoc1(
+// const feedbackResponse = await checkDoc1dot5(
 //   llm,
 //   refinedPrompt,
 //   sample_resume_2019,
 // );
+const feedbackResponse = await checkDoc1(
+  llm,
+  refinedPrompt,
+  sample_resume_2019,
+);
 // const suggestions = await checkDoc2(
 //   llm,
 //   refinedPrompt,
