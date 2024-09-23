@@ -1,6 +1,5 @@
-import { checkDoc1dot6 } from "@/server/api/routers/checker/checkDoc";
+import { checkDoc1dot7 } from "@/server/api/routers/checker/checkDoc";
 import { Llm } from "@/server/api/routers/checker/llm";
-import { preprocessInstructions } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import path from "path";
 import { rizzumePrompt, sample_resume_2019 } from "scripts/samples/rizzume";
@@ -24,11 +23,11 @@ const llm = new Llm(systemPrompt, smartModel, cache1, apiKey);
 // const llm = new AzureLlm(cache);
 
 // const refinedPrompt = await llm.prompt(preprocessInstructions(rizzumePrompt));
-const refinedPrompt = await llm.prompt(
-  preprocessInstructions(rizzumePrompt),
-  // smartModel,
-);
-console.log("refined prompt", refinedPrompt);
+// const refinedPrompt = await llm.prompt(
+//   preprocessInstructions(rizzumePrompt),
+//   // smartModel,
+// );
+// console.log("refined prompt", refinedPrompt);
 
 // const feedbackResponse = await checkDoc1dot5(
 //   llm,
@@ -40,7 +39,7 @@ console.log("refined prompt", refinedPrompt);
 //   refinedPrompt,
 //   sample_resume_2019,
 // );
-const feedbackResponse = await checkDoc1dot6(
+const feedbackResponse = await checkDoc1dot7(
   llm,
   rizzumePrompt,
   sample_resume_2019,
