@@ -90,7 +90,7 @@ export const checkDoc1 = async (
   const rawEditedDoc = await llm.prompt(
     inferenceInstructions(refinedPrompt, doc),
   );
-  console.log("rawEditedDoc", rawEditedDoc);
+  // console.log("rawEditedDoc", rawEditedDoc);
   const tips = extractTips(refinedPrompt);
 
   const docWithOnlyEdits = postprocessDoc(doc, rawEditedDoc); // removes extraneous whitespace / removals the llm made

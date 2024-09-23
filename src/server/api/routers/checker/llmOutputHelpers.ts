@@ -45,8 +45,13 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     const indexInDoc1 = tipStartIndexInDoc2 - cumulativeInsertedLength;
 
     // Verify that the oldText at indexInDoc1 in doc1 matches the expected oldText
-    const substringInDoc1 = doc1.substring(indexInDoc1, oldText?.length ?? 0);
-    if (substringInDoc1 !== oldText) {
+    console.log("--------");
+    console.log(`${oldText}`);
+    const substringInDoc1 = doc1.substring(
+      indexInDoc1,
+      indexInDoc1 + (oldText?.length ?? 0),
+    );
+    if (substringInDoc1.trim() !== oldText?.trim()) {
       throw new Error(
         `Old text mismatch at index ${indexInDoc1}: expected "${oldText}", found "${substringInDoc1}"`,
       );
