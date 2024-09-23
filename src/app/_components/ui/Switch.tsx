@@ -1,6 +1,42 @@
 import { LabelWithHelp } from "@/app/_components/ui/LabelWithHelp";
-import { Switch } from "antd/lib";
 import classNames from "classnames";
+
+import React from "react";
+
+interface SwitchProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  disabled?: boolean;
+}
+
+const Switch: React.FC<SwitchProps> = ({
+  checked,
+  onChange,
+  disabled = false,
+}) => {
+  const handleToggle = () => {
+    if (!disabled) {
+      onChange(!checked);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleToggle}
+      className={`relative inline-flex h-[16px] w-[32px] rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+        checked ? "bg-blue-600" : "bg-gray-200"
+      } ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+      disabled={disabled}
+    >
+      <span
+        className={`absolute left-[1px] top-[1px] h-[14px] w-[14px] transform rounded-full bg-white shadow transition-transform duration-200 ${
+          checked ? "translate-x-[16px]" : "translate-x-0"
+        }`}
+      />
+    </button>
+  );
+};
 
 interface NormalSwitchProps {
   isChecked: boolean;
@@ -18,7 +54,6 @@ export const NormalSwitch = ({
       onChange={() => {
         setChecked(!isChecked);
       }}
-      size="small"
       className={classNames(className, {
         "bg-gray-300": !isChecked,
       })}
@@ -40,16 +75,16 @@ export const LabelWithSwitch = ({
   helpText,
 }: LabelWithSwitchProps): JSX.Element => {
   return (
-    <div className={classNames("flex flex-row", className)}>
+    <div className={classNames("flex flex-row items-center", className)}>
       <LabelWithHelp
         label={text}
         helpText={helpText}
-        helpIconClassName={"mt-[5px]"}
+        helpIconClassName={"ml-2"}
       />
       <NormalSwitch
         isChecked={isChecked}
         setChecked={setChecked}
-        className="mt-[5px] ml-2"
+        className="ml-2"
       />
     </div>
   );
