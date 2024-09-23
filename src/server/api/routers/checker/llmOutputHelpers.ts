@@ -51,7 +51,10 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
       indexInDoc1,
       indexInDoc1 + (oldText?.length ?? 0),
     );
-    if (substringInDoc1.trim() !== oldText?.trim()) {
+
+    // TODO: we need to wiggle a bit. offer a tollerance of += 1 for the window
+    // this is because the model may put invalid chars inside the <tip> tags
+    if (substringInDoc1 !== oldText) {
       throw new Error(
         `Old text mismatch at index ${indexInDoc1}: expected "${oldText}", found "${substringInDoc1}"`,
       );
