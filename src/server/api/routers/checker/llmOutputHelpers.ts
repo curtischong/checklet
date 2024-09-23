@@ -73,7 +73,10 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   // Define the regex pattern with capturing groups:
   // <tip:number>oldText<old:id:new>newText</tip:number>
   const tipTagPattern =
-    /<tip\|([^|]+)\|([^>]+)><old>([^<]+)<\/old><new>([^<]+)<\/new><\/tip>/g;
+    // /<tip\|([^|]+)\|([^>]+)><old>([^<]+)<\/old><new>([^<]+)<\/new><\/tip>/g;
+
+    // this pattern is the same. except it can match multiple spaces between the tags (sometimes the model adds extra spaces)
+    /<tip\|([^|]+)\|([^>]+)>\ *<old>([^<]+)<\/old>\ *<new>([^<]+)<\/new>\ *<\/tip>/g;
 
   const suggestions: Suggestion[] = []; // Array to hold the resulting tip objects
   let match;
@@ -93,7 +96,9 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   const lengthOfChainOfThought =
     doc2.length - doc1.length - sumOfAllTipTagsWithoutOldText; // doc2 added all the extra tip tags, so we need to subtract that length (since it's not included in doc1's length)
 
-  for (const match of allMatches) {
+  console.log("allMatches", allMatches);
+  for (let i = 0; i < allMatches.length; i++) {
+    const match = allMatches[i];
     const [fullMatch, tipName, reason, rawOldText, newText] = match;
     const tipStartIndexInDoc2 = match.index;
     // NOTE: since there may be chain of thought at the start of doc2, this is a big number^
@@ -113,10 +118,13 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
 
     console.log("tipStartIndexInDoc2", tipStartIndexInDoc2);
     console.log("indexInDoc1", indexInDoc1);
+    const allowedDeviation = i === 0 ? 500 : 200; // allow a LOT of deviation for the first match (since it can be low in the document and we want to match it)
+    // after the first match, we have a smaller range since we've calibrated a lot of the error present in the first match
     const { matchingSubstring, actualIndex } = fuzzyMatch(
       doc1,
       oldText,
       indexInDoc1,
+      allowedDeviation,
     );
     console.log("matching substring", matchingSubstring, "oldText", oldText);
 

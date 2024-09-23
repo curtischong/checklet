@@ -1,11 +1,14 @@
 // https://chatgpt.com/share/66f185c3-1924-800e-b4b4-8b270c342397
+
+// TODO: to make the match even better, we should try matching the text AROUND the postion in the original doc
 export function fuzzyMatch(
   doc: string,
   query: string,
   idx: number,
+  allowedDeviation: number,
 ): { matchingSubstring: string; actualIndex: number } {
   const lenQuery = query.length;
-  const delta = 10; // Allowed deviation
+  const delta = allowedDeviation;
   const windowSize = lenQuery + 2 * delta;
 
   // Define search window in doc
@@ -81,6 +84,8 @@ export function fuzzyMatch(
     actualIndex,
     actualIndex + matchLength,
   );
+  console.log("actualIndex", actualIndex);
+  console.log("originalIndex", idx);
 
   return { matchingSubstring, actualIndex };
 }
