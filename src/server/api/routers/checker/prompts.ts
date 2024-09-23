@@ -33,7 +33,13 @@ export const inferenceInstructions1dot5 = (tips: string, doc: string) => {
 
 2) Repeat the entire fixed text, and for each edit, explicitly surround your edit with <tip:#> tag:
 
-This is a <tip:#>new text after your edit</tip:#> sentence.
+This is a great <tip:#>new text after your edit</tip:#> sentence.
+
+If your edit removes text, use the <tip:#> tag with no text inside:
+
+This is a <tip:#></tip:#> sentence.
+
+In the above example, the word "great" was removed.
 
 Note: The # is the tip number you followed above. You only want to change words and short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
 
