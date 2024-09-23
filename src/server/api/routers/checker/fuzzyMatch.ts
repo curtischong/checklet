@@ -1,3 +1,4 @@
+// https://chatgpt.com/share/66f185c3-1924-800e-b4b4-8b270c342397
 export function fuzzyMatch(
   doc: string,
   query: string,
