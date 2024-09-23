@@ -31,7 +31,7 @@ export function extractTips(input: string): Tip[] {
 export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   // Define the regex pattern with capturing groups:
   // <tip:number>oldText<old:id:new>newText</tip:number>
-  const tipTagPattern = /<tip:(\d+)>([^<]*)<old:\d+:new>([^<]*)<\/tip:\1>/g;
+  const tipTagPattern = /<tip:(\d+)>([^<]*)<delimiter>([^<]*)<\/tip:\1>/g;
 
   const tips = []; // Array to hold the resulting tip objects
   let match;

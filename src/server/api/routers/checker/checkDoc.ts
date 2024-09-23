@@ -87,10 +87,14 @@ export const checkDoc1 = async (
   refinedPrompt: string,
   doc: string,
 ): Promise<FeedbackResponse> => {
-  const newDoc = await llm.prompt(inferenceInstructions(refinedPrompt, doc));
+  const rawEditedDoc = await llm.prompt(
+    inferenceInstructions(refinedPrompt, doc),
+  );
+  console.log("rawEditedDoc", rawEditedDoc);
   const tips = extractTips(refinedPrompt);
 
-  const docWithOnlyEdits = postprocessDoc(doc, newDoc); // removes extraneous whitespace / removals the llm made
+  const docWithOnlyEdits = postprocessDoc(doc, rawEditedDoc); // removes extraneous whitespace / removals the llm made
+  console.log("docWithOnlyEdits", docWithOnlyEdits);
   const suggestions = extractSuggestions(doc, docWithOnlyEdits);
 
   return {

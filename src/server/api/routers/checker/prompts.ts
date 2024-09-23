@@ -17,9 +17,9 @@ export const inferenceInstructions = (tips: string, doc: string) => {
 
 2) Output "${documentDelimiter}"
 
-3) Repeat the entire fixed text, and for each edit, explicitly surround your edit with <tip:#> tags. Also use the <old:#:new> delimiter to specify the old text and new text like so:
+3) Repeat the entire fixed text, and for each edit, explicitly surround your edit with <tip:#> tags. Also use the <delimiter> delimiter to specify the old text (on the left) and new text (on the right) like so:
 
-This is a <tip:#>old text before your edit<old:#:new>new text after yoru edit</tip:#> sentence.
+This is a <tip:#>old text before your edit<delimiter>new text after your edit</tip:#> sentence.
 
 Note: The # is the tip number you followed above. You only want to change words and short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
 

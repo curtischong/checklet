@@ -30,7 +30,11 @@ const refinedPrompt = await llm.prompt(
 );
 console.log("refined prompt");
 
-const suggestions = await checkDoc1(llm, refinedPrompt, sample_resume_2019);
+const feedbackResponse = await checkDoc1(
+  llm,
+  refinedPrompt,
+  sample_resume_2019,
+);
 // const suggestions = await checkDoc2(
 //   llm,
 //   refinedPrompt,
@@ -44,4 +48,4 @@ const suggestions = await checkDoc1(llm, refinedPrompt, sample_resume_2019);
 //   sample_resume_2019,
 //   smartModel,
 // );
-console.log(suggestions);
+console.log("FeedbackResponse", feedbackResponse);

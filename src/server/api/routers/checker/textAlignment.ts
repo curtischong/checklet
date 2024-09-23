@@ -4,7 +4,7 @@ import * as difflib from "difflib";
 function tokenizeDoc(doc: string, isDoc2 = false): string[] {
   // Regular expression to match tip tags
   const tipTagPattern = new RegExp(
-    "<tip:\\d+>.*?<old:\\d+:new>.*?</tip:\\d+>",
+    "<tip:\\d+>.*?<delimiter>.*?</tip:\\d+>",
     "s",
   );
 
