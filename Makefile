@@ -36,3 +36,6 @@ edit-distance-test:
 
 edit-distance-test2:
 	npx tsx ./scripts/edit-distance-test/run7.ts
+
+extract-tips:
+	npx tsx ./scripts/extract-tips/run2.ts

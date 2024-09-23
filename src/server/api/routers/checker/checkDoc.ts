@@ -1,10 +1,16 @@
-import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import {
+  type FeedbackResponse,
+  type Suggestion,
+} from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type CheckerType } from "@/server/api/routers/checker/checker";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
 import { type Llm } from "@/server/api/routers/checker/llm";
-import { Llm2 } from "@/server/api/routers/checker/llm2";
+import { type Llm2 } from "@/server/api/routers/checker/llm2";
 import { type Llm3 } from "@/server/api/routers/checker/llm3";
-import { extractTipsAndReasons } from "@/server/api/routers/checker/llmOutputHelpers";
+import {
+  extractSuggestions,
+  extractTips,
+} from "@/server/api/routers/checker/llmOutputHelpers";
 import {
   inferenceInstructions,
   inferenceInstructions1,
@@ -12,6 +18,7 @@ import {
   preprocessInstructions,
 } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
+import { postprocessDoc } from "@/server/api/routers/checker/textAlignment";
 import { tinySimpleHash } from "@/utils/strings";
 import { type PrismaClient } from "@prisma/client";
 import { type ChatCompletionTool } from "openai/resources/index.mjs";
@@ -21,7 +28,7 @@ export class CheckerWorker {
   systemPrompt = "";
   smartModel = "gpt-4o-mini";
   cheapModel = "gpt-4o-mini";
-  llm: Llm2;
+  llm: Llm;
   db: PrismaClient;
 
   constructor(db: PrismaClient) {
@@ -30,7 +37,7 @@ export class CheckerWorker {
       "/cache",
     );
     const apiKey = process.env.OPENAI_API_KEY;
-    this.llm = new Llm2(this.systemPrompt, cache, apiKey);
+    this.llm = new Llm(this.systemPrompt, this.smartModel, cache, apiKey);
     this.db = db;
   }
 
@@ -42,7 +49,6 @@ export class CheckerWorker {
 
     const refinedPrompt = await this.llm.prompt(
       preprocessInstructions(checker.prompt),
-      this.cheapModel,
     );
     return await this.db.checker.update({
       where: {
@@ -60,12 +66,10 @@ export class CheckerWorker {
     // this will be a problem to solve later
     const newChecker = await this.updateRefinedPrompt(checker);
 
-    const suggestions = await checkDoc(
+    const suggestions = await checkDoc1(
       this.llm,
       newChecker.refinedPrompt,
       doc,
-      this.smartModel,
-      this.cheapModel,
     );
     console.log("suggestions", suggestions);
     // TODO: I need to parse it and turn it into suggestions
@@ -82,25 +86,17 @@ export const checkDoc1 = async (
   llm: Llm,
   refinedPrompt: string,
   doc: string,
-): Promise<Suggestion[]> => {
+): Promise<FeedbackResponse> => {
   const newDoc = await llm.prompt(inferenceInstructions(refinedPrompt, doc));
-  const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
+  const tips = extractTips(refinedPrompt);
 
-  const edits = editDistanceOperationsWithClasses(doc, newDoc);
-  edits.sort((a, b) => {
-    return a.range.start - b.range.start;
-  });
-  console.log("newDoc", newDoc);
-  console.log("edits", edits);
+  const docWithOnlyEdits = postprocessDoc(doc, newDoc); // removes extraneous whitespace / removals the llm made
+  const suggestions = extractSuggestions(doc, docWithOnlyEdits);
 
-  // console.log("newDoc", newDoc);
-  // console.log(tipsAndReasons);
-
-  // TODO: I need to parse it and turn it into suggestions
-
-  // console.log("checkDoc", checker, doc);
-
-  return [];
+  return {
+    tips: tips,
+    suggestions: suggestions,
+  };
 };
 
 export const checkDoc2 = async (
@@ -123,7 +119,7 @@ export const checkDoc2 = async (
     cheapModel,
   );
   const newDoc = newChat.message.content!;
-  const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
+  const tipsAndReasons = extractTips(refinedPrompt);
 
   // getDocEdits(doc, newDoc);
 
@@ -179,7 +175,7 @@ export const checkDoc3 = async (
     tools,
   );
 
-  const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
+  const tipsAndReasons = extractTips(refinedPrompt);
   const edits = editDistanceOperationsWithClasses(doc, newDoc);
   console.log("newDoc", newDoc);
   console.log("edits", edits);

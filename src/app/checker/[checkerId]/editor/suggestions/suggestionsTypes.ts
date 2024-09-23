@@ -17,7 +17,12 @@ export const newEditOp = (range: DocRange, newString: string): EditOp => {
 
 export type SuggestionId = string;
 
+export interface Tip {
+  desc: string;
+  reason: string;
+}
 export interface FeedbackResponse {
+  tips: Tip[];
   suggestions: Suggestion[];
 }
 
