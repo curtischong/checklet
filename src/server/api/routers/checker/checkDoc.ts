@@ -158,7 +158,7 @@ export const checkDoc1dot8 = async (
   // const tips = extractTips(prompt);
 
   const docWithOnlyEdits = postprocessDoc(doc, rawEditedDoc); // removes extraneous whitespace / removals the llm made
-  // console.log("docWithOnlyEdits", docWithOnlyEdits);
+  console.log("docWithOnlyEdits", docWithOnlyEdits);
   const suggestions = extractSuggestions(doc, docWithOnlyEdits);
 
   return suggestions;
