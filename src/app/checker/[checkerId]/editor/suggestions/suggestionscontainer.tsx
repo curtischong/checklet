@@ -45,7 +45,7 @@ export const Sorters = {
   },
   [SortType.Category]: (a: Suggestion, b: Suggestion): number =>
     // a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
-    a.check.name.localeCompare(b.check.name),
+    a.tipName.localeCompare(b.tipName),
 };
 
 export const SuggestionsContainer: React.FC<Props> = ({
@@ -93,6 +93,26 @@ export const SuggestionsContainer: React.FC<Props> = ({
     [activeSuggestion, setActiveSuggestion],
   );
 
+  // https://chatgpt.com/share/66f1ed89-a824-800e-b29b-f64e80654f1d
+  function scrollToChild(parent: HTMLElement, child: HTMLElement) {
+    // Get the bounding rectangles for parent and child
+    const parentRect = parent.getBoundingClientRect();
+    const childRect = child.getBoundingClientRect();
+
+    // Calculate the child’s position relative to the parent
+    const relativeTop = childRect.top - parentRect.top;
+
+    // Calculate the vertical center of the parent and child
+    const parentCenter = parent.clientHeight / 2;
+    const childCenter = childRect.height / 2;
+
+    // Scroll the parent to bring the child into the center
+    parent.scrollTo({
+      top: parent.scrollTop + relativeTop - parentCenter + childCenter,
+      behavior: "smooth", // Enable smooth scrolling
+    });
+  }
+
   useEffect(() => {
     if (activeSuggestion) {
       const ref = suggestionsRefs.current[activeSuggestion.suggestionId]!;
@@ -100,12 +120,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
       // I even tried wrapping it in a requestAnimationFrame but it doesn't work
       // https://github.com/facebook/react/issues/23396
       if (ref.current) {
-        const scrollHeight = ref.current.offsetTop;
-        suggestionsContainerRef.current?.scrollTo({
-          left: 0,
-          top: scrollHeight - suggestionsContainerRef.current.offsetHeight / 2,
-          behavior: "smooth",
-        });
+        scrollToChild(suggestionsContainerRef.current!, ref.current);
       }
     }
   }, [activeSuggestion]);

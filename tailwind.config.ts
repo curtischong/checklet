@@ -5,6 +5,9 @@ export default {
   content: ["./src/**/*.tsx"],
   theme: {
     extend: {
+      boxShadow: {
+        around: "0px 10px 36px rgba(0, 0, 0, 0.08)",
+      },
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         mackinac: ["var(--font-mackinac)"],
@@ -16,6 +19,27 @@ export default {
       colors: {
         primary: "#ff7066",
         primary2: "#f05146",
+      },
+      keyframes: {
+        open: {
+          "0%": {
+            opacity: "0",
+            transform: "scaleY(0.2) translateY(-50%)",
+          },
+          "80%": {
+            opacity: "1",
+            transform: "scaleY(0.8) translateY(0%)",
+          },
+          "100%": { opacity: "1", transform: "scaleY(1)" },
+        },
+        close: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+      },
+      animation: {
+        open: "open 0.3s linear forwards",
+        close: "close 0.3s linear forwards",
       },
     },
   },
