@@ -24,7 +24,7 @@ const Switch: React.FC<SwitchProps> = ({
     <button
       type="button"
       onClick={handleToggle}
-      className={`relative inline-flex h-[16px] w-[32px] rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+      className={`relative inline-flex h-[16px] w-[32px] rounded-full transition-colors focus:outline-none focus:ring-[2px] focus:ring-blue-500 focus:ring-offset-2 ${
         checked ? "bg-blue-600" : "bg-gray-200"
       } ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
       disabled={disabled}
@@ -75,17 +75,15 @@ export const LabelWithSwitch = ({
   helpText,
 }: LabelWithSwitchProps): JSX.Element => {
   return (
-    <div className={classNames("flex flex-row items-center", className)}>
+    <div
+      className={classNames("flex flex-row items-center space-x-2", className)}
+    >
       <LabelWithHelp
         label={text}
         helpText={helpText}
         helpIconClassName={"ml-2"}
       />
-      <NormalSwitch
-        isChecked={isChecked}
-        setChecked={setChecked}
-        className="ml-2"
-      />
+      <NormalSwitch isChecked={isChecked} setChecked={setChecked} />
     </div>
   );
 };

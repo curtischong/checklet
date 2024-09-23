@@ -20,7 +20,6 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const showTooltip = () => setVisible(true);
   const hideTooltip = () => setVisible(false);
 
-  // Handle click outside to hide tooltip if needed
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -42,7 +41,6 @@ export const Tooltip: React.FC<TooltipProps> = ({
     };
   }, [visible]);
 
-  // Clone the child element to attach event handlers
   const childWithProps = React.cloneElement(children, {
     ref: childRef,
     onMouseEnter: showTooltip,
@@ -52,7 +50,6 @@ export const Tooltip: React.FC<TooltipProps> = ({
     "aria-describedby": visible ? "custom-tooltip" : undefined,
   });
 
-  // Determine tooltip positioning based on placement prop
   const getTooltipPositionClasses = () => {
     switch (placement) {
       case "top":
@@ -68,7 +65,6 @@ export const Tooltip: React.FC<TooltipProps> = ({
     }
   };
 
-  // Determine arrow positioning based on placement prop
   const getArrowPositionClasses = () => {
     switch (placement) {
       case "top":
@@ -85,30 +81,29 @@ export const Tooltip: React.FC<TooltipProps> = ({
   };
 
   return (
-    <div className="relative inline-block items-center">
+    <div className="relative inline-block">
       {childWithProps}
-      {visible && (
+      <div
+        ref={tooltipRef}
+        role="tooltip"
+        id="custom-tooltip"
+        className={`absolute z-50 w-max max-w-xs rounded bg-black px-3 py-2 text-sm text-white shadow-lg transition-opacity duration-300 ${
+          visible ? "opacity-100" : "pointer-events-none opacity-0"
+        } ${getTooltipPositionClasses()}`}
+      >
+        {title}
         <div
-          ref={tooltipRef}
-          role="tooltip"
-          id="custom-tooltip"
-          className={`absolute z-50 w-max max-w-xs rounded bg-black px-3 py-2 text-sm text-white shadow-lg transition-opacity duration-200 ${getTooltipPositionClasses()}`}
-        >
-          {title}
-          {/* Tooltip Arrow */}
-          <div
-            className={`border-6 absolute h-0 w-0 border-transparent bg-transparent ${
-              placement === "top"
-                ? "border-t-black"
-                : placement === "bottom"
-                  ? "border-b-black"
-                  : placement === "left"
-                    ? "border-l-black"
-                    : "border-r-black"
-            } ${getArrowPositionClasses()}`}
-          ></div>
-        </div>
-      )}
+          className={`border-6 absolute h-0 w-0 border-transparent bg-transparent ${
+            placement === "top"
+              ? "border-t-black"
+              : placement === "bottom"
+                ? "border-b-black"
+                : placement === "left"
+                  ? "border-l-black"
+                  : "border-r-black"
+          } ${getArrowPositionClasses()}`}
+        ></div>
+      </div>
     </div>
   );
 };
