@@ -1,23 +1,34 @@
-import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import {
+  type FeedbackResponse,
+  type Suggestion,
+} from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type CheckerType } from "@/server/api/routers/checker/checker";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
-import { Llm2 } from "@/server/api/routers/checker/llm2";
-import { extractTipsAndReasons } from "@/server/api/routers/checker/llmOutputHelpers";
+import { type Llm } from "@/server/api/routers/checker/llm";
+import { type Llm2 } from "@/server/api/routers/checker/llm2";
+import { type Llm3 } from "@/server/api/routers/checker/llm3";
 import {
+  extractSuggestions,
+  extractTips,
+} from "@/server/api/routers/checker/llmOutputHelpers";
+import {
+  inferenceInstructions,
   inferenceInstructions1,
   inferenceInstructions2,
   preprocessInstructions,
 } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
+import { postprocessDoc } from "@/server/api/routers/checker/textAlignment";
 import { tinySimpleHash } from "@/utils/strings";
 import { type PrismaClient } from "@prisma/client";
+import { type ChatCompletionTool } from "openai/resources/index.mjs";
 import path from "path";
 
 export class CheckerWorker {
   systemPrompt = "";
   smartModel = "gpt-4o-mini";
   cheapModel = "gpt-4o-mini";
-  llm: Llm2;
+  llm: Llm;
   db: PrismaClient;
 
   constructor(db: PrismaClient) {
@@ -26,7 +37,7 @@ export class CheckerWorker {
       "/cache",
     );
     const apiKey = process.env.OPENAI_API_KEY;
-    this.llm = new Llm2(this.systemPrompt, cache, apiKey);
+    this.llm = new Llm(this.systemPrompt, this.smartModel, cache, apiKey);
     this.db = db;
   }
 
@@ -38,7 +49,6 @@ export class CheckerWorker {
 
     const refinedPrompt = await this.llm.prompt(
       preprocessInstructions(checker.prompt),
-      this.cheapModel,
     );
     return await this.db.checker.update({
       where: {
@@ -56,12 +66,10 @@ export class CheckerWorker {
     // this will be a problem to solve later
     const newChecker = await this.updateRefinedPrompt(checker);
 
-    const suggestions = await checkDoc(
+    const suggestions = await checkDoc1(
       this.llm,
       newChecker.refinedPrompt,
       doc,
-      this.smartModel,
-      this.cheapModel,
     );
     console.log("suggestions", suggestions);
     // TODO: I need to parse it and turn it into suggestions
@@ -74,32 +82,24 @@ export class CheckerWorker {
   };
 }
 
-// export const checkDoc1 = async (
-//   llm: Llm,
-//   refinedPrompt: string,
-//   doc: string,
-// ): Promise<Suggestion[]> => {
-//   const newDoc = await llm.prompt(inferenceInstructions(refinedPrompt, doc));
-//   const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
+export const checkDoc1 = async (
+  llm: Llm,
+  refinedPrompt: string,
+  doc: string,
+): Promise<FeedbackResponse> => {
+  const newDoc = await llm.prompt(inferenceInstructions(refinedPrompt, doc));
+  const tips = extractTips(refinedPrompt);
 
-//   const edits = editDistanceOperationsWithClasses(doc, newDoc);
-//   edits.sort((a, b) => {
-//     return a.range.start - b.range.start;
-//   });
-//   console.log("newDoc", newDoc);
-//   console.log("edits", edits);
+  const docWithOnlyEdits = postprocessDoc(doc, newDoc); // removes extraneous whitespace / removals the llm made
+  const suggestions = extractSuggestions(doc, docWithOnlyEdits);
 
-//   // console.log("newDoc", newDoc);
-//   // console.log(tipsAndReasons);
+  return {
+    tips: tips,
+    suggestions: suggestions,
+  };
+};
 
-//   // TODO: I need to parse it and turn it into suggestions
-
-//   // console.log("checkDoc", checker, doc);
-
-//   return [];
-// };
-
-export const checkDoc = async (
+export const checkDoc2 = async (
   llm: Llm2,
   refinedPrompt: string,
   doc: string,
@@ -111,18 +111,20 @@ export const checkDoc = async (
     inferenceInstructions1(refinedPrompt, doc),
     smartModel,
   );
-  console.log("editsChain done", editsChain);
+  console.log("refinedPrompt", refinedPrompt);
+  console.log("editsChain done", editsChain[editsChain.length - 1]?.content);
   const newChat = await llm.promptMessages(
     editsChain,
     inferenceInstructions2(doc),
     cheapModel,
   );
   const newDoc = newChat.message.content!;
-  const tipsAndReasons = extractTipsAndReasons(refinedPrompt);
+  const tipsAndReasons = extractTips(refinedPrompt);
 
-  const edits = editDistanceOperationsWithClasses(doc, newDoc);
+  // getDocEdits(doc, newDoc);
+
   console.log("newDoc", newDoc);
-  console.log("edits", edits);
+  // console.log("edits", edits);
 
   // console.log("newDoc", newDoc);
   // console.log(tipsAndReasons);
@@ -131,5 +133,51 @@ export const checkDoc = async (
 
   // console.log("checkDoc", checker, doc);
 
+  return [];
+};
+
+export const checkDoc3 = async (
+  llm: Llm3,
+  refinedPrompt: string,
+  doc: string,
+  smartModel: string,
+): Promise<Suggestion[]> => {
+  const editsChain = await llm.promptMessagesExtendChain(
+    [],
+    inferenceInstructions1(refinedPrompt, doc),
+    smartModel,
+  );
+  console.log("editsChain done", editsChain);
+
+  const tools: ChatCompletionTool[] = [
+    {
+      type: "function",
+      function: {
+        name: "submit_edited_doc",
+        description:
+          "Submit the edited doc with the edits annotated with <tip:#>your edit</tip:#> tags",
+        parameters: {
+          type: "object",
+          properties: {
+            editedDoc: {
+              type: "string",
+              description: "The edited document with the annotations",
+            },
+          },
+          required: ["editedDoc"],
+        },
+      },
+    },
+  ];
+  const newDoc = await llm.callFunction(
+    editsChain,
+    inferenceInstructions2(doc),
+    tools,
+  );
+
+  const tipsAndReasons = extractTips(refinedPrompt);
+  const edits = editDistanceOperationsWithClasses(doc, newDoc);
+  console.log("newDoc", newDoc);
+  console.log("edits", edits);
   return [];
 };

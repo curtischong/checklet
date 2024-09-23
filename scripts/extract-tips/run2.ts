@@ -1,34 +1,11 @@
-import {
-  type Suggestion,
-  type Tip,
-} from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-
-export function extractTips(input: string): Tip[] {
-  const tipReasonPairs: Tip[] = [];
-  let i = 0;
-  const length = input.length;
-
-  while (i < length) {
-    const tipStart = input.indexOf("<tip>", i);
-    if (tipStart === -1) break; // No more tips found
-    const tipEnd = input.indexOf("</tip>", tipStart);
-    const tip = input.slice(tipStart + 5, tipEnd);
-
-    const reasonStart = input.indexOf("<reason>", tipEnd);
-    const reasonEnd = input.indexOf("</reason>", reasonStart);
-    const reason = input.slice(reasonStart + 8, reasonEnd);
-
-    tipReasonPairs.push({ desc: tip, reason });
-
-    // Move index forward to continue searching
-    i = reasonEnd + 9;
-  }
-
-  return tipReasonPairs;
-}
-
-// https://chatgpt.com/share/66f0c180-e6a0-800e-a55a-99862d193b2f
-export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
+/**
+ * Extracts tip patterns from doc2 and maps them to doc1.
+ *
+ * @param {string} doc1 - The original document.
+ * @param {string} doc2 - The modified document containing tip patterns.
+ * @returns {Array<Object>} An array of objects with oldText, newText, tipNumber, and index.
+ */
+function extractTipPatterns(doc1: string, doc2: string) {
   // Define the regex pattern with capturing groups:
   // <tip:number>oldText<old:id:new>newText</tip:number>
   const tipTagPattern = /<tip:(\d+)>([^<]*)<old:\d+:new>([^<]*)<\/tip:\1>/g;
@@ -57,10 +34,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
       oldText: oldText,
       newText: newText,
       tipNumber: parseInt(tipNumber!, 10),
-      range: {
-        start: indexInDoc1,
-        end: indexInDoc1 + oldText.length,
-      },
+      index: indexInDoc1,
     });
 
     // Update the cumulative inserted length
@@ -70,3 +44,31 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
 
   return tips;
 }
+
+// Example usage:
+
+const doc1 =
+  "This is the original document. It has some text that will be changed.";
+const doc2 =
+  "This is the original <tip:1>document<old:101:new>doc</tip:1>. It has some <tip:2>text<old:102:new>words</tip:2> that will be changed.";
+
+const extractedTips = extractTipPatterns(doc1, doc2);
+console.log(extractedTips);
+
+/*
+Expected Output:
+[
+  {
+    oldText: "document",
+    newText: "doc",
+    tipNumber: 1,
+    index: 21
+  },
+  {
+    oldText: "text",
+    newText: "words",
+    tipNumber: 2,
+    index: 35
+  }
+]
+*/
