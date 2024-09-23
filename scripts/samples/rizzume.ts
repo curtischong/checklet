@@ -82,3 +82,51 @@ Lizzie - Collecting my personal metrics (Golang, Swift, InfluxDB, OpenVPN | bit.
 Parabola - An AR overlay that predicts where objects land (C++, OpenCV | bit.ly/prj_parabola)
 - Wrote a concurrent C++ server that uses stereoscopic cameras and OpenCV to identify the location of an orange cone.
 - Calculated the landing position of the cone using classical mechanics.`;
+
+partiallyFixedButCannotParse = `Curtis Chong
+
+curtis.chong@uwaterloo.ca
+github.com/curtischong
+chongcurtis.com
++1 647 783 1886
+
+Honours Bachelor of Software Engineering Co-op | University of Waterloo | 2018 - 2023 (Expected)
+Skills
+Backend Languages: C++, Golang, C, Python, Node.js, TypeScript
+Infrastructure: SQL, Postgres, InfluxDB, Docker, AWS, EC2, OpenVPN
+Tooling: Vim, Git, Linux, Jupyter, Databricks
+Application Development: JavaScript, React, Swift, HTML, CSS, jQuery
+Work Experience
+Software Engineering Intern at Kik Interactive (Python, Docker, SQL) May - Aug. 2019
+- Rebuilt the A/B testing system in Python to simplify demographic segmentation and result visualization for managers.
+- Integrated data from AWS Kinesis Streaming to quicken spam classification from five minutes to two minutes.
+- Provisioned Docker environments to host Airflow jobs allowing engineers to schedule jobs consistently.
+- Engineered a SQL testing framework which laid the groundwork for proper testing across all data science projects.
+- Monitored data relevance and identified uncaught spam accounts, accelerating spam terminations.
+Software Engineering Intern at Big Terminal Inc. (Node.js, TypeScript, InfluxDB) Aug. 2018
+- Developed a Node.js server that identifies arbitrage opportunities on cryptocurrency markets to traders on Slack.
+- Wrote a bot to lend USD at favourable rates, allowing for higher capital utilization.
+Data Scientist at Flipp Corporation (Python, Pandas, Scikit-Learn) July - Aug. 2017
+- Evaluated as a top employee in the 95th percentile (bit.ly/flipp_eval).
+- Created a Python résumé parser which was capable of categorizing sections and outperformed licensed tools.
+- Engineered and tuned an ML ensemble to a precision of 0.598 which filtered out candidates with poor résumés.
+- Generated N-grams, a bag-of-words, and a hand-picked dictionary as a feature space for modelling.
+- Frequently sought out meetings with the Talent team to present findings and to shape business direction.
+Awards (Hackathon Count: 25 | Wins: 12)
+Winner at Hack the North 2019 (1500 participants | TypeScript, Python | bit.ly/prj_complete)
+- Created a VSCode extension that helps developers write code faster by auto-generating functions from pseudocode.
+- Blitzed through the VSCode API documentation, then developed the client, middleware, and optimized network requests.
+Winner at Hack the North 2016 (1000 participants | Angular, Node.js, SQL | bit.ly/prj_agrigate)
+- Engineered a dashboard that uses satellite data from NASA and Ontario’s land surveys to identify crop growing conditions.
+- Built a statistical model to project future crop prices and help farmers determine selling opportunities.
+Second Place at MHacks 9 (300 participants | React, Firebase | bit.ly/prj_recap)
+- Created a text editor that archives a presenter’s audio to provide further context behind student notes.
+- Developed middleware to fetch and align audio recordings from Firebase DB with edited notes.
+Projects
+Lizzie - Collecting my personal metrics (Golang, Swift, InfluxDB, OpenVPN | bit.ly/prj_lizzie)
+- Built a “News Feed” in React to dashboard my biometrics, reflect on things I’ve learned, and to monitor daily activities.
+- Wrote a Golang server under an OpenVPN network to store my biometrics from an iOS and watchOS app.
+- Developed a Chrome extension to archive my search terms and messages that I’ve sent to optimize how I communicate.
+Parabola - An AR overlay that predicts where objects land (C++, OpenCV | bit.ly/prj_parabola)
+- Wrote a concurrent C++ server that uses stereoscopic cameras and OpenCV to identify the location of an orange cone.
+- Calculated the landing position of the cone using classical mechanics.`;

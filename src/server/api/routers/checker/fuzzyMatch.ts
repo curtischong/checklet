@@ -1,4 +1,6 @@
 // https://chatgpt.com/share/66f185c3-1924-800e-b4b4-8b270c342397
+
+// TODO: to make the match even better, we should try matching the text AROUND the postion in the original doc
 export function fuzzyMatch(
   doc: string,
   query: string,
