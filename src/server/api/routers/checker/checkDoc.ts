@@ -164,6 +164,24 @@ export const checkDoc1dot8 = async (
   return suggestions;
 };
 
+export const checkDoc1dot9 = async (
+  llm: Llm,
+  prompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const rawEditedDoc = await llm.prompt(
+    inferenceInstructions1dot8(prompt, doc),
+  );
+  console.log("rawEditedDoc", rawEditedDoc);
+  // const tips = extractTips(prompt);
+
+  // const docWithOnlyEdits = postprocessDoc(doc, rawEditedDoc); // removes extraneous whitespace / removals the llm made
+  // console.log("docWithOnlyEdits", docWithOnlyEdits);
+  const suggestions = extractSuggestions(doc, rawEditedDoc);
+
+  return suggestions;
+};
+
 export const checkDoc1 = async (
   llm: Llm,
   refinedPrompt: string,
