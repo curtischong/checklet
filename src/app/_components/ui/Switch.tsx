@@ -24,7 +24,7 @@ const Switch: React.FC<SwitchProps> = ({
     <button
       type="button"
       onClick={handleToggle}
-      className={`relative inline-flex h-[16px] w-[32px] rounded-full transition-colors focus:outline-none focus:ring-[2px] focus:ring-blue-500 focus:ring-offset-2 ${
+      className={`relative inline-flex h-[16px] w-[32px] rounded-full transition-colors focus:outline-none focus-visible:ring-[2px] focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
         checked ? "bg-blue-600" : "bg-gray-200"
       } ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
       disabled={disabled}
