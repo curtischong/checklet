@@ -33,7 +33,7 @@ const getDoc1Substring = (doc1: string, index: number, oldText: string) => {
 
 // TODO: we need to wiggle a bit. offer a tollerance of += 1 for the window
 // this is because the model may put invalid chars inside the <tip> tags
-const idxOfOldTextInDoc1 = (
+const offsetOfOldTextInDoc1 = (
   doc1: string,
   indexInDoc1: number,
   oldText: string,
@@ -41,7 +41,7 @@ const idxOfOldTextInDoc1 = (
   const calculatedOldText = getDoc1Substring(doc1, indexInDoc1, oldText);
   if (calculatedOldText === oldText) {
     console.log("used indexInDoc1");
-    return indexInDoc1;
+    return 0;
   }
   const calculatedOldTextPlus1 = getDoc1Substring(
     doc1,
@@ -50,7 +50,7 @@ const idxOfOldTextInDoc1 = (
   );
   if (calculatedOldTextPlus1 === oldText) {
     console.log("used indexInDoc1 + 1");
-    return indexInDoc1 + 1;
+    return 1;
   }
   const calculatedOldTextSub1 = getDoc1Substring(
     doc1,
@@ -59,7 +59,7 @@ const idxOfOldTextInDoc1 = (
   );
   if (calculatedOldTextSub1 === oldText) {
     console.log("used indexInDoc1 - 1");
-    return indexInDoc1 - 1;
+    return -1;
   }
   throw new Error(
     `Old text mismatch at index ${indexInDoc1}: expected "${oldText}", found "${calculatedOldText}"`,
@@ -88,7 +88,8 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     const oldText = rawOldText ?? "";
     console.log(`${oldText}`);
 
-    const realIndexInDoc1 = idxOfOldTextInDoc1(doc1, indexInDoc1, oldText);
+    const offset = offsetOfOldTextInDoc1(doc1, indexInDoc1, oldText);
+    const realIndexInDoc1 = offset + indexInDoc1;
 
     // Push the extracted information into the tips array
     suggestions.push({
@@ -103,7 +104,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
 
     // Update the cumulative inserted length
     // This accounts for the extra characters added by the tip pattern
-    cumulativeInsertedLength += fullMatch.length - oldText.length;
+    cumulativeInsertedLength += fullMatch.length - oldText.length - offset;
   }
 
   return suggestions;
