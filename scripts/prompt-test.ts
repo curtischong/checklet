@@ -1,4 +1,4 @@
-import { checkDoc1dot8 } from "@/server/api/routers/checker/checkDoc";
+import { checkDoc1dot10 } from "@/server/api/routers/checker/checkDoc";
 import { Llm } from "@/server/api/routers/checker/llm";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import path from "path";
@@ -40,7 +40,9 @@ const llm = new Llm(systemPrompt, smartModel, cache1, apiKey);
 //   sample_resume_2019,
 // );
 // const feedbackResponse = await checkDoc1dot7(
-const feedbackResponse = await checkDoc1dot8(
+// const feedbackResponse = await checkDoc1dot8(
+// const feedbackResponse = await checkDoc1dot9(
+const feedbackResponse = await checkDoc1dot10(
   llm,
   rizzumePrompt,
   sample_resume_2019,

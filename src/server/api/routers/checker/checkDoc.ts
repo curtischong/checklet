@@ -3,6 +3,7 @@ import {
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type CheckerType } from "@/server/api/routers/checker/checker";
+import { removeInvalidTips } from "@/server/api/routers/checker/docPostProcess";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
 import { type Llm } from "@/server/api/routers/checker/llm";
 import { type Llm2 } from "@/server/api/routers/checker/llm2";
@@ -160,6 +161,44 @@ export const checkDoc1dot8 = async (
   const docWithOnlyEdits = postprocessDoc(doc, rawEditedDoc); // removes extraneous whitespace / removals the llm made
   console.log("docWithOnlyEdits", docWithOnlyEdits);
   const suggestions = extractSuggestions(doc, docWithOnlyEdits);
+
+  return suggestions;
+};
+
+export const checkDoc1dot9 = async (
+  llm: Llm,
+  prompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const rawEditedDoc = await llm.prompt(
+    inferenceInstructions1dot8(prompt, doc),
+  );
+  console.log("rawEditedDoc", rawEditedDoc);
+
+  const prunedEdits = removeInvalidTips(rawEditedDoc); // removes extraneous whitespace / removals the llm made
+  console.log("prunedEdits", prunedEdits);
+  const suggestions = extractSuggestions(doc, prunedEdits);
+
+  return suggestions;
+};
+
+export const checkDoc1dot10 = async (
+  llm: Llm,
+  prompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const rawEditedDoc = await llm.prompt(
+    inferenceInstructions1dot8(prompt, doc),
+  );
+  // console.log("rawEditedDoc", rawEditedDoc);
+
+  const prunedEdits = removeInvalidTips(rawEditedDoc); // removes extraneous whitespace / removals the llm made
+  console.log("prunedEdits", prunedEdits);
+
+  // const docWithOnlyEdits = postprocessDoc(doc, prunedEdits); // removes extraneous whitespace / removals the llm made
+  // console.log("docWithOnlyEdits", docWithOnlyEdits);
+
+  const suggestions = extractSuggestions(doc, prunedEdits);
 
   return suggestions;
 };

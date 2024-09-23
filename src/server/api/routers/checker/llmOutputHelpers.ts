@@ -78,12 +78,31 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   let match;
   let cumulativeInsertedLength = 0; // To track the total length of inserted tip patterns
 
+  const allMatches = [];
   while ((match = tipTagPattern.exec(doc2)) !== null) {
+    allMatches.push(match);
+  }
+
+  const sumOfAllTipTagsWithoutOldText = allMatches.reduce(
+    (acc, match) => acc + match[0].length - (match[3]?.length ?? 0),
+    0,
+  );
+  console.log("sumOfAllTipTagsWithoutOldText", sumOfAllTipTagsWithoutOldText);
+
+  const lengthOfChainOfThought =
+    doc2.length - doc1.length - sumOfAllTipTagsWithoutOldText; // doc2 added all the extra tip tags, so we need to subtract that length (since it's not included in doc1's length)
+
+  for (const match of allMatches) {
     const [fullMatch, tipName, reason, rawOldText, newText] = match;
     const tipStartIndexInDoc2 = match.index;
+    // NOTE: since there may be chain of thought at the start of doc2, this is a big number^
+    // we need to subtract by the length of the chain of thought
 
     // Calculate the corresponding index in doc1 by subtracting the cumulative inserted lengths
-    const indexInDoc1 = tipStartIndexInDoc2 - cumulativeInsertedLength;
+    const indexInDoc1 = Math.max(
+      0,
+      tipStartIndexInDoc2 - lengthOfChainOfThought - cumulativeInsertedLength,
+    );
 
     // Verify that the oldText at indexInDoc1 in doc1 matches the expected oldText
     const oldText = rawOldText ?? "";
@@ -91,11 +110,14 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     // const offset = offsetOfOldTextInDoc1(doc1, indexInDoc1, oldText);
     // const realIndexInDoc1 = offset + indexInDoc1;
 
+    console.log("tipStartIndexInDoc2", tipStartIndexInDoc2);
+    console.log("indexInDoc1", indexInDoc1);
     const { matchingSubstring, actualIndex } = fuzzyMatch(
       doc1,
       oldText,
       indexInDoc1,
     );
+    console.log("matching substring", matchingSubstring, "oldText", oldText);
 
     const realIndexInDoc1 = actualIndex;
 
