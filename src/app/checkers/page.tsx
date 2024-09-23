@@ -41,9 +41,21 @@ const Page = async () => {
         What do you want to check?
       </div>
       <CreateOwnChecker user={user} />
-      <LoveChecklet className="absolute bottom-[15rem] right-[0%] h-[6rem] md:right-[1%]" />
-      <PennyChecklet className="absolute right-[7%] top-[10rem] h-[7rem] sm:right-[10%] md:right-[15%]" />
-      <SpacyChecklet className="absolute left-[5%] top-32 h-[8rem]" />
+      <LoveChecklet
+        className="absolute bottom-[15rem] right-[0%] h-[6rem] md:right-[1%]"
+        height={200}
+        width={200}
+      />
+      <PennyChecklet
+        className="absolute right-[7%] top-[10rem] h-[7rem] sm:right-[10%] md:right-[15%]"
+        height={200}
+        width={200}
+      />
+      <SpacyChecklet
+        className="absolute left-[5%] top-32 h-[8rem]"
+        height={200}
+        width={200}
+      />
       <CheckerStore checkers={checkers} />
     </div>
   );

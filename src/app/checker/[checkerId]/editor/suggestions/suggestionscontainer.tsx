@@ -152,7 +152,11 @@ export const SuggestionsContainer: React.FC<Props> = ({
       if (!hasModifiedTextAfterChecking) {
         return (
           <NoSuggestionMessage
-            checklet=<YayChecklet className="h-[12.75rem]" />
+            checklet=<YayChecklet
+              className="h-[12.75rem]"
+              height={120}
+              width={120}
+            />
             header={"No issues found"}
             content={
               <>
@@ -166,7 +170,11 @@ export const SuggestionsContainer: React.FC<Props> = ({
       } else {
         return (
           <NoSuggestionMessage
-            checklet=<CoolChecklet className="h-[12.75rem]" />
+            checklet=<CoolChecklet
+              className="h-[12.75rem]"
+              height={120}
+              width={120}
+            />
             header={"Ready to check?"}
             content={
               <>
@@ -183,7 +191,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
 
     return (
       <NoSuggestionMessage
-        checklet=<PencilChecklet />
+        checklet=<PencilChecklet height={120} width={120} />
         header={"Nothing to check yet"}
         content={
           <div className={"w-[70%]"}>Start writing or paste your document.</div>
