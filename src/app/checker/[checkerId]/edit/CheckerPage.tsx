@@ -144,7 +144,7 @@ export const CheckerPage = ({
                   setPrompt(e.target.value);
                 }}
                 value={prompt}
-                minRows={4}
+                minRows={8}
                 maxLength={MAX_CHECKER_DESC_LEN}
               />
 
