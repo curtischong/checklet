@@ -2,67 +2,44 @@
 import { ScrollDownButton } from "@/app/ScrollDownButton";
 import { Footer } from "@/app/_components/Footer";
 import ThinLine from "@/app/_components/ThinLine";
+import {
+  DerpChecklet,
+  DockyChecklet,
+  LoveChecklet,
+  MushyChecklet,
+  PennyChecklet,
+  SpacyChecklet,
+} from "@/app/_components/checklets/checklets";
 // import { CheckPreview } from "@/app/_components/create-check/CheckPreview";
 // import { rizzumeDesc } from "@/app/_components/create-check/DefaultTextForCheckType";
 // import { CheckType } from "@/app/_components/create-checker/CheckerTypes";
 import { CursorIcon } from "@/app/_components/icons/CursorIcon";
 import { LinkButton } from "@/app/_components/ui/Button";
-import DerpChecklet from "@public/checklets/derp.svg";
-import DockyChecklet from "@public/checklets/docky.svg";
-import LoveChecklet from "@public/checklets/love.svg";
-import MushyChecklet from "@public/checklets/mushy.svg";
-import PennyChecklet from "@public/checklets/penny.svg";
-import SpacyChecklet from "@public/checklets/spacy.svg";
-import Image from "next/image";
 
 const HomePage: React.FC = () => {
   return (
     <div>
-      <div className="container mx-auto text-center px-6">
-        <div className="ml-0 h-[100vh] flex flex-col justify-center">
-          <Image
-            alt="SpacyChecklet"
-            src={SpacyChecklet.src}
-            width={100}
-            height={100}
-            className="top-[10%] md:top-[20%] left-[5%] md:left-[20%] absolute"
-          />
-          <Image
-            alt="LoveChecklet"
-            src={LoveChecklet.src}
-            width={100}
-            height={200}
-            className="bottom-[5%] md:bottom-[25%] right-[2%] md:right-[20%] absolute"
-          />
-          <Image
-            alt="DockyChecklet"
-            src={DockyChecklet.src}
-            width={100}
-            height={200}
-            className="bottom-[10%] left-[2%] md:left-[30%] absolute"
-          />
-          <Image
-            alt="DerpChecklet"
-            src={DerpChecklet.src}
-            width={100}
-            height={200}
-            className="top-[5%] right-[5%] md:right-[30%] absolute"
-          />
-          <p className="text-5xl font-mackinac">Checklet</p>
-          <p className="mt-4 z-10">
+      <div className="container mx-auto px-6 text-center">
+        <div className="ml-0 flex h-[100vh] flex-col justify-center">
+          <SpacyChecklet className="absolute left-[5%] top-[10%] md:left-[20%] md:top-[20%]" />
+          <LoveChecklet className="absolute bottom-[5%] right-[2%] md:bottom-[25%] md:right-[20%]" />
+          <DockyChecklet className="absolute bottom-[10%] left-[2%] md:left-[30%]" />
+          <DerpChecklet className="absolute right-[5%] top-[5%] md:right-[30%]" />
+          <p className="font-mackinac text-5xl">Checklet</p>
+          <p className="z-10 mt-4">
             Expert-written checkers to polish jokes, edit resumes, revise
             emails... and check anything!
           </p>
-          <div className="w-[200px] mt-4 mx-auto">
+          <div className="mx-auto mt-4 w-[200px]">
             <LinkButton url={"/checkers"}>Try it out</LinkButton>
           </div>
           <ScrollDownButton />
         </div>
-        <div className="text-3xl mt-32 font-mackinac">How it works</div>
+        <div className="mt-32 font-mackinac text-3xl">How it works</div>
         <ThinLine />
-        <div className=" text-left md:max-w-[70%] justify-center flex flex-col mx-auto">
-          <div className="flex flex-col md:flex-row justify-center gap-8 mt-10 relative">
-            <div className="text-lg flex-1">
+        <div className="mx-auto flex flex-col justify-center text-left md:max-w-[70%]">
+          <div className="relative mt-10 flex flex-col justify-center gap-8 md:flex-row">
+            <div className="flex-1 text-lg">
               1. Select a Checker for your type of writing
             </div>
             <div className="flex-1">
@@ -78,30 +55,24 @@ const HomePage: React.FC = () => {
                                 }}
                                 isDemo={true}
                             /> */}
-              <CursorIcon className="w-[40px] h-[40px] right-32 bottom-[-20px] absolute" />
+              <CursorIcon className="absolute bottom-[-20px] right-32 h-[40px] w-[40px]" />
             </div>
-            <Image
-              alt="MushyChecklet"
-              src={MushyChecklet.src}
-              width={100}
-              height={200}
-              className="md:top-[4rem] right-0 top-[32px] md:left-[10%] absolute"
-            />
+            <MushyChecklet className="absolute right-0 top-[32px] md:left-[10%] md:top-[4rem]" />
           </div>
 
-          <div className="flex flex-col md:flex-row justify-center gap-8 mt-10 relative">
-            <div className="text-lg flex-1">
+          <div className="relative mt-10 flex flex-col justify-center gap-8 md:flex-row">
+            <div className="flex-1 text-lg">
               2. Paste your writing into the editor
             </div>
-            <div className="flex-1 ">
-              <div className="relative  max-w-[300px]">
-                <div className="text-3xl font-mackinac text-gray-400">
+            <div className="flex-1">
+              <div className="relative max-w-[300px]">
+                <div className="font-mackinac text-3xl text-gray-400">
                   Rizzume
                 </div>
                 <div className="text-md text-gray-400">
                   Rizz up your resume to dazzle...
                 </div>
-                <hr className="bg-black w-full h-[2px]" />
+                <hr className="h-[2px] w-full bg-black" />
                 <div>Grammarly • January 2021 - Present</div>
                 <div>
                   • Expedited DynamoDB queries from 68 ms to 41 ms by optimizing
@@ -112,16 +83,10 @@ const HomePage: React.FC = () => {
             </div>
           </div>
           <div className="relative h-32 justify-center">
-            <Image
-              alt="PennyChecklet"
-              src={PennyChecklet.src}
-              width={100}
-              height={100}
-              className="top-[0px] md:top-[1rem] right-[30%] absolute"
-            />
+            <PennyChecklet className="absolute right-[30%] top-[0px] md:top-[1rem]" />
           </div>
-          <div className="flex flex-col md:flex-row justify-center gap-8">
-            <div className="text-lg flex-1">3. Receive instant feedback</div>
+          <div className="flex flex-col justify-center gap-8 md:flex-row">
+            <div className="flex-1 text-lg">3. Receive instant feedback</div>
 
             <div className="flex-1">
               <div className="max-w-[350px]">
