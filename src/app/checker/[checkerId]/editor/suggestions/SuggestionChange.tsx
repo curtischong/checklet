@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { DownArrowWithTailIcon } from "@/app/_components/icons/DownArrowWithTailIcon";
 import { RightArrowWithTailIcon } from "@/app/_components/icons/RightArrowWithTailIcon";
 import { CheckType } from "@/app/checker/[checkerId]/edit/CheckerTypes";
@@ -16,10 +17,11 @@ export const SuggestionChange = ({
   onReplaceClick,
 }: Props): JSX.Element => {
   if (checkType === CheckType.highlight) {
-    return <div>{suggestion.originalText}</div>;
+    return <div>{suggestion.oldText}</div>;
   }
 
-  if (suggestion.editedText[0] === "") {
+  // they are deleting the old text
+  if (suggestion.newText === "") {
     return (
       <div
         className={classNames(
@@ -30,20 +32,19 @@ export const SuggestionChange = ({
           wordBreak: "break-word",
         }}
       >
-        {suggestion.originalText}
+        {suggestion.oldText}
       </div>
     );
   }
 
   const showReplacementVertically =
-    suggestion.originalText.includes("\n") ||
-    suggestion.editedText?.includes("\n") ||
-    suggestion.originalText.length > 50 ||
+    suggestion.oldText.includes("\n") ||
+    suggestion.newText.includes("\n") ||
+    suggestion.oldText.length > 50 ||
     // (suggestion.editedText &&
     //     (suggestion.editedText.length > 1 ||
     //         suggestion.editedText[0].length > 50));
-    (suggestion.editedText &&
-      suggestion.editedText.reduce((sum, text) => sum + text.length, 0) > 30);
+    suggestion.newText.length > 50;
   return (
     <div
       className={classNames("flex", {
@@ -61,7 +62,7 @@ export const SuggestionChange = ({
           wordBreak: "break-word",
         }}
       >
-        {suggestion.originalText}
+        {suggestion.oldText}
       </div>
       {showReplacementVertically ? (
         <DownArrowWithTailIcon className="mx-auto mb-[8px] mt-[6px]" />
@@ -74,7 +75,8 @@ export const SuggestionChange = ({
           "flex-row space-x-1": !showReplacementVertically,
         })}
       >
-        {suggestion.editedText.map((option, idx) => {
+        {/* TODO: allow multiple suggestion options. but maybe just one suggestion is a better ux? */}
+        {/* {suggestion.newText.map((option, idx) => {
           return (
             <div
               key={`edited-text-${idx}`}
@@ -87,7 +89,16 @@ export const SuggestionChange = ({
               {option}
             </div>
           );
-        })}
+        })} */}
+        <div
+          onClick={() => onReplaceClick(suggestion.newText)}
+          className="cursor-pointer select-none whitespace-pre-wrap rounded bg-[#189bf2] px-2 py-[1px] text-white hover:bg-[#1d8fdb]"
+          style={{
+            wordBreak: "break-word",
+          }}
+        >
+          {suggestion.newText}
+        </div>
       </div>
     </div>
   );

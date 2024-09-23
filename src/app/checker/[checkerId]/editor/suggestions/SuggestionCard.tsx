@@ -1,5 +1,8 @@
 import { SuggestionChange } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionChange";
-import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import {
+  CheckType,
+  type Suggestion,
+} from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { default as classNames, default as classnames } from "classnames";
 import React, { useMemo } from "react";
 import Markdown from "react-markdown";
@@ -27,9 +30,6 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
     }
     return isEqual(suggestion, activeSuggestion);
   }, [suggestion, activeSuggestion]);
-
-  const originalText = suggestion.originalText;
-  const checkDesc = suggestion.check;
 
   //   const checkDesc = props.checkDescObj[suggestion.checkId];
   //   if (!checkDesc) {
@@ -103,7 +103,7 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
                 flexBasis: "0",
               }}
             >
-              {checkDesc.name}
+              {suggestion.tipName}
             </div>
             {/* <span
                                 className={"p-[3px] rounded-xl bg-red-800 mx-8"}
@@ -117,11 +117,11 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
                 "max-w-[40%] overflow-hidden overflow-ellipsis whitespace-nowrap"
               }
             >
-              {originalText}
+              {suggestion.oldText}
             </div>
             <span className={"mx-2 my-auto h-1 w-1 rounded-full bg-red-600"} />
             <div className={"overflow-hidden font-normal text-gray-600"}>
-              {checkDesc.name}
+              {suggestion.tipName}
             </div>
           </>
         )}
@@ -132,7 +132,7 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
           <div className={"flex pb-4 text-base"}>
             <SuggestionChange
               suggestion={suggestion}
-              checkType={checkDesc.checkType}
+              checkType={CheckType.rephrase}
               onReplaceClick={onReplaceClick}
             />
           </div>
@@ -143,7 +143,7 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
               remarkPlugins={[remarkGfm]}
               // remarkPlugins={[remarkGfm]}
             >
-              {checkDesc.reason}
+              {suggestion.reason}
             </Markdown>
           </div>
         </div>
