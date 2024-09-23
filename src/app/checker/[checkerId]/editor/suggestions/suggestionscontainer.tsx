@@ -45,7 +45,7 @@ export const Sorters = {
   },
   [SortType.Category]: (a: Suggestion, b: Suggestion): number =>
     // a.checkId.localeCompare(b.checkId), // this second sort is just to sort by checkId (so checks that are the same are next to each other)
-    a.check.name.localeCompare(b.check.name),
+    a.tipName.localeCompare(b.tipName),
 };
 
 export const SuggestionsContainer: React.FC<Props> = ({
