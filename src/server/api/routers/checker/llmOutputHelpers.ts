@@ -107,7 +107,8 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     // Calculate the corresponding index in doc1 by subtracting the cumulative inserted lengths
     const indexInDoc1 = Math.max(
       0,
-      tipStartIndexInDoc2 - lengthOfChainOfThought - cumulativeInsertedLength,
+      // tipStartIndexInDoc2 - lengthOfChainOfThought - cumulativeInsertedLength, // for 1.11, we separate out the chain of thought so this isn't needed
+      tipStartIndexInDoc2 - cumulativeInsertedLength,
     );
 
     // Verify that the oldText at indexInDoc1 in doc1 matches the expected oldText

@@ -195,6 +195,25 @@ export const checkDoc1dot10 = async (
   return suggestions;
 };
 
+export const checkDoc1dot11 = async (
+  llm: Llm,
+  prompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const rawEditedDoc = await llm.prompt(
+    inferenceInstructions1dot8(prompt, doc),
+  );
+  const onlyEditedDoc = rawEditedDoc.split("<END OF TRAIN OF THOUGHT/>")[1]!;
+  // console.log("rawEditedDoc", rawEditedDoc);
+
+  const prunedEdits = removeInvalidTips(onlyEditedDoc); // removes extraneous whitespace / removals the llm made
+  console.log("prunedEdits", prunedEdits);
+
+  const suggestions = extractSuggestions(doc, prunedEdits);
+
+  return suggestions;
+};
+
 export const checkDoc1 = async (
   llm: Llm,
   refinedPrompt: string,
