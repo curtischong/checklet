@@ -2,6 +2,7 @@ import {
   type Suggestion,
   type Tip,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import { fuzzyMatch } from "@/server/api/routers/checker/fuzzyMatch";
 
 export function extractTips(input: string): Tip[] {
   const tipReasonPairs: Tip[] = [];
@@ -84,27 +85,33 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     const indexInDoc1 = tipStartIndexInDoc2 - cumulativeInsertedLength;
 
     // Verify that the oldText at indexInDoc1 in doc1 matches the expected oldText
-    console.log("--------");
     const oldText = rawOldText ?? "";
-    console.log(`${oldText}`);
 
-    const offset = offsetOfOldTextInDoc1(doc1, indexInDoc1, oldText);
-    const realIndexInDoc1 = offset + indexInDoc1;
+    // const offset = offsetOfOldTextInDoc1(doc1, indexInDoc1, oldText);
+    // const realIndexInDoc1 = offset + indexInDoc1;
+
+    const { matchingSubstring, actualIndex } = fuzzyMatch(
+      doc1,
+      oldText,
+      indexInDoc1,
+    );
+
+    const realIndexInDoc1 = actualIndex;
 
     // Push the extracted information into the tips array
     suggestions.push({
-      oldText: oldText,
+      oldText: matchingSubstring,
       newText: newText,
       tipNumber: parseInt(tipNumber!, 10),
       range: {
         start: realIndexInDoc1,
-        end: realIndexInDoc1 + oldText.length,
+        end: realIndexInDoc1 + matchingSubstring.length,
       },
     });
 
     // Update the cumulative inserted length
     // This accounts for the extra characters added by the tip pattern
-    cumulativeInsertedLength += fullMatch.length - oldText.length - offset;
+    cumulativeInsertedLength += fullMatch.length - matchingSubstring.length;
   }
 
   return suggestions;
