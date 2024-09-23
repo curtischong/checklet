@@ -7,7 +7,7 @@ interface Props {
 export const EditorHeader = ({ storefront }: Props): JSX.Element => {
   return (
     <div>
-      <div className="mt-[20px] flex flex-col pt-[20px]">
+      <div className="mt-[0px] flex flex-col pt-[20px]">
         <div className="flex flex-row">
           <div className="my-auto flex-grow font-mackinac text-3xl">
             {storefront.name}

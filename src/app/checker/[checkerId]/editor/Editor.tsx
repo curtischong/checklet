@@ -112,8 +112,8 @@ export const Editor = ({
   );
 
   return (
-    <div className="mx-auto w-full max-w-screen-xl">
-      <div className="flex flex-row space-x-10 px-5">
+    <div className="mx-auto w-full">
+      <div className="flex flex-row space-x-10">
         <div
           className="textbox"
           style={{
