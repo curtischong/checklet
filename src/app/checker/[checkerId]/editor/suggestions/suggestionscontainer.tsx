@@ -1,5 +1,6 @@
 import { SortIcon } from "@/app/_components/icons/SortIcon";
 import { LoadingButton, NormalButton } from "@/app/_components/ui/Button";
+import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { SuggestionCard } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
 import { useClientCtx } from "@/app/ClientCtx";
@@ -9,7 +10,6 @@ import { type SetState } from "@/utils/types";
 import CoolChecklet from "@public/checklets/cool.svg";
 import PencilChecklet from "@public/checklets/pencil.svg";
 import YayChecklet from "@public/checklets/yay.svg";
-import { Tooltip } from "antd/lib";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";

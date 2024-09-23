@@ -30,7 +30,7 @@ export const Dashboard = ({ checkers, user }: Props) => {
 
   return (
     <div className="flex">
-      <div className="container mx-auto mt-20">
+      <div className="container mx-auto ml-20 mt-20">
         {/* {user ? user.email : <></>} */}
         <p className="font-mackinac text-2xl font-bold">Your Checkers</p>
         <div className="mx-auto ml-0 mt-4 w-[450px]">
