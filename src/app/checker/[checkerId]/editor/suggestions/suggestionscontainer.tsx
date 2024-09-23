@@ -1,3 +1,8 @@
+import {
+  CoolChecklet,
+  PencilChecklet,
+  YayChecklet,
+} from "@/app/_components/checklets/checklets";
 import { SortIcon } from "@/app/_components/icons/SortIcon";
 import { LoadingButton, NormalButton } from "@/app/_components/ui/Button";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
@@ -7,9 +12,6 @@ import { useClientCtx } from "@/app/ClientCtx";
 import { apiClient, handleErr } from "@/trpc/react";
 import { pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
-import CoolChecklet from "@public/checklets/cool.svg";
-import PencilChecklet from "@public/checklets/pencil.svg";
-import YayChecklet from "@public/checklets/yay.svg";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -150,7 +152,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
       if (!hasModifiedTextAfterChecking) {
         return (
           <NoSuggestionMessage
-            imageSrc={YayChecklet.src as string}
+            checklet=<YayChecklet className="h-[12.75rem] p-12" />
             header={"No issues found"}
             content={
               <>
@@ -164,7 +166,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
       } else {
         return (
           <NoSuggestionMessage
-            imageSrc={CoolChecklet.src as string}
+            checklet=<CoolChecklet className="h-[12.75rem] p-12" />
             header={"Ready to check?"}
             content={
               <>
@@ -181,7 +183,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
 
     return (
       <NoSuggestionMessage
-        imageSrc={PencilChecklet.src as string}
+        checklet=<PencilChecklet />
         header={"Nothing to check yet"}
         content={
           <div className={"w-[70%]"}>Start writing or paste your document.</div>

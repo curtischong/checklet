@@ -82,3 +82,42 @@ export const PennyChecklet = ({ className = "" }: Props) => {
     />
   );
 };
+
+export const YayChecklet = ({ className = "" }: Props) => {
+  const combinedClassName = classNames("", className);
+  return (
+    <Image
+      alt="YayChecklet"
+      src="/checklets/yay.svg"
+      width={100}
+      height={100}
+      className={combinedClassName}
+    />
+  );
+};
+
+export const CoolChecklet = ({ className = "" }: Props) => {
+  const combinedClassName = classNames("", className);
+  return (
+    <Image
+      alt="CoolChecklet"
+      src="/checklets/cool.svg"
+      width={100}
+      height={100}
+      className={combinedClassName}
+    />
+  );
+};
+
+export const PencilChecklet = ({ className = "" }: Props) => {
+  const combinedClassName = classNames("", className);
+  return (
+    <Image
+      alt="PencilChecklet"
+      src="/checklets/pencil.svg"
+      width={100}
+      height={100}
+      className={combinedClassName}
+    />
+  );
+};
