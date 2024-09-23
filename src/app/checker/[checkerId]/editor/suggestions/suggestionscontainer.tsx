@@ -229,7 +229,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const pathName = usePathname();
 
   return (
-    <div className="mt-14 flex w-[300px] flex-col">
+    <div className="mt-14 flex w-[400px] flex-col">
       <div>
         <div className="flex flex-col space-y-2">
           {user?.id === storefront.creatorId && !pathName.endsWith("/edit") && (
