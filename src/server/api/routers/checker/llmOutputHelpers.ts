@@ -3,6 +3,7 @@ import {
   type Tip,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { fuzzyMatch } from "@/server/api/routers/checker/fuzzyMatch";
+import { createShortId } from "@/utils/strings";
 
 export function extractTips(input: string): Tip[] {
   const tipReasonPairs: Tip[] = [];
@@ -123,14 +124,15 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
 
     // Push the extracted information into the tips array
     suggestions.push({
-      tipName,
-      reason,
+      tipName: tipName ?? "",
+      reason: reason ?? "",
       oldText: matchingSubstring,
-      newText: newText,
+      newText: newText ?? "",
       range: {
         start: realIndexInDoc1,
         end: realIndexInDoc1 + matchingSubstring.length,
       },
+      suggestionId: createShortId(),
     });
 
     // Update the cumulative inserted length

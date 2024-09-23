@@ -171,19 +171,6 @@ export const CheckerPage = ({
                 editorState={editorState}
                 setEditorState={setEditorState}
               />
-              {/* <NormalTextArea
-                                placeholder={`• Expedited DynamoDB queries from 68 ms to 41 ms by optimizing the schema for reads
-• Unified request authorization logic by proxying requests through a Spring API Gateway`}
-                                onChange={(e) => {
-                                    setSubmittingState(
-                                        SubmittingState.ChangesDetected,
-                                    );
-                                    setPlaceholder(e.target.value);
-                                }}
-                                value={placeholder}
-                                minRows={4}
-                                maxLength={MAX_CHECKER_PLACEHOLDER_LEN}
-                            /> */}
 
               <div className="mt-4 flex flex-row space-x-8">
                 <IsPublicSwitch

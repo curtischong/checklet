@@ -5,7 +5,7 @@ import {
 import { type CheckerType } from "@/server/api/routers/checker/checker";
 import { removeInvalidTips } from "@/server/api/routers/checker/docPostProcess";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
-import { type Llm } from "@/server/api/routers/checker/llm";
+import { Llm } from "@/server/api/routers/checker/llm";
 import { type Llm2 } from "@/server/api/routers/checker/llm2";
 import { type Llm3 } from "@/server/api/routers/checker/llm3";
 import {
@@ -71,18 +71,10 @@ export class CheckerWorker {
     // this will be a problem to solve later
     const newChecker = await this.updateRefinedPrompt(checker);
 
-    const suggestions = await checkDoc1(
-      this.llm,
-      newChecker.refinedPrompt,
-      doc,
-    );
+    const suggestions = await checkDoc1dot10(this.llm, newChecker.prompt, doc);
     console.log("suggestions", suggestions);
-    // TODO: I need to parse it and turn it into suggestions
-
-    // console.log("checkDoc", checker, doc);
-
     return {
-      suggestions: [],
+      suggestions: suggestions,
     };
   };
 }

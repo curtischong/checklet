@@ -26,13 +26,14 @@ export interface FeedbackResponse {
   suggestions: Suggestion[];
 }
 
-export type Suggestion = {
+export interface Suggestion {
+  tipName: string;
+  reason: string;
+  oldText: string;
+  newText: string;
   range: DocRange; // range of the original text
-  originalText: string;
-  editedText: string[];
-  check: CheckDesc;
   suggestionId: SuggestionId;
-};
+}
 
 export enum CheckType {
   highlight = "Highlight",
