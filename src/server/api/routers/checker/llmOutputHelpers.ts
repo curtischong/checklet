@@ -76,7 +76,10 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     // /<tip\|([^|]+)\|([^>]+)><old>([^<]+)<\/old><new>([^<]+)<\/new><\/tip>/g;
 
     // this pattern is the same. except it can match multiple spaces between the tags (sometimes the model adds extra spaces)
-    /<tip\|([^|]+)\|([^>]+)>\ *<old>([^<]+)<\/old>\ *<new>([^<]+)<\/new>\ *<\/tip>/g;
+    // /<tip\|([^|]+)\|([^>]+)>\ *<old>([^<]+)<\/old>\ *<new>([^<]+)<\/new>\ *<\/tip>/g;
+
+    // this pattern is the same, except we now match for generic whitespace characters between tags
+    /<tip\|([^|]+)\|([^>]+)>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<\/tip>/g;
 
   const suggestions: Suggestion[] = []; // Array to hold the resulting tip objects
   let match;
