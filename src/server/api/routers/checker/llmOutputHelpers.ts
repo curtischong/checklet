@@ -133,7 +133,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
       oldText,
       predIndexInDoc1,
     );
-    console.log("matching substring", matchedSubstring, "oldText", oldText);
+    console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
 
     const realIndexInDoc1 = actualIndex;
 

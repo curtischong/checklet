@@ -16,7 +16,7 @@ export function fuzzyMatchAroundIndex(
   actualIndex: number;
 } {
   // Define the window size based on the length of the query and an additional buffer
-  const windowSize = Math.max(query.length * 2, 100); // Adjust 100 as needed for larger buffers
+  const windowSize = Math.max(query.length * 2, 300); // Adjust as needed for larger buffers
 
   // Calculate the start and end indices of the search window
   const startIndex = Math.max(0, expectedIndex - windowSize);
@@ -25,39 +25,50 @@ export function fuzzyMatchAroundIndex(
   // Extract the search window from the document
   const windowSubstring = doc.substring(startIndex, endIndex);
 
-  // Initialize the SequenceMatcher with the query and the window substring
-  const sequenceMatcher = new difflib.SequenceMatcher(
-    null,
-    query,
-    windowSubstring,
-  );
-
-  // Find the matching blocks
-  const matches = sequenceMatcher.getMatchingBlocks();
-
   // Variables to keep track of the best match
-  let bestMatchSize = 0;
+  let bestRatio = 0;
   let bestMatchIndex = 0;
+  let bestMatchedSubstring = "";
 
-  // Iterate over the matching blocks to find the best match
-  for (const match of matches) {
-    if (match.size > bestMatchSize) {
-      bestMatchSize = match.size;
-      bestMatchIndex = match.j; // Index in the window substring
+  // Allow for slight variations in substring length to account for insertions/deletions
+  const lengthVariations = [-2, -1, 0, 1, 2]; // Adjust variations as needed
+
+  // Sliding window approach
+  for (const variation of lengthVariations) {
+    const candidateLength = query.length + variation;
+    if (candidateLength <= 0) continue;
+
+    const maxOffset = windowSubstring.length - candidateLength;
+    for (let offset = 0; offset <= maxOffset; offset++) {
+      const candidateSubstring = windowSubstring.substr(
+        offset,
+        candidateLength,
+      );
+
+      // Initialize the SequenceMatcher with the query and the candidate substring
+      const sequenceMatcher = new difflib.SequenceMatcher(
+        null,
+        query,
+        candidateSubstring,
+      );
+
+      // Compute the similarity ratio
+      const ratio = sequenceMatcher.ratio();
+
+      // Update the best match if this is the highest ratio so far
+      if (ratio > bestRatio) {
+        bestRatio = ratio;
+        bestMatchIndex = offset;
+        bestMatchedSubstring = candidateSubstring;
+      }
     }
   }
-
-  // Extract the best matching substring from the window substring
-  const matchedSubstring = windowSubstring.substr(
-    bestMatchIndex,
-    bestMatchSize,
-  );
 
   // Calculate the actual index in the document
   const actualIndex = startIndex + bestMatchIndex;
 
   return {
-    matchedSubstring,
+    matchedSubstring: bestMatchedSubstring,
     actualIndex,
   };
 }
