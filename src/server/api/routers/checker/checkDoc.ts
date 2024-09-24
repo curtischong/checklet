@@ -230,6 +230,36 @@ export const checkDoc1dot11 = async (
   return removeInvalidSuggestions(suggestions);
 };
 
+export const checkDoc1dot12 = async (
+  llm: Llm,
+  prompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const rawEditedResponse = await llm.prompt(
+    inferenceInstructions1dot8(prompt, doc),
+  );
+
+  console.log("rawEditedResponse", rawEditedResponse);
+  const onlyDoc = rawEditedResponse.split("<Doc Start>")[1]!;
+
+  // const onlyDoc = await llm.prompt(fetchDoc(rawEditedResponse));
+  // console.log("onlyDoc", onlyDoc);
+
+  const doc2 = removeInvalidTips(onlyDoc); // removes extraneous whitespace / removals the llm made
+  // console.log("prunedEdits", doc2);
+
+  const doc3 = await llm.prompt(mergeDoc2TipsIntoDoc1(doc, doc2));
+
+  console.log("doc3", doc3);
+
+  // const docWithOnlyEdits = postprocessDoc(doc, prunedEdits); // removes extraneous whitespace / removals the llm made
+  // console.log("docWithOnlyEdits", docWithOnlyEdits);
+
+  const suggestions = extractSuggestions(doc, doc3);
+
+  return removeInvalidSuggestions(suggestions);
+};
+
 export const checkDoc1 = async (
   llm: Llm,
   refinedPrompt: string,

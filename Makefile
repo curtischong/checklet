@@ -42,3 +42,6 @@ extract-tips:
 
 fix-unintentional-edits:
 	npx tsx ./scripts/fix-unintentional-edits/run1.ts
+
+rm-chain-of-thought:
+	npx tsx ./scripts/rm-chain-of-thought/run3.ts

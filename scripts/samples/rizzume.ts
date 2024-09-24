@@ -130,3 +130,79 @@ Lizzie - Collecting my personal metrics (Golang, Swift, InfluxDB, OpenVPN | bit.
 Parabola - An AR overlay that predicts where objects land (C++, OpenCV | bit.ly/prj_parabola)
 - Wrote a concurrent C++ server that uses stereoscopic cameras and OpenCV to identify the location of an orange cone.
 - Calculated the landing position of the cone using classical mechanics.`;
+
+export const resumeWithChainOfThought = `1) **Possible Fixes and Edits:**
+
+- Skills: Reduce the number of backend languages listed from 6 to a maximum of 8, and reorder them based on impressiveness.
+  - **Edit:** Change to “Backend Languages: C++, Go, Python, Node.js, TypeScript, C”
+  - **Tip:** A concise skills section improves readability and asserts expertise in the most relevant areas.
+
+- Remove "Honours" from the degree title for whitespace.
+  - **Edit:** Change to “Bachelor of Software Engineering Co-op”
+  - **Tip:** Simplifying section headers and titles increases whitespace and improves layout.
+
+- Combine verbs in the responsibilities/reports (avoid starting with multiple verbs).
+  - **Edit:** In "Integrated data from AWS Kinesis Streaming to quicken spam classification from 5 to 2 minutes", change to "Accelerated spam classification by integrating AWS Kinesis Streaming, reducing processing time from 5 to 2 minutes."
+  - **Tip:** Merging actions into a stronger verb makes for a cleaner and punchier sentence.
+
+- Remove the word "many" and use specific numbers where applicable (e.g., in "Hackathon Count: 25").
+  - **Edit:** Change to “Hackathon Count: 25 | Wins: 12”
+  - **Tip:** Specific numeric representation strengthens credibility and highlights achievement.
+
+- "Engineered a SQL testing framework which laid the groundwork" could be simplified to "Engineered a SQL testing framework, establishing testing standards across all data science projects."
+  - **Tip:** Simplifying sentences helps enhance clarity and readability.
+
+2) **Output:**
+
+Curtis Chong
+
+curtis.chong@uwaterloo.ca
+github.com/curtischong
+chongcurtis.com
++1 647 783 1886
+
+Bachelor of Software Engineering Co-op | University of Waterloo | 2018 - 2023 (Expected)
+Skills
+Backend Languages: <tip|reduced skills list|Reducing redundancy by limiting languages to relevant expertise><old>C++, C, Golang, Python, Node.js, TypeScript</old><new>C++, Go, Python, Node.js, TypeScript, C</new></tip>
+Infrastructure: SQL, Postgres, InfluxDB, Docker, AWS, EC2, OpenVPN
+Tooling: Vim, Git, Linux, Jupyter, Databricks
+Application Development: JavaScript, React, Swift, HTML, CSS, jQuery
+
+Experience
+Software Engineering Intern at Kik Interactive (Python, Docker, SQL) May - Aug. 2019
+- Rebuilt the A/B testing system in Python to simplify demographic segmentation and result visualization for managers.
+- <tip|merged verbs|Combining verbs for stronger impact><old>Integrated data from AWS Kinesis Streaming to quicken spam classification from 5 to 2 minutes.</old><new>Accelerated spam classification by integrating AWS Kinesis Streaming, reducing processing time from 5 to 2 minutes.</new></tip>
+- Provisioned Docker environments to host Airflow jobs, allowing engineers to consistently schedule jobs.
+- Engineered a SQL testing framework, <tip|clarified impact|Establishing clarity on the contribution><old>which laid the groundwork for proper testing across all data science projects.</old><new>establishing testing standards across all data science projects.</new></tip>
+- Shipped jobs to monitor data relevance and identify uncaught spam accounts, which accelerated spam terminations.
+
+Software Engineering Intern at Big Terminal Inc. (Node.js, TypeScript, InfluxDB) Aug. 2018
+- Developed a Node.js server that identifies arbitrage opportunities on cryptocurrency markets to traders on Slack.
+- Wrote a bot to lend USD at favorable rates, <tip|improved clarity|Eliminating vagueness and clutter><old>allowing for higher capital utilization.</old><new>maximizing capital utilization.</new></tip>
+
+Data Scientist at Flipp Corporation (Python, Pandas, Scikit-Learn) July - Aug. 2017
+- Evaluated as a top employee in the 95th percentile (bit.ly/flipp_eval).
+- Created a Python résumé parser capable of categorizing sections and outperforming licensed tools.
+- Engineered and tuned an ML ensemble to a precision of 0.598, filtering out candidates with poor résumés.
+- Generated N-grams, a bag-of-words, and a hand-picked dictionary as a feature space for modeling.
+- Frequently sought meetings with the Talent team, presenting findings and shaping business direction.
+
+Awards (Hackathon Count: <tip|removed vague phrasing|Enhanced clarity with numbers><old>25 | Wins: 12</old><new>25 | Wins: 12</new></tip>)
+Winner at Hack the North 2019 (1500 participants | TypeScript, Python | bit.ly/prj_complete)
+- Created a VSCode extension that helps developers write code faster by autogenerating functions from pseudocode.
+- Blitzed through the VSCode API documentation, then developed the client, middleware, and optimized network requests.
+Winner at Hack the North 2016 (1000 participants | Angular, Node.js, SQL | bit.ly/prj_agrigate)
+- Engineered a dashboard that uses satellite data from NASA and Ontario’s land surveys to identify crop growing conditions.
+- Built a statistical model to project future crop prices and help farmers determine selling opportunities.
+Second Place at MHacks 9 (300 participants | React, Firebase | bit.ly/prj_recap)
+- Created a text editor that archives a presenter’s audio to provide further context behind student notes.
+- Developed middleware to fetch and align audio recordings from Firebase DB with edited notes.
+
+Projects
+Lizzie - Collecting my personal metrics (Golang, Swift, InfluxDB, OpenVPN | bit.ly/prj_lizzie)
+- Built a “News Feed” in React to dashboard my biometrics, reflect on things I’ve learned, and monitor daily activities.
+- Wrote a Golang server under an OpenVPN network to store my biometrics from an iOS and watchOS app.
+- Developed a Chrome extension to archive my search terms and messages that I’ve sent to optimize how I communicate.
+Parabola - An AR overlay that predicts where objects land (C++, OpenCV | bit.ly/prj_parabola)
+- Wrote a concurrent C++ server that uses stereoscopic cameras and OpenCV to identify the location of an orange cone.
+- Calculated the landing position of the cone using classical mechanics.`;
