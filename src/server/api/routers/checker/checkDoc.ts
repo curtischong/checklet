@@ -3,7 +3,10 @@ import {
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type CheckerType } from "@/server/api/routers/checker/checker";
-import { removeInvalidTips } from "@/server/api/routers/checker/docPostProcess";
+import {
+  removeInvalidSuggestions,
+  removeInvalidTips,
+} from "@/server/api/routers/checker/docPostProcess";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
 import { Llm } from "@/server/api/routers/checker/llm";
 import { type Llm2 } from "@/server/api/routers/checker/llm2";
@@ -224,7 +227,7 @@ export const checkDoc1dot11 = async (
 
   const suggestions = extractSuggestions(doc, doc3);
 
-  return suggestions;
+  return removeInvalidSuggestions(suggestions);
 };
 
 export const checkDoc1 = async (
