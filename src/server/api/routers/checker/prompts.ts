@@ -177,3 +177,37 @@ ${doc1}
 ${doc2}
 </Document 2>`;
 };
+
+export const mergeDoc2TipsIntoDoc1Dot2 = (
+  doc1: string,
+  doc2: string,
+): string => {
+  return `Below are two documents. The I want you to merge the <tip|name of tip|reason for tip><old>old text before edit</old><new>new text after edit</new></tip> tags and their contents from the second document into the first.
+
+Note: the second document contains edits (of doc1) OUTSIDE the tip tags. Do not migrate those over. I just want doc1 but with the tips ported over from doc2.
+
+--- Example ---
+
+Doc1:
+I love rainy sundays.
+
+Doc2:
+I really love <tip|remove adjectives|it improves conciseness><old> **rainy**</old><new></new></tip> sundays.
+
+You should return:
+I love <tip|remove adjectives|it improves conciseness><old>rainy</old><new></new></tip> sundays.
+
+Reasoning:
+You recognize that the text in the <old></old> tag was incorrect. There was an extra space before the word "rainy" in the original text. There were also **bold** characters surrounding the word rain that you removed. In addition, the additional word "really" in doc2 was not migrated over since it's an edit not within the tip tag.
+--- End of Example ---
+
+
+
+<Document 1>
+${doc1}
+</Document 1>
+
+<Document 2>
+${doc2}
+</Document 2>`;
+};

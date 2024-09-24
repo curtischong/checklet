@@ -83,22 +83,15 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
 
   const suggestions: Suggestion[] = []; // Array to hold the resulting tip objects
   let match;
-  let cumulativeInsertedLength = 0; // To track the total length of inserted tip patterns
 
   const allMatches = [];
   while ((match = tipTagPattern.exec(doc2)) !== null) {
     allMatches.push(match);
   }
 
-  const sumOfAllTipTagsWithoutOldText = allMatches.reduce(
-    (acc, match) => acc + match[0].length - (match[3]?.length ?? 0),
-    0,
-  );
-  console.log("sumOfAllTipTagsWithoutOldText", sumOfAllTipTagsWithoutOldText);
-
-  const lengthOfChainOfThought =
-    doc2.length - doc1.length - sumOfAllTipTagsWithoutOldText; // doc2 added all the extra tip tags, so we need to subtract that length (since it's not included in doc1's length)
-
+  let endIdxOfLastTipTag = 0;
+  let endOfLastActualIndex = 0;
+  // TODO: we need to add extra chars to the predIndexInDoc1 to account for extra chain of thought?
   // console.log("allMatches", allMatches);
   for (let i = 0; i < allMatches.length; i++) {
     const match = allMatches[i];
@@ -111,8 +104,8 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     // Calculate the corresponding index in doc1 by subtracting the cumulative inserted lengths
     const predIndexInDoc1 = Math.max(
       0,
-      // tipStartIndexInDoc2 - lengthOfChainOfThought - cumulativeInsertedLength,
-      tipStartIndexInDoc2 - cumulativeInsertedLength,
+      // basically, the predected next index is the distance between the tip tags ontop of the end of the last actual index of the previous tip tag in the real doc
+      endOfLastActualIndex + tipStartIndexInDoc2 - endIdxOfLastTipTag,
     );
 
     // Verify that the oldText at indexInDoc1 in doc1 matches the expected oldText
@@ -154,9 +147,8 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
       suggestionId: createShortId(),
     });
 
-    // Update the cumulative inserted length
-    // This accounts for the extra characters added by the tip pattern
-    cumulativeInsertedLength += fullMatch.length - matchedSubstring.length;
+    endIdxOfLastTipTag = match.index + fullMatch.length;
+    endOfLastActualIndex = actualIndex + matchedSubstring.length;
   }
 
   return suggestions;
