@@ -26,7 +26,7 @@ export const Editor = ({
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
   const [hasModifiedTextAfterChecking, setHasModifiedTextAfterChecking] =
-    useState(false);
+    useState(true); // init as true so when ppl first enter the page, they see "ready to check?"
   const [isLoading, setIsLoading] = React.useState(false);
   const editorRef = useRef<RichTextareaHandle | null>(null);
 
