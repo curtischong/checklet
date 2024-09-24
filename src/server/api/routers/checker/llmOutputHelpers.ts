@@ -96,10 +96,11 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   const lengthOfChainOfThought =
     doc2.length - doc1.length - sumOfAllTipTagsWithoutOldText; // doc2 added all the extra tip tags, so we need to subtract that length (since it's not included in doc1's length)
 
-  console.log("allMatches", allMatches);
+  // console.log("allMatches", allMatches);
   for (let i = 0; i < allMatches.length; i++) {
     const match = allMatches[i];
     const [fullMatch, tipName, reason, rawOldText, newText] = match;
+    console.log("match", tipName, rawOldText, newText);
     const tipStartIndexInDoc2 = match.index;
     // NOTE: since there may be chain of thought at the start of doc2, this is a big number^
     // we need to subtract by the length of the chain of thought
