@@ -10,7 +10,7 @@ import {
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
 import { Llm } from "@/server/api/routers/checker/llm";
 import { type Llm2 } from "@/server/api/routers/checker/llm2";
-import { type Llm3 } from "@/server/api/routers/checker/llm3";
+import { Llm3 } from "@/server/api/routers/checker/llm3";
 import {
   extractSuggestions,
   extractTips,
@@ -19,6 +19,7 @@ import {
   inferenceInstructions,
   inferenceInstructions1,
   inferenceInstructions1dot11,
+  inferenceInstructions1dot14,
   inferenceInstructions1dot5,
   inferenceInstructions1dot6,
   inferenceInstructions1dot7,
@@ -39,6 +40,7 @@ export class CheckerWorker {
   smartModel = "gpt-4o-mini";
   cheapModel = "gpt-4o-mini";
   llm: Llm;
+  llm3: Llm3;
   db: PrismaClient;
 
   constructor(db: PrismaClient) {
@@ -48,6 +50,11 @@ export class CheckerWorker {
     );
     const apiKey = process.env.OPENAI_API_KEY;
     this.llm = new Llm(this.systemPrompt, this.smartModel, cache, apiKey);
+    const cache3 = new SimpleCache(
+      path.join(process.cwd(), ".chatgpt_history"),
+      "/cache3",
+    );
+    this.llm3 = new Llm3(this.smartModel, this.systemPrompt, cache3, apiKey);
     this.db = db;
   }
 
@@ -76,7 +83,7 @@ export class CheckerWorker {
     // this will be a problem to solve later
     const newChecker = await this.updateRefinedPrompt(checker);
 
-    const suggestions = await checkDoc1dot11(this.llm, newChecker.prompt, doc);
+    const suggestions = await checkDoc1dot14(this.llm3, newChecker.prompt, doc);
     console.log("suggestions", suggestions);
     return {
       suggestions: suggestions,
@@ -221,6 +228,44 @@ export const checkDoc1dot11 = async (
   const doc3 = await llm.prompt(mergeDoc2TipsIntoDoc1(doc, doc2));
 
   console.log("doc3", doc3);
+
+  // const docWithOnlyEdits = postprocessDoc(doc, prunedEdits); // removes extraneous whitespace / removals the llm made
+  // console.log("docWithOnlyEdits", docWithOnlyEdits);
+
+  const suggestions = extractSuggestions(doc, doc3);
+
+  return removeInvalidSuggestions(suggestions);
+};
+
+export const checkDoc1dot14 = async (
+  llm: Llm3,
+  prompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const chain = await llm.promptMessagesExtendChain(
+    [],
+    inferenceInstructions1dot8(prompt, doc),
+    llm.model,
+  );
+  console.log(
+    "modelRes-----------------------------",
+    chain[1]!.content as string,
+  );
+  const onlyDocMessages = await llm.promptMessagesExtendChain(
+    chain,
+    inferenceInstructions1dot14(),
+    llm.model,
+  );
+  const onlyDoc = onlyDocMessages[onlyDocMessages.length - 1]!
+    .content as string;
+  console.log("onlyDoc------------------------------", onlyDoc);
+
+  const doc2 = removeInvalidTips(onlyDoc); // removes extraneous whitespace / removals the llm made
+  // console.log("prunedEdits", doc2);
+
+  const doc3 = await llm.prompt(mergeDoc2TipsIntoDoc1(doc, doc2), llm.model);
+
+  console.log("doc3---------------------------------", doc3);
 
   // const docWithOnlyEdits = postprocessDoc(doc, prunedEdits); // removes extraneous whitespace / removals the llm made
   // console.log("docWithOnlyEdits", docWithOnlyEdits);
