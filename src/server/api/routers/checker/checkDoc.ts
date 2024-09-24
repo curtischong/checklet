@@ -3,7 +3,10 @@ import {
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type CheckerType } from "@/server/api/routers/checker/checker";
-import { removeInvalidTips } from "@/server/api/routers/checker/docPostProcess";
+import {
+  removeInvalidSuggestions,
+  removeInvalidTips,
+} from "@/server/api/routers/checker/docPostProcess";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
 import { Llm } from "@/server/api/routers/checker/llm";
 import { type Llm2 } from "@/server/api/routers/checker/llm2";
@@ -15,11 +18,13 @@ import {
 import {
   inferenceInstructions,
   inferenceInstructions1,
+  inferenceInstructions1dot11,
   inferenceInstructions1dot5,
   inferenceInstructions1dot6,
   inferenceInstructions1dot7,
   inferenceInstructions1dot8,
   inferenceInstructions2,
+  mergeDoc2TipsIntoDoc1,
   preprocessInstructions,
 } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
@@ -71,7 +76,7 @@ export class CheckerWorker {
     // this will be a problem to solve later
     const newChecker = await this.updateRefinedPrompt(checker);
 
-    const suggestions = await checkDoc1dot10(this.llm, newChecker.prompt, doc);
+    const suggestions = await checkDoc1dot11(this.llm, newChecker.prompt, doc);
     console.log("suggestions", suggestions);
     return {
       suggestions: suggestions,
@@ -193,6 +198,36 @@ export const checkDoc1dot10 = async (
   const suggestions = extractSuggestions(doc, prunedEdits);
 
   return suggestions;
+};
+
+export const checkDoc1dot11 = async (
+  llm: Llm,
+  prompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const rawEditedResponse = await llm.prompt(
+    inferenceInstructions1dot11(prompt, doc),
+  );
+
+  console.log("rawEditedResponse", rawEditedResponse);
+  const onlyDoc = rawEditedResponse.split("<Doc Start>")[1]!;
+
+  // const onlyDoc = await llm.prompt(fetchDoc(rawEditedResponse));
+  // console.log("onlyDoc", onlyDoc);
+
+  const doc2 = removeInvalidTips(onlyDoc); // removes extraneous whitespace / removals the llm made
+  // console.log("prunedEdits", doc2);
+
+  const doc3 = await llm.prompt(mergeDoc2TipsIntoDoc1(doc, doc2));
+
+  console.log("doc3", doc3);
+
+  // const docWithOnlyEdits = postprocessDoc(doc, prunedEdits); // removes extraneous whitespace / removals the llm made
+  // console.log("docWithOnlyEdits", docWithOnlyEdits);
+
+  const suggestions = extractSuggestions(doc, doc3);
+
+  return removeInvalidSuggestions(suggestions);
 };
 
 export const checkDoc1 = async (

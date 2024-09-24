@@ -83,7 +83,7 @@ Parabola - An AR overlay that predicts where objects land (C++, OpenCV | bit.ly/
 - Wrote a concurrent C++ server that uses stereoscopic cameras and OpenCV to identify the location of an orange cone.
 - Calculated the landing position of the cone using classical mechanics.`;
 
-partiallyFixedButCannotParse = `Curtis Chong
+export const partiallyFixedButCannotParse = `Curtis Chong
 
 curtis.chong@uwaterloo.ca
 github.com/curtischong
