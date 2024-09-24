@@ -2,7 +2,7 @@ import {
   type Suggestion,
   type Tip,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch2";
+import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch3";
 import { createShortId } from "@/utils/strings";
 
 export function extractTips(input: string): Tip[] {
@@ -118,8 +118,8 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     // const offset = offsetOfOldTextInDoc1(doc1, indexInDoc1, oldText);
     // const realIndexInDoc1 = offset + indexInDoc1;
 
-    console.log("tipStartIndexInDoc2", tipStartIndexInDoc2);
-    console.log("indexInDoc1", predIndexInDoc1);
+    // console.log("tipStartIndexInDoc2", tipStartIndexInDoc2);
+    // console.log("indexInDoc1", predIndexInDoc1);
     // const allowedDeviation = i === 0 ? 500 : 200; // allow a LOT of deviation for the first match (since it can be low in the document and we want to match it)
     // after the first match, we have a smaller range since we've calibrated a lot of the error present in the first match
     // const { matchingSubstring, actualIndex } = fuzzyMatch(
@@ -133,7 +133,8 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
       oldText,
       predIndexInDoc1,
     );
-    console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
+    console.log("predIndexInDoc1", predIndexInDoc1, "actualIndex", actualIndex);
+    // console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
 
     const realIndexInDoc1 = actualIndex;
 

@@ -16,7 +16,8 @@ export function fuzzyMatchAroundIndex(
   actualIndex: number;
 } {
   // Define the window size based on the length of the query and an additional buffer
-  const windowSize = Math.max(query.length * 2, 300); // Adjust as needed for larger buffers
+  // we need to have a high window size since the tip tag might be AFTER the original text
+  const windowSize = Math.max(query.length * 2, 400); // Adjust as needed for larger buffers
 
   // Calculate the start and end indices of the search window
   const startIndex = Math.max(0, expectedIndex - windowSize);
