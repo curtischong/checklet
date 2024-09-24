@@ -124,6 +124,22 @@ export const inferenceInstructions1dot14 = () => {
   return `Repeat your previous response word for word. However, exclude the "chain of thought" portion of the text at the start. Do not make any more edits. Just repeat the rest as is.`;
 };
 
+export const inferenceInstructions1dot15 = (prompt: string, doc: string) => {
+  return `1) Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Spend time thinking and consider if the edit really does improve the error in the sentence. If this edit is appropriate, write down the tip that you used for the edit you’re making.
+
+Only edit short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
+
+2) Repeat the entire fixed text. For each edit, explicitly surround your edit with <tip> tags. Use the <old> and <new> tags to specify the old text and new text. Format each edit like so:
+
+This is a <tip|name of tip|reason why this edit improves the old text><old>old text before your edit</old><new>new text after your edit</new></tip> sentence.
+
+---TIPS---
+${prompt}
+
+---DOCUMENT---
+${doc}`;
+};
+
 export const inferenceInstructions1 = (tips: string, doc: string) => {
   return `Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Spend time thinking and consider if the edit really does improve the error in the sentence. If this edit is appropriate, write down the tip:# that you used for the edit you’re making.
 
