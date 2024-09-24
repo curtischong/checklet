@@ -198,7 +198,7 @@ You should return:
 I love <tip|remove adjectives|it improves conciseness><old>rainy</old><new></new></tip> sundays.
 
 Reasoning:
-You recognize that the text in the <old></old> tag was incorrect. There was an extra space before the word "rainy" in the original text. There were also **bold** characters surrounding the word rain that you removed. In addition, the additional word "really" in doc2 was removed since it's an edit not within the tip tag.
+You recognize that the text in the <old></old> tag was incorrect. There was an extra space before the word "rainy" in the original text. There were also **bold** characters surrounding the word rain that you removed. In addition, the additional word "really" in doc2 was not migrated over since it's an edit not within the tip tag.
 --- End of Example ---
 
 
