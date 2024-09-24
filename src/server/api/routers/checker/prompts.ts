@@ -152,6 +152,22 @@ Note: The # is the tip number you followed above. You only want to change words 
 ${doc}`;
 };
 
+export const inferenceInstructions3dot1 = (prompt: string, doc: string) => {
+  return `1) scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Spend time thinking and consider if the edit really does improve the error in the sentence. If this edit is appropriate, write down the tip that you used for the edit you’re making.
+
+2) Repeat the entire fixed text into the text_with_tip_tags function. For each edit, explicitly surround your edit with <tip|name|reason> tags. Also use the <old> and <new> tags to specify the old text and new text:
+
+This is a <tip|name of tip|reason why this edit improves the old text><old>old text before your edit</old><new>new text after your edit</new></tip> sentence.
+
+You only want to change words and short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
+
+---TIPS---
+${prompt}
+
+---DOCUMENT---
+${doc}`;
+};
+
 export const fetchDoc = (doc: string): string => {
   return `This document has two parts: a train of thought and the edited document.
   Please extract the document. JUST RETURN THE DOCUMENT. DO NOT modify or edit it. just paste the second half back.

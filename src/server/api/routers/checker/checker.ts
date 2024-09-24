@@ -165,6 +165,7 @@ export const checkerRouter = createTRPCRouter({
 
       // now that we've validated everything, we can actually check the doc
       const checkerWorker = new CheckerWorker(ctx.db);
+      // return await checkerWorker.checkDoc(input.doc, checker);
       return await checkerWorker.checkDoc(input.doc, checker);
     }),
 

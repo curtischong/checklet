@@ -8,9 +8,9 @@ import {
   removeInvalidTips,
 } from "@/server/api/routers/checker/docPostProcess";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
-import { Llm } from "@/server/api/routers/checker/llm";
+import { type Llm } from "@/server/api/routers/checker/llm";
 import { type Llm2 } from "@/server/api/routers/checker/llm2";
-import { type Llm3 } from "@/server/api/routers/checker/llm3";
+import { Llm3 } from "@/server/api/routers/checker/llm3";
 import {
   extractSuggestions,
   extractTips,
@@ -18,18 +18,16 @@ import {
 import {
   inferenceInstructions,
   inferenceInstructions1,
-  inferenceInstructions1dot11,
   inferenceInstructions1dot5,
   inferenceInstructions1dot6,
   inferenceInstructions1dot7,
   inferenceInstructions1dot8,
   inferenceInstructions2,
+  inferenceInstructions3dot1,
   mergeDoc2TipsIntoDoc1,
-  preprocessInstructions,
 } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import { postprocessDoc } from "@/server/api/routers/checker/textAlignment";
-import { tinySimpleHash } from "@/utils/strings";
 import { type PrismaClient } from "@prisma/client";
 import { type ChatCompletionTool } from "openai/resources/index.mjs";
 import path from "path";
@@ -38,45 +36,52 @@ export class CheckerWorker {
   systemPrompt = "";
   smartModel = "gpt-4o-mini";
   cheapModel = "gpt-4o-mini";
-  llm: Llm;
+  // llm: Llm;
+  llm: Llm3;
   db: PrismaClient;
 
   constructor(db: PrismaClient) {
-    const cache = new SimpleCache(
+    // const cache = new SimpleCache(
+    //   path.join(process.cwd(), ".chatgpt_history"),
+    //   "/cache",
+    // );
+    const cache3 = new SimpleCache(
       path.join(process.cwd(), ".chatgpt_history"),
       "/cache",
     );
     const apiKey = process.env.OPENAI_API_KEY;
-    this.llm = new Llm(this.systemPrompt, this.smartModel, cache, apiKey);
+    // this.llm = new Llm(this.systemPrompt, this.smartModel, cache, apiKey);
+    this.llm = new Llm3(this.smartModel, this.systemPrompt, cache3, apiKey);
     this.db = db;
   }
 
-  updateRefinedPrompt = async (checker: Awaited<CheckerType>) => {
-    const promptHash = tinySimpleHash(checker.prompt);
-    if (checker.promptHashThatDerivedRefinedPrompt === promptHash) {
-      return checker;
-    }
+  // updateRefinedPrompt = async (checker: Awaited<CheckerType>) => {
+  //   const promptHash = tinySimpleHash(checker.prompt);
+  //   if (checker.promptHashThatDerivedRefinedPrompt === promptHash) {
+  //     return checker;
+  //   }
 
-    const refinedPrompt = await this.llm.prompt(
-      preprocessInstructions(checker.prompt),
-    );
-    return await this.db.checker.update({
-      where: {
-        id: checker.id,
-      },
-      data: {
-        refinedPrompt,
-        promptHashThatDerivedRefinedPrompt: promptHash,
-      },
-    });
-  };
+  //   const refinedPrompt = await this.llm.prompt(
+  //     preprocessInstructions(checker.prompt),
+  //   );
+  //   return await this.db.checker.update({
+  //     where: {
+  //       id: checker.id,
+  //     },
+  //     data: {
+  //       refinedPrompt,
+  //       promptHashThatDerivedRefinedPrompt: promptHash,
+  //     },
+  //   });
+  // };
 
   checkDoc = async (doc: string, checker: Awaited<CheckerType>) => {
     // TODO: do this elsewhere? it's hard though. I think it's fine. I'm just worried that 20 ppl will spam, and we're going to refine the prompt 20 times
     // this will be a problem to solve later
-    const newChecker = await this.updateRefinedPrompt(checker);
+    // const newChecker = await this.updateRefinedPrompt(checker);
 
-    const suggestions = await checkDoc1dot11(this.llm, newChecker.prompt, doc);
+    // const suggestions = await checkDoc1dot11(this.llm, newChecker.prompt, doc);
+    const suggestions = await checkDoc3dot1(this.llm, checker.prompt, doc);
     console.log("suggestions", suggestions);
     return {
       suggestions: suggestions,
@@ -206,16 +211,16 @@ export const checkDoc1dot11 = async (
   doc: string,
 ): Promise<Suggestion[]> => {
   const rawEditedResponse = await llm.prompt(
-    inferenceInstructions1dot11(prompt, doc),
+    inferenceInstructions1dot8(prompt, doc),
   );
 
-  console.log("rawEditedResponse", rawEditedResponse);
-  const onlyDoc = rawEditedResponse.split("<Doc Start>")[1]!;
+  // console.log("rawEditedResponse", rawEditedResponse);
+  // const onlyDoc = rawEditedResponse.split("<Doc Start>")[1]!;
 
   // const onlyDoc = await llm.prompt(fetchDoc(rawEditedResponse));
   // console.log("onlyDoc", onlyDoc);
 
-  const doc2 = removeInvalidTips(onlyDoc); // removes extraneous whitespace / removals the llm made
+  const doc2 = removeInvalidTips(rawEditedResponse); // removes extraneous whitespace / removals the llm made
   // console.log("prunedEdits", doc2);
 
   const doc3 = await llm.prompt(mergeDoc2TipsIntoDoc1(doc, doc2));
@@ -331,5 +336,44 @@ export const checkDoc3 = async (
   const edits = editDistanceOperationsWithClasses(doc, newDoc);
   console.log("newDoc", newDoc);
   console.log("edits", edits);
+  return [];
+};
+
+export const checkDoc3dot1 = async (
+  llm: Llm3,
+  checkerPrompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const tools: ChatCompletionTool[] = [
+    {
+      type: "function",
+      function: {
+        name: "text_with_tip_tags",
+        description:
+          "Submit the edited doc with the edits annotated with <tip|name of tip|reason why this edit improves the old text><old>old text before your edit</old><new>new text after your edit</new></tip> tags",
+        parameters: {
+          type: "object",
+          properties: {
+            editedDoc: {
+              type: "string",
+              description: "The edited document with the annotations",
+            },
+          },
+          required: ["editedDoc"],
+        },
+      },
+    },
+  ];
+  const functionArgs = await llm.callFunction(
+    [],
+    inferenceInstructions3dot1(checkerPrompt, doc),
+    tools,
+  );
+
+  console.log(JSON.parse(functionArgs).editedDoc);
+
+  // const edits = editDistanceOperationsWithClasses(doc, newDoc);
+  // console.log("newDoc", newDoc);
+  // console.log("edits", edits);
   return [];
 };
