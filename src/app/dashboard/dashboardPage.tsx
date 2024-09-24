@@ -1,14 +1,15 @@
 "use client";
 
+import {
+  DerpChecklet,
+  MushyChecklet,
+  PennyChecklet,
+} from "@/app/_components/checklets/checklets";
 import { NormalButton } from "@/app/_components/ui/Button";
 import { DashboardChecker } from "@/app/dashboard/DashboardChecker";
 import { type UserCheckersType } from "@/app/dashboard/getUserCheckers";
 import { type UserCtx } from "@/firebase/edge_env";
 import { apiClient, handleErr } from "@/trpc/react";
-import DerpChecklet from "@public/checklets/derp.svg";
-import MushyChecklet from "@public/checklets/mushy.svg";
-import PennyChecklet from "@public/checklets/penny.svg";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
@@ -53,27 +54,9 @@ export const Dashboard = ({ checkers, user }: Props) => {
         <NormalButton onClick={createChecker}>Create Checker</NormalButton>
         {/* the div is to provide some buffer */}
         <div className="h-32" />
-        <Image
-          alt="PennyChecklet"
-          src={PennyChecklet.src}
-          width={200}
-          height={200}
-          className="absolute bottom-[15rem] right-[40%] h-[7rem]"
-        />
-        <Image
-          alt="MushyChecklet"
-          src={MushyChecklet.src}
-          width={200}
-          height={200}
-          className="absolute right-[30%] top-[30vh] h-[5rem]"
-        />
-        <Image
-          alt="DerpChecklet"
-          src={DerpChecklet.src}
-          width={200}
-          height={200}
-          className="absolute bottom-[10rem] right-[10%] h-[5rem]"
-        />
+        <PennyChecklet className="absolute bottom-[15rem] right-[40%] h-[7rem]" />
+        <MushyChecklet className="absolute right-[30%] top-[30vh] h-[5rem]" />
+        <DerpChecklet className="absolute bottom-[10rem] right-[10%] h-[5rem]" />
       </div>
     </div>
   );

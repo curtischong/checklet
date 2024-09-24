@@ -1,9 +1,10 @@
 "use client";
+import {
+  DockyChecklet,
+  LoveChecklet,
+  SpacyChecklet,
+} from "@/app/_components/checklets/checklets";
 import { Footer } from "@/app/_components/Footer";
-import DockyChecklet from "@public/checklets/docky.svg";
-import LoveChecklet from "@public/checklets/love.svg";
-import SpacyChecklet from "@public/checklets/spacy.svg";
-import Image from "next/image";
 
 interface Props {
   children: React.ReactNode;
@@ -21,27 +22,9 @@ export const SignInPageBackground = ({ children }: Props) => {
             Checklet
           </h1>
         </div>
-        <Image
-          alt="LoveChecklet"
-          src={LoveChecklet as string}
-          width={200}
-          height={200}
-          className="absolute bottom-[15rem] right-[5%] h-[6rem] md:right-[20%]"
-        />
-        <Image
-          alt="SpacyChecklet"
-          src={SpacyChecklet as string}
-          width={200}
-          height={200}
-          className="absolute left-[23%] top-32 h-[8rem]"
-        />
-        <Image
-          alt="DockyChecklet"
-          src={DockyChecklet as string}
-          width={200}
-          height={200}
-          className="absolute bottom-[10rem] left-[5%] z-0 h-[6rem] md:left-[20%]"
-        />
+        <LoveChecklet className="absolute bottom-[5%] right-[2%] h-[10rem] md:bottom-[25%] md:right-[20%]" />
+        <SpacyChecklet className="absolute left-[23%] top-32 h-[8rem]" />
+        <DockyChecklet className="absolute bottom-[10rem] left-[5%] z-0 h-[6rem] md:left-[20%]" />
         <div className="z-10">{children}</div>
       </div>
       <Footer isAbsolute={false} />
