@@ -39,3 +39,6 @@ edit-distance-test2:
 
 extract-tips:
 	npx tsx ./scripts/extract-tips/run2.ts
+
+fix-unintentional-edits:
+	npx tsx ./scripts/fix-unintentional-edits/run1.ts
