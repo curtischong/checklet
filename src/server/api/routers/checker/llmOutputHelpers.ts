@@ -2,7 +2,7 @@ import {
   type Suggestion,
   type Tip,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-import { fuzzyMatch } from "@/server/api/routers/checker/fuzzyMatch";
+import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch2";
 import { createShortId } from "@/utils/strings";
 
 export function extractTips(input: string): Tip[] {
@@ -100,13 +100,13 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   for (let i = 0; i < allMatches.length; i++) {
     const match = allMatches[i];
     const [fullMatch, tipName, reason, rawOldText, newText] = match;
-    console.log("match", tipName, rawOldText, newText);
+    console.log(`match ${i} ${rawOldText} old|new ${newText}`);
     const tipStartIndexInDoc2 = match.index;
     // NOTE: since there may be chain of thought at the start of doc2, this is a big number^
     // we need to subtract by the length of the chain of thought
 
     // Calculate the corresponding index in doc1 by subtracting the cumulative inserted lengths
-    const indexInDoc1 = Math.max(
+    const predIndexInDoc1 = Math.max(
       0,
       // tipStartIndexInDoc2 - lengthOfChainOfThought - cumulativeInsertedLength,
       tipStartIndexInDoc2 - cumulativeInsertedLength,
@@ -119,16 +119,21 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     // const realIndexInDoc1 = offset + indexInDoc1;
 
     console.log("tipStartIndexInDoc2", tipStartIndexInDoc2);
-    console.log("indexInDoc1", indexInDoc1);
-    const allowedDeviation = i === 0 ? 500 : 200; // allow a LOT of deviation for the first match (since it can be low in the document and we want to match it)
+    console.log("indexInDoc1", predIndexInDoc1);
+    // const allowedDeviation = i === 0 ? 500 : 200; // allow a LOT of deviation for the first match (since it can be low in the document and we want to match it)
     // after the first match, we have a smaller range since we've calibrated a lot of the error present in the first match
-    const { matchingSubstring, actualIndex } = fuzzyMatch(
+    // const { matchingSubstring, actualIndex } = fuzzyMatch(
+    //   doc1,
+    //   oldText,
+    //   predIndexInDoc1,
+    //   allowedDeviation,
+    // );
+    const { matchedSubstring, actualIndex } = fuzzyMatchAroundIndex(
       doc1,
       oldText,
-      indexInDoc1,
-      allowedDeviation,
+      predIndexInDoc1,
     );
-    console.log("matching substring", matchingSubstring, "oldText", oldText);
+    console.log("matching substring", matchedSubstring, "oldText", oldText);
 
     const realIndexInDoc1 = actualIndex;
 
@@ -136,18 +141,18 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     suggestions.push({
       tipName: tipName ?? "",
       reason: reason ?? "",
-      oldText: matchingSubstring,
+      oldText: matchedSubstring,
       newText: newText ?? "",
       range: {
         start: realIndexInDoc1,
-        end: realIndexInDoc1 + matchingSubstring.length,
+        end: realIndexInDoc1 + matchedSubstring.length,
       },
       suggestionId: createShortId(),
     });
 
     // Update the cumulative inserted length
     // This accounts for the extra characters added by the tip pattern
-    cumulativeInsertedLength += fullMatch.length - matchingSubstring.length;
+    cumulativeInsertedLength += fullMatch.length - matchedSubstring.length;
   }
 
   return suggestions;
