@@ -26,6 +26,7 @@ import {
   inferenceInstructions1dot8,
   inferenceInstructions2,
   mergeDoc2TipsIntoDoc1,
+  mergeDoc2TipsIntoDoc1Dot2,
   preprocessInstructions,
 } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
@@ -263,7 +264,10 @@ export const checkDoc1dot14 = async (
   const doc2 = removeInvalidTips(onlyDoc); // removes extraneous whitespace / removals the llm made
   // console.log("prunedEdits", doc2);
 
-  const doc3 = await llm.prompt(mergeDoc2TipsIntoDoc1(doc, doc2), llm.model);
+  const doc3 = await llm.prompt(
+    mergeDoc2TipsIntoDoc1Dot2(doc, doc2),
+    llm.model,
+  );
 
   console.log("doc3---------------------------------", doc3);
 
