@@ -20,6 +20,7 @@ import {
   inferenceInstructions1,
   inferenceInstructions1dot11,
   inferenceInstructions1dot14,
+  inferenceInstructions1dot15,
   inferenceInstructions1dot5,
   inferenceInstructions1dot6,
   inferenceInstructions1dot7,
@@ -245,7 +246,7 @@ export const checkDoc1dot14 = async (
 ): Promise<Suggestion[]> => {
   const chain = await llm.promptMessagesExtendChain(
     [],
-    inferenceInstructions1dot8(prompt, doc),
+    inferenceInstructions1dot15(prompt, doc),
     llm.model,
   );
   console.log(
