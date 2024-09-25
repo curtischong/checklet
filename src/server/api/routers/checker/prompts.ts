@@ -227,3 +227,61 @@ ${doc1}
 ${doc2}
 </Document 2>`;
 };
+
+export const inferenceInstructions4 = (prompt: string, doc: string) => {
+  return `1) Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Spend time thinking and consider if the edit really does improve the error in the sentence. If this edit is appropriate, write down the tip that you used for the edit you’re making.
+
+Only edit short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
+
+2) Repeat the entire fixed text with the edits.
+---TIPS---
+${prompt}
+
+---DOCUMENT---
+${doc}`;
+};
+
+export const addTipTags4 = (doc1: string, doc2: string) => {
+  return `Below are two documents. The I want you to merge the edits of document 2 into document 1. The edits to port over are prepended to the start of document 2. Ignore whitespace and formatting edits.
+  
+For each edit you merge, surround the edit with <tip|name of tip|reason for tip><old>old text before edit</old><new>new text after edit</new></tip>.
+
+I just want document 1 but with the edits ported over from document 2.
+
+<Example 1>
+
+Doc1:
+I really love rainy Sundays.
+
+Doc2:
+I love rainy Sundays.
+
+You should return:
+I <tip|Remove Adverbs|it improves conciseness><old>really </old><new></new></tip>love rainy Sundays.
+
+</End of Example 1>
+
+<Example 2>
+
+Doc1:
+Howdy Sir
+
+Doc2:
+Hello Sir
+
+You should return:
+<tip|Be More Formal|It is better to be more formal when writing to a CEO><old>Howdy</old><new>Hello</new></tip> Sir
+
+You should return:
+I <tip|remove adverbs|it improves conciseness><old>really</old><new></new></tip> love rainy Sundays.
+
+<End of Example 2/>
+
+<Document 1>
+${doc1}
+</Document 1>
+
+<Document 2>
+${doc2}
+</Document 2>`;
+};
