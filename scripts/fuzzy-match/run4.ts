@@ -56,7 +56,6 @@ export function matchQueryInDocument(
     matches.sort((a, b) => a.penalty - b.penalty);
 
     const bestMatch = matches[0];
-    console.log("using regex match", regex);
     return {
       matchedSubstring: bestMatch.matchedSubstring,
       actualIndex: bestMatch.actualIndex,
