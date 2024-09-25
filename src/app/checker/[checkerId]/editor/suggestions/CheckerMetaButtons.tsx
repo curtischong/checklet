@@ -1,5 +1,6 @@
 "use client";
 import { NormalButton } from "@/app/_components/ui/Button";
+import { apiClient, handleErr } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 interface Props {
   checkerId: string;
@@ -33,7 +34,14 @@ export const CheckerMetaButtons = ({
             // TODO: redirect to signin if they are not logged in
             router.push(`/signin`);
           } else {
-            router.push(`/checker/${checkerId}/edit`);
+            handleErr(
+              apiClient.checker.clone.mutate({
+                checkerId,
+              }),
+              (newChecker) => {
+                router.push(`/checker/${newChecker.id}/edit`);
+              },
+            );
           }
         }}
       >
