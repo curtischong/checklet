@@ -262,7 +262,7 @@ export const checkerRouter = createTRPCRouter({
       const newChecker = await ctx.db.checker.create({
         data: {
           createdById: ctx.user.id,
-          name: baseChecker.name,
+          name: baseChecker.name + "clone",
           desc: baseChecker.desc,
           prompt: baseChecker.prompt,
           sampleDoc: baseChecker.sampleDoc,
