@@ -32,11 +32,9 @@ import {
   inferenceInstructions4,
   mergeDoc2TipsIntoDoc1,
   mergeDoc2TipsIntoDoc1Dot2,
-  preprocessInstructions,
 } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import { postprocessDoc } from "@/server/api/routers/checker/textAlignment";
-import { tinySimpleHash } from "@/utils/strings";
 import { type PrismaClient } from "@prisma/client";
 import { type ChatCompletionTool } from "openai/resources/index.mjs";
 import path from "path";
@@ -64,33 +62,33 @@ export class CheckerWorker {
     this.db = db;
   }
 
-  updateRefinedPrompt = async (checker: Awaited<CheckerType>) => {
-    const promptHash = tinySimpleHash(checker.prompt);
-    if (checker.promptHashThatDerivedRefinedPrompt === promptHash) {
-      return checker;
-    }
+  // updateRefinedPrompt = async (checker: Awaited<CheckerType>) => {
+  //   const promptHash = tinySimpleHash(checker.prompt);
+  //   if (checker.promptHashThatDerivedRefinedPrompt === promptHash) {
+  //     return checker;
+  //   }
 
-    const refinedPrompt = await this.llm.prompt(
-      preprocessInstructions(checker.prompt),
-    );
-    return await this.db.checker.update({
-      where: {
-        id: checker.id,
-      },
-      data: {
-        refinedPrompt,
-        promptHashThatDerivedRefinedPrompt: promptHash,
-      },
-    });
-  };
+  //   const refinedPrompt = await this.llm.prompt(
+  //     preprocessInstructions(checker.prompt),
+  //   );
+  //   return await this.db.checker.update({
+  //     where: {
+  //       id: checker.id,
+  //     },
+  //     data: {
+  //       refinedPrompt,
+  //       promptHashThatDerivedRefinedPrompt: promptHash,
+  //     },
+  //   });
+  // };
 
   checkDoc = async (doc: string, checker: Awaited<CheckerType>) => {
     // TODO: do this elsewhere? it's hard though. I think it's fine. I'm just worried that 20 ppl will spam, and we're going to refine the prompt 20 times
     // this will be a problem to solve later
-    const newChecker = await this.updateRefinedPrompt(checker);
+    // const newChecker = await this.updateRefinedPrompt(checker);
 
     // const suggestions = await checkDoc1dot14(this.llm3, newChecker.prompt, doc);
-    const suggestions = await checkDoc4Dot2(this.llm3, newChecker.prompt, doc);
+    const suggestions = await checkDoc4Dot2(this.llm3, checker.prompt, doc);
     console.log("suggestions", suggestions);
     return {
       suggestions: suggestions,
