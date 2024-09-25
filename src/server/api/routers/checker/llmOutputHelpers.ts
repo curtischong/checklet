@@ -2,8 +2,8 @@ import {
   type Suggestion,
   type Tip,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch3";
 import { createShortId } from "@/utils/strings";
+import { matchQueryInDocument } from "scripts/fuzzy-match/run4";
 
 export function extractTips(input: string): Tip[] {
   const tipReasonPairs: Tip[] = [];
@@ -124,13 +124,13 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     //   predIndexInDoc1,
     //   allowedDeviation,
     // );
-    const { matchedSubstring, actualIndex } = fuzzyMatchAroundIndex(
+    const { matchedSubstring, actualIndex } = matchQueryInDocument(
       doc1,
       oldText,
       predIndexInDoc1,
     );
     console.log("predIndexInDoc1", predIndexInDoc1, "actualIndex", actualIndex);
-    // console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
+    console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
 
     const realIndexInDoc1 = actualIndex;
 
