@@ -223,4 +223,46 @@ export const checkerRouter = createTRPCRouter({
         },
       });
     }),
+
+  clone: protectedProcedure.mutation(async ({ ctx }) => {
+    const user = await ctx.db.user.findUnique({
+      where: {
+        id: ctx.user.id,
+      },
+    });
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "user not found",
+      });
+    }
+    if (user.checkerIds.length >= MAX_CHECKERS) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: `you can only have ${MAX_CHECKERS} checkers! Contact Curtis if you want more`,
+      });
+    }
+
+    // checker creators can clone their own checkers
+
+    const newChecker = await ctx.db.checker.create({
+      data: {
+        createdById: ctx.user.id,
+      },
+    });
+
+    // finally push the new checker to the user's checkerIds array
+    await ctx.db.user.update({
+      where: {
+        id: ctx.user.id,
+      },
+      data: {
+        checkerIds: {
+          push: newChecker.id,
+        },
+      },
+    });
+
+    return newChecker;
+  }),
 });

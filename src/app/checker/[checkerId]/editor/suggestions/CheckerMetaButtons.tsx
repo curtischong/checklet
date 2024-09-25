@@ -6,6 +6,7 @@ interface Props {
   userId: string | undefined;
   checkerCreatorId: string;
 }
+
 export const CheckerMetaButtons = ({
   checkerId,
   userId,
@@ -15,7 +16,7 @@ export const CheckerMetaButtons = ({
   const isUserCreatorOfChecker = userId === checkerCreatorId;
   return (
     <>
-      {isUserCreatorOfChecker ? (
+      {isUserCreatorOfChecker && (
         <NormalButton
           className="mb-4 py-[4px]"
           onClick={() => {
@@ -24,17 +25,21 @@ export const CheckerMetaButtons = ({
         >
           Edit this Checker
         </NormalButton>
-      ) : (
-        <NormalButton
-          className="mb-4 py-[4px]"
-          onClick={() => {
-            router.push(`/checker/${checkerId}/edit`);
-          }}
-        >
-          Don't agree with this Checker's suggestions? Modify it by cloning it
-          here!
-        </NormalButton>
       )}
+      <NormalButton
+        className="mb-4 py-[4px]"
+        onClick={() => {
+          if (!userId) {
+            // TODO: redirect to signin if they are not logged in
+            router.push(`/signin`);
+          } else {
+            router.push(`/checker/${checkerId}/edit`);
+          }
+        }}
+      >
+        Don't agree with this Checker's suggestions? Modify it by cloning it
+        here!
+      </NormalButton>
     </>
   );
 };
