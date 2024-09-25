@@ -1,4 +1,7 @@
-import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch3";
+// import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch3";
+// import { fuzzyMatchAroundIndexWithRegex } from "@/server/api/routers/checker/fuzzyMatch3dot5";
+import { matchQueryInDocument } from "./run4";
+// import { fuzzyMatchAroundIndex } from "./run3";
 
 const assertEqual = (a: any, b: any) => {
   if (a !== b) {
@@ -14,16 +17,16 @@ const assertEqual = (a: any, b: any) => {
   );
   const doc1 = "Backend Languages: C++, C, Golang, Python, Node.js, TypeScript";
   const _doc2 =
-    "Backend Languages: C++, Golang, <tip|remove languages|we should rm these languages><old>Python,</old><new></new></tip>Node.js, TypeScript";
+    "Backend Languages: C++, Golang, <tip|remove languages|we should rm these languages><old>Python, Node.js,</old><new></new></tip> TypeScript";
 
   const expectedIndex = 32;
-  const { matchedSubstring, actualIndex } = fuzzyMatchAroundIndex(
+  const { matchedSubstring, actualIndex } = matchQueryInDocument(
     doc1,
-    ", Python, Node.js",
+    "Python, Node.js,",
     expectedIndex,
   );
 
-  assertEqual(matchedSubstring, "Python,");
+  assertEqual(matchedSubstring, "Python, Node.js,");
   assertEqual(actualIndex, 35);
 }
 
@@ -34,7 +37,7 @@ const assertEqual = (a: any, b: any) => {
     "Backend Languages: C++, C, Golang<tip|remove languages|we should rm these languages><old>, Python, Node.js</old><new></new></tip>, TypeScript";
 
   const expectedIndex = 33;
-  const { matchedSubstring, actualIndex } = fuzzyMatchAroundIndex(
+  const { matchedSubstring, actualIndex } = matchQueryInDocument(
     doc1,
     ", Python, Node.js",
     expectedIndex,
@@ -51,7 +54,7 @@ const assertEqual = (a: any, b: any) => {
     "Software Engineering Intern at Kik Interactive (Python, Docker, SQL) May - Aug <tip|Consistent Abbreviation|It improves consistency in presentation><old>. 2019</old><new> 2019</new></tip>";
 
   const expectedIndex = 79;
-  const { matchedSubstring, actualIndex } = fuzzyMatchAroundIndex(
+  const { matchedSubstring, actualIndex } = matchQueryInDocument(
     doc1,
     ". 2019",
     expectedIndex,
@@ -70,13 +73,13 @@ const assertEqual = (a: any, b: any) => {
     "graduation date: 2019 <tip|fix expected|we shold fix expected><old> (expected)</old><new>(exp.)</new></tip> ";
 
   const expectedIndex = 22;
-  const { matchedSubstring, actualIndex } = fuzzyMatchAroundIndex(
+  const { matchedSubstring, actualIndex } = matchQueryInDocument(
     doc1,
     " (expected)",
     expectedIndex,
   );
 
-  assertEqual(matchedSubstring, "(expected)");
+  assertEqual(matchedSubstring, " (expected)");
   assertEqual(actualIndex, 22);
 }
 
