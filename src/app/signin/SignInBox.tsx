@@ -120,18 +120,18 @@ export default function SignInBox() {
               onClick={handleSubmit}
               loading={isLoading}
               type="submit"
-              className="focus:ring-primary-300 dark:focus:ring-primary-800 h-10 w-full rounded-lg px-5 py-2.5 text-center text-sm text-white focus:outline-none"
+              className="focus:ring-primary-300 h-10 w-full rounded-lg px-5 py-2.5 text-center text-sm text-white focus:outline-none"
             >
               Sign In
             </LoadingButton>
             <div className="flex flex-col items-center space-y-1">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-500">
                 Don&apos;t have an account?{" "}
                 <Link href="/register" className="text-primary hover:underline">
                   Register here
                 </Link>
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-500">
                 Forgot your password?{" "}
                 <Link
                   href="/forgot-password"
