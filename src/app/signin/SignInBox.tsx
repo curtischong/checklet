@@ -120,7 +120,7 @@ export default function SignInBox() {
               onClick={handleSubmit}
               loading={isLoading}
               type="submit"
-              className="focus:ring-primary-300 h-10 w-full rounded-lg px-5 py-2.5 text-center text-sm text-white focus:outline-none"
+              className="focus:ring-confirm-300 h-10 w-full rounded-lg px-5 py-2.5 text-center text-sm text-white focus:outline-none"
             >
               Sign In
             </LoadingButton>

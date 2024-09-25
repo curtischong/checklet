@@ -81,7 +81,7 @@ export const ForgotPasswordBox = () => {
               onClick={handleSubmit}
               loading={isLoading}
               type="submit"
-              className="focus:ring-primary-300 h-10 w-full rounded-lg bg-primary px-5 py-2.5 text-center text-sm text-white hover:bg-primary2 focus:outline-none"
+              className="focus:ring-primary-300 bg-confirm hover:bg-confirm2 h-10 w-full rounded-lg px-5 py-2.5 text-center text-sm text-white focus:outline-none"
             >
               Send Reset password email
             </LoadingButton>

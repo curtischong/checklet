@@ -19,6 +19,10 @@ export default {
       colors: {
         primary: "#ff7066",
         primary2: "#f05146",
+        // primary: "#34A43E",
+        // primary2: "#f05146",
+        confirm: "#4DBE57",
+        confirm2: "#34A43E",
       },
       keyframes: {
         open: {
