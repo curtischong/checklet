@@ -2,7 +2,7 @@ import {
   type Suggestion,
   type Tip,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch3";
+import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch6";
 import { createShortId } from "@/utils/strings";
 
 export function extractTips(input: string): Tip[] {
@@ -130,7 +130,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
       predIndexInDoc1,
     );
     console.log("predIndexInDoc1", predIndexInDoc1, "actualIndex", actualIndex);
-    // console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
+    console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
 
     const realIndexInDoc1 = actualIndex;
 
