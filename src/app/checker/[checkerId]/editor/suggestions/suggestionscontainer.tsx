@@ -4,9 +4,10 @@ import {
   YayChecklet,
 } from "@/app/_components/checklets/checklets";
 import { SortIcon } from "@/app/_components/icons/SortIcon";
-import { LoadingButton, NormalButton } from "@/app/_components/ui/Button";
+import { LoadingButton } from "@/app/_components/ui/Button";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
+import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import { SuggestionCard } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
 import { useClientCtx } from "@/app/ClientCtx";
 import { apiClient, handleErr } from "@/trpc/react";
@@ -257,15 +258,12 @@ export const SuggestionsContainer: React.FC<Props> = ({
     <div className="mt-14 flex w-[400px] flex-col">
       <div>
         <div className="flex flex-col space-y-2">
-          {user?.id === storefront.creatorId && !pathName.endsWith("/edit") && (
-            <NormalButton
-              className="mb-4 py-[4px]"
-              onClick={() => {
-                router.push(`/checker/${checkerId as string}/edit`);
-              }}
-            >
-              Edit this Checker
-            </NormalButton>
+          {!pathName.endsWith("/edit") && (
+            <CheckerMetaButtons
+              checkerId={storefront.checkerId}
+              userId={user?.id}
+              checkerCreatorId={storefront.creatorId}
+            />
           )}
         </div>
       </div>
