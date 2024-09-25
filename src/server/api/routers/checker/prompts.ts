@@ -242,7 +242,7 @@ ${doc}`;
 };
 
 export const addTipTags4 = (doc1: string, doc2: string) => {
-  return `Below are two documents. The I want you to merge the edits of document 2 into document 1. The edits to port over are prepended to the start of document 2. Ignore whitespace and formatting edits.
+  return `Below are two documents. I want you to merge the edits of document 2 into document 1. The edits to port over are prepended to the start of document 2. Ignore whitespace and formatting edits.
   
 For each edit you merge, surround the edit with <tip|name of tip|reason for tip><old>old text before edit</old><new>new text after edit</new></tip>.
 
@@ -272,9 +272,6 @@ Hello Sir
 You should return:
 <tip|Be More Formal|It is better to be more formal when writing to a CEO><old>Howdy</old><new>Hello</new></tip> Sir
 
-You should return:
-I <tip|remove adverbs|it improves conciseness><old>really</old><new></new></tip> love rainy Sundays.
-
 <End of Example 2/>
 
 <Document 1>
@@ -284,4 +281,42 @@ ${doc1}
 <Document 2>
 ${doc2}
 </Document 2>`;
+};
+
+export const addTipTags4Dot1 = (doc1: string) => {
+  return `I want you to merge the edits of your response with the original document.
+  
+For each edit you merge, surround the edit with <tip|name of tip|reason for tip><old>old text before edit</old><new>new text after edit</new></tip>.
+
+I just want the original document but with the edits ported over from your response.
+
+<Example 1>
+
+Original Document:
+I really love rainy Sundays.
+
+Document with edits:
+I love rainy Sundays.
+
+You should return:
+I <tip|Remove Adverbs|it improves conciseness><old>really </old><new></new></tip>love rainy Sundays.
+
+</End of Example 1>
+
+<Example 2>
+
+Original Document:
+Howdy Sir
+
+Document with edits:
+Hello Sir
+
+You should return:
+<tip|Be More Formal|It is better to be more formal when writing to a CEO><old>Howdy</old><new>Hello</new></tip> Sir
+
+<End of Example 2/>
+
+For reference, here is the original document you made your edits on:
+${doc1}
+`;
 };
