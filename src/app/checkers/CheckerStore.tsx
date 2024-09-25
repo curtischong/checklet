@@ -28,18 +28,21 @@ interface StorefrontProps {
 
 export const StoreFront = ({ checker, isDemo }: StorefrontProps) => {
   return (
-    <Link
+    <div
       className={classNames(
-        "shadow-around rounded-md bg-white px-4 py-4 text-left",
+        "rounded-md bg-white px-4 py-4 text-left shadow-around",
         {
           "max-w-[475px] cursor-pointer": !isDemo,
           "max-w-[350px]": isDemo,
         },
       )}
-      href={isDemo ? "" : `/checker/${checker.id}/edit`}
     >
-      <div className="mb-1 font-mackinac text-xl font-bold">{checker.name}</div>
-      <div>{checker.desc}</div>
-    </Link>
+      <Link href={isDemo ? "" : `/checker/${checker.id}`}>
+        <div className="mb-1 font-mackinac text-xl font-bold">
+          {checker.name === "" ? "Untitled" : checker.name}
+        </div>
+        <div>{checker.desc === "" ? "No description" : checker.desc}</div>
+      </Link>
+    </div>
   );
 };
