@@ -42,3 +42,6 @@ extract-tips:
 
 fix-unintentional-edits:
 	npx tsx ./scripts/fix-unintentional-edits/run1.ts
+
+test-fuzzy-match:
+	npx tsx ./scripts/fuzzy-match/fuzzy-match-test.ts

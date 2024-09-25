@@ -311,23 +311,3 @@ function longestCommonSubsequence(
 
   return lcs;
 }
-
-// Example usage
-const doc =
-  "Software Engineering Intern at Kik Interactive (Python, Docker, SQL) May - Aug. 2019 - Rebuilt the A/B testing system in Python to simplify demographic segmentation and result visualization for managers.";
-const query = ". 2019";
-const expectedIndex = doc.indexOf("2019"); // Let's assume we expect it around here
-
-const result = fuzzyMatchAroundIndex(doc, query, expectedIndex);
-
-console.log("Matched Substring:", result.matchedSubstring);
-console.log("Actual Index:", result.actualIndex);
-
-// Output the substring from the original document using actualIndex
-console.log(
-  "Substring from doc:",
-  doc.substring(
-    result.actualIndex,
-    result.actualIndex + result.matchedSubstring.length,
-  ),
-);
