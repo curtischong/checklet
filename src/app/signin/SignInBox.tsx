@@ -63,7 +63,7 @@ export default function SignInBox() {
 
   return (
     <div className="flex flex-col items-center justify-center font-nunito">
-      <div className="w-full rounded-lg bg-white shadow sm:max-w-md md:mt-0 xl:p-0 dark:border dark:border-gray-700 dark:bg-gray-800">
+      <div className="w-full rounded-lg bg-white shadow sm:max-w-md md:mt-0 xl:p-0">
         <GoogleSignInButton />
         <ThinLine className="mt-8" color={"gray-800"} />
         <div className="space-y-4 p-8 pt-6 md:space-y-6">
@@ -75,7 +75,7 @@ export default function SignInBox() {
             <div>
               <label
                 htmlFor="email"
-                className="mb-2 block text-sm text-gray-900 dark:text-white"
+                className="mb-2 block text-sm text-gray-900"
               >
                 Email
               </label>
@@ -85,7 +85,7 @@ export default function SignInBox() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 id="email"
-                className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 sm:text-sm"
                 placeholder="your email"
                 required
               />
@@ -93,7 +93,7 @@ export default function SignInBox() {
             <div>
               <label
                 htmlFor="password"
-                className="mb-2 block text-sm text-gray-900 dark:text-white"
+                className="mb-2 block text-sm text-gray-900"
               >
                 Password
               </label>
@@ -104,7 +104,7 @@ export default function SignInBox() {
                 onChange={(e) => setPassword(e.target.value)}
                 id="password"
                 placeholder="••••••••"
-                className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 sm:text-sm"
                 required
               />
             </div>
