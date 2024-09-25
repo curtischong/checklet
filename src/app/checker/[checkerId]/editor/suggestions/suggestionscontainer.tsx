@@ -257,7 +257,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   return (
     <div className="mt-14 flex w-[400px] flex-col">
       <div>
-        <div className="flex flex-col space-y-2">
+        <div className="mb-4 flex flex-col space-y-1">
           {!pathName.endsWith("/edit") && (
             <CheckerMetaButtons
               checkerId={storefront.checkerId}
