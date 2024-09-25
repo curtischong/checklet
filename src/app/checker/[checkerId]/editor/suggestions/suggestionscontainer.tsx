@@ -261,7 +261,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
             <NormalButton
               className="mb-4 py-[4px]"
               onClick={() => {
-                router.push(`/create/checker/${checkerId as string}`);
+                router.push(`/checker/${checkerId as string}/edit`);
               }}
             >
               Edit this Checker
