@@ -18,12 +18,14 @@ interface Props {
   editorState: string;
   setEditorState: SetState<string>;
   isFocusedOnStart: boolean;
+  isSavingToLocalStorage: boolean;
 }
 export const Editor = ({
   checkerStorefront,
   editorState,
   setEditorState,
   isFocusedOnStart,
+  isSavingToLocalStorage,
 }: Props): JSX.Element => {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
@@ -37,6 +39,18 @@ export const Editor = ({
       editorRef?.current?.focus();
     }
   }, [isFocusedOnStart]);
+
+  useEffect(() => {
+    // only load the localStorage data if we're saving to it
+    if (isSavingToLocalStorage) {
+      const prevDocument = localStorage.getItem("editorText");
+      if (prevDocument) {
+        setEditorState(prevDocument);
+      }
+    }
+    // not sure why updateEditorState keeps changing. but it does. But we only want this useEffect to run once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSavingToLocalStorage]);
 
   const updateEditorState = useCallback(
     (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
@@ -159,6 +173,7 @@ export const Editor = ({
               }}
               isLoading={isLoading}
               editorRef={editorRef}
+              isSavingToLocalStorage={isSavingToLocalStorage}
             />
           </div>
         </div>

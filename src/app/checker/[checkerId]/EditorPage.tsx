@@ -1,6 +1,6 @@
 import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
 import { type GetCheckerByIdType } from "@/server/api/routers/checker/checker";
-import React, { useEffect } from "react";
+import React from "react";
 
 interface Props {
   checker: GetCheckerByIdType;
@@ -8,16 +8,6 @@ interface Props {
 
 export const EditorPage = ({ checker }: Props) => {
   const [editorState, setEditorState] = React.useState("");
-
-  useEffect(() => {
-    const prevDocument = localStorage.getItem("editorText");
-    if (prevDocument) {
-      setEditorState(prevDocument);
-    }
-    // not sure why updateEditorState keeps changing. but it does. But we only want this useEffect to run once
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
     <Editor
       checkerStorefront={{
@@ -27,6 +17,7 @@ export const EditorPage = ({ checker }: Props) => {
         creatorId: checker.createdById,
         placeholder: "place your document here",
       }}
+      isSavingToLocalStorage={true}
       isFocusedOnStart={true}
       editorState={editorState}
       setEditorState={setEditorState}
