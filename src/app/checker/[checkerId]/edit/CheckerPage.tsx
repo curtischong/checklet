@@ -181,6 +181,7 @@ export const CheckerPage = ({
           creatorId: userCtx.id,
           placeholder: "place your test document here",
         }}
+        isFocusedOnStart={false}
         editorState={editorState}
         setEditorState={setEditorState}
       />

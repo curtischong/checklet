@@ -9,7 +9,7 @@ import {
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type SetState } from "@/utils/types";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { type RichTextareaHandle } from "rich-textarea";
 import { TextboxContainer } from "./textboxcontainer";
 
@@ -17,11 +17,13 @@ interface Props {
   checkerStorefront: CheckerStorefront;
   editorState: string;
   setEditorState: SetState<string>;
+  isFocusedOnStart: boolean;
 }
 export const Editor = ({
   checkerStorefront,
   editorState,
   setEditorState,
+  isFocusedOnStart,
 }: Props): JSX.Element => {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
@@ -29,6 +31,12 @@ export const Editor = ({
     useState(true); // init as true so when ppl first enter the page, they see "ready to check?"
   const [isLoading, setIsLoading] = React.useState(false);
   const editorRef = useRef<RichTextareaHandle | null>(null);
+
+  useEffect(() => {
+    if (isFocusedOnStart) {
+      editorRef?.current?.focus();
+    }
+  }, [isFocusedOnStart]);
 
   const updateEditorState = useCallback(
     (oldText: string, newText: string, curSuggestions: Suggestion[]) => {

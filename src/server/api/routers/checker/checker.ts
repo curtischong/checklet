@@ -14,7 +14,7 @@ import { TRPCError } from "@trpc/server";
 
 const MAX_CHECKERS = 10;
 
-const getCheckerById = async (db: PrismaClient, id: string) => {
+export const getCheckerById = async (db: PrismaClient, id: string) => {
   const checker = await db.checker.findUnique({
     where: { id },
   });
@@ -26,7 +26,7 @@ const getCheckerById = async (db: PrismaClient, id: string) => {
   }
   return checker;
 };
-export type CheckerType = ReturnType<typeof getCheckerById>;
+export type GetCheckerByIdType = Awaited<ReturnType<typeof getCheckerById>>;
 
 export const checkerRouter = createTRPCRouter({
   getBlueprint: publicProcedure
