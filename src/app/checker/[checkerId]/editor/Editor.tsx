@@ -9,7 +9,7 @@ import {
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { type SetState } from "@/utils/types";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { type RichTextareaHandle } from "rich-textarea";
 import { TextboxContainer } from "./textboxcontainer";
 
@@ -17,11 +17,15 @@ interface Props {
   checkerStorefront: CheckerStorefront;
   editorState: string;
   setEditorState: SetState<string>;
+  isFocusedOnStart: boolean;
+  isSavingToLocalStorage: boolean;
 }
 export const Editor = ({
   checkerStorefront,
   editorState,
   setEditorState,
+  isFocusedOnStart,
+  isSavingToLocalStorage,
 }: Props): JSX.Element => {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
@@ -29,6 +33,24 @@ export const Editor = ({
     useState(true); // init as true so when ppl first enter the page, they see "ready to check?"
   const [isLoading, setIsLoading] = React.useState(false);
   const editorRef = useRef<RichTextareaHandle | null>(null);
+
+  useEffect(() => {
+    if (isFocusedOnStart) {
+      editorRef?.current?.focus();
+    }
+  }, [isFocusedOnStart]);
+
+  useEffect(() => {
+    // only load the localStorage data if we're saving to it
+    if (isSavingToLocalStorage) {
+      const prevDocument = localStorage.getItem("editorText");
+      if (prevDocument) {
+        setEditorState(prevDocument);
+      }
+    }
+    // not sure why updateEditorState keeps changing. but it does. But we only want this useEffect to run once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSavingToLocalStorage]);
 
   const updateEditorState = useCallback(
     (oldText: string, newText: string, curSuggestions: Suggestion[]) => {
@@ -151,6 +173,7 @@ export const Editor = ({
               }}
               isLoading={isLoading}
               editorRef={editorRef}
+              isSavingToLocalStorage={isSavingToLocalStorage}
             />
           </div>
         </div>

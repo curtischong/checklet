@@ -14,7 +14,7 @@ import { TRPCError } from "@trpc/server";
 
 const MAX_CHECKERS = 10;
 
-const getCheckerById = async (db: PrismaClient, id: string) => {
+export const getCheckerById = async (db: PrismaClient, id: string) => {
   const checker = await db.checker.findUnique({
     where: { id },
   });
@@ -26,7 +26,12 @@ const getCheckerById = async (db: PrismaClient, id: string) => {
   }
   return checker;
 };
-export type CheckerType = ReturnType<typeof getCheckerById>;
+export type GetCheckerByIdType = Awaited<ReturnType<typeof getCheckerById>>;
+
+const isCheckerValid = (name: string, desc: string, prompt: string) => {
+  return name !== "" && desc !== "" && prompt !== "";
+  // input.sampleDoc !== ""; // TODO: should we care about the sample doc?
+};
 
 export const checkerRouter = createTRPCRouter({
   getBlueprint: publicProcedure
@@ -84,11 +89,7 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ prompt: z.string() }))
     .input(z.object({ sampleDoc: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const isValid =
-        input.name !== "" &&
-        input.desc !== "" &&
-        input.prompt !== "" &&
-        input.sampleDoc !== ""; // TODO: should we care about the sample doc?
+      const isValid = isCheckerValid(input.name, input.desc, input.prompt);
 
       const checker = await ctx.db.checker.findUnique({
         where: {
@@ -222,5 +223,70 @@ export const checkerRouter = createTRPCRouter({
           checkerIds: newUserCheckerIds,
         },
       });
+    }),
+
+  clone: protectedProcedure
+    .input(z.object({ checkerId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: ctx.user.id,
+        },
+      });
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "user not found",
+        });
+      }
+      if (user.checkerIds.length >= MAX_CHECKERS) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: `you can only have ${MAX_CHECKERS} checkers! Contact Curtis if you want more`,
+        });
+      }
+
+      const baseChecker = await ctx.db.checker.findUnique({
+        where: {
+          id: input.checkerId,
+        },
+      });
+      if (!baseChecker) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `the checker you're trying to clone from not found. id=${input.checkerId}`,
+        });
+      }
+
+      // checker creators can clone their own checkers
+      const newChecker = await ctx.db.checker.create({
+        data: {
+          createdById: ctx.user.id,
+          name: baseChecker.name + " (clone)",
+          desc: baseChecker.desc,
+          prompt: baseChecker.prompt,
+          sampleDoc: baseChecker.sampleDoc,
+          isValid: isCheckerValid(
+            baseChecker.name,
+            baseChecker.desc,
+            baseChecker.prompt,
+          ),
+          clonedFromId: baseChecker.id,
+        },
+      });
+
+      // finally push the new checker to the user's checkerIds array
+      await ctx.db.user.update({
+        where: {
+          id: ctx.user.id,
+        },
+        data: {
+          checkerIds: {
+            push: newChecker.id,
+          },
+        },
+      });
+
+      return newChecker;
     }),
 });

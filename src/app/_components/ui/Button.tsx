@@ -102,7 +102,7 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
         "rounded border border-gray-400 px-4 py-2 text-white transition duration-300",
         className,
         {
-          "bg-primary hover:bg-primary2 hover:text-white": !isDisabled,
+          "bg-confirm hover:bg-confirm2 hover:text-white": !isDisabled,
           "cursor-not-allowed bg-gray-300 focus:bg-gray-400": isDisabled,
         },
       )}

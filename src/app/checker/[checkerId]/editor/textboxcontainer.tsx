@@ -25,6 +25,7 @@ export type TextboxContainerProps = {
   isLoading: boolean;
   editorRef: Ref<RichTextareaHandle | null>;
   storefront: CheckerStorefront;
+  isSavingToLocalStorage: boolean;
 };
 
 export const TextboxContainer = ({
@@ -36,6 +37,7 @@ export const TextboxContainer = ({
   isLoading,
   editorRef,
   storefront,
+  isSavingToLocalStorage,
 }: TextboxContainerProps): JSX.Element => {
   // these two are needed so we can scroll to the underline span when we click on a card
   // we need two maps since we only know:
@@ -64,8 +66,10 @@ export const TextboxContainer = ({
   );
 
   useEffect(() => {
-    debouncedSave(editorState);
-  }, [editorState, debouncedSave]);
+    if (isSavingToLocalStorage) {
+      debouncedSave(editorState);
+    }
+  }, [isSavingToLocalStorage, editorState, debouncedSave]);
 
   useEffect(() => {
     if (activeSuggestion) {
