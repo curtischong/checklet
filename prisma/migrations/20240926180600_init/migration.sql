@@ -1,11 +1,13 @@
 -- CreateTable
 CREATE TABLE "Checker" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "desc" TEXT NOT NULL,
-    "prompt" TEXT NOT NULL,
-    "isPublic" BOOLEAN NOT NULL DEFAULT true,
+    "id" UUID NOT NULL,
+    "name" TEXT NOT NULL DEFAULT '',
+    "desc" TEXT NOT NULL DEFAULT '',
+    "prompt" TEXT NOT NULL DEFAULT '',
+    "sampleDoc" TEXT NOT NULL DEFAULT '',
+    "isPublic" BOOLEAN NOT NULL DEFAULT false,
     "isValid" BOOLEAN NOT NULL DEFAULT false,
+    "clonedFromId" UUID,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdById" TEXT NOT NULL,
@@ -15,7 +17,7 @@ CREATE TABLE "Checker" (
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" UUID NOT NULL,
+    "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "checkerIds" UUID[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
