@@ -4,6 +4,7 @@
 import { z } from "zod";
 
 import { type UserCtx } from "@/firebase/edge_env";
+import { mixpanel } from "@/mixpanel";
 import { CheckerWorker } from "@/server/api/routers/checker/checkDoc";
 import {
   createTRPCRouter,
@@ -12,7 +13,6 @@ import {
 } from "@/server/api/trpc";
 import { type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import mixpanel from "mixpanel";
 
 const MAX_CHECKERS = 10;
 
