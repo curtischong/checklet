@@ -132,8 +132,15 @@ export class Llm3 {
       tools: tools,
     });
 
-    const res =
-      completion.choices[0]?.message.tool_calls![0]!.function.arguments!;
+    const toolCalls = completion.choices[0]?.message.tool_calls;
+    if (!toolCalls) {
+      throw new Error("no tool calls made");
+    }
+    const firstToolCall = toolCalls[0];
+    if (!firstToolCall) {
+      throw new Error("no tool call made");
+    }
+    const res = firstToolCall.function.arguments;
     this.cacheSet(newMessages, res);
     return res;
   }

@@ -82,7 +82,7 @@ export function fuzzyMatchAroundIndex(
  */
 function tokenize(text: string): string[] {
   // Tokenize the text into words (including periods within words) and punctuation
-  return text.match(/\b\w[\w.-]*\w|\w|[^\w\s]/g) || [];
+  return text.match(/\b\w[\w.-]*\w|\w|[^\w\s]/g) ?? [];
 }
 
 /**

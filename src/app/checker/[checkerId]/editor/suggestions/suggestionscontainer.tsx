@@ -9,11 +9,10 @@ import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import { SuggestionCard } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
-import { useClientCtx } from "@/app/ClientCtx";
 import { apiClient, handleErr } from "@/trpc/react";
 import { pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
@@ -69,15 +68,12 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
   const [sortType, setSortType] = useState(SortType.TextOrder);
 
-  const router = useRouter();
   const { checkerId } = useParams();
 
   useEffect(() => {
     const sorted = [...suggestions].sort(Sorters[sortType]);
     setSortedSuggestions(sorted);
   }, [suggestions, sortType]);
-
-  const { user } = useClientCtx();
 
   const onCollapseClick = useCallback(
     (s: Suggestion) => {
