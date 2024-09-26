@@ -16,7 +16,7 @@ export const CreateOwnChecker = ({ user }: Props) => {
         className="mx-auto mt-4 cursor-pointer border-b-2 border-blue-500 hover:text-blue-600"
         onClick={() => {
           if (!user) {
-            router.push("/signin");
+            router.push("/signin?redirect-reason=create-checker");
           } else {
             router.push(`/dashboard`);
           }

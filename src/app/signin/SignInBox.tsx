@@ -5,7 +5,7 @@ import { useClientCtx } from "@/app/ClientCtx";
 import { GoogleSignInButton } from "@/app/signin/GoogleSignInButton";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { FormEvent } from "react";
 import { useCallback, useState } from "react";
 
@@ -16,6 +16,8 @@ export default function SignInBox() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { firebaseAuth } = useClientCtx();
+
+  const searchParams = useSearchParams();
 
   const makeErrMsgReadable = useCallback((message: string) => {
     if (
@@ -61,9 +63,32 @@ export default function SignInBox() {
     [email, makeErrMsgReadable, password, router, firebaseAuth],
   );
 
+  const getRedirectReasonMsg = useCallback((reason: string | null) => {
+    if (reason === "clone-checker") {
+      return "You have to sign in to clone checkers so you can save your progress!";
+    }
+    if (reason === "create-checker") {
+      return "You have sign in to create checkers so you can save your progress!";
+    }
+    return "";
+  }, []);
+  const redirectReasonMsg = getRedirectReasonMsg(
+    searchParams.get("redirect-reason"),
+  );
+
   return (
     <div className="flex flex-col items-center justify-center font-nunito">
+      {!redirectReasonMsg && (
+        <div className="mb-4 text-center">
+          Want to create a checker? Sign in/sign up below!
+        </div>
+      )}
       <div className="w-full rounded-lg bg-white shadow sm:max-w-md md:mt-0 xl:p-0">
+        {redirectReasonMsg && (
+          <div className="m-4 rounded-md border-4 border-solid border-yellow-200 bg-yellow-100 p-2">
+            <p>{redirectReasonMsg}</p>
+          </div>
+        )}
         <GoogleSignInButton />
         <ThinLine className="mt-8" color={"gray-800"} />
         <div className="space-y-4 p-8 pt-6 md:space-y-6">
