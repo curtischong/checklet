@@ -85,7 +85,7 @@ export const NormalTextArea: React.FC<ITextArea> = ({
   ...rest
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { onResize, ...otherProps } = rest;
+  const { ...otherProps } = rest;
   return (
     <TextArea
       className={classNames(

@@ -1,6 +1,6 @@
 // import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch3";
 // import { fuzzyMatchAroundIndexWithRegex } from "@/server/api/routers/checker/fuzzyMatch3dot5";
-import { matchQueryInDocument } from "./run4";
+import { matchQueryInDocument } from "@/server/api/routers/checker/matchQueryInDocument";
 // import { fuzzyMatchAroundIndex } from "./run3";
 
 const assertEqual = (a: any, b: any) => {
@@ -80,7 +80,7 @@ const assertEqual = (a: any, b: any) => {
   );
 
   assertEqual(matchedSubstring, " (expected)");
-  assertEqual(actualIndex, 22);
+  assertEqual(actualIndex, 21);
 }
 
 // {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 // https://chatgpt.com/share/66f1c206-d7cc-800e-9cb8-135b3f6171c0
 // hooks/useUnsavedChangesWarning.ts
 import { useRouter } from "next/navigation";
@@ -22,19 +23,16 @@ const useUnsavedChangesWarning = ({
     [hasUnsavedChanges],
   );
 
-  const handleRouteChangeStart = useCallback(
-    (url: string) => {
-      if (hasUnsavedChanges) {
-        const confirmLeave = window.confirm(
-          "You have unsaved changes. Wait a few seconds for it to autosave. If this problem persists, copy your changes elsewhere and Curtis will this problem soon!",
-        );
-        if (!confirmLeave) {
-          router.refresh(); // Cancel the navigation by refreshing the current route
-        }
+  const handleRouteChangeStart = useCallback(() => {
+    if (hasUnsavedChanges) {
+      const confirmLeave = window.confirm(
+        "You have unsaved changes. Wait a few seconds for it to autosave. If this problem persists, copy your changes elsewhere and Curtis will this problem soon!",
+      );
+      if (!confirmLeave) {
+        router.refresh(); // Cancel the navigation by refreshing the current route
       }
-    },
-    [hasUnsavedChanges, router],
-  );
+    }
+  }, [hasUnsavedChanges, router]);
 
   useEffect(() => {
     // Handle browser/tab close or reload
