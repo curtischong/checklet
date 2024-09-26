@@ -180,7 +180,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
             content={
               <>
                 <div className={"w-3/4"}>
-                  Click &apos;Check Document&apos; to check for mistakes
+                  {`Click 'Check Document' to check for mistakes`}
                   &#128640;
                 </div>
               </>

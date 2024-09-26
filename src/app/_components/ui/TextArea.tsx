@@ -94,13 +94,8 @@ export const NormalTextArea: React.FC<ITextArea> = ({
       )}
       {...otherProps}
       ref={textareaRef}
-      autoSize={
-        minRows
-          ? {
-              minRows,
-            }
-          : true
-      }
+      autoSize={true}
+      minRows={minRows}
     >
       {children}
     </TextArea>

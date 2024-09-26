@@ -12,19 +12,19 @@ const TermsOfService: React.FC = () => {
               Terms of Service
             </h1>
             <ul className="mt-8 list-disc space-y-8 pl-4">
-              <li>Please don&apos;t spam the servers.</li>
+              <li>{`Please don't spam the servers.`}</li>
               <li>
-                Please don&apos;t make checkers/checks that are designed to
-                waste API calls. Be friendly!
+                {`Please don't make checkers that are designed to waste API
+                calls. Be friendly!`}
               </li>
               <li>
                 Please keep your checkers PG-13. They are public afterall!
               </li>
-              <li>Please don&apos;t harass other users.</li>
+              <li>{`Please don't harass other users.`}</li>
             </ul>
             <p className="mt-8">
-              If you break these terms of service I will ban you. Just please
-              don&apos;t be a jerk
+              {`If you break these terms of service I will ban you. Just please
+              don't be a jerk`}
             </p>
           </div>
         </div>

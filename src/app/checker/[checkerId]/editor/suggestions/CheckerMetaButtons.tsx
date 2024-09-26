@@ -43,8 +43,8 @@ export const CheckerMetaButtons = ({ checkerId, checkerCreatorId }: Props) => {
           }
         }}
       >
-        Don't agree with this Checker's suggestions? Modify it by cloning it
-        here!
+        {`Don't agree with this Checker's suggestions? Modify it by cloning it
+        here!`}
       </NormalButton>
     </>
   );

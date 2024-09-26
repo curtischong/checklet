@@ -151,7 +151,7 @@ export default function SignInBox() {
             </LoadingButton>
             <div className="flex flex-col items-center space-y-1">
               <p className="text-sm text-gray-500">
-                Don&apos;t have an account?{" "}
+                {`Don't have an account?`}{" "}
                 <Link href="/register" className="text-primary hover:underline">
                   Register here
                 </Link>

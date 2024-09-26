@@ -13,32 +13,24 @@ const PrivacyPolicy: React.FC = () => {
             </h1>
             <ul className="mt-8 list-disc space-y-8 pl-4">
               <li>
-                We won&apos;t collect your private data and sell it to anybody
+                {`We won't collect your private data and sell it to anybody`}
               </li>
               <li>
                 We will not store your documents. When you check your document,
                 we only send it to our servers before sending it to OpenAI then
-                back to you. If you want complete privacy, you can pass in your
-                own API key (so the API calls to OpenAI are made from your
-                computer).
+                back to you.
               </li>
               <li>
-                We will be able to see your checkers/checks. (So we can moderate
-                them).
+                We will be able to see your checkers. (So we can moderate them).
               </li>
-              <li>
-                If you pass in your private API key, the key is stored in your
-                browser&apos;s local storage. So don&apos;t worry about that!
-              </li>
-              <li>
-                If you make a checker, other people can see the checks / prompts
-                (because they need the prompts to run the check locally on their
-                computer using their API key)
-              </li>
+              {/* <li>
+                If you make a checker, other people can see your checker's
+                prompts
+              </li> */}
               {/* This isn't a privacy policy? Not sure where to put this*/}
               <li>
-                You are the owner of the checkers/checks you made. You typed
-                them afterall!
+                You are the owner of the checkers you made. You typed them
+                afterall!
               </li>
             </ul>
           </div>
