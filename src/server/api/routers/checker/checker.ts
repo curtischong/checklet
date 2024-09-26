@@ -4,6 +4,7 @@
 import { z } from "zod";
 
 import { type UserCtx } from "@/firebase/edge_env";
+import { mixpanel } from "@/mixpanel";
 import { CheckerWorker } from "@/server/api/routers/checker/checkDoc";
 import {
   createTRPCRouter,
@@ -110,6 +111,12 @@ export const checkerRouter = createTRPCRouter({
           push: newChecker.id,
         },
       },
+    });
+
+    mixpanel.track("Create Checker", {
+      newCheckerId: newChecker.id,
+      email: user.email,
+      userId: user.id,
     });
 
     return newChecker;
@@ -318,6 +325,13 @@ export const checkerRouter = createTRPCRouter({
             push: newChecker.id,
           },
         },
+      });
+
+      mixpanel.track("Clone Checker", {
+        newCheckerId: newChecker.id,
+        clonedFromId: baseChecker.id,
+        email: user.email,
+        userId: user.id,
       });
 
       return newChecker;
