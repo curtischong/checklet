@@ -32,7 +32,7 @@ export const CheckerMetaButtons = ({
         onClick={() => {
           if (!userId) {
             // TODO: redirect to signin if they are not logged in
-            router.push(`/signin`);
+            router.push(`/signin?redirect-reason=clone-checker`);
           } else {
             handleErr(
               apiClient.checker.clone.mutate({

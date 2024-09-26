@@ -7,9 +7,6 @@ export default function Page() {
 
   return (
     <SignInPageBackground>
-      <div className="mb-4 text-center">
-        Want to create a checker? Sign in/sign up below!
-      </div>
       <SignInBox />
     </SignInPageBackground>
   );
