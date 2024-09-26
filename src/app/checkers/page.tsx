@@ -11,7 +11,6 @@ import { db } from "@/server/db";
 import { type Prisma } from "@prisma/client";
 
 const Page = async () => {
-  trackPageView();
   const targetClauses: Prisma.CheckerWhereInput[] = [
     {
       isPublic: {
@@ -23,6 +22,7 @@ const Page = async () => {
     },
   ];
   const user = parseAuthHeader();
+  trackPageView(user);
   if (user) {
     const yourCheckerClause: Prisma.CheckerWhereInput = {
       createdById: {

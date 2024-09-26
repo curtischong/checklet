@@ -110,7 +110,6 @@ export async function middleware(request: NextRequest) {
     cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     serviceAccount: serverConfig.serviceAccount,
     handleValidToken: async ({ token, decodedToken }, headers) => {
-      const requestPath = request.nextUrl.pathname;
       // if (PUBLIC_PATHS.includes(requestPath)) {
       //   return redirectToHome(request); // simplifies to NextResponse.redirect(new URL(“/“))
       // }
@@ -144,7 +143,7 @@ export async function middleware(request: NextRequest) {
       // by serializing the auth header, we can pass the user's info to server-side-components
       // I got the idea after reading the first comment: https://stackoverflow.com/questions/78312633/how-to-get-firebase-auth-id-token-in-server-component-in-nextjs-firebase
       serializeAuthHeader(headers, decodedIdTokenToUserCtx(decodedToken));
-      headers.set(requestPathHeaderName, requestPath); // needed for analytics (tells us which page the user is on)
+      headers.set(requestPathHeaderName, pathname); // needed for analytics (tells us which page the user is on)
       return NextResponse.next({
         request: {
           headers,
@@ -153,11 +152,15 @@ export async function middleware(request: NextRequest) {
     },
     handleInvalidToken: async (reason) => {
       console.info("Missing or malformed credentials", { reason });
-      return NextResponse.next();
+      const res = NextResponse.next();
+      res.headers.set(requestPathHeaderName, pathname);
+      return res;
     },
     handleError: async (error) => {
       console.error("Unhandled authentication error", { error });
-      return NextResponse.next();
+      const res = NextResponse.next();
+      res.headers.set(requestPathHeaderName, pathname);
+      return res;
     },
   });
 }
