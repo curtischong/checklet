@@ -9,11 +9,10 @@ import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import { SuggestionCard } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
-import { useClientCtx } from "@/app/ClientCtx";
 import { apiClient, handleErr } from "@/trpc/react";
 import { pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
@@ -69,15 +68,12 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
   const [sortType, setSortType] = useState(SortType.TextOrder);
 
-  const router = useRouter();
   const { checkerId } = useParams();
 
   useEffect(() => {
     const sorted = [...suggestions].sort(Sorters[sortType]);
     setSortedSuggestions(sorted);
   }, [suggestions, sortType]);
-
-  const { user } = useClientCtx();
 
   const onCollapseClick = useCallback(
     (s: Suggestion) => {
@@ -180,7 +176,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
             content={
               <>
                 <div className={"w-3/4"}>
-                  Click &apos;Check Document&apos; to check for mistakes
+                  {`Click 'Check Document' to check for mistakes`}
                   &#128640;
                 </div>
               </>
@@ -261,7 +257,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
           {!pathName.endsWith("/edit") && (
             <CheckerMetaButtons
               checkerId={storefront.checkerId}
-              userId={user?.id}
               checkerCreatorId={storefront.creatorId}
             />
           )}

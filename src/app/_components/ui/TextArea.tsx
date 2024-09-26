@@ -11,6 +11,7 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string;
   autoSize?: boolean;
   maxRows?: number; // Control max rows before showing a scrollbar
+  minRows?: number;
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -19,12 +20,13 @@ const TextArea: React.FC<TextAreaProps> = ({
   className = "",
   autoSize = false,
   maxRows = 300, // Default maxRows (slightly increased from previous)
-  rows = 4, // Increased default height
+  minRows = 4, // Increased default height
   ...rest
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const resizeTextArea = () => {
+  useEffect(() => {
+    // resize the textarea to fit its content
     if (textAreaRef.current && autoSize) {
       textAreaRef.current.style.height = "auto"; // Reset height to shrink if needed
       textAreaRef.current.style.overflow = "hidden"; // Ensure no scrollbar appears when resizing
@@ -41,10 +43,6 @@ const TextArea: React.FC<TextAreaProps> = ({
         textAreaRef.current.style.height = `${scrollHeight}px`;
       }
     }
-  };
-
-  useEffect(() => {
-    resizeTextArea(); // Adjust size on initial render and when value changes
   }, [value]);
 
   return (
@@ -63,9 +61,9 @@ const TextArea: React.FC<TextAreaProps> = ({
         if (onChange) {
           onChange(e);
         }
-        resizeTextArea(); // Adjust size dynamically
+        // resizeTextArea(); // Adjust size dynamically
       }}
-      rows={rows} // Default taller textarea
+      rows={minRows} // Default taller textarea
       {...rest}
     />
   );
@@ -74,6 +72,7 @@ const TextArea: React.FC<TextAreaProps> = ({
 export type ITextArea = React.DetailedHTMLProps<
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
     minRows?: number;
+    value: string;
   },
   HTMLTextAreaElement
 >;
@@ -84,7 +83,7 @@ export const NormalTextArea: React.FC<ITextArea> = ({
   minRows,
   ...rest
 }) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ...otherProps } = rest;
   return (
     <TextArea
@@ -96,14 +95,9 @@ export const NormalTextArea: React.FC<ITextArea> = ({
         },
       )}
       {...otherProps}
-      ref={textareaRef}
-      autoSize={
-        minRows
-          ? {
-              minRows,
-            }
-          : true
-      }
+      // ref={textareaRef}
+      autoSize={true}
+      minRows={minRows}
     >
       {children}
     </TextArea>

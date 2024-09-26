@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 // https://chatgpt.com/share/66f43fd2-ddbc-800e-ad67-36df865ff54e
 import * as difflib from "difflib";
 

@@ -95,7 +95,7 @@ export class Llm {
           ],
           functions: [
             {
-              function: (...args: any[]) => {
+              function: (..._args: any[]) => {
                 // this is an empty function call because we will manually call the function when we get the assistant response
               },
               name: callData.functionName,

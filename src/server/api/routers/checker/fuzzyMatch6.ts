@@ -82,7 +82,7 @@ export function fuzzyMatchAroundIndex(
  */
 function tokenize(text: string): string[] {
   // Tokenize the text into words (including periods within words) and punctuation
-  return text.match(/\b\w[\w.-]*\w|\w|[^\w\s]/g) || [];
+  return text.match(/\b\w[\w.-]*\w|\w|[^\w\s]/g) ?? [];
 }
 
 /**
@@ -271,6 +271,7 @@ function longestCommonSubsequence(
   const n = tokensB.length;
   const table: number[][] = Array(m + 1)
     .fill(0)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     .map(() => Array(n + 1).fill(0));
 
   // Build the LCS table

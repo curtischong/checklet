@@ -1,19 +1,17 @@
 "use client";
 import { NormalButton } from "@/app/_components/ui/Button";
+import { useClientCtx } from "@/app/ClientCtx";
 import { apiClient, handleErr } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 interface Props {
   checkerId: string;
-  userId: string | undefined;
   checkerCreatorId: string;
 }
 
-export const CheckerMetaButtons = ({
-  checkerId,
-  userId,
-  checkerCreatorId,
-}: Props) => {
+export const CheckerMetaButtons = ({ checkerId, checkerCreatorId }: Props) => {
   const router = useRouter();
+  const { user } = useClientCtx();
+  const userId = user?.id;
   const isUserCreatorOfChecker = userId === checkerCreatorId;
   return (
     <>
@@ -45,8 +43,8 @@ export const CheckerMetaButtons = ({
           }
         }}
       >
-        Don't agree with this Checker's suggestions? Modify it by cloning it
-        here!
+        {`Don't agree with this Checker's suggestions? Modify it by cloning it
+        here!`}
       </NormalButton>
     </>
   );

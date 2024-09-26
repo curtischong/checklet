@@ -41,7 +41,7 @@ const Page = async () => {
       <div className="mt-20 text-center font-mackinac text-3xl font-bold">
         What do you want to check?
       </div>
-      <CreateOwnChecker user={user} />
+      <CreateOwnChecker />
       <LoveChecklet
         className="absolute bottom-[15rem] right-[0%] h-[6rem] md:right-[1%]"
         height={200}
