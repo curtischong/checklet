@@ -61,6 +61,20 @@ export const checkerRouter = createTRPCRouter({
     return await getUserCheckers(ctx.db, ctx.user);
   }),
 
+  getUserChecker: protectedProcedure
+    .input(z.object({ checkerId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const checker = await getCheckerById(ctx.db, input.checkerId);
+      if (checker.createdById !== ctx.user.id) {
+        // this is important because if the checker is private, we don't want some random person to be able to see it
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "you are not the creator of this checker",
+        });
+      }
+      return checker;
+    }),
+
   create: protectedProcedure.mutation(async ({ ctx }) => {
     const user = await ctx.db.user.findUnique({
       where: {

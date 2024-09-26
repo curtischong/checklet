@@ -20,7 +20,6 @@ interface Props {
 
 // used to show you your checkers.
 export const Dashboard = ({ user }: Props) => {
-  // export const Dashboard = () => {
   const [currCheckers, setCurrCheckers] = useState<GetUserCheckersType>([]);
 
   useEffect(() => {

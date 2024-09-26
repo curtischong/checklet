@@ -1,5 +1,6 @@
 import { LabelWithSwitch } from "@/app/_components/ui/Switch";
 import { api } from "@/trpc/react";
+import { type SetState } from "@/utils/types";
 import React from "react";
 import { toast } from "react-toastify";
 
@@ -13,7 +14,27 @@ export const IsPublicSwitch = ({
   isInitiallyPublic,
 }: Props): JSX.Element => {
   const [isPublic, setIsPublic] = React.useState(isInitiallyPublic);
+  return (
+    <IsPublicSwitchWithoutState
+      checkerId={checkerId}
+      isPublic={isPublic}
+      setIsPublic={setIsPublic}
+    />
+  );
+};
 
+interface IsPublicSwitchWithoutStateProps {
+  checkerId: string;
+  isPublic: boolean;
+  setIsPublic: SetState<boolean>;
+}
+
+// use this when you need access to setIsPublic or isPublic above this component
+export const IsPublicSwitchWithoutState = ({
+  checkerId,
+  isPublic,
+  setIsPublic,
+}: IsPublicSwitchWithoutStateProps): JSX.Element => {
   const updateIsPublic = api.checker.updateIsPublic.useMutation({
     onMutate: () => {
       setIsPublic(!isPublic); // optimistically update the UI
