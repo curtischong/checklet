@@ -1,6 +1,8 @@
 import { Footer } from "@/app/_components/Footer";
+import { trackPageView } from "@/mixpanel";
 
 const TermsOfService: React.FC = () => {
+  trackPageView();
   return (
     <div className="flex h-screen flex-col">
       <div className="container mx-auto mt-20 grow" style={{ flexBasis: 0 }}>

@@ -15,8 +15,10 @@ import {
 // import { CheckType } from "@/app/_components/create-checker/CheckerTypes";
 import { CursorIcon } from "@/app/_components/icons/CursorIcon";
 import { LinkButton } from "@/app/_components/ui/Button";
+import { trackPageView } from "@/mixpanel";
 
 const HomePage: React.FC = () => {
+  trackPageView();
   return (
     <div>
       <div className="container mx-auto px-6 text-center">

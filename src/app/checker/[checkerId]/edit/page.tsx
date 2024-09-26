@@ -1,4 +1,5 @@
 import { CheckerPage } from "@/app/checker/[checkerId]/edit/CheckerPage";
+import { trackPageView } from "@/mixpanel";
 import { parseAuthHeader } from "@/networking_helpers";
 
 export default async function Page({
@@ -6,6 +7,7 @@ export default async function Page({
 }: {
   params: { checkerId: string };
 }) {
+  trackPageView();
   const user = parseAuthHeader();
   if (!user) {
     return <ErrorMsg message={"You must be logged in to edit this checker"} />;
