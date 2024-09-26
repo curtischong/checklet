@@ -324,7 +324,7 @@ export const checkDoc2 = async (
     cheapModel,
   );
   const newDoc = newChat.message.content!;
-  const tipsAndReasons = extractTips(refinedPrompt);
+  // const tipsAndReasons = extractTips(refinedPrompt);
 
   // getDocEdits(doc, newDoc);
 
@@ -380,7 +380,7 @@ export const checkDoc3 = async (
     tools,
   );
 
-  const tipsAndReasons = extractTips(refinedPrompt);
+  // const tipsAndReasons = extractTips(refinedPrompt);
   const edits = editDistanceOperationsWithClasses(doc, newDoc);
   console.log("newDoc", newDoc);
   console.log("edits", edits);

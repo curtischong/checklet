@@ -29,44 +29,44 @@ export function extractTips(input: string): Tip[] {
   return tipReasonPairs;
 }
 
-const getDoc1Substring = (doc1: string, index: number, oldText: string) => {
-  return doc1.substring(index, index + oldText.length);
-};
+// const getDoc1Substring = (doc1: string, index: number, oldText: string) => {
+//   return doc1.substring(index, index + oldText.length);
+// };
 
 // TODO: we need to wiggle a bit. offer a tollerance of += 1 for the window
 // this is because the model may put invalid chars inside the <tip> tags
-const offsetOfOldTextInDoc1 = (
-  doc1: string,
-  indexInDoc1: number,
-  oldText: string,
-) => {
-  const calculatedOldText = getDoc1Substring(doc1, indexInDoc1, oldText);
-  if (calculatedOldText === oldText) {
-    console.log("used indexInDoc1");
-    return 0;
-  }
-  const calculatedOldTextPlus1 = getDoc1Substring(
-    doc1,
-    indexInDoc1 + 1,
-    oldText,
-  );
-  if (calculatedOldTextPlus1 === oldText) {
-    console.log("used indexInDoc1 + 1");
-    return 1;
-  }
-  const calculatedOldTextSub1 = getDoc1Substring(
-    doc1,
-    indexInDoc1 - 1,
-    oldText,
-  );
-  if (calculatedOldTextSub1 === oldText) {
-    console.log("used indexInDoc1 - 1");
-    return -1;
-  }
-  throw new Error(
-    `Old text mismatch at index ${indexInDoc1}: expected "${oldText}", found "${calculatedOldText}"`,
-  );
-};
+// const offsetOfOldTextInDoc1 = (
+//   doc1: string,
+//   indexInDoc1: number,
+//   oldText: string,
+// ) => {
+//   const calculatedOldText = getDoc1Substring(doc1, indexInDoc1, oldText);
+//   if (calculatedOldText === oldText) {
+//     console.log("used indexInDoc1");
+//     return 0;
+//   }
+//   const calculatedOldTextPlus1 = getDoc1Substring(
+//     doc1,
+//     indexInDoc1 + 1,
+//     oldText,
+//   );
+//   if (calculatedOldTextPlus1 === oldText) {
+//     console.log("used indexInDoc1 + 1");
+//     return 1;
+//   }
+//   const calculatedOldTextSub1 = getDoc1Substring(
+//     doc1,
+//     indexInDoc1 - 1,
+//     oldText,
+//   );
+//   if (calculatedOldTextSub1 === oldText) {
+//     console.log("used indexInDoc1 - 1");
+//     return -1;
+//   }
+//   throw new Error(
+//     `Old text mismatch at index ${indexInDoc1}: expected "${oldText}", found "${calculatedOldText}"`,
+//   );
+// };
 
 // https://chatgpt.com/share/66f0c180-e6a0-800e-a55a-99862d193b2f
 export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
@@ -147,7 +147,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
       suggestionId: createShortId(),
     });
 
-    endIdxOfLastTipTag = match.index + fullMatch.length;
+    endIdxOfLastTipTag = match.index + (fullMatch as string).length;
     endOfLastActualIndex = actualIndex + matchedSubstring.length;
   }
 

@@ -7,12 +7,14 @@ interface SwitchProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
   disabled?: boolean;
+  className?: string;
 }
 
 const Switch: React.FC<SwitchProps> = ({
   checked,
   onChange,
   disabled = false,
+  className,
 }) => {
   const handleToggle = () => {
     if (!disabled) {
@@ -24,11 +26,16 @@ const Switch: React.FC<SwitchProps> = ({
     <button
       type="button"
       onClick={handleToggle}
-      className={`relative inline-flex h-[16px] w-[32px] rounded-full transition-colors focus:outline-none focus-visible:ring-[2px] focus-visible:ring-blue-500 focus-visible:ring-offset-2 ${
-        checked
-          ? "bg-blue-400 hover:bg-blue-500"
-          : "bg-gray-200 hover:bg-gray-300"
-      } ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+      className={classNames(
+        className,
+        `relative inline-flex h-[16px] w-[32px] rounded-full transition-colors focus:outline-none focus-visible:ring-[2px] focus-visible:ring-blue-500 focus-visible:ring-offset-2`,
+        {
+          "bg-blue-400 hover:bg-blue-500": checked,
+          "bg-gray-200 hover:bg-gray-300": !checked,
+          "cursor-not-allowed opacity-50": disabled,
+          "cursor-pointer": !disabled,
+        },
+      )}
       disabled={disabled}
     >
       <span

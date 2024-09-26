@@ -5,7 +5,7 @@
  * @param {string} doc2 - The modified document containing tip patterns.
  * @returns {Array<Object>} An array of objects with oldText, newText, tipNumber, and index.
  */
-function extractTipPatterns(doc1, doc2) {
+function extractTipPatterns(doc1: string, doc2: string) {
   // Define the regex pattern with capturing groups
   const tipTagPattern = /<tip:(\d+)>(.*?)<old:\d+:new>(.*?)<\/tip:\1>/gs;
 
@@ -22,13 +22,13 @@ function extractTipPatterns(doc1, doc2) {
 
     // Extract the old text from doc1 at the calculated index
     // Assuming the old text is the same length as the new text
-    const oldText = doc1.substr(indexInDoc1, newText.length);
+    const oldText = doc1.substr(indexInDoc1, newText!.length);
 
     // Push the extracted information into the tips array
     tips.push({
       oldText: oldText,
       newText: newText,
-      tipNumber: parseInt(tipNumber, 10),
+      tipNumber: parseInt(tipNumber!, 10),
       index: indexInDoc1,
     });
 

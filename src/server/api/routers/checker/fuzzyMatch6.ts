@@ -271,6 +271,7 @@ function longestCommonSubsequence(
   const n = tokensB.length;
   const table: number[][] = Array(m + 1)
     .fill(0)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     .map(() => Array(n + 1).fill(0));
 
   // Build the LCS table

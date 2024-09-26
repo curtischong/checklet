@@ -60,7 +60,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         if (onChange) {
           onChange(e);
         }
-        resizeTextArea(); // Adjust size dynamically
+        // resizeTextArea(); // Adjust size dynamically
       }}
       rows={rows} // Default taller textarea
       {...rest}
