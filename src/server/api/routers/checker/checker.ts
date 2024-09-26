@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from "zod";
 
+import { type UserCtx } from "@/firebase/edge_env";
 import { CheckerWorker } from "@/server/api/routers/checker/checkDoc";
 import {
   createTRPCRouter,
@@ -28,6 +29,20 @@ export const getCheckerById = async (db: PrismaClient, id: string) => {
 };
 export type GetCheckerByIdType = Awaited<ReturnType<typeof getCheckerById>>;
 
+const getUserCheckers = async (db: PrismaClient, user: UserCtx) => {
+  return await db.checker.findMany({
+    where: {
+      createdById: {
+        equals: user.id,
+      },
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+  });
+};
+export type GetUserCheckersType = Awaited<ReturnType<typeof getUserCheckers>>;
+
 const isCheckerValid = (name: string, desc: string, prompt: string) => {
   return name !== "" && desc !== "" && prompt !== "";
   // input.sampleDoc !== ""; // TODO: should we care about the sample doc?
@@ -41,6 +56,10 @@ export const checkerRouter = createTRPCRouter({
         where: { id: input.id },
       });
     }),
+
+  getUserCheckers: protectedProcedure.query(async ({ ctx }) => {
+    return await getUserCheckers(ctx.db, ctx.user);
+  }),
 
   create: protectedProcedure.mutation(async ({ ctx }) => {
     const user = await ctx.db.user.findUnique({
