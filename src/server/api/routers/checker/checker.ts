@@ -12,6 +12,7 @@ import {
 } from "@/server/api/trpc";
 import { type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import mixpanel from "mixpanel";
 
 const MAX_CHECKERS = 10;
 
@@ -110,6 +111,12 @@ export const checkerRouter = createTRPCRouter({
           push: newChecker.id,
         },
       },
+    });
+
+    mixpanel.track("Create Checker", {
+      newCheckerId: newChecker.id,
+      email: user.email,
+      userId: user.id,
     });
 
     return newChecker;
@@ -318,6 +325,13 @@ export const checkerRouter = createTRPCRouter({
             push: newChecker.id,
           },
         },
+      });
+
+      mixpanel.track("Clone Checker", {
+        newCheckerId: newChecker.id,
+        clonedFromId: baseChecker.id,
+        email: user.email,
+        userId: user.id,
       });
 
       return newChecker;
