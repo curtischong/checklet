@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from "zod";
 
+import { type UserCtx } from "@/firebase/edge_env";
 import { CheckerWorker } from "@/server/api/routers/checker/checkDoc";
 import {
   createTRPCRouter,
@@ -28,6 +29,20 @@ export const getCheckerById = async (db: PrismaClient, id: string) => {
 };
 export type GetCheckerByIdType = Awaited<ReturnType<typeof getCheckerById>>;
 
+const getUserCheckers = async (db: PrismaClient, user: UserCtx) => {
+  return await db.checker.findMany({
+    where: {
+      createdById: {
+        equals: user.id,
+      },
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+  });
+};
+export type GetUserCheckersType = Awaited<ReturnType<typeof getUserCheckers>>;
+
 const isCheckerValid = (name: string, desc: string, prompt: string) => {
   return name !== "" && desc !== "" && prompt !== "";
   // input.sampleDoc !== ""; // TODO: should we care about the sample doc?
@@ -40,6 +55,24 @@ export const checkerRouter = createTRPCRouter({
       return await ctx.db.checker.findUnique({
         where: { id: input.id },
       });
+    }),
+
+  getUserCheckers: protectedProcedure.query(async ({ ctx }) => {
+    return await getUserCheckers(ctx.db, ctx.user);
+  }),
+
+  getUserChecker: protectedProcedure
+    .input(z.object({ checkerId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const checker = await getCheckerById(ctx.db, input.checkerId);
+      if (checker.createdById !== ctx.user.id) {
+        // this is important because if the checker is private, we don't want some random person to be able to see it
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "you are not the creator of this checker",
+        });
+      }
+      return checker;
     }),
 
   create: protectedProcedure.mutation(async ({ ctx }) => {

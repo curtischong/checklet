@@ -7,20 +7,26 @@ import {
 } from "@/app/_components/checklets/checklets";
 import { NormalButton } from "@/app/_components/ui/Button";
 import { DashboardChecker } from "@/app/dashboard/DashboardChecker";
-import { type UserCheckersType } from "@/app/dashboard/getUserCheckers";
 import { type UserCtx } from "@/firebase/edge_env";
+import { type GetUserCheckersType } from "@/server/api/routers/checker/checker";
 import { apiClient, handleErr } from "@/trpc/react";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface Props {
   user: UserCtx;
-  checkers: UserCheckersType;
+  // checkers: UserCheckersType;
 }
 
 // used to show you your checkers.
-export const Dashboard = ({ checkers, user }: Props) => {
-  const [currCheckers, setCurrCheckers] = useState(checkers);
+export const Dashboard = ({ user }: Props) => {
+  const [currCheckers, setCurrCheckers] = useState<GetUserCheckersType>([]);
+
+  useEffect(() => {
+    handleErr(apiClient.checker.getUserCheckers.query(), (checkers) => {
+      setCurrCheckers(checkers);
+    });
+  }, []);
   const router = useRouter();
 
   const createChecker = useCallback(() => {
