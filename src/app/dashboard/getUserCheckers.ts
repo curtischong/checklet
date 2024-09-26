@@ -8,6 +8,9 @@ export const getUserCheckers = async (db: PrismaClient, user: UserCtx) => {
         equals: user.id,
       },
     },
+    orderBy: {
+      updatedAt: "desc",
+    },
   });
 };
 

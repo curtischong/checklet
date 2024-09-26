@@ -26,7 +26,7 @@ const useUnsavedChangesWarning = ({
     (url: string) => {
       if (hasUnsavedChanges) {
         const confirmLeave = window.confirm(
-          "You have unsaved changes. Are you sure you want to leave this page?",
+          "You have unsaved changes. Wait a few seconds for it to autosave. If this problem persists, copy your changes elsewhere and Curtis will this problem soon!",
         );
         if (!confirmLeave) {
           router.refresh(); // Cancel the navigation by refreshing the current route
