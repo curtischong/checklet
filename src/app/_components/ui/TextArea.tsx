@@ -24,7 +24,8 @@ const TextArea: React.FC<TextAreaProps> = ({
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const resizeTextArea = () => {
+  useEffect(() => {
+    // resize the textarea to fit its content
     if (textAreaRef.current && autoSize) {
       textAreaRef.current.style.height = "auto"; // Reset height to shrink if needed
       textAreaRef.current.style.overflow = "hidden"; // Ensure no scrollbar appears when resizing
@@ -41,10 +42,6 @@ const TextArea: React.FC<TextAreaProps> = ({
         textAreaRef.current.style.height = `${scrollHeight}px`;
       }
     }
-  };
-
-  useEffect(() => {
-    resizeTextArea(); // Adjust size on initial render and when value changes
   }, [value]);
 
   return (

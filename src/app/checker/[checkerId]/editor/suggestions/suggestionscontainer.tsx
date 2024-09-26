@@ -261,7 +261,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
           {!pathName.endsWith("/edit") && (
             <CheckerMetaButtons
               checkerId={storefront.checkerId}
-              userId={user?.id}
               checkerCreatorId={storefront.creatorId}
             />
           )}

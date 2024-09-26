@@ -2,8 +2,8 @@ import {
   type Suggestion,
   type Tip,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import { matchQueryInDocument } from "@/server/api/routers/checker/matchQueryInDocument";
 import { createShortId } from "@/utils/strings";
-import { matchQueryInDocument } from "scripts/fuzzy-match/run4";
 
 export function extractTips(input: string): Tip[] {
   const tipReasonPairs: Tip[] = [];
