@@ -11,6 +11,7 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   className?: string;
   autoSize?: boolean;
   maxRows?: number; // Control max rows before showing a scrollbar
+  minRows?: number;
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -19,7 +20,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   className = "",
   autoSize = false,
   maxRows = 300, // Default maxRows (slightly increased from previous)
-  rows = 4, // Increased default height
+  minRows = 4, // Increased default height
   ...rest
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -62,7 +63,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         }
         // resizeTextArea(); // Adjust size dynamically
       }}
-      rows={rows} // Default taller textarea
+      rows={minRows} // Default taller textarea
       {...rest}
     />
   );
@@ -81,7 +82,7 @@ export const NormalTextArea: React.FC<ITextArea> = ({
   minRows,
   ...rest
 }) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ...otherProps } = rest;
   return (
     <TextArea
@@ -93,7 +94,7 @@ export const NormalTextArea: React.FC<ITextArea> = ({
         },
       )}
       {...otherProps}
-      ref={textareaRef}
+      // ref={textareaRef}
       autoSize={true}
       minRows={minRows}
     >
