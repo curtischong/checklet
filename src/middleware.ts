@@ -1,11 +1,14 @@
 // https://github.com/auth0/nextjs-auth0/blob/main/EXAMPLES.md#protecting-a-server-side-rendered-ssr-page
-import { serializeAuthHeader } from "@/networking_helpers";
+import {
+  requestPathHeaderName,
+  serializeAuthHeader,
+} from "@/networking_helpers";
 import { FORBIDDEN } from "@/utils/status_codes";
 import { type NextRequest, NextResponse } from "next/server";
 
-import { authMiddleware } from "next-firebase-auth-edge";
 import { clientConfig, serverConfig } from "@/firebase/config";
 import { type UserCtx } from "@/firebase/edge_env";
+import { authMiddleware } from "next-firebase-auth-edge";
 import { type DecodedIdToken } from "next-firebase-auth-edge/lib/auth/token-verifier";
 
 const adminPagePrefix = "/admin";
@@ -40,7 +43,9 @@ const isAdminPath = (path: string) => {
 };
 
 const redirectTo = (req: NextRequest, path: string) => {
-  return NextResponse.redirect(new URL(path, req.url));
+  const res = NextResponse.redirect(new URL(path, req.url));
+  res.headers.set(requestPathHeaderName, path); // this lets route handlers know the path of the request (useful for tracking login counts. if they're coming from the homepage or not)
+  return res;
 };
 
 const decodedIdTokenToUserCtx = (decodedToken: DecodedIdToken): UserCtx => {
@@ -82,12 +87,12 @@ export async function middleware(request: NextRequest) {
   // Check if user is trying to access the "/login" or "/logout" page
   if (pathname === "/login") {
     // Redirect to the actual sign-in page
-    return NextResponse.redirect(new URL("/signin", request.url));
+    return redirectTo(request, "/signin");
   }
 
   if (pathname === "/logout") {
     // Redirect to the actual sign-out page
-    return NextResponse.redirect(new URL("/signout", request.url));
+    return redirectTo(request, "/signout");
   }
 
   // const res = NextResponse.next();
@@ -105,7 +110,6 @@ export async function middleware(request: NextRequest) {
     cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     serviceAccount: serverConfig.serviceAccount,
     handleValidToken: async ({ token, decodedToken }, headers) => {
-      const requestPath = request.nextUrl.pathname;
       // if (PUBLIC_PATHS.includes(requestPath)) {
       //   return redirectToHome(request); // simplifies to NextResponse.redirect(new URL(“/“))
       // }
@@ -139,6 +143,7 @@ export async function middleware(request: NextRequest) {
       // by serializing the auth header, we can pass the user's info to server-side-components
       // I got the idea after reading the first comment: https://stackoverflow.com/questions/78312633/how-to-get-firebase-auth-id-token-in-server-component-in-nextjs-firebase
       serializeAuthHeader(headers, decodedIdTokenToUserCtx(decodedToken));
+      headers.set(requestPathHeaderName, pathname); // needed for analytics (tells us which page the user is on)
       return NextResponse.next({
         request: {
           headers,
@@ -147,11 +152,15 @@ export async function middleware(request: NextRequest) {
     },
     handleInvalidToken: async (reason) => {
       console.info("Missing or malformed credentials", { reason });
-      return NextResponse.next();
+      const res = NextResponse.next();
+      res.headers.set(requestPathHeaderName, pathname);
+      return res;
     },
     handleError: async (error) => {
       console.error("Unhandled authentication error", { error });
-      return NextResponse.next();
+      const res = NextResponse.next();
+      res.headers.set(requestPathHeaderName, pathname);
+      return res;
     },
   });
 }

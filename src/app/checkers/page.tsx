@@ -5,6 +5,7 @@ import {
 } from "@/app/_components/checklets/checklets";
 import { CheckerStore } from "@/app/checkers/CheckerStore";
 import { CreateOwnChecker } from "@/app/checkers/CreateOwnChecker";
+import { trackPageView } from "@/mixpanel";
 import { parseAuthHeader } from "@/networking_helpers";
 import { db } from "@/server/db";
 import { type Prisma } from "@prisma/client";
@@ -21,7 +22,7 @@ const Page = async () => {
     },
   ];
   const user = parseAuthHeader();
-  console.log("user", user);
+  trackPageView(user);
   if (user) {
     const yourCheckerClause: Prisma.CheckerWhereInput = {
       createdById: {
