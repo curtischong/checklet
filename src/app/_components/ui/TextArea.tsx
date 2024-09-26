@@ -72,6 +72,7 @@ const TextArea: React.FC<TextAreaProps> = ({
 export type ITextArea = React.DetailedHTMLProps<
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
     minRows?: number;
+    value: string;
   },
   HTMLTextAreaElement
 >;
