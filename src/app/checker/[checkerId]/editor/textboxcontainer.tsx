@@ -12,7 +12,7 @@ import {
 import { MAX_EDITOR_LEN } from "@/constants";
 import { type SetState } from "@/utils/types";
 import debounce from "lodash.debounce";
-import React, { type Ref, useCallback, useEffect, useMemo } from "react";
+import React, { type RefObject, useCallback, useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
 import { RichTextarea, type RichTextareaHandle } from "rich-textarea";
 
@@ -23,7 +23,7 @@ export type TextboxContainerProps = {
   updateEditorState: (e: string) => void;
   updateActiveSuggestion: SetState<Suggestion | undefined>;
   isLoading: boolean;
-  editorRef: Ref<RichTextareaHandle | null>;
+  editorRef: RefObject<RichTextareaHandle | null>;
   storefront: CheckerStorefront;
   isSavingToLocalStorage: boolean;
 };
@@ -79,7 +79,7 @@ export const TextboxContainer = ({
         // I even tried wrapping it in a requestAnimationFrame but it doesn't work
         // https://github.com/facebook/react/issues/23396
         const scrollHeight = ref.current.offsetTop;
-        editorRef.current?.scrollTo({
+        editorRef?.current?.scrollTo({
           left: 0,
           top: scrollHeight - editorRef?.current.offsetHeight / 2,
           behavior: "smooth",
@@ -121,7 +121,7 @@ export const TextboxContainer = ({
     >
       <RichTextarea
         placeholder={storefront.placeholder || "Write your document here!"}
-        ref={editorRef}
+        ref={editorRef as any}
         value={editorState}
         onChange={(e) => {
           updateEditorState(e.target.value);

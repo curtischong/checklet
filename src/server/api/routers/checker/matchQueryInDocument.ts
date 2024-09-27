@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 // https://chatgpt.com/share/66f43fd2-ddbc-800e-ad67-36df865ff54e
-import * as difflib from "difflib";
+
+import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch3";
 
 /**
  * Finds the best match of a query string within a document around a specific index.
@@ -57,7 +58,7 @@ export function matchQueryInDocument(
     // Sort matches by penalty (lower penalty is better)
     matches.sort((a, b) => a.penalty - b.penalty);
 
-    const bestMatch = matches[0];
+    const bestMatch = matches[0]!;
     return {
       matchedSubstring: bestMatch.matchedSubstring,
       actualIndex: bestMatch.actualIndex,
@@ -77,65 +78,65 @@ function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-/**
- * Fallback fuzzy matching function using difflib.
- * @param doc - The document string.
- * @param query - The query string.
- * @param expectedIndex - The expected index.
- * @returns An object containing the matched substring and its actual index.
- */
-function fuzzyMatchAroundIndex(
-  doc: string,
-  query: string,
-  expectedIndex: number,
-): {
-  matchedSubstring: string;
-  actualIndex: number;
-} {
-  // Define the window size
-  const windowSize = 500; // Adjust as needed
-  const startIndex = Math.max(0, expectedIndex - windowSize);
-  const endIndex = Math.min(doc.length, expectedIndex + windowSize);
+// /**
+//  * Fallback fuzzy matching function using difflib.
+//  * @param doc - The document string.
+//  * @param query - The query string.
+//  * @param expectedIndex - The expected index.
+//  * @returns An object containing the matched substring and its actual index.
+//  */
+// function fuzzyMatchAroundIndex(
+//   doc: string,
+//   query: string,
+//   expectedIndex: number,
+// ): {
+//   matchedSubstring: string;
+//   actualIndex: number;
+// } {
+//   // Define the window size
+//   const windowSize = 500; // Adjust as needed
+//   const startIndex = Math.max(0, expectedIndex - windowSize);
+//   const endIndex = Math.min(doc.length, expectedIndex + windowSize);
 
-  const windowSubstring = doc.substring(startIndex, endIndex);
+//   const windowSubstring = doc.substring(startIndex, endIndex);
 
-  // Split the window and query into arrays of characters for difflib
-  const windowArray = windowSubstring.split("");
-  const queryArray = query.split("");
+//   // Split the window and query into arrays of characters for difflib
+//   const windowArray = windowSubstring.split("");
+//   const queryArray = query.split("");
 
-  // Initialize the SequenceMatcher from difflib
-  const sequenceMatcher = new difflib.SequenceMatcher(queryArray, windowArray);
+//   // Initialize the SequenceMatcher from difflib
+//   const sequenceMatcher = new difflib.SequenceMatcher(queryArray, windowArray);
 
-  // Find the best matching block
-  const matches = sequenceMatcher.getMatchingBlocks();
+//   // Find the best matching block
+//   const matches = sequenceMatcher.getMatchingBlocks();
 
-  let bestMatchSize = 0;
-  let bestMatchIndex = -1;
+//   let bestMatchSize = 0;
+//   let bestMatchIndex = -1;
 
-  for (const match of matches) {
-    if (match.size > bestMatchSize) {
-      bestMatchSize = match.size;
-      bestMatchIndex = match.b;
-    }
-  }
+//   for (const match of matches) {
+//     if (match.size > bestMatchSize) {
+//       bestMatchSize = match.size;
+//       bestMatchIndex = match.b;
+//     }
+//   }
 
-  if (bestMatchIndex !== -1 && bestMatchSize > 0) {
-    const matchedSubstring = windowSubstring.substr(
-      bestMatchIndex,
-      bestMatchSize,
-    );
-    const actualIndex = startIndex + bestMatchIndex;
-    return {
-      matchedSubstring,
-      actualIndex,
-    };
-  }
+//   if (bestMatchIndex !== -1 && bestMatchSize > 0) {
+//     const matchedSubstring = windowSubstring.substr(
+//       bestMatchIndex,
+//       bestMatchSize,
+//     );
+//     const actualIndex = startIndex + bestMatchIndex;
+//     return {
+//       matchedSubstring,
+//       actualIndex,
+//     };
+//   }
 
-  // If no match found
-  return {
-    matchedSubstring: "",
-    actualIndex: -1,
-  };
-}
+//   // If no match found
+//   return {
+//     matchedSubstring: "",
+//     actualIndex: -1,
+//   };
+// }
 
-// Example usage:
+// // Example usage:

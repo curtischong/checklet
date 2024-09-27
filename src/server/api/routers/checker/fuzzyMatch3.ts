@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 // fixes all numm issues^. but it's not that good. I'm only okay with this because this is an ai-generated file
 
@@ -79,7 +80,7 @@ export function fuzzyMatchAroundIndex(
  */
 function tokenize(text: string): string[] {
   // Simple word tokenizer using regex
-  return text.match(/\S+/g) || [];
+  return text.match(/\S+/g) ?? [];
 }
 
 /**
@@ -103,6 +104,7 @@ function createCharToTokenIndexMap(text: string, tokens: string[]): number[] {
   for (let tokenIndex = 0; tokenIndex < tokens.length; tokenIndex++) {
     const token = tokens[tokenIndex];
     // Map each character in the token to the current token index
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let i = 0; i < token.length; i++) {
       map[charIndex] = tokenIndex;
       charIndex++;
@@ -226,6 +228,7 @@ function longestCommonSubsequence(
   const n = tokensB.length;
   const table: number[][] = Array(m + 1)
     .fill(0)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     .map(() => Array(n + 1).fill(0));
 
   // Build the LCS table

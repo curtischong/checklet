@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 // fixes all numm issues^. but it's not that good. I'm only okay with this because this is an ai-generated file
 /**

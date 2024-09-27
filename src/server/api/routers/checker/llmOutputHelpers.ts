@@ -94,7 +94,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   // TODO: we need to add extra chars to the predIndexInDoc1 to account for extra chain of thought?
   // console.log("allMatches", allMatches);
   for (let i = 0; i < allMatches.length; i++) {
-    const match = allMatches[i];
+    const match = allMatches[i]!;
     const [fullMatch, tipName, reason, rawOldText, newText] = match;
     console.log(`match ${i} ${rawOldText} old|new ${newText}`);
     const tipStartIndexInDoc2 = match.index;
@@ -147,7 +147,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
       suggestionId: createShortId(),
     });
 
-    endIdxOfLastTipTag = match.index + (fullMatch as string).length;
+    endIdxOfLastTipTag = match.index + fullMatch.length;
     endOfLastActualIndex = actualIndex + matchedSubstring.length;
   }
 
