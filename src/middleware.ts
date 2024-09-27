@@ -57,7 +57,7 @@ export async function middleware(request: NextRequest) {
     cookieName: serverConfig.cookieName,
     cookieSignatureKeys: serverConfig.cookieSignatureKeys,
     cookieSerializeOptions: serverConfig.cookieSerializeOptions,
-    serviceAccount: serverConfig.serviceAccount,
+    serviceAccount: serverConfig.serviceAccount as any, // NOTE: serviceAccount may not be typed property. I think it MAY NOT be always known. if you remove the as any, you'll see.
     // eslint-disable-next-line @typescript-eslint/require-await
     handleValidToken: async ({ token: _token, decodedToken }, headers) => {
       // by serializing the auth header, we can pass the user's info to server-side-components

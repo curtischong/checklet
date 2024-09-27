@@ -21,7 +21,7 @@ function tokenizeDoc(doc: string): string[] {
       pos += tipMatch[0].length;
     } else {
       // Add the next character as a token
-      tokens.push(doc[pos]);
+      tokens.push(doc[pos]!);
       pos += 1;
     }
   }
