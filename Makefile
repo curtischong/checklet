@@ -1,3 +1,5 @@
+.PHONY: deploy
+
 # Assuming that set_env.sh exports necessary environment variables
 include_env = source venv/bin/activate && source set_db_in_env.sh ../config/dist/config.dev.json
 include_env_prod = source venv/bin/activate && source set_db_in_env.sh ../config/dist/config.prod.json
@@ -45,3 +47,6 @@ fix-unintentional-edits:
 
 test-fuzzy-match:
 	npx tsx ./scripts/fuzzy-match/fuzzy-match-test.ts
+
+deploy:
+	bash deploy.sh

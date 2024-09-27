@@ -1,0 +1,12 @@
+### How I deployed checklet
+
+https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-22-04
+
+- IMPORTANT: ensure the firewall allows ssh access: sudo ufw allow ssh
+
+- Note: you need to run sudo ufw enable
+- then I followed this to setup cloudflare with nginx
+  https://www.digitalocean.com/community/tutorials/how-to-host-a-website-using-cloudflare-and-nginx-on-ubuntu-22-04#step-2-installing-the-origin-ca-certificate-in-nginx
+
+ls -l /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/checklet /etc/nginx/sites-enabled/
