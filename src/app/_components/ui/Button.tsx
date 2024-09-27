@@ -261,7 +261,7 @@ export const LinkButton: React.FC<
       // target="_blank"
       aria-label="Read research paper"
       className={classNames(
-        "relative inline-block rounded-md border-[1px] border-gray-400 py-1 pl-5 pr-7 leading-[130%] tracking-normal text-primary transition duration-300 hover:border-[#639fff] hover:bg-[#639fff] hover:text-white",
+        "relative inline-block rounded-md border-[1px] border-gray-400 py-1 pl-5 pr-7 leading-[130%] tracking-normal text-zinc-700 transition duration-300 hover:border-[#639fff] hover:bg-[#639fff] hover:text-white",
         className,
       )}
       style={{
