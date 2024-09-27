@@ -9,10 +9,12 @@ export class Llm2 {
   systemPromptMessage: OpenAI.ChatCompletionMessageParam;
 
   constructor(
+    model: string,
     systemPrompt: string,
     private cache: SimpleCache | undefined,
     apiKey: string | undefined,
   ) {
+    this.model = model;
     this.client = new OpenAI({
       apiKey,
       dangerouslyAllowBrowser: false,
