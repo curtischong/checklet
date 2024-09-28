@@ -50,3 +50,7 @@ test-fuzzy-match:
 
 deploy:
 	bash deploy.sh
+
+apply-all-migrations-prod:
+	./load-database-url.sh && \
+	env DATABASE_URL=$$DATABASE_URL npx prisma migrate deploy
