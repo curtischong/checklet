@@ -10,3 +10,11 @@ https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-
 
 ls -l /etc/nginx/sites-enabled/
 sudo ln -s /etc/nginx/sites-available/checklet /etc/nginx/sites-enabled/
+
+- How to deploy the postgresdb:
+
+```
+docker run -d --name postgres-container -p 5432:5432 -e POSTGRES_PASSWORD=<password here> postgres
+```
+
+Then run make apply-all-migrations-prod to apply the migrations
