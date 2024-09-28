@@ -92,22 +92,20 @@ const HomePage: React.FC = () => {
 
             <div className="flex-1">
               <div className="max-w-[350px]">
-                {/* <CheckPreview
-                                    blueprint={{
-                                        objInfo: {
-                                            id: "",
-                                            name: "",
-                                            desc: "",
-                                            creatorId: "",
-                                        },
-                                        instruction: "",
-                                        category: "",
-                                        checkType: CheckType.rephrase,
-                                        positiveExamples: [],
-                                    }}
-                                    originalText=""
-                                    editedText=""
-                                /> */}
+                {/* <SuggestionCard
+                  suggestion={{
+                    tipName: "Shorten Months",
+                    reason: "It conveys the same information but is shorter",
+                    oldText: "August",
+                    newText: "Aug",
+                    range: {
+                      start: 0,
+                      end: 0,
+                    },
+                    suggestionId: "fakeid",
+                  }}
+                  activeSuggestion={undefined}
+                /> */}
               </div>
             </div>
           </div>
