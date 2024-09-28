@@ -18,7 +18,10 @@ cd ..
 
 scp standalone.zip "checkletv2:/home/ubuntu/standalone.zip"
 
-ssh checkletv2 << 'EOF'
+OPENAI_KEY=$(source load-prod-var.sh 'OPENAI_KEY')
+
+session_name="checkletapp"
+ssh checkletv2 << EOF
 
 # Commands to run on the remote server
 cd /home/ubuntu/
@@ -36,5 +39,5 @@ tmux kill-session -t $session_name
 tmux new-session -d -s $session_name -n server
 
 # Run the server in the first window
-tmux send-keys -t $session_name 'node /home/ubuntu/standalone/server.js' C-m
+tmux send-keys -t $session_name 'env OPENAI_API_KEY=${OPENAI_KEY} && node /home/ubuntu/standalone/server.js' C-m
 EOF

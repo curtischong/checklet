@@ -52,5 +52,5 @@ deploy:
 	bash deploy.sh
 
 apply-all-migrations-prod:
-	./load-database-url.sh && \
+	source load-prod-var.sh 'DATABASE_URL' && \
 	env DATABASE_URL=$$DATABASE_URL npx prisma migrate deploy
