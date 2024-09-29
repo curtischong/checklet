@@ -48,3 +48,9 @@ export const tinySimpleHash = (s: string): number => {
   }
   return h ^ (h >>> 9);
 };
+
+export const isUuid = (s: string): boolean => {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    s,
+  );
+};
