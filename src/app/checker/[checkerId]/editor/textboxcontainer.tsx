@@ -104,7 +104,7 @@ export const TextboxContainer = ({
     <div
       className="textbox col-span-3"
       style={{
-        overflow: "auto",
+        // overflow: "auto",
         height: "100%",
       }}
     >
@@ -115,6 +115,7 @@ export const TextboxContainer = ({
         onChange={(e) => {
           updateEditorState(e.target.value);
         }}
+        autoHeight={true}
         className="resize-none bg-white pb-32 tracking-[0.01em] outline-none" // tracking increases letter spacing
         // the styling MUST be done via the style prop, not tailwind
         style={{
