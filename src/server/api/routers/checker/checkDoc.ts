@@ -2,7 +2,7 @@ import {
   type FeedbackResponse,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-import { type GetCheckerByIdType } from "@/server/api/routers/checker/checker";
+import { type GetCheckerByIdStrictType } from "@/server/api/routers/checker/checker";
 import {
   removeInvalidSuggestions,
   removeInvalidTips,
@@ -82,7 +82,7 @@ export class CheckerWorker {
   //   });
   // };
 
-  checkDoc = async (doc: string, checker: GetCheckerByIdType) => {
+  checkDoc = async (doc: string, checker: GetCheckerByIdStrictType) => {
     // TODO: do this elsewhere? it's hard though. I think it's fine. I'm just worried that 20 ppl will spam, and we're going to refine the prompt 20 times
     // this will be a problem to solve later
     // const newChecker = await this.updateRefinedPrompt(checker);

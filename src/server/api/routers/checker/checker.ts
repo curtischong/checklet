@@ -34,6 +34,9 @@ export const getCheckerByIdStrict = async (db: PrismaClient, id: string) => {
   }
   return checker;
 };
+export type GetCheckerByIdStrictType = Awaited<
+  ReturnType<typeof getCheckerByIdStrict>
+>;
 
 const getUserCheckers = async (db: PrismaClient, user: UserCtx) => {
   return await db.checker.findMany({
