@@ -44,7 +44,6 @@ export default {
       animation: {
         open: "open 0.3s linear forwards",
         close: "close 0.3s linear forwards",
-        pulsate: "pulsate 1s infinite",
       },
     },
   },
