@@ -307,23 +307,23 @@ function longestCommonSubsequence(
   return lcs;
 }
 
-// Example usage
-const doc =
-  "Experienced in Node.js development, including building RESTful APIs.";
-const query = "Node.js";
-const expectedIndex = doc.indexOf("Node.js"); // Let's assume we expect it around here
+// // Example usage
+// const doc =
+//   "Experienced in Node.js development, including building RESTful APIs.";
+// const query = "Node.js";
+// const expectedIndex = doc.indexOf("Node.js"); // Let's assume we expect it around here
 
-const result = fuzzyMatchAroundIndex(doc, query, expectedIndex);
+// const result = fuzzyMatchAroundIndex(doc, query, expectedIndex);
 
-console.log("Matched Substring:", result.matchedSubstring);
-console.log("Actual Index:", result.actualIndex);
+// console.log("Matched Substring:", result.matchedSubstring);
+// console.log("Actual Index:", result.actualIndex);
 
-// Output the substring from the original document using actualIndex
-const start = result.actualIndex;
-const end = start + result.matchedSubstring.length;
-const extractedSubstring = doc.substring(start, end);
+// // Output the substring from the original document using actualIndex
+// const start = result.actualIndex;
+// const end = start + result.matchedSubstring.length;
+// const extractedSubstring = doc.substring(start, end);
 
-console.log(`Extracted Substring: "${extractedSubstring}"`);
-console.log(
-  `Does the extracted substring match the matched substring? ${extractedSubstring === result.matchedSubstring}`,
-);
+// console.log(`Extracted Substring: "${extractedSubstring}"`);
+// console.log(
+//   `Does the extracted substring match the matched substring? ${extractedSubstring === result.matchedSubstring}`,
+// );
