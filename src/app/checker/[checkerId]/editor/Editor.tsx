@@ -1,6 +1,5 @@
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { EditorHeader } from "@/app/checker/[checkerId]/editor/EditorHeader";
-import LoadingBar from "@/app/checker/[checkerId]/editor/LoadingBar";
 import { singleEditDistance } from "@/app/checker/[checkerId]/editor/singleEditDistance";
 import { SuggestionsContainer } from "@/app/checker/[checkerId]/editor/suggestions/suggestionscontainer";
 import {
@@ -183,7 +182,6 @@ export const Editor = ({
             flexBasis: 2,
           }}
         >
-          <LoadingBar duration={10} />
           <SuggestionsContainer
             setHasModifiedTextAfterChecking={setHasModifiedTextAfterChecking}
             isLoading={isLoading}

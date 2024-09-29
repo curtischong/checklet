@@ -40,10 +40,6 @@ export default {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
-        pulsate: {
-          "0%, 100%": { boxShadow: "0 0 10px rgba(76, 175, 80, 0.7)" },
-          "50%": { boxShadow: "0 0 20px rgba(76, 175, 80, 1)" },
-        },
       },
       animation: {
         open: "open 0.3s linear forwards",
