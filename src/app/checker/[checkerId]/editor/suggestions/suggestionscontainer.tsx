@@ -253,16 +253,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
 
   return (
     <div className="mt-14 flex w-[400px] flex-col">
-      <div>
-        <div className="mb-4 flex flex-col space-y-1">
-          {!pathName.endsWith("/edit") && (
-            <CheckerMetaButtons
-              checkerId={storefront.checkerId}
-              checkerCreatorId={storefront.creatorId}
-            />
-          )}
-        </div>
-      </div>
+      <div></div>
       <div className="mx-auto flex flex-row items-center justify-normal space-x-8">
         <LoadingButton
           onClick={checkDocument}
@@ -272,6 +263,14 @@ export const SuggestionsContainer: React.FC<Props> = ({
         >
           Check Document
         </LoadingButton>
+        {!pathName.endsWith("/edit") && (
+          <div className="flex flex-row space-x-3">
+            <CheckerMetaButtons
+              checkerId={storefront.checkerId}
+              checkerCreatorId={storefront.creatorId}
+            />
+          </div>
+        )}
         {/* <EnterApiKeyModal
                     isOpen={isEnterApiKeyOpen}
                     setIsOpen={setIsEnterApiKeyOpen}
