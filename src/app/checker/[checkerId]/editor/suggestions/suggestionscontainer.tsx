@@ -295,7 +295,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
                 </div> */}
       </div>
       <div className="mt-2 h-2">
-        {isLoading && <LoadingBar duration={editorState.length / 300 + 4} />}
+        {isLoading && <LoadingBar duration={editorState.length / 100 + 4} />}
       </div>
       <SuggestionsHeader
         suggestions={sortedSuggestions}
