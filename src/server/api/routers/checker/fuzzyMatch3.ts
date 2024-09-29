@@ -261,13 +261,13 @@ function longestCommonSubsequence(
   return lcs;
 }
 
-// Example usage
-const doc =
-  "This is a sample document where we will perform a fuzzy search to find a matching substring.";
-const query = "sample document where we will perform fuzzy search";
-const expectedIndex = doc.indexOf("sample"); // Let's assume we expect it around here
+// // Example usage
+// const doc =
+//   "This is a sample document where we will perform a fuzzy search to find a matching substring.";
+// const query = "sample document where we will perform fuzzy search";
+// const expectedIndex = doc.indexOf("sample"); // Let's assume we expect it around here
 
-const result = fuzzyMatchAroundIndex(doc, query, expectedIndex);
+// const result = fuzzyMatchAroundIndex(doc, query, expectedIndex);
 
-console.log("Matched Substring:", result.matchedSubstring);
-console.log("Actual Index:", result.actualIndex);
+// console.log("Matched Substring:", result.matchedSubstring);
+// console.log("Actual Index:", result.actualIndex);
