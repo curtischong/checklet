@@ -1,6 +1,12 @@
 import React, { useEffect, useRef, useState, type ReactElement } from "react";
 
-type Placement = "top" | "bottom" | "left" | "right";
+export type Placement =
+  | "top"
+  | "bottom"
+  | "left"
+  | "right"
+  | "top-end"
+  | "bottom-end";
 
 interface TooltipProps {
   title: string | JSX.Element;
@@ -60,6 +66,10 @@ export const Tooltip: React.FC<TooltipProps> = ({
         return "right-full top-1/2 transform -translate-y-1/2 mr-2";
       case "right":
         return "left-full top-1/2 transform -translate-y-1/2 ml-2";
+      case "top-end":
+        return "bottom-full left-1/2 transform -translate-x-full mb-2";
+      case "bottom-end":
+        return "top-full left-1/2 transform -translate-x-full mt-2";
       default:
         return "bottom-full left-1/2 transform -translate-x-1/2 mb-2";
     }
