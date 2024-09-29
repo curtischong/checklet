@@ -111,26 +111,13 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     // Verify that the oldText at indexInDoc1 in doc1 matches the expected oldText
     const oldText = rawOldText ?? "";
 
-    // const offset = offsetOfOldTextInDoc1(doc1, indexInDoc1, oldText);
-    // const realIndexInDoc1 = offset + indexInDoc1;
-
-    // console.log("tipStartIndexInDoc2", tipStartIndexInDoc2);
-    // console.log("indexInDoc1", predIndexInDoc1);
-    // const allowedDeviation = i === 0 ? 500 : 200; // allow a LOT of deviation for the first match (since it can be low in the document and we want to match it)
-    // after the first match, we have a smaller range since we've calibrated a lot of the error present in the first match
-    // const { matchingSubstring, actualIndex } = fuzzyMatch(
-    //   doc1,
-    //   oldText,
-    //   predIndexInDoc1,
-    //   allowedDeviation,
-    // );
     const { matchedSubstring, actualIndex } = matchQueryInDocument(
       doc1,
       oldText,
       predIndexInDoc1,
     );
-    console.log("predIndexInDoc1", predIndexInDoc1, "actualIndex", actualIndex);
-    console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
+    // console.log("predIndexInDoc1", predIndexInDoc1, "actualIndex", actualIndex);
+    // console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
 
     const realIndexInDoc1 = actualIndex;
 

@@ -22,8 +22,8 @@ export function matchQueryInDocument(
   actualIndex: number;
 } {
   // Define the search window from expectedIndex - 100 to expectedIndex + 300
-  const startIndex = Math.max(0, expectedIndex - 100);
-  const endIndex = Math.min(doc.length, expectedIndex + 300);
+  const startIndex = Math.max(0, expectedIndex - 700);
+  const endIndex = Math.min(doc.length, expectedIndex + 700);
 
   const windowSubstring = doc.substring(startIndex, endIndex);
 
