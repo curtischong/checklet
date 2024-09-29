@@ -1,14 +1,20 @@
 "use client";
 import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
 import { type GetCheckerByIdType } from "@/server/api/routers/checker/checker";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 interface Props {
-  checker: GetCheckerByIdType;
+  checker: NonNullable<GetCheckerByIdType>;
 }
 
 export const EditorPage = ({ checker }: Props) => {
   const [editorState, setEditorState] = React.useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    void router.push(`#${checker.name}`);
+  }, [router, checker]);
   return (
     <div className="mx-10 mt-10">
       <Editor
