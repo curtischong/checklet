@@ -7,6 +7,7 @@ import { SortIcon } from "@/app/_components/icons/SortIcon";
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
+import LoadingBar from "@/app/checker/[checkerId]/editor/LoadingBar";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import { SuggestionCard } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
 import { apiClient, handleErr } from "@/trpc/react";
@@ -293,6 +294,9 @@ export const SuggestionsContainer: React.FC<Props> = ({
                     />
                 </div> */}
       </div>
+      <div className="mt-2 h-2">
+        {isLoading && <LoadingBar duration={editorState.length / 300 + 4} />}
+      </div>
       <SuggestionsHeader
         suggestions={sortedSuggestions}
         setSortType={setSortType}
@@ -334,7 +338,7 @@ const SuggestionsHeader = ({
   setSortType: SetState<SortType>;
 }) => {
   return (
-    <div className="text-16 mt-10 flex pb-4 pt-1 font-bold">
+    <div className="text-16 mt-2 flex pb-4 pt-1 font-bold">
       {suggestions.length > 0 && (
         <>
           <div className="ml-4 flex flex-row">
