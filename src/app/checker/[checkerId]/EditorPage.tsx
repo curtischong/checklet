@@ -12,11 +12,13 @@ export const EditorPage = ({ checker }: Props) => {
   const [editorState, setEditorState] = React.useState("");
   const router = useRouter();
 
+  // so when ppl copy and paste the url, they get a descripton of what the checker is
   useEffect(() => {
     void router.push(`#${checker.name}`);
   }, [router, checker]);
+
   return (
-    <div className="mx-10 mt-10">
+    <div className="mx-10">
       <Editor
         checkerStorefront={{
           name: checker.name,

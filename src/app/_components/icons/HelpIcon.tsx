@@ -4,11 +4,16 @@ import React from "react";
 interface HelpIconProps {
   text: string | JSX.Element;
   className?: string;
+  placement?: "top" | "bottom" | "left" | "right";
 }
 
-export const HelpIcon: React.FC<HelpIconProps> = ({ text, className = "" }) => {
+export const HelpIcon: React.FC<HelpIconProps> = ({
+  text,
+  className = "",
+  placement = "top",
+}) => {
   return (
-    <Tooltip title={text} placement="top">
+    <Tooltip title={text} placement={placement}>
       {/* Make sure the parent container stretches and centers content */}
       <div className="flex h-full items-center justify-center">
         <svg
