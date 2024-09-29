@@ -92,11 +92,11 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   let endIdxOfLastTipTag = 0;
   let endOfLastActualIndex = 0;
   // TODO: we need to add extra chars to the predIndexInDoc1 to account for extra chain of thought?
-  // console.log("allMatches", allMatches);
+  // eslint-disable-next-line @typescript-eslint/prefer-for-of
   for (let i = 0; i < allMatches.length; i++) {
     const match = allMatches[i]!;
     const [fullMatch, tipName, reason, rawOldText, newText] = match;
-    console.log(`match ${i} ${rawOldText} old|new ${newText}`);
+    // console.log(`match ${i} ${rawOldText} old|new ${newText}`);
     const tipStartIndexInDoc2 = match.index;
     // NOTE: since there may be chain of thought at the start of doc2, this is a big number^
     // we need to subtract by the length of the chain of thought
