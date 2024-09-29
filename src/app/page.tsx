@@ -1,5 +1,4 @@
 // import { StoreFront } from "@/app/_components/CheckerStore";
-import { ScrollDownButton } from "@/app/ScrollDownButton";
 import { Footer } from "@/app/_components/Footer";
 import ThinLine from "@/app/_components/ThinLine";
 import {
@@ -10,12 +9,16 @@ import {
   PennyChecklet,
   SpacyChecklet,
 } from "@/app/_components/checklets/checklets";
+import { ScrollDownButton } from "@/app/landing/ScrollDownButton";
 // import { CheckPreview } from "@/app/_components/create-check/CheckPreview";
 // import { rizzumeDesc } from "@/app/_components/create-check/DefaultTextForCheckType";
 // import { CheckType } from "@/app/_components/create-checker/CheckerTypes";
 import { CursorIcon } from "@/app/_components/icons/CursorIcon";
 import { LinkButton } from "@/app/_components/ui/Button";
+import { StoreFront } from "@/app/checkers/CheckerStore";
+import { DemoSuggestionCard } from "@/app/landing/DemoSuggestionCard";
 import { trackPageView } from "@/mixpanel";
+import { createShortId } from "@/utils/strings";
 
 const HomePage: React.FC = () => {
   trackPageView();
@@ -45,24 +48,28 @@ const HomePage: React.FC = () => {
               1. Select a Checker for your type of writing
             </div>
             <div className="flex-1">
-              {/* <StoreFront
-                                storefront={{
-                                    objInfo: {
-                                        name: "Rizzume",
-                                        desc: rizzumeDesc,
-                                        id: createShortId(),
-                                        creatorId: "fakeuser",
-                                    },
-                                    placeholder: "paste yourresume",
-                                }}
-                                isDemo={true}
-                            /> */}
+              <StoreFront
+                checker={{
+                  id: createShortId(),
+                  name: "Rizzume",
+                  desc: "Dazzle recruiters with a stronger resume!",
+                  prompt: "fake prompt",
+                  sampleDoc: "fake doc",
+                  isPublic: true,
+                  isValid: true,
+                  clonedFromId: null,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                  createdById: "fakeid",
+                }}
+                isDemo={true}
+              />
               <CursorIcon className="absolute bottom-[-20px] right-32 h-[40px] w-[40px]" />
             </div>
-            <MushyChecklet className="absolute right-0 top-[32px] md:left-[10%] md:top-[4rem]" />
+            <MushyChecklet className="absolute right-0 top-[20px] md:left-[10%] md:top-[3.5rem]" />
           </div>
 
-          <div className="relative mt-10 flex flex-col justify-center gap-8 md:flex-row">
+          <div className="relative mt-16 flex flex-col justify-center gap-8 md:flex-row">
             <div className="flex-1 text-lg">
               2. Paste your writing into the editor
             </div>
@@ -92,20 +99,7 @@ const HomePage: React.FC = () => {
 
             <div className="flex-1">
               <div className="max-w-[350px]">
-                {/* <SuggestionCard
-                  suggestion={{
-                    tipName: "Shorten Months",
-                    reason: "It conveys the same information but is shorter",
-                    oldText: "August",
-                    newText: "Aug",
-                    range: {
-                      start: 0,
-                      end: 0,
-                    },
-                    suggestionId: "fakeid",
-                  }}
-                  activeSuggestion={undefined}
-                /> */}
+                <DemoSuggestionCard />
               </div>
             </div>
           </div>

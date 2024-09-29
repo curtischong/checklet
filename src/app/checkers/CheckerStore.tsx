@@ -37,7 +37,12 @@ export const StoreFront = ({ checker, isDemo }: StorefrontProps) => {
         },
       )}
     >
-      <Link href={isDemo ? "" : `/checker/${checker.id}`}>
+      <Link
+        href={isDemo ? "" : `/checker/${checker.id}`}
+        aria-disabled={isDemo}
+        tabIndex={isDemo ? -1 : undefined}
+        className={isDemo ? "pointer-events-none" : ""}
+      >
         <div className="mb-1 font-mackinac text-xl font-bold">
           {checker.name === "" ? "Untitled" : checker.name}
         </div>
