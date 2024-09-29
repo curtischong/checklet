@@ -20,6 +20,12 @@ export const getCheckerById = async (db: PrismaClient, id: string) => {
   const checker = await db.checker.findUnique({
     where: { id },
   });
+  return checker;
+};
+export type GetCheckerByIdType = Awaited<ReturnType<typeof getCheckerById>>;
+
+export const getCheckerByIdStrict = async (db: PrismaClient, id: string) => {
+  const checker = await getCheckerById(db, id);
   if (!checker) {
     throw new TRPCError({
       code: "NOT_FOUND",
@@ -28,7 +34,6 @@ export const getCheckerById = async (db: PrismaClient, id: string) => {
   }
   return checker;
 };
-export type GetCheckerByIdType = Awaited<ReturnType<typeof getCheckerById>>;
 
 const getUserCheckers = async (db: PrismaClient, user: UserCtx) => {
   return await db.checker.findMany({
@@ -65,7 +70,7 @@ export const checkerRouter = createTRPCRouter({
   getUserChecker: protectedProcedure
     .input(z.object({ checkerId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const checker = await getCheckerById(ctx.db, input.checkerId);
+      const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (checker.createdById !== ctx.user.id) {
         // this is important because if the checker is private, we don't want some random person to be able to see it
         throw new TRPCError({
@@ -180,13 +185,7 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ doc: z.string() }))
     .input(z.object({ checkerId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const checker = await getCheckerById(ctx.db, input.checkerId);
-      if (!checker) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "checker not found",
-        });
-      }
+      const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (
         !checker.isPublic &&
         (!ctx.user || checker.createdById !== ctx.user.id) // if you are not logged in, or not the cretor, you can't use this private checker

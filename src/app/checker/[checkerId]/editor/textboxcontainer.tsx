@@ -46,17 +46,6 @@ export const TextboxContainer = ({
   // we don't know 1) and 2) at the same time. so we use two maps
   const suggestionIdToRef = React.useRef<SuggestionIdToRef>({});
 
-  useEffect(() => {
-    // TODO: only do this on the checker page
-    // editorRef?.current?.focus();
-    // const prevDocument = localStorage.getItem("editorText");
-    // if (prevDocument) {
-    //   updateEditorState(prevDocument);
-    // }
-    // not sure why updateEditorState keeps changing. but it does. But we only want this useEffect to run once
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const debouncedSave = useMemo(
     () =>
       debounce((newState: string) => {

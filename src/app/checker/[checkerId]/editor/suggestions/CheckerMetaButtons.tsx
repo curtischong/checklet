@@ -29,7 +29,6 @@ export const CheckerMetaButtons = ({ checkerId, checkerCreatorId }: Props) => {
         className="mb-4 py-[4px]"
         onClick={() => {
           if (!userId) {
-            // TODO: redirect to signin if they are not logged in
             router.push(`/signin?redirect-reason=clone-checker`);
           } else {
             handleErr(

@@ -1,4 +1,3 @@
-// TODO: I should also put the description of the checker before the instructions
 // checks I'd like to do later:
 // order bullet points from most to least important
 // too much bolding
