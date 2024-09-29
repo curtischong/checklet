@@ -2,7 +2,7 @@
 
 rm -rf .next
 
-npm run build
+npm run build || { echo "npm run build failed"; exit 1; }
 
  # https://github.com/vercel/next.js/issues/49283
  # the static files are NOT copied to the .next directory under standalone because

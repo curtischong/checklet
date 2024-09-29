@@ -71,15 +71,15 @@ export async function middleware(request: NextRequest) {
       });
     },
     // eslint-disable-next-line @typescript-eslint/require-await
-    handleInvalidToken: async (reason) => {
-      console.info("Missing or malformed credentials", { reason });
+    handleInvalidToken: async (_reason) => {
+      // console.info("Missing or malformed credentials", { reason });
       const res = NextResponse.next();
       res.headers.set(requestPathHeaderName, pathname);
       return res;
     },
     // eslint-disable-next-line @typescript-eslint/require-await
-    handleError: async (error) => {
-      console.error("Unhandled authentication error", { error });
+    handleError: async (_error) => {
+      // console.error("Unhandled authentication error", { error });
       const res = NextResponse.next();
       res.headers.set(requestPathHeaderName, pathname);
       return res;
