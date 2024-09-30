@@ -282,8 +282,8 @@ export const SuggestionsContainer: React.FC<Props> = ({
       </div>
       <div
         className="px-4"
-        // style={{ overflow: "auto" }}
         style={{
+          // add up all the heights and margin tops of the elements above
           maxHeight: "calc(100vh - 50px - 40px - 5px - 5px - 50px - 5px)",
           overflow: "auto",
         }}
