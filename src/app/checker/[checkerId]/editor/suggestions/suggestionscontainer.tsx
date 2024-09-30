@@ -51,6 +51,8 @@ export const Sorters = {
     a.tipName.localeCompare(b.tipName),
 };
 
+const SCROLL_TIMEOUT = 4000;
+
 export const SuggestionsContainer: React.FC<Props> = ({
   setIsLoading,
   isLoading,
@@ -69,7 +71,36 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
   const [sortType, setSortType] = useState(SortType.TextOrder);
 
+  // const [isPageScrolling, setIsPageScrolling] = useState(false);
+  const scrollTimeout = useRef<number | undefined>();
+
   const { checkerId } = useParams();
+
+  useEffect(() => {
+    const handlePageScroll = () => {
+      // Set state to true while the page is scrolling
+      // setIsPageScrolling(true);
+
+      // Clear the previous timeout to reset the timer
+      if (scrollTimeout.current) {
+        window.clearTimeout(scrollTimeout.current);
+      }
+
+      // Set a timeout to detect when the scrolling has stopped
+      scrollTimeout.current = window.setTimeout(() => {
+        // setIsPageScrolling(false); // Scrolling has stopped
+        // suggestionsContainerRef.current?.removeEventListener("scroll", onScrol);
+      }, SCROLL_TIMEOUT);
+    };
+
+    // Add the event listener to the window for page scroll
+    window.addEventListener("scroll", handlePageScroll);
+
+    return () => {
+      // Cleanup event listener on unmount
+      window.removeEventListener("scroll", handlePageScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const sorted = [...suggestions].sort(Sorters[sortType]);
@@ -289,6 +320,12 @@ export const SuggestionsContainer: React.FC<Props> = ({
           overscrollBehavior: "contain",
         }}
         ref={suggestionsContainerRef}
+        // onScroll={(event) => {
+        //   console.log("isPageScrolling", isPageScrolling);
+        //   if (isPageScrolling) {
+        //     event.stopPropagation();
+        //   }
+        // }}
       >
         {renderSuggestions()}
       </div>
