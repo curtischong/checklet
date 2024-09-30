@@ -134,69 +134,62 @@ export const Editor = ({
   );
 
   return (
-    <div className="mx-auto w-full">
-      <div className="flex flex-row space-x-10">
+    <div className="mx-auto flex w-full flex-row">
+      <div
+        className="textbox w-[70%]"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100vh",
+          flexGrow: 1,
+        }}
+      >
         <div
-          className="textbox"
+          className="flex-0"
           style={{
-            display: "flex",
-            flexDirection: "column",
-            height: "100vh",
-            flexGrow: 1,
+            flexGrow: 0,
+            flexBasis: "auto",
           }}
         >
-          <div
-            className="flex-0"
-            style={{
-              flexGrow: 0,
-              flexBasis: "auto",
-            }}
-          >
-            <EditorHeader storefront={checkerStorefront} />
-          </div>
-          <div
-            className="flex-1"
-            style={{
-              flexGrow: 1,
-              flexBasis: "auto",
-            }}
-          >
-            <TextboxContainer
-              storefront={checkerStorefront}
-              activeSuggestion={activeSuggestion}
-              updateActiveSuggestion={setActiveSuggestion}
-              suggestions={suggestions}
-              editorState={editorState}
-              updateEditorState={(newText) => {
-                setHasModifiedTextAfterChecking(newText !== "");
-                updateEditorState(editorState, newText, suggestions);
-              }}
-              isLoading={isLoading}
-              editorRef={editorRef}
-              isSavingToLocalStorage={isSavingToLocalStorage}
-            />
-          </div>
+          <EditorHeader storefront={checkerStorefront} />
         </div>
         <div
+          className="flex-1"
           style={{
-            flexBasis: 2,
+            flexGrow: 1,
+            flexBasis: "auto",
           }}
         >
-          <SuggestionsContainer
-            setHasModifiedTextAfterChecking={setHasModifiedTextAfterChecking}
-            isLoading={isLoading}
-            setIsLoading={setIsLoading}
-            setSuggestions={setSuggestions}
-            suggestions={suggestions}
-            activeSuggestion={activeSuggestion}
-            setActiveSuggestion={setActiveSuggestion}
-            editorState={editorState}
-            acceptSuggestion={acceptSuggestion}
-            hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
+          <TextboxContainer
             storefront={checkerStorefront}
+            activeSuggestion={activeSuggestion}
+            updateActiveSuggestion={setActiveSuggestion}
+            suggestions={suggestions}
+            editorState={editorState}
+            updateEditorState={(newText) => {
+              setHasModifiedTextAfterChecking(newText !== "");
+              updateEditorState(editorState, newText, suggestions);
+            }}
+            isLoading={isLoading}
+            editorRef={editorRef}
+            isSavingToLocalStorage={isSavingToLocalStorage}
           />
         </div>
       </div>
+      <div className="w-[30%]"></div>
+      <SuggestionsContainer
+        setHasModifiedTextAfterChecking={setHasModifiedTextAfterChecking}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        setSuggestions={setSuggestions}
+        suggestions={suggestions}
+        activeSuggestion={activeSuggestion}
+        setActiveSuggestion={setActiveSuggestion}
+        editorState={editorState}
+        acceptSuggestion={acceptSuggestion}
+        hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
+        storefront={checkerStorefront}
+      />
     </div>
   );
 };

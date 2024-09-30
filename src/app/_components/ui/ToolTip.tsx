@@ -91,7 +91,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   };
 
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block select-none">
       {childWithProps}
       <div
         ref={tooltipRef}

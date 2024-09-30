@@ -252,9 +252,8 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const pathName = usePathname();
 
   return (
-    <div className="mt-14 flex w-[400px] flex-col">
-      <div></div>
-      <div className="mx-auto flex flex-row items-center justify-normal space-x-8">
+    <div className="fixed right-10 mt-[50px] flex w-[400px] flex-col">
+      <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
         <LoadingButton
           onClick={checkDocument}
           loading={isLoading}
@@ -271,38 +270,23 @@ export const SuggestionsContainer: React.FC<Props> = ({
             />
           </div>
         )}
-        {/* <EnterApiKeyModal
-                    isOpen={isEnterApiKeyOpen}
-                    setIsOpen={setIsEnterApiKeyOpen}
-                    updateModelType={updateModelType}
-                />
-                <div className="w-[108px]">
-                    <SlidingRadioButton
-                        setSelected={(newModelName: string) => {
-                            const newModelType = nameToModelType(newModelName);
-                            if (newModelType === ModelType.o1) {
-                                setIsEnterApiKeyOpen(true);
-                            }
-                            updateModelType(newModelType as ModelType);
-                        }}
-                        selected={modelTypeToName(modelType)}
-                        options={[ModelType.GPT4o, ModelType.o1].map(
-                            modelTypeToName,
-                        )}
-                        className="py-1"
-                    />
-                </div> */}
       </div>
-      <div className="mt-2 h-2">
+      <div className="mt-[5px] h-[5px]">
         {isLoading && <LoadingBar duration={editorState.length / 100 + 4} />}
       </div>
-      <SuggestionsHeader
-        suggestions={sortedSuggestions}
-        setSortType={setSortType}
-      />
+      <div className="mt-[5px] h-[50px]">
+        <SuggestionsHeader
+          suggestions={sortedSuggestions}
+          setSortType={setSortType}
+        />
+      </div>
       <div
         className="px-4"
-        style={{ maxHeight: "calc(70vh)", overflow: "auto" }}
+        // style={{ overflow: "auto" }}
+        style={{
+          maxHeight: "calc(100vh - 50px - 40px - 5px - 5px - 50px - 5px)",
+          overflow: "auto",
+        }}
         ref={suggestionsContainerRef}
       >
         {renderSuggestions()}
@@ -337,7 +321,7 @@ const SuggestionsHeader = ({
   setSortType: SetState<SortType>;
 }) => {
   return (
-    <div className="text-16 mt-2 flex pb-4 pt-1 font-bold">
+    <div className="text-16 flex pb-4 pt-1 font-bold">
       {suggestions.length > 0 && (
         <>
           <div className="ml-4 flex flex-row">
