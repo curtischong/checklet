@@ -1,8 +1,7 @@
 "use client";
 import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
 import { type GetCheckerByIdType } from "@/server/api/routers/checker/checker";
-import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 
 interface Props {
   checker: NonNullable<GetCheckerByIdType>;
@@ -10,15 +9,9 @@ interface Props {
 
 export const EditorPage = ({ checker }: Props) => {
   const [editorState, setEditorState] = React.useState("");
-  const router = useRouter();
-
-  // so when ppl copy and paste the url, they get a descripton of what the checker is
-  useEffect(() => {
-    void router.push(`#${checker.name}`);
-  }, [router, checker]);
 
   return (
-    <div className="mx-10">
+    <div className="mx-10 mt-8">
       <Editor
         checkerStorefront={{
           name: checker.name,

@@ -34,6 +34,13 @@ export const Editor = ({
   const [isLoading, setIsLoading] = React.useState(false);
   const editorRef = useRef<RichTextareaHandle | null>(null);
 
+  // so when ppl copy and paste the url, they get a descripton of what the checker is
+  useEffect(() => {
+    // do NOT use router.push because it'll reload the page. Also. Chrome will try to find the "Checker" word in the page and
+    // center the page to that location - meaning the page won't start at the top of the page
+    window.location.hash = `#${checkerStorefront.name}`;
+  }, [checkerStorefront]);
+
   useEffect(() => {
     if (isFocusedOnStart) {
       editorRef?.current?.focus();
