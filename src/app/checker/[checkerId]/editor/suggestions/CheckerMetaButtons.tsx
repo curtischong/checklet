@@ -26,7 +26,7 @@ export const CheckerMetaButtons = ({ checkerId, checkerCreatorId }: Props) => {
             router.push(`/checker/${checkerId}/edit`);
           }}
         >
-          Edit Prompt
+          Edit Checker
         </button>
       )}
       <div className={`flex flex-row`}>

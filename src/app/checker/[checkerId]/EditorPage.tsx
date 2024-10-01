@@ -11,7 +11,9 @@ export const EditorPage = ({ checker }: Props) => {
   const [editorState, setEditorState] = React.useState("");
 
   return (
-    <div className="mx-10 mt-8">
+    // try not to yolo add margin or padding here. since it will mess up the position of the suggestions box. add margine individually to the suggestion box and the textbox
+    // look for marginTop: "30px", in Editor.tsx (this adds margin individually to the textbox)
+    <div className={`mx-10 h-full`}>
       <Editor
         checkerStorefront={{
           name: checker.name,

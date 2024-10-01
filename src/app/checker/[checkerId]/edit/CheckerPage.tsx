@@ -176,12 +176,6 @@ export const CheckerPage = ({
             </div>
           )}
 
-          {/* <LabelWithHelp
-            className="ml-1 mt-4 text-lg font-bold"
-            label="Test Your Checker below!"
-            helpText="Use this to test your prompt."
-            helpIconClassName="mt-[7px]"
-          /> */}
           <h2 className="mt-8 text-center font-mackinac text-2xl">
             Test your checker below!
           </h2>

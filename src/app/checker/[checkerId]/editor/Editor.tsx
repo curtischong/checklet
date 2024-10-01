@@ -38,7 +38,9 @@ export const Editor = ({
   useEffect(() => {
     // do NOT use router.push because it'll reload the page. Also. Chrome will try to find the "Checker" word in the page and
     // center the page to that location - meaning the page won't start at the top of the page
-    window.location.hash = `#${checkerStorefront.name}`;
+    // https://stackoverflow.com/questions/2305069/can-you-use-hash-navigation-without-affecting-history
+    const url = `${window.location.pathname}${window.location.search}#${checkerStorefront.name.replaceAll(" ", "-")}`;
+    window.history.replaceState(null, "", url);
   }, [checkerStorefront]);
 
   useEffect(() => {
@@ -141,14 +143,14 @@ export const Editor = ({
   );
 
   return (
-    <div className="mx-auto flex w-full flex-row">
+    <div className="mx-auto flex h-full w-full flex-row">
       <div
         className="textbox w-[70%]"
         style={{
           display: "flex",
           flexDirection: "column",
-          height: "100vh",
           flexGrow: 1,
+          marginTop: "30px",
         }}
       >
         <div
@@ -183,7 +185,7 @@ export const Editor = ({
           />
         </div>
       </div>
-      <div className="w-[30%]"></div>
+      {/* don't wrap this container in a div. style it by adding styles to the div inside SuggestionsContainer */}
       <SuggestionsContainer
         setHasModifiedTextAfterChecking={setHasModifiedTextAfterChecking}
         isLoading={isLoading}
