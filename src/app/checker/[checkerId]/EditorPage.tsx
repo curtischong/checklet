@@ -3,6 +3,7 @@ import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
 import { type GetCheckerByIdType } from "@/server/api/routers/checker/checker";
 import React from "react";
 
+// export const EditorTopPadding = 50;
 interface Props {
   checker: NonNullable<GetCheckerByIdType>;
 }
@@ -11,7 +12,8 @@ export const EditorPage = ({ checker }: Props) => {
   const [editorState, setEditorState] = React.useState("");
 
   return (
-    <div className="mx-10 mt-8">
+    // <div className={`mx-10 h-full mt-[${EditorTopPadding}px]`}>
+    <div className={`mx-10 h-full`}>
       <Editor
         checkerStorefront={{
           name: checker.name,

@@ -51,8 +51,6 @@ export const Sorters = {
     a.tipName.localeCompare(b.tipName),
 };
 
-const SCROLL_TIMEOUT = 4000;
-
 export const SuggestionsContainer: React.FC<Props> = ({
   setIsLoading,
   isLoading,
@@ -254,7 +252,8 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const pathName = usePathname();
 
   return (
-    <div className="fixed right-10 mt-[50px] flex w-[400px] flex-col">
+    // <div className="sticky right-10 top-0 mt-[50px] flex w-[400px] flex-col">
+    <div className="sticky right-10 top-0 flex h-full flex-col pt-[50px]">
       <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
         <LoadingButton
           onClick={checkDocument}
@@ -276,7 +275,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
       <div className="mt-[5px] h-[5px]">
         {isLoading && <LoadingBar duration={editorState.length / 100 + 4} />}
       </div>
-      <div className="mt-[5px] h-[50px]">
+      <div className="mt-[5px] h-[40px]">
         <SuggestionsHeader
           suggestions={sortedSuggestions}
           setSortType={setSortType}
@@ -286,7 +285,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
         className="px-4"
         style={{
           // add up all the heights and margin tops of the elements above
-          maxHeight: "calc(100vh - 50px - 40px - 5px - 5px - 50px - 5px)",
+          maxHeight: "calc(100vh - 50px - 40px - 5px - 5px - 40px - 5px)",
           overflow: "auto",
           overscrollBehavior: "contain",
         }}

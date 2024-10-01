@@ -143,7 +143,7 @@ export const Editor = ({
   );
 
   return (
-    <div className="mx-auto flex w-full flex-row">
+    <div className="mx-auto flex h-full w-full flex-row">
       <div
         className="textbox w-[70%]"
         style={{
@@ -151,6 +151,7 @@ export const Editor = ({
           flexDirection: "column",
           // height: "100vh",
           flexGrow: 1,
+          marginTop: "30px",
         }}
       >
         <div
@@ -185,7 +186,8 @@ export const Editor = ({
           />
         </div>
       </div>
-      <div className="w-[30%]"></div>
+      {/* <div className="w-[30%]"></div> */}
+      {/* <div className="h-[100vh] w-[30%]"> */}
       <SuggestionsContainer
         setHasModifiedTextAfterChecking={setHasModifiedTextAfterChecking}
         isLoading={isLoading}
@@ -200,5 +202,6 @@ export const Editor = ({
         storefront={checkerStorefront}
       />
     </div>
+    // </div>
   );
 };
