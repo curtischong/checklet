@@ -173,8 +173,11 @@ export const TextboxContainer = ({
               const firstSuggestionId: SuggestionId = activeSuggestions
                 .values()
                 .next().value;
+              if (isInActiveSuggestion) {
+                activeSuggestionRef = ref;
+              }
 
-              const span = (
+              res.push(
                 <span
                   ref={ref}
                   key={res.length}
@@ -183,13 +186,8 @@ export const TextboxContainer = ({
                   onClick={() => handleUnderlineClicked(firstSuggestionId)}
                 >
                   {v.substring(start, end)}
-                </span>
+                </span>,
               );
-              if (isInActiveSuggestion) {
-                activeSuggestionRef = ref;
-              }
-
-              res.push(span);
             } else {
               res.push(<span key={res.length}>{v.substring(start, end)}</span>);
             }
