@@ -103,10 +103,12 @@ export const TextboxContainer = ({
   return (
     <div
       className="textbox col-span-3"
-      style={{
-        // overflow: "auto",
-        height: "100%",
-      }}
+      style={
+        {
+          // overflow: "auto",
+          // height: "100%",
+        }
+      }
     >
       <RichTextarea
         placeholder={storefront.placeholder || "Write your document here!"}
@@ -120,7 +122,7 @@ export const TextboxContainer = ({
         // the styling MUST be done via the style prop, not tailwind
         style={{
           width: "100%",
-          height: "100%", // I couldn't remove the display-inline block. so I had to make this smaller to remove the scroll bar
+          // height: "100%", // I couldn't remove the display-inline block. so I had to make this smaller to remove the scroll bar
           display: "block",
         }}
         disabled={isLoading}
