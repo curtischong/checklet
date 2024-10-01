@@ -42,6 +42,8 @@ export const CheckerPage = ({
     SubmittingState.NotSubmitting,
   );
   const [isPublic, setIsPublic] = React.useState(false);
+  const [isInitialCheckerFetched, setIsInitialCheckerFetched] =
+    React.useState(false);
 
   useEffect(() => {
     handleErr(
@@ -52,6 +54,7 @@ export const CheckerPage = ({
         setPrompt(checker.prompt);
         setEditorState(checker.sampleDoc);
         setIsPublic(checker.isPublic);
+        setIsInitialCheckerFetched(true);
       },
     );
   }, [checkerId]);
@@ -78,8 +81,11 @@ export const CheckerPage = ({
         newPrompt: string,
         newSampleDoc: string,
       ) => {
-        // const checkerId =
-        //     "1f981bc8190cc7be55aea57245e5a0aa255daea3e741ea9bb0153b23881b6161"; // use this if you want to test security rules
+        // only update the checker if we've fetched the initial checker (so we don't accidentally clear the checker on startup)
+        if (!isInitialCheckerFetched) {
+          return;
+        }
+        // PERF: this sends an extra mutate command when we first start up the checker.
         updateChecker.mutate({
           id: checkerId,
           name: newName,
@@ -90,7 +96,7 @@ export const CheckerPage = ({
       },
       1000,
     ),
-    [],
+    [isInitialCheckerFetched],
   );
 
   useEffect(() => {
