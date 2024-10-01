@@ -252,7 +252,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const pathName = usePathname();
 
   return (
-    // <div className="sticky right-10 top-0 mt-[50px] flex w-[400px] flex-col">
     <div className="sticky right-10 top-0 flex h-full flex-col pt-[50px]">
       <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
         <LoadingButton

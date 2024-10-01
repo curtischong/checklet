@@ -149,7 +149,6 @@ export const Editor = ({
         style={{
           display: "flex",
           flexDirection: "column",
-          // height: "100vh",
           flexGrow: 1,
           marginTop: "30px",
         }}
@@ -186,8 +185,7 @@ export const Editor = ({
           />
         </div>
       </div>
-      {/* <div className="w-[30%]"></div> */}
-      {/* <div className="h-[100vh] w-[30%]"> */}
+      {/* don't wrap this container in a div. style it by adding styles to the div inside SuggestionsContainer */}
       <SuggestionsContainer
         setHasModifiedTextAfterChecking={setHasModifiedTextAfterChecking}
         isLoading={isLoading}
@@ -202,6 +200,5 @@ export const Editor = ({
         storefront={checkerStorefront}
       />
     </div>
-    // </div>
   );
 };
