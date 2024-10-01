@@ -7,12 +7,17 @@ import {
   newDocRange,
   type Suggestion,
   type SuggestionId,
-  type SuggestionIdToRef,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { MAX_EDITOR_LEN } from "@/constants";
 import { type SetState } from "@/utils/types";
 import debounce from "lodash.debounce";
-import React, { type RefObject, useCallback, useEffect, useMemo } from "react";
+import React, {
+  type RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { toast } from "react-toastify";
 import { RichTextarea, type RichTextareaHandle } from "rich-textarea";
 
@@ -44,7 +49,8 @@ export const TextboxContainer = ({
   // 1) the blockLoc and the range together OR
   // 2) the rangeBlockLoc and the ref to the span
   // we don't know 1) and 2) at the same time. so we use two maps
-  const suggestionIdToRef = React.useRef<SuggestionIdToRef>({});
+
+  const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
 
   const debouncedSave = useMemo(
     () =>
@@ -60,28 +66,8 @@ export const TextboxContainer = ({
     }
   }, [isSavingToLocalStorage, editorState, debouncedSave]);
 
-  useEffect(() => {
-    if (activeSuggestion) {
-      const ref = suggestionIdToRef.current[activeSuggestion.suggestionId];
-      if (ref?.current) {
-        // we cannot use scrollIntoView because there is a bug in its implementation in chrome
-        // I even tried wrapping it in a requestAnimationFrame but it doesn't work
-        // https://github.com/facebook/react/issues/23396
-        const scrollHeight = ref.current.offsetTop;
-        editorRef?.current?.scrollTo({
-          left: 0,
-          top: scrollHeight - editorRef?.current.offsetHeight / 2,
-          behavior: "smooth",
-        });
-      }
-    }
-  }, [activeSuggestion, editorRef]);
-
   const handleUnderlineClicked = useCallback(
-    (suggestionId?: SuggestionId) => {
-      if (!suggestionId) {
-        return;
-      }
+    (suggestionId: SuggestionId) => {
       // PERF: try using a map, but since there's only so few suggestions, it might not be worth it
       const suggestion = suggestions.find((s) => {
         return s.suggestionId === suggestionId;
@@ -159,10 +145,9 @@ export const TextboxContainer = ({
           const sortedPoints = Array.from(allPoints);
           sortedPoints.sort((a, b) => a - b);
 
-          suggestionIdToRef.current = {}; // reset the map
-
           const activeSuggestions = new Set<SuggestionId>();
           const res: JSX.Element[] = [];
+          let activeSuggestionRef = React.createRef<HTMLSpanElement>();
           for (let i = 0; i < sortedPoints.length - 1; i++) {
             const start = sortedPoints[i]!;
             const end = sortedPoints[i + 1]!;
@@ -185,27 +170,54 @@ export const TextboxContainer = ({
                 : {};
 
               const ref = React.createRef<HTMLSpanElement>();
-              let clickSuggestionId: SuggestionId | undefined = undefined;
-              for (const suggestionId of activeSuggestions) {
-                clickSuggestionId = suggestionId;
-                suggestionIdToRef.current[suggestionId] = ref;
-              }
+              const firstSuggestionId: SuggestionId = activeSuggestions
+                .values()
+                .next().value;
 
-              res.push(
+              const span = (
                 <span
                   ref={ref}
                   key={res.length}
                   className="border-b-[2px] border-[#189bf2]"
                   style={style}
-                  onClick={() => handleUnderlineClicked(clickSuggestionId)}
+                  onClick={() => handleUnderlineClicked(firstSuggestionId)}
                 >
                   {v.substring(start, end)}
-                </span>,
+                </span>
               );
+              if (isInActiveSuggestion) {
+                activeSuggestionRef = ref;
+              }
+
+              res.push(span);
             } else {
               res.push(<span key={res.length}>{v.substring(start, end)}</span>);
             }
           }
+
+          // scrolls the window to the active suggestion
+          // the reason why we aren't using a map of refs like so: is becuase this component is rendered multiple times when the user clicks on a suggestion (e.g. items are highlighted). So the refs we assigned would become outdated
+          // by the time we try to scroll to the active suggestion via a function in useEffect
+          //   const suggestionIdToRef = React.useRef<SuggestionIdToRef>({});
+          // need to settimeout so the ref object is attached to the dom
+          timeoutIdRef.current = setTimeout(() => {
+            // if (timeoutIdRef.current) {
+            //   clearTimeout(timeoutIdRef.current);
+            // }
+            const suggestionTop =
+              activeSuggestionRef.current?.getBoundingClientRect().top;
+            // console.log("suggestionTop", suggestionTop);
+            console.log("acitveSuggestionRef", activeSuggestionRef);
+            if (suggestionTop) {
+              // window.scrollTo({ top: suggestionTop, behavior: "smooth" });
+
+              // TODO: scroll into view is a bit buggy.
+              activeSuggestionRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+            }
+          }, 100);
 
           // we need to append the (non-underlined) text from the last suggestion to the end of the string
           if (sortedPoints[sortedPoints.length - 1]! < v.length) {

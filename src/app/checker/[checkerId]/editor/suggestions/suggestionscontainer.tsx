@@ -11,6 +11,7 @@ import LoadingBar from "@/app/checker/[checkerId]/editor/LoadingBar";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import { SuggestionCard } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
 import { apiClient, handleErr } from "@/trpc/react";
+import { scrollToChild } from "@/utils/scroll";
 import { pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
 import { useParams, usePathname } from "next/navigation";
@@ -92,26 +93,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
     },
     [activeSuggestion, setActiveSuggestion],
   );
-
-  // https://chatgpt.com/share/66f1ed89-a824-800e-b29b-f64e80654f1d
-  function scrollToChild(parent: HTMLElement, child: HTMLElement) {
-    // Get the bounding rectangles for parent and child
-    const parentRect = parent.getBoundingClientRect();
-    const childRect = child.getBoundingClientRect();
-
-    // Calculate the child’s position relative to the parent
-    const relativeTop = childRect.top - parentRect.top;
-
-    // Calculate the vertical center of the parent and child
-    const parentCenter = parent.clientHeight / 2;
-    const childCenter = childRect.height / 2;
-
-    // Scroll the parent to bring the child into the center
-    parent.scrollTo({
-      top: parent.scrollTop + relativeTop - parentCenter + childCenter,
-      behavior: "smooth", // Enable smooth scrolling
-    });
-  }
 
   useEffect(() => {
     if (activeSuggestion) {
