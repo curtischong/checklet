@@ -30,11 +30,6 @@ export const CheckerMetaButtons = ({ checkerId, checkerCreatorId }: Props) => {
         </button>
       )}
       <div className={`flex flex-row`}>
-        <HelpIcon
-          className={classNames("mr-2")}
-          text={`Don't agree with this Checker's suggestions? Modify it by cloning it here!`}
-          placement="left"
-        />
         <button
           onClick={() => {
             if (!userId) {
@@ -53,6 +48,11 @@ export const CheckerMetaButtons = ({ checkerId, checkerCreatorId }: Props) => {
         >
           Clone
         </button>
+        <HelpIcon
+          className={classNames("ml-2")}
+          text={`Don't agree with this Checker's suggestions? Modify it by cloning it here!`}
+          placement="bottom-end"
+        />
       </div>
     </>
   );

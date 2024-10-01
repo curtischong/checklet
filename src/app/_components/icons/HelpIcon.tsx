@@ -1,10 +1,10 @@
-import { Tooltip } from "@/app/_components/ui/ToolTip";
+import { type Placement, Tooltip } from "@/app/_components/ui/ToolTip";
 import React from "react";
 
 interface HelpIconProps {
   text: string | JSX.Element;
   className?: string;
-  placement?: "top" | "bottom" | "left" | "right";
+  placement?: Placement;
 }
 
 export const HelpIcon: React.FC<HelpIconProps> = ({
