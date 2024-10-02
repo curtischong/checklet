@@ -62,39 +62,43 @@ export const TextboxContainer = ({
     }
   }, [isSavingToLocalStorage, editorState, debouncedSave]);
 
+  // setTimeout(() => {
+  //   console.log("suggestionIdToRef.current", suggestionIdToRef.current);
+  // }, 1000);
   useEffect(() => {
-    if (activeSuggestion) {
-      setTimeout(() => {
-        console.log("suggestionIdToRef.current", suggestionIdToRef.current);
-        const ref = suggestionIdToRef.current[activeSuggestion.suggestionId];
-        console.log("ref", ref?.current);
-        if (ref?.current) {
-          // we cannot use scrollIntoView because there is a bug in its implementation in chrome
-          // I even tried wrapping it in a requestAnimationFrame but it doesn't work
-          // https://github.com/facebook/react/issues/23396
-          // const scrollHeight = ref.current.offsetTop;
-          // editorRef?.current?.scrollTo({
-          //   left: 0,
-          //   top: scrollHeight - editorRef?.current.offsetHeight / 2,
-          //   behavior: "smooth",
-          // });
-
-          const suggestionTop = ref.current?.getBoundingClientRect().top;
-          // console.log("suggestionTop", suggestionTop);
-          // console.log("acitveSuggestionRef", activeSuggestionRef);
-          if (suggestionTop) {
-            // window.scrollTo({ top: suggestionTop, behavior: "smooth" });
-
-            // TODO: scroll into view is a bit buggy.
-            ref.current?.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
-          }
-        }
-      }, 1000);
+    if (!activeSuggestion) {
+      return;
     }
-  }, [activeSuggestion, editorRef]);
+    // setTimeout(() => {
+    // console.log("suggestionIdToRef.current", suggestionIdToRef.current);
+    const ref = suggestionIdToRef.current[activeSuggestion.suggestionId];
+    console.log("ref", ref?.current);
+    if (!ref?.current) {
+      return;
+    }
+    // we cannot use scrollIntoView because there is a bug in its implementation in chrome
+    // I even tried wrapping it in a requestAnimationFrame but it doesn't work
+    // https://github.com/facebook/react/issues/23396
+    // const scrollHeight = ref.current.offsetTop;
+    // editorRef?.current?.scrollTo({
+    //   left: 0,
+    //   top: scrollHeight - editorRef?.current.offsetHeight / 2,
+    //   behavior: "smooth",
+    // });
+
+    const suggestionTop = ref.current?.getBoundingClientRect().top;
+    // console.log("suggestionTop", suggestionTop);
+    // console.log("acitveSuggestionRef", activeSuggestionRef);
+    if (suggestionTop) {
+      window.scrollTo({ top: suggestionTop, behavior: "smooth" });
+      // TODO: scroll into view is a bit buggy.
+      // ref.current?.scrollIntoView({
+      //   behavior: "smooth",
+      //   block: "center",
+      // });
+    }
+    // }, 1000);
+  }, [activeSuggestion]);
 
   const handleUnderlineClicked = useCallback(
     (suggestionId?: SuggestionId) => {
@@ -238,12 +242,19 @@ export const TextboxContainer = ({
                   }
                 : {};
 
+              // we want this span to have a single ref pointing to it
               const ref = React.createRef<HTMLSpanElement>();
+              // setTimeout(() => {
+              //   console.log("created ref", ref);
+              // }, 1000);
               let clickSuggestionId: SuggestionId | undefined = undefined;
               for (const suggestionId of activeSuggestions) {
                 clickSuggestionId = suggestionId;
+                // setTimeout(() => {
                 suggestionIdToRef.current[suggestionId] = ref;
+                // }, 100);
               }
+              // console.log("activeSuggestions.length", activeSuggestions.size);
 
               res.push(
                 <span
@@ -257,6 +268,7 @@ export const TextboxContainer = ({
                 </span>,
               );
             } else {
+              // TODO: PERF: do we need to push the text in spans? why can't it just be text?
               res.push(<span key={res.length}>{v.substring(start, end)}</span>);
             }
           }

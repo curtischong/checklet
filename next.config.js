@@ -5,6 +5,10 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = { output: "standalone", trailingSlash: false };
+const config = {
+  output: "standalone",
+  trailingSlash: false,
+  reactStrictMode: false,
+};
 
 export default config;
