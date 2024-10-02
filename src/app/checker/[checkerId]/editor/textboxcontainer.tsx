@@ -126,6 +126,34 @@ export const TextboxContainer = ({
         onChange={(e) => {
           updateEditorState(e.target.value);
         }}
+        onSelectionChange={(pos) => {
+          if (!editorRef.current) {
+            return;
+          }
+          const cursorTop = (pos as any).top;
+          if (!cursorTop) {
+            return;
+          }
+
+          // scroll the page up or down if the cursor is too far up or down
+
+          // const cursorTopRelativeToPage = cursorTop + window.scrollY;
+          const vh = document.documentElement.clientHeight;
+
+          if (cursorTop > 0.8 * vh) {
+            // cursor is too far down. scroll to the top
+            window.scrollTo({
+              top: window.scrollY + 100,
+              behavior: "smooth",
+            });
+          } else if (cursorTop < 0.2 * vh) {
+            // cursor is too far up. scroll to the bottom
+            window.scrollTo({
+              top: window.scrollY - 100,
+              behavior: "smooth",
+            });
+          }
+        }}
         autoHeight={true}
         className="resize-none bg-white pb-32 tracking-[0.01em] outline-none" // tracking increases letter spacing
         // the styling MUST be done via the style prop, not tailwind
