@@ -126,6 +126,20 @@ export const TextboxContainer = ({
         onChange={(e) => {
           updateEditorState(e.target.value);
         }}
+        onSelectionChange={(pos) => {
+          if (!editorRef.current) {
+            return;
+          }
+          const cursorTop = (pos as any).top;
+          if (cursorTop) {
+            const cursorTopRelativeToPage = cursorTop + window.scrollY;
+            window.scrollTo({
+              top: cursorTopRelativeToPage,
+              behavior: "smooth",
+            });
+          }
+          // setCaretPosition(pos);
+        }}
         autoHeight={true}
         className="resize-none bg-white pb-32 tracking-[0.01em] outline-none" // tracking increases letter spacing
         // the styling MUST be done via the style prop, not tailwind
