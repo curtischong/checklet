@@ -45,52 +45,30 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
         }}
       >
         <div className="flex overflow-hidden text-xs">
-          {isActive ? (
-            <div className="flex w-full cursor-pointer flex-row text-[#6e758b]">
-              <div className="flex-grow" style={{ flexBasis: "0" }}>
-                {suggestion.tipName}
-              </div>
-            </div>
-          ) : (
-            <div className="flex">
-              <div className="flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap">
-                {diffResult.map((part, index) => {
-                  let partClass = "";
-                  if (part.added) {
-                    partClass = "font-bold";
-                  } else if (part.removed) {
-                    partClass = "text-gray-500 line-through";
-                  }
-                  return (
-                    <span key={index} className={partClass}>
-                      {part.value}
-                    </span>
-                  );
-                })}
-              </div>
-              <div className="ml-2 overflow-hidden font-normal text-gray-600">
-                {suggestion.tipName}
-              </div>
-            </div>
-          )}
-        </div>
-        {isActive && (
-          <div className="px-[10px] py-[15px]">
-            <div className="flex pb-4 text-base">
-              {/* Assuming SuggestionChange is modified similarly or adjusted accordingly */}
-              <SuggestionChange
-                suggestion={suggestion}
-                checkType={CheckType.rephrase}
-                onReplaceClick={onReplaceClick}
-              />
-            </div>
-            <div className="text-[13px]">
-              <Markdown remarkPlugins={[remarkGfm]}>
-                {suggestion.reason}
-              </Markdown>
-            </div>
+          <div className="flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap">
+            {isActive ? (
+              diffResult.map((part, index) => {
+                let partClass = "";
+                if (part.added) {
+                  partClass = "font-bold";
+                } else if (part.removed) {
+                  partClass = "text-gray-500 line-through";
+                }
+                return (
+                  <span key={index} className={partClass}>
+                    {part.value}
+                  </span>
+                );
+              })
+            ) : (
+              <>
+                <span>{suggestion.oldText}</span>
+                <span className="mx-2 my-auto h-1 w-1 rounded-full bg-red-600"></span>
+              </>
+            )}
           </div>
-        )}
+          <div className="ml-2 overflow-hidden font-normal text-gray-600"></div>
+        </div>
       </div>
     );
   },
