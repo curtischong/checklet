@@ -132,13 +132,23 @@ export const TextboxContainer = ({
           }
           const cursorTop = (pos as any).top;
           if (cursorTop) {
-            const cursorTopRelativeToPage = cursorTop + window.scrollY;
-            window.scrollTo({
-              top: cursorTopRelativeToPage,
-              behavior: "smooth",
-            });
+            // const cursorTopRelativeToPage = cursorTop + window.scrollY;
+            const vh = document.documentElement.clientHeight;
+
+            if (cursorTop > 0.8 * vh) {
+              // cursor is too far down. scroll to the top
+              window.scrollTo({
+                top: window.scrollY + 100,
+                behavior: "smooth",
+              });
+            } else if (cursorTop < 0.2 * vh) {
+              // cursor is too far up. scroll to the bottom
+              window.scrollTo({
+                top: window.scrollY - 100,
+                behavior: "smooth",
+              });
+            }
           }
-          // setCaretPosition(pos);
         }}
         autoHeight={true}
         className="resize-none bg-white pb-32 tracking-[0.01em] outline-none" // tracking increases letter spacing
