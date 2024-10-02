@@ -230,17 +230,11 @@ export const TextboxContainer = ({
 
               // we want this span to have a single ref pointing to it
               const ref = React.createRef<HTMLSpanElement>();
-              // setTimeout(() => {
-              //   console.log("created ref", ref);
-              // }, 1000);
               let clickSuggestionId: SuggestionId | undefined = undefined;
               for (const suggestionId of activeSuggestions) {
                 clickSuggestionId = suggestionId;
-                // setTimeout(() => {
                 suggestionIdToRef.current[suggestionId] = ref;
-                // }, 100);
               }
-              // console.log("activeSuggestions.length", activeSuggestions.size);
 
               res.push(
                 <span
