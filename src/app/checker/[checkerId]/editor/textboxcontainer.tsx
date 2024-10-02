@@ -62,42 +62,28 @@ export const TextboxContainer = ({
     }
   }, [isSavingToLocalStorage, editorState, debouncedSave]);
 
-  // setTimeout(() => {
-  //   console.log("suggestionIdToRef.current", suggestionIdToRef.current);
-  // }, 1000);
+  // scroll to the underline when we click on a suggestion
   useEffect(() => {
     if (!activeSuggestion) {
       return;
     }
-    // setTimeout(() => {
-    // console.log("suggestionIdToRef.current", suggestionIdToRef.current);
     const ref = suggestionIdToRef.current[activeSuggestion.suggestionId];
-    console.log("ref", ref?.current);
     if (!ref?.current) {
       return;
     }
     // we cannot use scrollIntoView because there is a bug in its implementation in chrome
     // I even tried wrapping it in a requestAnimationFrame but it doesn't work
     // https://github.com/facebook/react/issues/23396
-    // const scrollHeight = ref.current.offsetTop;
-    // editorRef?.current?.scrollTo({
-    //   left: 0,
-    //   top: scrollHeight - editorRef?.current.offsetHeight / 2,
-    //   behavior: "smooth",
-    // });
+    const underlineRef = ref.current;
+    const rect = underlineRef.getBoundingClientRect();
 
-    const suggestionTop = ref.current?.getBoundingClientRect().top;
-    // console.log("suggestionTop", suggestionTop);
-    // console.log("acitveSuggestionRef", activeSuggestionRef);
-    if (suggestionTop) {
-      window.scrollTo({ top: suggestionTop, behavior: "smooth" });
-      // TODO: scroll into view is a bit buggy.
-      // ref.current?.scrollIntoView({
-      //   behavior: "smooth",
-      //   block: "center",
-      // });
-    }
-    // }, 1000);
+    const scrollTop = document.documentElement.scrollTop;
+    const elementTop = rect.top + scrollTop;
+
+    const vh = document.documentElement.clientHeight;
+    const targetScrollY = elementTop - vh / 2 + rect.height / 2;
+
+    window.scrollTo({ top: targetScrollY, behavior: "smooth" });
   }, [activeSuggestion]);
 
   const handleUnderlineClicked = useCallback(
