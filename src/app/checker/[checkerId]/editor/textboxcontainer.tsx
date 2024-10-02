@@ -119,17 +119,12 @@ export const TextboxContainer = ({
     [suggestions, updateActiveSuggestion],
   );
 
-  const onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateEditorState(e.target.value);
-
-    // scroll the page up or down if the cursor is too far up or down
-
-    // const cursorTopRelativeToPage = cursorTop + window.scrollY;
-    const vh = document.documentElement.clientHeight;
+  const scrollPageWhenCursorIsTooCloseToTopOrBottom = useCallback(() => {
     const cursorTop = cursorTopRef.current;
     if (!cursorTop) {
       return;
     }
+    const vh = document.documentElement.clientHeight;
 
     if (cursorTop > 0.8 * vh) {
       // cursor is too far down. scroll to the top
@@ -144,6 +139,11 @@ export const TextboxContainer = ({
         behavior: "smooth",
       });
     }
+  }, []);
+
+  const onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateEditorState(e.target.value);
+    scrollPageWhenCursorIsTooCloseToTopOrBottom();
   };
 
   return (
