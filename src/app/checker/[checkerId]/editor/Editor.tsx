@@ -1,3 +1,4 @@
+"use client";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { EditorHeader } from "@/app/checker/[checkerId]/editor/EditorHeader";
 import { singleEditDistance } from "@/app/checker/[checkerId]/editor/singleEditDistance";

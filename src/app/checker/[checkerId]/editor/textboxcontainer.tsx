@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -45,6 +46,7 @@ export const TextboxContainer = ({
   // 2) the rangeBlockLoc and the ref to the span
   // we don't know 1) and 2) at the same time. so we use two maps
   const suggestionIdToRef = React.useRef<SuggestionIdToRef>({});
+  const cursorTopRef = React.useRef<number | undefined>(undefined);
 
   const debouncedSave = useMemo(
     () =>
@@ -117,15 +119,40 @@ export const TextboxContainer = ({
     [suggestions, updateActiveSuggestion],
   );
 
+  const scrollPageWhenCursorIsTooCloseToTopOrBottom = useCallback(() => {
+    const cursorTop = cursorTopRef.current;
+    if (!cursorTop) {
+      return;
+    }
+    const vh = document.documentElement.clientHeight;
+
+    if (cursorTop > 0.8 * vh) {
+      // cursor is too far down. scroll to the top
+      window.scrollTo({
+        top: window.scrollY + 100,
+        behavior: "smooth",
+      });
+    } else if (cursorTop < 0.2 * vh) {
+      // cursor is too far up. scroll to the bottom
+      window.scrollTo({
+        top: window.scrollY - 100,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
+  const onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    updateEditorState(e.target.value);
+    scrollPageWhenCursorIsTooCloseToTopOrBottom();
+  };
+
   return (
     <div className="textbox col-span-3">
       <RichTextarea
         placeholder={storefront.placeholder || "Write your document here!"}
         ref={editorRef as any}
         value={editorState}
-        onChange={(e) => {
-          updateEditorState(e.target.value);
-        }}
+        onChange={onTextAreaChange}
         onSelectionChange={(pos) => {
           if (!editorRef.current) {
             return;
@@ -134,25 +161,7 @@ export const TextboxContainer = ({
           if (!cursorTop) {
             return;
           }
-
-          // scroll the page up or down if the cursor is too far up or down
-
-          // const cursorTopRelativeToPage = cursorTop + window.scrollY;
-          const vh = document.documentElement.clientHeight;
-
-          if (cursorTop > 0.8 * vh) {
-            // cursor is too far down. scroll to the top
-            window.scrollTo({
-              top: window.scrollY + 100,
-              behavior: "smooth",
-            });
-          } else if (cursorTop < 0.2 * vh) {
-            // cursor is too far up. scroll to the bottom
-            window.scrollTo({
-              top: window.scrollY - 100,
-              behavior: "smooth",
-            });
-          }
+          cursorTopRef.current = cursorTop;
         }}
         autoHeight={true}
         className="resize-none bg-white pb-32 tracking-[0.01em] outline-none" // tracking increases letter spacing
