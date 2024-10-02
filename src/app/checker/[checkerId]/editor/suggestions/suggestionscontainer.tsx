@@ -9,7 +9,7 @@ import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import LoadingBar from "@/app/checker/[checkerId]/editor/LoadingBar";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
-import { SuggestionCard } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
+import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
 import { apiClient, handleErr } from "@/trpc/react";
 import { scrollToChild } from "@/utils/scroll";
 import { pluralize } from "@/utils/strings";
@@ -114,7 +114,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
           const ref = React.createRef<HTMLDivElement>();
           suggestionsRefs.current[s.suggestionId] = ref;
           return (
-            <SuggestionCard
+            <SuggestionCard2
               key={index}
               suggestion={s}
               activeSuggestion={activeSuggestion}
@@ -125,6 +125,18 @@ export const SuggestionsContainer: React.FC<Props> = ({
               ref={ref}
             />
           );
+          // return (
+          //   <SuggestionCard
+          //     key={index}
+          //     suggestion={s}
+          //     activeSuggestion={activeSuggestion}
+          //     onClick={() => onCollapseClick(s)}
+          //     onReplaceClick={(acceptedOption) =>
+          //       acceptSuggestion(s, acceptedOption)
+          //     }
+          //     ref={ref}
+          //   />
+          // );
         });
       }
 
