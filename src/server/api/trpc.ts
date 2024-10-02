@@ -14,13 +14,13 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { db } from "@/server/db";
+import serviceAccount from "@/firebase/checkletapp-firebase-adminsdk-25jmk-cd91baf75e.json";
 import { serverConfig } from "@/firebase/config";
-import { getCookiesTokens } from "next-firebase-auth-edge/lib/next/tokens";
+import { type UserCtx } from "@/firebase/edge_env";
+import { db } from "@/server/db";
 import { parse } from "cookie";
 import admin, { type ServiceAccount } from "firebase-admin";
-import serviceAccount from "@/firebase/checkletapp-firebase-adminsdk-25jmk-cd91baf75e.json";
-import { type UserCtx } from "@/firebase/edge_env";
+import { getCookiesTokens } from "next-firebase-auth-edge/lib/next/tokens";
 
 /**
  * 1. CONTEXT
@@ -53,6 +53,15 @@ const convertToUserCtx = (user: admin.auth.DecodedIdToken): UserCtx => {
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   // const firebaseApp = initializeApp(clientConfig);
   const cookies = opts.headers.get("cookie")!;
+  if (!cookies) {
+    // there are no cookies. incognito mode? or maybe they're not logged in.
+    // it's fine. user will just be null
+    return {
+      db,
+      ...opts,
+      user: null,
+    };
+  }
 
   // Retrieve tokens using next-firebase-auth-edge
   const tokens = await getCookiesTokens(parse(cookies), {

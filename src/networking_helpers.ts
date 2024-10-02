@@ -5,8 +5,8 @@
 
 import { type UserCtx } from "@/firebase/edge_env";
 import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from "@/utils/status_codes";
-import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 
 export const requestPathHeaderName = "x-request-path";
 const headerName = "checklet-user-ctx";
@@ -28,9 +28,9 @@ export const serializeAuthHeader = (
 export const parseAuthHeader = (): UserCtx | undefined => {
   const myBase64Str = headers().get(headerName);
   if (!myBase64Str) {
-    console.warn(
-      "No userCtx found in request. this shoudn't happen since the middleware should've authenticated the user",
-    );
+    // console.warn(
+    //   "No userCtx found in request. this shoudn't happen since the middleware should've authenticated the user",
+    // );
     return undefined;
   }
   const myJsonStr = Buffer.from(myBase64Str, "base64").toString("utf8");

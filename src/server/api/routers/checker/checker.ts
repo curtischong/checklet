@@ -188,10 +188,11 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ doc: z.string() }))
     .input(z.object({ checkerId: z.string() }))
     .query(async ({ ctx, input }) => {
+      // console.log("checkDoc", input);
       const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (
         !checker.isPublic &&
-        (!ctx.user || checker.createdById !== ctx.user.id) // if you are not logged in, or not the cretor, you can't use this private checker
+        (!ctx.user || checker.createdById !== ctx.user.id) // if you are not logged in, or not the creator, you can't use this private checker
       ) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
