@@ -31,45 +31,6 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
     return isEqual(suggestion, activeSuggestion);
   }, [suggestion, activeSuggestion]);
 
-  //   const checkDesc = props.checkDescObj[suggestion.checkId];
-  //   if (!checkDesc) {
-  //     // if we pressed check document, then the author of the checker disabled a check, then we press check document again, we will be missing some checkDescs
-  //     // So we just don't render the card
-  //     return <></>;
-  //   }
-
-  // const treatedContent = checkDesc.objInfo.desc;
-  // const treatedContent = checkDesc.objInfo.desc.replace(
-  //     // /(?<=\n\n)(?![*-])\n/gi,
-  //     // /(?<=\n)(?![*-])\n/gi,
-  //     /(?<=\n)\n/gi,
-  //     "\\\n",
-  // );
-  // const treatedContent = checkDesc.objInfo.desc.replace(/\n/gi, "\n &nbsp;");
-  // const lines = checkDesc.objInfo.desc.split("\n");
-  // let treatedContent = lines.length > 0 ? lines[0] : "";
-  // for (let i = 1; i < lines.length; i++) {
-  //   const prevLine = lines[i - 1];
-  //   const line = lines[i];
-  //   const prevTrimmedLine = prevLine.trim();
-  //   const trimmedLine = line.trim();
-  //   // the previous line is a list
-  //   if (["*", "-", "+"].includes(prevTrimmedLine[0])) {
-  //     treatedContent += "\n\n" + line; // If we don't do this, then all future lines undeneath the bullet point will be treated as a bullet point
-  //     continue;
-  //   }
-
-  //   if (trimmedLine.length === 0) {
-  //     treatedContent += "\\\n";
-  //     continue;
-  //   }
-  //   if (prevTrimmedLine.length === 0) {
-  //     treatedContent += "\\\n" + line;
-  //   } else {
-  //     treatedContent += "\n\n" + line;
-  //   }
-  // }
-
   return (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
@@ -105,10 +66,6 @@ export const SuggestionCard = React.forwardRef((props: Props, ref) => {
             >
               {suggestion.tipName}
             </div>
-            {/* <span
-                                className={"p-[3px] rounded-xl bg-red-800 mx-8"}
-                            /> */}
-            {/* <div className="">{checkDesc.category}</div> */}
           </div>
         ) : (
           <>
