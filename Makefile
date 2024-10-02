@@ -15,10 +15,6 @@ create-migration:
 	npx prisma migrate dev && \
 	$(MAKE) generate
 
-apply-all-migrations-prod:
-	$(include_env_prod) && \
-	npx prisma migrate deploy
-
 reset-db:
 	# $(include_env) && \
 	# npx prisma migrate reset --skip-generate && \
