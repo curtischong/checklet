@@ -44,7 +44,10 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
           }
         }}
       >
-        <div className="flex overflow-hidden text-xs">
+        <div
+          className="flex cursor-pointer overflow-hidden text-xs"
+          onClick={onClick}
+        >
           {isActive ? (
             <div className="text-gray-600">{suggestion.tipName}</div>
           ) : (
@@ -64,10 +67,11 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
               if (part.added) {
                 partClass = "font-bold text-green-500";
               } else if (part.removed) {
-                partClass =
-                  part.value === "."
-                    ? "text-red-500" // don't have a line-through for remving periods because it's hard to tell what happened
-                    : "text-red-500 line-through";
+                // partClass =
+                //   part.value === "."
+                //     ? "text-red-500" // don't have a line-through for remving periods because it's hard to tell what happened
+                //     : "text-red-500 line-through";
+                partClass = "text-red-500 line-through";
               }
               return (
                 <span key={index} className={partClass}>
@@ -75,6 +79,10 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                 </span>
               );
             })}
+            <div className="mt-2 text-sm text-gray-500">
+              {suggestion.reason}
+            </div>{" "}
+            {/* New line added */}
           </div>
         )}
       </div>
