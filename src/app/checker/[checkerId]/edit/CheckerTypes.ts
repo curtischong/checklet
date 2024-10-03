@@ -42,6 +42,7 @@ export interface CheckerStorefront {
   name: string;
   desc: string;
   placeholder: string;
+  sampleDoc: string;
   clonedFromId: string | null;
 }
 

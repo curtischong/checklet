@@ -180,7 +180,11 @@ export const Editor = ({
             flexBasis: "auto",
           }}
         >
-          <EditorHeader storefront={checkerStorefront} />
+          <EditorHeader
+            storefront={checkerStorefront}
+            editorState={editorState}
+            setEditorState={setEditorState}
+          />
         </div>
         <div
           className="flex-1"
