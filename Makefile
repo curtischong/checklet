@@ -50,3 +50,6 @@ deploy:
 apply-all-migrations-prod:
 	source load-prod-var.sh 'DATABASE_URL' && \
 	env DATABASE_URL=$$DATABASE_URL npx prisma migrate deploy
+
+matching-tests:
+	npx tsx ./scripts/matching-tests/run1.ts

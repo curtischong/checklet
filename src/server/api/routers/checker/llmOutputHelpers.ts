@@ -3,7 +3,7 @@ import {
   type Tip,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { levenshteinDistance } from "@/server/api/routers/checker/editDistanceSimple";
-import { matchQueryInDocument } from "@/server/api/routers/checker/matchQueryInDocument";
+import { matchQueryInDocument } from "@/server/api/routers/checker/matchQueryInDocument3";
 import { createShortId } from "@/utils/strings";
 
 export function extractTips(input: string): Tip[] {
@@ -69,19 +69,24 @@ export function extractTips(input: string): Tip[] {
 //   );
 // };
 
+// Define the regex pattern with capturing groups:
+// <tip:number>oldText<old:id:new>newText</tip:number>
+const tipTagPattern =
+  // /<tip\|([^|]+)\|([^>]+)><old>([^<]+)<\/old><new>([^<]+)<\/new><\/tip>/g;
+
+  // this pattern is the same. except it can match multiple spaces between the tags (sometimes the model adds extra spaces)
+  // /<tip\|([^|]+)\|([^>]+)>\ *<old>([^<]+)<\/old>\ *<new>([^<]+)<\/new>\ *<\/tip>/g;
+
+  // this pattern is the same, except we now match for generic whitespace characters between tags
+  /<tip\|([^|]+)\|([^>]+)>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<\/tip>/g;
+
+const getDoc3WithoutTipTags = (doc3: string) => {
+  return doc3.replace(tipTagPattern, "$3");
+};
+
 // https://chatgpt.com/share/66f0c180-e6a0-800e-a55a-99862d193b2f
 export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
-  // Define the regex pattern with capturing groups:
-  // <tip:number>oldText<old:id:new>newText</tip:number>
-  const tipTagPattern =
-    // /<tip\|([^|]+)\|([^>]+)><old>([^<]+)<\/old><new>([^<]+)<\/new><\/tip>/g;
-
-    // this pattern is the same. except it can match multiple spaces between the tags (sometimes the model adds extra spaces)
-    // /<tip\|([^|]+)\|([^>]+)>\ *<old>([^<]+)<\/old>\ *<new>([^<]+)<\/new>\ *<\/tip>/g;
-
-    // this pattern is the same, except we now match for generic whitespace characters between tags
-    /<tip\|([^|]+)\|([^>]+)>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<\/tip>/g;
-
+  const doc3WithoutTipTags = getDoc3WithoutTipTags(doc2);
   const suggestions: Suggestion[] = []; // Array to hold the resulting tip objects
   let match;
 
@@ -112,14 +117,21 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     // Verify that the oldText at indexInDoc1 in doc1 matches the expected oldText
     const oldText = rawOldText ?? "";
 
+    const oldTextIdxInDoc3 = match.index;
+    const oldTextWithContext = doc3WithoutTipTags.substring(
+      Math.max(0, oldTextIdxInDoc3 - 50),
+      Math.min(doc3WithoutTipTags.length, oldTextIdxInDoc3 + 50),
+    );
+
     const { matchedSubstring, actualIndex } = matchQueryInDocument(
       doc1,
       oldText,
+      oldTextWithContext,
       predIndexInDoc1,
     );
 
-    // console.log("predIndexInDoc1", predIndexInDoc1, "actualIndex", actualIndex);
-    // console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
+    console.log("predIndexInDoc1", predIndexInDoc1, "actualIndex", actualIndex);
+    console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
 
     const realIndexInDoc1 = actualIndex;
 
