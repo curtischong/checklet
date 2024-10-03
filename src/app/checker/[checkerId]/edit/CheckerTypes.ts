@@ -42,6 +42,7 @@ export interface CheckerStorefront {
   name: string;
   desc: string;
   placeholder: string;
+  clonedFromId: string | null;
 }
 
 // export interface FeedbackResponse {

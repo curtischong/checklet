@@ -45,6 +45,8 @@ export const CheckerPage = ({
   const [isInitialCheckerFetched, setIsInitialCheckerFetched] =
     React.useState(false);
 
+  const [clonedFromId, setClonedFromId] = React.useState<string | null>(null);
+
   useEffect(() => {
     handleErr(
       apiClient.checker.getUserChecker.query({ checkerId }),
@@ -55,6 +57,7 @@ export const CheckerPage = ({
         setEditorState(checker.sampleDoc);
         setIsPublic(checker.isPublic);
         setIsInitialCheckerFetched(true);
+        setClonedFromId(checker.clonedFromId);
       },
     );
   }, [checkerId]);
@@ -194,6 +197,7 @@ export const CheckerPage = ({
           checkerId: checkerId,
           creatorId: userCtx.id,
           placeholder: "place your test document here",
+          clonedFromId: clonedFromId,
         }}
         isFocusedOnStart={false}
         isSavingToLocalStorage={false} // since we are already saving it to the checker
