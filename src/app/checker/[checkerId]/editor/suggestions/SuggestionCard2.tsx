@@ -79,7 +79,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
               {suggestion.reason}
             </div>
             <button
-              className="mt-4 rounded bg-green-500 px-2 py-1 text-white"
+              className="mt-4 rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
               onClick={() => onReplaceClick(suggestion.newText)}
             >
               Accept

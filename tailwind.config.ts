@@ -6,7 +6,7 @@ export default {
   theme: {
     extend: {
       boxShadow: {
-        around: "0px 10px 36px rgba(0, 0, 0, 0.08)",
+        around: "0px 5px 10px rgba(0, 0, 0, 0.15)",
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
