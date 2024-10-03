@@ -1,4 +1,4 @@
-import { bricolage, mackinac, nunito } from "@/app/fonts";
+import { mackinac, nunito } from "@/app/fonts";
 import "@/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body
-        className={`${mackinac.variable} ${bricolage.variable} ${nunito.variable} bg-[#fff0f1] font-nunito tracking-[0.01em]`}
+        className={`${mackinac.variable} ${nunito.variable} bg-[#fff0f1] font-nunito tracking-[0.01em]`}
         style={{
           WebkitFontSmoothing: "antialiased",
         }}

@@ -38,7 +38,7 @@ export const MenuHeader = () => {
         Checklet
       </Link>
       {!isMobile && (
-        <div className="absolute right-4 mt-4 flex flex-row space-x-8 font-bricolage">
+        <div className="absolute right-4 mt-4 flex flex-row space-x-8 font-mackinac">
           {pathname.startsWith("/editor") && (
             <Link href="/editor">Checkers</Link>
           )}

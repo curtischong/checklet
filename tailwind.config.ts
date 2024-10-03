@@ -10,7 +10,7 @@ export default {
       fontFamily: {
         // sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         mackinac: ["var(--font-mackinac)"],
-        bricolage: ["var(--font-bricolage)"],
+        // bricolage: ["var(--font-bricolage)"],
         // basier: ["var(--font-basier)"],
         // nunitolight: ["var(--font-nunito-light)"],
         nunito: ["var(--font-nunito)"],
