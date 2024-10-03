@@ -45,30 +45,35 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
         }}
       >
         <div className="flex overflow-hidden text-xs">
-          <div className="flex-grow overflow-hidden overflow-ellipsis whitespace-nowrap">
-            {isActive ? (
-              diffResult.map((part, index) => {
-                let partClass = "";
-                if (part.added) {
-                  partClass = "font-bold";
-                } else if (part.removed) {
-                  partClass = "text-gray-500 line-through";
-                }
-                return (
-                  <span key={index} className={partClass}>
-                    {part.value}
-                  </span>
-                );
-              })
-            ) : (
-              <>
-                <span>{suggestion.oldText}</span>
-                <span className="mx-2 my-auto h-1 w-1 rounded-full bg-red-600"></span>
-              </>
-            )}
-          </div>
-          <div className="ml-2 overflow-hidden font-normal text-gray-600"></div>
+          {isActive ? (
+            <div className="text-gray-600">{suggestion.tipName}</div>
+          ) : (
+            <>
+              <span className="max-w-[40%] overflow-hidden overflow-ellipsis whitespace-nowrap">
+                {suggestion.oldText}
+              </span>
+              <span className="mx-2 my-auto h-1 w-1 rounded-full bg-red-600" />
+              <span>{suggestion.tipName}</span>
+            </>
+          )}
         </div>
+        {isActive && (
+          <div className={"px-[10px] py-[15px]"}>
+            {diffResult.map((part, index) => {
+              let partClass = "";
+              if (part.added) {
+                partClass = "font-bold";
+              } else if (part.removed) {
+                partClass = "text-gray-500 line-through";
+              }
+              return (
+                <span key={index} className={partClass}>
+                  {part.value}
+                </span>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   },
