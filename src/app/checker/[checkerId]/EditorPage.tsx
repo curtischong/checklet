@@ -21,6 +21,7 @@ export const EditorPage = ({ checker }: Props) => {
           checkerId: checker.id,
           creatorId: checker.createdById,
           placeholder: "place your document here",
+          clonedFromId: checker.clonedFromId,
         }}
         isSavingToLocalStorage={true}
         isFocusedOnStart={true}

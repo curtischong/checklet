@@ -58,12 +58,10 @@ const isCheckerValid = (name: string, desc: string, prompt: string) => {
 };
 
 export const checkerRouter = createTRPCRouter({
-  getBlueprint: publicProcedure
-    .input(z.object({ id: z.string() }))
+  getCheckerById: publicProcedure
+    .input(z.object({ checkerId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return await ctx.db.checker.findUnique({
-        where: { id: input.id },
-      });
+      return await getCheckerByIdStrict(ctx.db, input.checkerId);
     }),
 
   getUserCheckers: protectedProcedure.query(async ({ ctx }) => {
