@@ -34,6 +34,7 @@ export const Editor = ({
     useState(true); // init as true so when ppl first enter the page, they see "ready to check?"
   const [isLoading, setIsLoading] = React.useState(false);
   const editorRef = useRef<RichTextareaHandle | null>(null);
+  const acceptedSuggestionIdsRef = useRef(new Set<string>());
 
   // so when ppl copy and paste the url, they get a descripton of what the checker is
   useEffect(() => {
@@ -72,9 +73,21 @@ export const Editor = ({
           oldText,
           newText,
         );
-        // 2) shift all the suggestions. Note: if the text changed WITHIN a suggestion, that suggestion is now invalid. so we remove it
+
+        // 2) remove all suggestions that have been accepted (read acceptSuggestion to understand why we're using acceptedSuggestionIdsRef)
+        let filteredSuggestions;
+        if (acceptedSuggestionIdsRef.current.size === 0) {
+          filteredSuggestions = curSuggestions;
+        } else {
+          filteredSuggestions = curSuggestions.filter(
+            (s) => !acceptedSuggestionIdsRef.current.has(s.suggestionId),
+          );
+          acceptedSuggestionIdsRef.current.clear();
+        }
+
+        // 3) shift all the suggestions. Note: if the text changed WITHIN a suggestion, that suggestion is now invalid. so we remove it
         const newSuggestions = [];
-        for (const suggestion of curSuggestions) {
+        for (const suggestion of filteredSuggestions) {
           if (isBefore(suggestion.range, editedRange)) {
             newSuggestions.push({ ...suggestion });
           } else if (isIntersecting(suggestion.range, editedRange)) {
@@ -123,6 +136,12 @@ export const Editor = ({
         console.error("editor ref not found. cannot accept suggestion");
         return;
       }
+
+      // how come we are not simply removing the suggestion from the suggestions list?
+      // This is because this edit will shift all the other suggestions. so we need to use updateEditorState
+      // to update the indexes of all the other suggestions. So to properly invalidate this suggestion,
+      // we'll add it to the acceptedSuggestionIdsRef set and manually filter it out inside updateEditorState
+      acceptedSuggestionIdsRef.current.add(suggestion.suggestionId);
 
       editorRef.current.focus();
       editorRef.current.setSelectionRange(
