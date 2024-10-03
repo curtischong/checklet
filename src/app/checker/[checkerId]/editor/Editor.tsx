@@ -183,7 +183,7 @@ export const Editor = ({
           <EditorHeader
             storefront={checkerStorefront}
             editorState={editorState}
-            setEditorState={setEditorState}
+            editorRef={editorRef}
           />
         </div>
         <div
