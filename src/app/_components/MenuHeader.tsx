@@ -1,14 +1,13 @@
 "use client";
 import { useClientCtx } from "@/app/ClientCtx";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export const MenuHeader = () => {
   const pathname = usePathname();
   const { user, firebaseAuth } = useClientCtx();
-  const router = useRouter();
 
   const handleSignOut = useCallback(() => {
     firebaseAuth
@@ -44,17 +43,7 @@ export const MenuHeader = () => {
             <Link href="/checkers">Checkers</Link>
           )}
           {!pathname.startsWith("/dashboard") && (
-            <button
-              onClick={() => {
-                if (!user) {
-                  router.push(`/signin?redirect-reason=view-dashboard`);
-                } else {
-                  router.push(`/dashboard`);
-                }
-              }}
-            >
-              Dashboard
-            </button>
+            <Link href="/dashboard">Dashboard</Link>
           )}
           {pathname !== "/signin" &&
             (!user ? (

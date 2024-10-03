@@ -72,6 +72,10 @@ export async function middleware(request: NextRequest) {
     },
     // eslint-disable-next-line @typescript-eslint/require-await
     handleInvalidToken: async (_reason) => {
+      if (pathname === "/dashboard") {
+        return redirectTo(request, "/signin?redirect-reason=create-checker");
+      }
+
       // console.info("Missing or malformed credentials", { reason });
       const res = NextResponse.next();
       res.headers.set(requestPathHeaderName, pathname);
