@@ -1,13 +1,14 @@
 "use client";
 import { useClientCtx } from "@/app/ClientCtx";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export const MenuHeader = () => {
   const pathname = usePathname();
   const { user, firebaseAuth } = useClientCtx();
+  const router = useRouter();
 
   const handleSignOut = useCallback(() => {
     firebaseAuth
@@ -39,11 +40,21 @@ export const MenuHeader = () => {
       </Link>
       {!isMobile && (
         <div className="absolute right-4 mt-4 flex flex-row space-x-8 font-mackinac">
-          {pathname.startsWith("/editor") && (
-            <Link href="/editor">Checkers</Link>
+          {!pathname.startsWith("/checkers") && (
+            <Link href="/checkers">Checkers</Link>
           )}
-          {pathname.startsWith("/editor") && (
-            <Link href="/dashboard">Dashboard</Link>
+          {!pathname.startsWith("/dashboard") && (
+            <button
+              onClick={() => {
+                if (!user) {
+                  router.push(`/signin?redirect-reason=view-dashboard`);
+                } else {
+                  router.push(`/dashboard`);
+                }
+              }}
+            >
+              Dashboard
+            </button>
           )}
           {pathname !== "/signin" &&
             (!user ? (
