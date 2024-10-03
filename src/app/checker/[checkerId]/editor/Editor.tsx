@@ -266,7 +266,7 @@ export const Editor = ({
               // wait for the editor to update
               checkDocument(
                 checkerStorefront.checkerId,
-                checkerStorefront.sampleDoc,
+                checkerStorefront.sampleDoc, // we're doing something really smart here. since we know what the doc is, we can just pass it in (don't need for state to update)
               );
             }}
           />
