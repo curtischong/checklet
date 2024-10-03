@@ -1,5 +1,4 @@
 import { type Config } from "tailwindcss";
-import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
   content: ["./src/**/*.tsx"],
@@ -9,11 +8,11 @@ export default {
         around: "0px 5px 25px rgba(0, 0, 0, 0.15)",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        // sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         mackinac: ["var(--font-mackinac)"],
-        bricolage: ["var(--font-bricolage)"],
-        basier: ["var(--font-basier)"],
-        nunitolight: ["var(--font-nunito-light)"],
+        // bricolage: ["var(--font-bricolage)"],
+        // basier: ["var(--font-basier)"],
+        // nunitolight: ["var(--font-nunito-light)"],
         nunito: ["var(--font-nunito)"],
       },
       colors: {

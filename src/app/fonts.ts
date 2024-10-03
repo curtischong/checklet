@@ -5,20 +5,20 @@ import localFont from "next/font/local";
 // 2) add the font variable in _app.tsx
 
 export const mackinac = localFont({
-    src: "../../public/fonts/P22MackinacPro-Medium_26.woff2",
-    variable: "--font-mackinac",
+  src: "../../public/fonts/P22MackinacPro-Medium_26.woff2",
+  variable: "--font-mackinac",
 });
 
-export const bricolage = localFont({
-    // src: "../../public/fonts/BricolageGrotesque_72pt-Light.woff2",
-    src: "../../public/fonts/BricolageGrotesque-Regular.woff2",
-    variable: "--font-bricolage",
-});
+// export const bricolage = localFont({
+//   // src: "../../public/fonts/BricolageGrotesque_72pt-Light.woff2",
+//   src: "../../public/fonts/BricolageGrotesque-Regular.woff2",
+//   variable: "--font-bricolage",
+// });
 
-export const basier = localFont({
-    src: "../../public/fonts/BasierCircle-Regular.woff2",
-    variable: "--font-basier",
-});
+// export const basier = localFont({
+//     src: "../../public/fonts/BasierCircle-Regular.woff2",
+//     variable: "--font-basier",
+// });
 
 // export const nunitoBold = localFont({
 //     src: "../../public/fonts/Nunito-Bold.woff2",
@@ -26,11 +26,11 @@ export const basier = localFont({
 // });
 
 export const nunito = localFont({
-    src: "../../public/fonts/Nunito-Regular.woff2",
-    variable: "--font-nunito",
+  src: "../../public/fonts/Nunito-Regular.woff2",
+  variable: "--font-nunito",
 });
 
-export const nunitoLight = localFont({
-    src: "../../public/fonts/Nunito-Light.woff2",
-    variable: "--font-nunito-light",
-});
+// export const nunitoLight = localFont({
+//     src: "../../public/fonts/Nunito-Light.woff2",
+//     variable: "--font-nunito-light",
+// });
