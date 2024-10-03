@@ -1,3 +1,4 @@
+"use client";
 import {
   CoolChecklet,
   PencilChecklet,
@@ -138,9 +139,9 @@ export const SuggestionsContainer: React.FC<Props> = ({
               suggestion={s}
               activeSuggestion={activeSuggestion}
               onClick={() => onCollapseClick(s)}
-              onReplaceClick={(acceptedOption) =>
-                acceptSuggestion(s, acceptedOption)
-              }
+              onReplaceClick={(acceptedOption) => {
+                acceptSuggestion(s, acceptedOption);
+              }}
               onDismiss={dismissSuggestion}
               ref={ref}
             />
