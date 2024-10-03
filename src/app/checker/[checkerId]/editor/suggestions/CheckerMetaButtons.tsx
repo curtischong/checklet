@@ -19,7 +19,7 @@ export const CheckerMetaButtons = ({ checkerId, checkerCreatorId }: Props) => {
       {isUserCreatorOfChecker && (
         <button
           className={classNames(
-            `rounded border border-gray-400 px-1 text-gray-600 transition duration-300`,
+            `my-auto h-8 items-center justify-center rounded border border-gray-400 px-1 text-gray-600 transition duration-300`,
             "hover:bg-[#5384d4] hover:text-white focus:bg-[#43b56c] focus:text-white",
           )}
           onClick={() => {
@@ -29,30 +29,33 @@ export const CheckerMetaButtons = ({ checkerId, checkerCreatorId }: Props) => {
           Edit Checker
         </button>
       )}
-      <div className={`flex flex-row`}>
-        <button
-          onClick={() => {
-            if (!userId) {
-              router.push(`/signin?redirect-reason=clone-checker`);
-            } else {
-              handleErr(
-                apiClient.checker.clone.mutate({
-                  checkerId,
-                }),
-                (newChecker) => {
-                  router.push(`/checker/${newChecker.id}/edit`);
-                },
-              );
-            }
-          }}
-        >
-          Clone
-        </button>
-        <HelpIcon
-          className={classNames("ml-2")}
-          text={`Don't agree with this Checker's suggestions? Modify it by cloning it here!`}
-          placement="bottom-end"
-        />
+      <div className="flex flex-col">
+        <button>Try Sample Doc</button>
+        <div className={`flex flex-row justify-end`}>
+          <button
+            onClick={() => {
+              if (!userId) {
+                router.push(`/signin?redirect-reason=clone-checker`);
+              } else {
+                handleErr(
+                  apiClient.checker.clone.mutate({
+                    checkerId,
+                  }),
+                  (newChecker) => {
+                    router.push(`/checker/${newChecker.id}/edit`);
+                  },
+                );
+              }
+            }}
+          >
+            Clone
+          </button>
+          <HelpIcon
+            className={classNames("ml-2")}
+            text={`Don't agree with this Checker's suggestions? Modify it by cloning it here!`}
+            placement="bottom-end"
+          />
+        </div>
       </div>
     </>
   );
