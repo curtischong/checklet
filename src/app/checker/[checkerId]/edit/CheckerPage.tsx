@@ -198,6 +198,7 @@ export const CheckerPage = ({
           creatorId: userCtx.id,
           placeholder: "place your test document here",
           clonedFromId: clonedFromId,
+          sampleDoc: editorState,
         }}
         isFocusedOnStart={false}
         isSavingToLocalStorage={false} // since we are already saving it to the checker

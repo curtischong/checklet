@@ -6,7 +6,9 @@ interface PopconfirmProps {
   onConfirm: () => void;
   onCancel?: () => void;
   children: React.ReactNode;
+  autoConfirmOnPress?: boolean;
   isDeleteConfirm?: boolean;
+  className?: string;
 }
 
 const Popconfirm: React.FC<PopconfirmProps> = ({
@@ -14,7 +16,9 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
   onConfirm,
   onCancel,
   children,
+  autoConfirmOnPress = false,
   isDeleteConfirm = false,
+  className = "",
 }) => {
   const [isMounted, setIsMounted] = useState(false); // Controls rendering
   const [isVisible, setIsVisible] = useState(false); // Controls opacity
@@ -84,7 +88,17 @@ const Popconfirm: React.FC<PopconfirmProps> = ({
 
   return (
     <div className="relative inline-block">
-      <div onClick={showPopconfirm} ref={triggerRef}>
+      <div
+        onClick={() => {
+          if (autoConfirmOnPress) {
+            onConfirm();
+          } else {
+            showPopconfirm();
+          }
+        }}
+        ref={triggerRef}
+        className={className}
+      >
         {children}
       </div>
 
