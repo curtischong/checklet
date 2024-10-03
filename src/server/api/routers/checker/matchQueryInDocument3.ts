@@ -88,7 +88,7 @@ export function matchQueryInDocument(
     const distance = matchIndexInDoc - expectedIndex;
 
     // Apply penalty: double the distance if the match is earlier than expected
-    const distancePenalty = distance < 0 ? Math.abs(distance) * 2 : distance;
+    const distancePenalty = distance < 0 ? Math.abs(distance) * 1.5 : distance;
 
     // Compute Levenshtein distance between the surrounding contexts
     const contextRadius = 50; // Number of characters before and after the match to consider
@@ -100,41 +100,34 @@ export function matchQueryInDocument(
     const matchContextEnd = Math.min(doc.length, matchEnd + contextRadius);
     const matchContext = doc.substring(matchContextStart, matchContextEnd);
 
-    // Extract expected surrounding context at expectedIndex
-    const expectedContextStart = Math.max(0, expectedIndex - contextRadius);
-    const expectedContextEnd = Math.min(
-      doc.length,
-      expectedIndex + query.length + contextRadius,
-    );
-    const expectedContext = doc.substring(
-      expectedContextStart,
-      expectedContextEnd,
-    );
-
     // Compute Levenshtein distance between the two contexts
     const levenshteinPenalty = levenshteinDistance(
       matchContext,
-      expectedContext,
+      queryWithContext,
     );
 
     // Combine penalties
-    const totalPenalty = distancePenalty + levenshteinPenalty;
-    console.log(
-      "distance penalty",
-      distancePenalty,
-      "levenshtein",
-      levenshteinPenalty,
-    );
+    // in general, levenshteinPenalty is more important. because if so many characters are different, we probably got the distance wildly wrong. so it's more important
+    const totalPenalty = distancePenalty + levenshteinPenalty * 2.5;
+    // console.log(
+    //   "distance penalty",
+    //   distancePenalty,
+    //   "levenshtein",
+    //   levenshteinPenalty,
+    //   "matchIndexInDoc",
+    //   matchIndexInDoc,
+    // );
 
     matches.push({
       matchedSubstring: match[0],
       actualIndex: matchIndexInDoc,
-      // penalty: totalPenalty,
-      penalty: levenshteinPenalty,
+      penalty: totalPenalty,
+      // penalty: levenshteinPenalty,
     });
   }
 
   if (matches.length > 0) {
+    console.log("matches.length", matches.length);
     // Sort matches by total penalty (lower penalty is better)
     matches.sort((a, b) => a.penalty - b.penalty);
 

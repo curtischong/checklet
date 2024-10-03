@@ -81,6 +81,7 @@ const tipTagPattern =
   /<tip\|([^|]+)\|([^>]+)>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<\/tip>/g;
 
 const getDoc3WithoutTipTags = (doc3: string) => {
+  // replace it all with the old text since this is used to help find surrounding context around matches
   return doc3.replace(tipTagPattern, "$3");
 };
 
@@ -95,6 +96,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     allMatches.push(match);
   }
 
+  let extraneousCharsFromTipTags = 0;
   let endIdxOfLastTipTag = 0;
   let endOfLastActualIndex = 0;
   // TODO: we need to add extra chars to the predIndexInDoc1 to account for extra chain of thought?
@@ -117,7 +119,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     // Verify that the oldText at indexInDoc1 in doc1 matches the expected oldText
     const oldText = rawOldText ?? "";
 
-    const oldTextIdxInDoc3 = match.index;
+    const oldTextIdxInDoc3 = match.index - extraneousCharsFromTipTags;
     const oldTextWithContext = doc3WithoutTipTags.substring(
       Math.max(0, oldTextIdxInDoc3 - 50),
       Math.min(doc3WithoutTipTags.length, oldTextIdxInDoc3 + 50),
@@ -152,6 +154,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
 
     endIdxOfLastTipTag = match.index + fullMatch.length;
     endOfLastActualIndex = actualIndex + matchedSubstring.length;
+    extraneousCharsFromTipTags += fullMatch.length - oldText.length;
   }
 
   return suggestions;
