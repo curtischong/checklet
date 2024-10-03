@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 "use client";
 
-import { SuggestionCard } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard";
+import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
 
 export const DemoSuggestionCard = () => {
   const suggestion = {
@@ -17,10 +17,11 @@ export const DemoSuggestionCard = () => {
     suggestionId: "fakeid",
   };
   return (
-    <SuggestionCard
+    <SuggestionCard2
       suggestion={suggestion}
       onClick={() => {}}
       onReplaceClick={() => {}}
+      onDismiss={() => {}}
       activeSuggestion={suggestion}
     />
   );
