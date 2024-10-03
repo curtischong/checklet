@@ -1,6 +1,7 @@
 "use client";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { EditorHeader } from "@/app/checker/[checkerId]/editor/EditorHeader";
+import { readEditorText } from "@/app/checker/[checkerId]/editor/localstorage";
 import { singleEditDistance } from "@/app/checker/[checkerId]/editor/singleEditDistance";
 import {
   Sorters,
@@ -63,7 +64,7 @@ export const Editor = ({
   useEffect(() => {
     // only load the localStorage data if we're saving to it
     if (isSavingToLocalStorage) {
-      const prevDocument = localStorage.getItem("editorText");
+      const prevDocument = readEditorText(checkerStorefront.checkerId);
       if (prevDocument) {
         setEditorState(prevDocument);
       }
