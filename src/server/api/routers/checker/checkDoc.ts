@@ -41,8 +41,8 @@ import path from "path";
 
 export class CheckerWorker {
   systemPrompt = "";
-  smartModel = "gpt-4o-mini";
-  cheapModel = "gpt-4o-mini";
+  smartModel = "gpt-4o";
+  cheapModel = "gpt-4o";
   llm: Llm;
   llm3: Llm3;
   db: PrismaClient;
@@ -89,7 +89,7 @@ export class CheckerWorker {
 
     // const suggestions = await checkDoc1dot14(this.llm3, newChecker.prompt, doc);
     const suggestions = await checkDoc4Dot2(this.llm3, checker.prompt, doc);
-    console.log("suggestions", suggestions);
+    // console.log("suggestions", suggestions);
     return {
       suggestions: suggestions,
     };
@@ -454,10 +454,10 @@ export const checkDoc4Dot2 = async (
     inferenceInstructions4(prompt, doc),
     llm.model,
   );
-  console.log(
-    "doc2PlusChainOfThought---------------------------",
-    chain[chain.length - 1]!.content,
-  );
+  // console.log(
+  //   "doc2PlusChainOfThought---------------------------",
+  //   chain[chain.length - 1]!.content,
+  // );
   const rawDoc3 = await llm.promptMessagesExtendChain(
     chain,
     addTipTags4Dot2(),
@@ -466,7 +466,7 @@ export const checkDoc4Dot2 = async (
   const doc3 = removeInvalidTips(
     rawDoc3[rawDoc3.length - 1]!.content as string,
   ); // removes extraneous whitespace / removals the llm made
-  console.log("doc3---------------------------------", doc3);
+  // console.log("doc3---------------------------------", doc3);
 
   const suggestions = extractSuggestions(doc, doc3);
 
