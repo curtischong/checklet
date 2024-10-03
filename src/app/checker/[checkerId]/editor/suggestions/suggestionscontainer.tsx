@@ -105,7 +105,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
     }
   }, [activeSuggestion]);
 
-  const removeSuggestion = useCallback(
+  const dismissSuggestion = useCallback(
     (suggestionId: string) => {
       setSuggestions((prevSuggestions) =>
         prevSuggestions.filter((s) => s.suggestionId !== suggestionId),
@@ -130,7 +130,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
               onReplaceClick={(acceptedOption) =>
                 acceptSuggestion(s, acceptedOption)
               }
-              onRemove={removeSuggestion}
+              onDismiss={dismissSuggestion}
               ref={ref}
             />
           );
@@ -193,7 +193,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
     activeSuggestion,
     onCollapseClick,
     acceptSuggestion,
-    removeSuggestion,
+    dismissSuggestion,
   ]);
 
   const checkDocument = useCallback((): void => {
