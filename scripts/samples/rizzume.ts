@@ -25,10 +25,10 @@ Seeing c++ at the start makes you seem more technical
 - remove unimpressive impact numbers. you can tell if a number is small based on the "typical" data point in the context. For example, if you migrated 1000 rows in a DB, this is small and not that impressive.
 - remove adjectives that don't add much (e.g. worked on a *blue* distributed system)
 - don't have confusing jargon
-- don't add numbers that don't make sense. e.g. in a ML resume, you might add numbers about the model's F1 score. But ppl don't know if that number's good if they don't have context.
+- don't use number that don't make sense. e.g. in a ML resume, you might add numbers about the model's F1 score. But ppl don't know if that number's good if they don't have context.
 - when you have links in your resume, remove the "https://" portion at the start. people know it's a link and it adds whitspace!
 - make sure the links are not malformed
-- simplify section headers. Work Experince -> Experience (whitespace)
+- simplify section headers. Work Experience -> Experience (whitespace)
 - if your resume has a newline with only one or 2 words on that line, it looks bad because you're wasting so much space on that empty line. try to shorten
 the sentence so it doesn't dangle over.
 - try to stick with past tense (even if you're currently working at the job), since it's easier for humans to read

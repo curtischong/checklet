@@ -41,8 +41,8 @@ import path from "path";
 
 export class CheckerWorker {
   systemPrompt = "";
-  smartModel = "gpt-4o-mini";
-  cheapModel = "gpt-4o-mini";
+  smartModel = "gpt-4o";
+  cheapModel = "gpt-4o";
   llm: Llm;
   llm3: Llm3;
   db: PrismaClient;

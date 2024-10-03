@@ -2,6 +2,7 @@ import {
   type Suggestion,
   type Tip,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import { levenshteinDistance } from "@/server/api/routers/checker/editDistanceSimple";
 import { matchQueryInDocument } from "@/server/api/routers/checker/matchQueryInDocument";
 import { createShortId } from "@/utils/strings";
 
@@ -116,23 +117,26 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
       oldText,
       predIndexInDoc1,
     );
+
     // console.log("predIndexInDoc1", predIndexInDoc1, "actualIndex", actualIndex);
     // console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
 
     const realIndexInDoc1 = actualIndex;
 
-    // Push the extracted information into the tips array
-    suggestions.push({
-      tipName: tipName ?? "",
-      reason: reason ?? "",
-      oldText: matchedSubstring,
-      newText: newText ?? "",
-      range: {
-        start: realIndexInDoc1,
-        end: realIndexInDoc1 + matchedSubstring.length,
-      },
-      suggestionId: createShortId(),
-    });
+    if (isMatchedSubstringSimilarEnough(matchedSubstring, oldText)) {
+      // Push the extracted information into the tips array
+      suggestions.push({
+        tipName: tipName ?? "",
+        reason: reason ?? "",
+        oldText: matchedSubstring,
+        newText: newText ?? "",
+        range: {
+          start: realIndexInDoc1,
+          end: realIndexInDoc1 + matchedSubstring.length,
+        },
+        suggestionId: createShortId(),
+      });
+    }
 
     endIdxOfLastTipTag = match.index + fullMatch.length;
     endOfLastActualIndex = actualIndex + matchedSubstring.length;
@@ -140,3 +144,12 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
 
   return suggestions;
 }
+
+const isMatchedSubstringSimilarEnough = (
+  matchedStr: string,
+  oldText: string,
+) => {
+  const dist = levenshteinDistance(matchedStr, oldText);
+  const distThreshold = oldText.length / 2;
+  return dist <= distThreshold;
+};
