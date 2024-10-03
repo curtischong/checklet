@@ -131,7 +131,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
               onReplaceClick={(acceptedOption) =>
                 acceptSuggestion(s, acceptedOption)
               }
-              onRemove={removeSuggestion} // Pass the new prop
+              onRemove={removeSuggestion}
               ref={ref}
             />
           );
@@ -194,7 +194,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
     activeSuggestion,
     onCollapseClick,
     acceptSuggestion,
-    removeSuggestion, // Add dependency
+    removeSuggestion,
   ]);
 
   const checkDocument = useCallback((): void => {
