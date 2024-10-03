@@ -10,6 +10,7 @@ interface Props {
   activeSuggestion: Suggestion | undefined;
   onClick: () => void;
   onReplaceClick: (acceptedOption: string) => void;
+  onRemove: (suggestionId: string) => void; // New prop for removal
   classNames?: string;
 }
 
@@ -20,6 +21,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       activeSuggestion,
       onClick,
       onReplaceClick,
+      onRemove,
       classNames,
     } = props;
 
@@ -78,12 +80,20 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
             <div className="mt-2 text-sm text-gray-500">
               {suggestion.reason}
             </div>
-            <button
-              className="mt-4 rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
-              onClick={() => onReplaceClick(suggestion.newText)}
-            >
-              Accept
-            </button>
+            <div className="flex flex-row space-x-4">
+              <button
+                className="mt-4 rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
+                onClick={() => onReplaceClick(suggestion.newText)}
+              >
+                Accept
+              </button>
+              <button
+                className="mt-4 rounded px-2 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+                onClick={() => onRemove(suggestion.suggestionId)} // Pass true to indicate rejection
+              >
+                Dismiss
+              </button>
+            </div>
           </div>
         )}
       </div>

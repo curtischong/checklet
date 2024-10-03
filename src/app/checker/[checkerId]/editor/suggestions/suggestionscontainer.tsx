@@ -106,6 +106,15 @@ export const SuggestionsContainer: React.FC<Props> = ({
     }
   }, [activeSuggestion]);
 
+  const removeSuggestion = useCallback(
+    (suggestionId: string) => {
+      setSuggestions((prevSuggestions) =>
+        prevSuggestions.filter((s) => s.suggestionId !== suggestionId),
+      );
+    },
+    [setSuggestions],
+  );
+
   const renderSuggestions = React.useCallback(() => {
     suggestionsRefs.current = {}; // reset refs
     if (editorState !== "") {
@@ -122,21 +131,10 @@ export const SuggestionsContainer: React.FC<Props> = ({
               onReplaceClick={(acceptedOption) =>
                 acceptSuggestion(s, acceptedOption)
               }
+              onRemove={removeSuggestion} // Pass the new prop
               ref={ref}
             />
           );
-          // return (
-          //   <SuggestionCard
-          //     key={index}
-          //     suggestion={s}
-          //     activeSuggestion={activeSuggestion}
-          //     onClick={() => onCollapseClick(s)}
-          //     onReplaceClick={(acceptedOption) =>
-          //       acceptSuggestion(s, acceptedOption)
-          //     }
-          //     ref={ref}
-          //   />
-          // );
         });
       }
 
@@ -196,6 +194,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
     activeSuggestion,
     onCollapseClick,
     acceptSuggestion,
+    removeSuggestion, // Add dependency
   ]);
 
   const checkDocument = useCallback((): void => {
