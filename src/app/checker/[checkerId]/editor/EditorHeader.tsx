@@ -51,7 +51,7 @@ export const EditorHeader = ({
             <Popconfirm
               title="Clear your document with the sample doc?"
               onConfirm={() => {
-                // setEditorState(storefront.sampleDoc);
+                // DO NOT just call setEditorState so the user can undo this action with ctrl + z
                 if (!editorRef.current) {
                   return;
                 }
