@@ -68,7 +68,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
   const [sortType, setSortType] = useState(SortType.TextOrder);
-  const dismissedSuggestionHashes = useRef(new Set<number>()); // store the hashes of oldText and newText
+  const dismissedSuggestionHashes = useRef(new Set<number>());
 
   const { checkerId } = useParams();
 
