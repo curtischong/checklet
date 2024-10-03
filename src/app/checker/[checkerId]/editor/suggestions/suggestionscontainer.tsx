@@ -11,7 +11,7 @@ import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions
 import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
 import { apiClient, handleErr } from "@/trpc/react";
 import { scrollToChild } from "@/utils/scroll";
-import { pluralize } from "@/utils/strings";
+import { cyrb53, pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
 import { useParams, usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -68,6 +68,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
   const [sortType, setSortType] = useState(SortType.TextOrder);
+  const dismissedSuggestionHashes = useRef(new Set<number>());
 
   const { checkerId } = useParams();
 
@@ -105,13 +106,23 @@ export const SuggestionsContainer: React.FC<Props> = ({
     }
   }, [activeSuggestion]);
 
+  const hashSuggestion = (suggestion: Suggestion) => {
+    return cyrb53(`${suggestion.oldText}old:new${suggestion.newText}`);
+  };
+
   const dismissSuggestion = useCallback(
-    (suggestionId: string) => {
-      setSuggestions((prevSuggestions) =>
-        prevSuggestions.filter((s) => s.suggestionId !== suggestionId),
-      );
+    (dismissedSuggestionId: string) => {
+      const newSuggestions = [];
+      for (const suggestion of suggestions) {
+        if (suggestion.suggestionId === dismissedSuggestionId) {
+          dismissedSuggestionHashes.current.add(hashSuggestion(suggestion));
+        } else {
+          newSuggestions.push(suggestion);
+        }
+      }
+      setSuggestions(newSuggestions);
     },
-    [setSuggestions],
+    [setSuggestions, suggestions],
   );
 
   const renderSuggestions = React.useCallback(() => {
@@ -217,15 +228,15 @@ export const SuggestionsContainer: React.FC<Props> = ({
         setHasModifiedTextAfterChecking(false);
 
         const newSuggestions = response.suggestions;
-        console.log("newSuggestions", newSuggestions);
-        newSuggestions.sort(Sorters[sortType]);
-        setSuggestions(newSuggestions);
 
-        // mixpanelTrack("Check Document Clicked", {
-        //   "Number of suggestions generated": newSuggestions.length,
-        //   Suggestions: newSuggestions,
-        //   Input: plaintext,
-        // });
+        // only show suggestions the user didn't dismiss. obv if they refresh the page this set isn't persisted. but it's okay!
+        const filteredSuggestions = newSuggestions.filter(
+          (suggestion) =>
+            !dismissedSuggestionHashes.current.has(hashSuggestion(suggestion)),
+        );
+
+        filteredSuggestions.sort(Sorters[sortType]);
+        setSuggestions(filteredSuggestions);
       },
       () => {
         setIsLoading(false);
