@@ -61,16 +61,12 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
           )}
         </div>
         {isActive && (
-          <div className={"px-[10px] py-[15px]"}>
+          <div className={"px-[10px] pt-[15px]"}>
             {diffResult.map((part, index) => {
               let partClass = "";
               if (part.added) {
                 partClass = "font-bold text-green-500";
               } else if (part.removed) {
-                // partClass =
-                //   part.value === "."
-                //     ? "text-red-500" // don't have a line-through for remving periods because it's hard to tell what happened
-                //     : "text-red-500 line-through";
                 partClass = "text-red-500 line-through";
               }
               return (
@@ -81,8 +77,13 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
             })}
             <div className="mt-2 text-sm text-gray-500">
               {suggestion.reason}
-            </div>{" "}
-            {/* New line added */}
+            </div>
+            <button
+              className="mt-4 rounded bg-green-500 px-2 py-1 text-white"
+              onClick={() => onReplaceClick(suggestion.newText)}
+            >
+              Accept
+            </button>
           </div>
         )}
       </div>
