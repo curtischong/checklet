@@ -5,6 +5,8 @@ import { apiClient, handleErr } from "@/trpc/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface Props {
   storefront: CheckerStorefront;
@@ -67,9 +69,22 @@ export const EditorHeader = ({
             </Link>
           </div>
         )}
-        <div className="text-md">
-          <p>{storefront.desc}</p>
-        </div>
+
+        {/* we need the markdown class to help us with tailwind css issues: https://stackoverflow.com/questions/74607419/react-markdown-don%C2%B4t-render-markdown */}
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          className="markdown space-y-[0px]"
+          components={{
+            a: ({ ...props }) => (
+              <a
+                className="cursor-pointer border-b-2 border-blue-500 hover:text-blue-600"
+                {...props}
+              />
+            ),
+          }}
+        >
+          {storefront.desc}
+        </ReactMarkdown>
       </div>
       <hr className="mb-4 mt-1 h-[1px] w-full border-none bg-black" />
     </div>

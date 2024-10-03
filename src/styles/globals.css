@@ -7,3 +7,8 @@
 /* * {
   outline: 1px solid #f00 !important;
 } */
+
+/* helps us with tailwindcss issues: https://stackoverflow.com/questions/74607419/react-markdown-don%C2%B4t-render-markdown*/
+.markdown > * {
+  all: revert;
+}
