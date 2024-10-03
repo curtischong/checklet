@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
+import { saveEditorText } from "@/app/checker/[checkerId]/editor/localstorage";
 import {
   isWithinRange,
   newDocRange,
@@ -51,7 +52,7 @@ export const TextboxContainer = ({
   const debouncedSave = useMemo(
     () =>
       debounce((newState: string) => {
-        localStorage.setItem("editorText", newState);
+        saveEditorText(storefront.checkerId, newState);
       }, 1000),
     [],
   );
