@@ -70,6 +70,9 @@ export default function SignInBox() {
     if (reason === "create-checker") {
       return "You have sign in to create checkers so you can save your progress!";
     }
+    if (reason === "view-dashboard") {
+      return "You have sign in to edit your checkers!";
+    }
     return "";
   }, []);
   const redirectReasonMsg = getRedirectReasonMsg(
