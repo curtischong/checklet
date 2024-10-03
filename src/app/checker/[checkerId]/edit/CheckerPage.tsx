@@ -1,6 +1,7 @@
 "use client";
 import { NormalButton } from "@/app/_components/ui/Button";
 import { Input } from "@/app/_components/ui/Input";
+import { LabelWithHelp } from "@/app/_components/ui/LabelWithHelp";
 import { NavigationPath } from "@/app/_components/ui/NavigationPath";
 import { NormalTextArea } from "@/app/_components/ui/TextArea";
 import {
@@ -156,7 +157,11 @@ export const CheckerPage = ({
             maxLength={MAX_CHECKER_NAME_LEN}
           />
 
-          <label className="ml-1 mt-4 text-lg font-bold">Description</label>
+          <LabelWithHelp
+            className="ml-1 mt-4 text-lg font-bold"
+            label="Description"
+            helpText="This uses Markdown syntax. (so you can bold text, make lists, underline etc.)"
+          ></LabelWithHelp>
           <NormalTextArea
             placeholder={"description"}
             onChange={(e) => {

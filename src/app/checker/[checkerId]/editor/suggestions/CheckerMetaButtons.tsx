@@ -17,10 +17,11 @@ export const CheckerMetaButtons = ({ checkerId, checkerCreatorId }: Props) => {
   return (
     <>
       {isUserCreatorOfChecker && (
+        // don't make this a link because they may open multiple tabs. This may lead to race conditions if they edit in the wrong tab
         <button
           className={classNames(
             `rounded border border-gray-400 px-1 text-gray-600 transition duration-300`,
-            "hover:bg-[#5384d4] hover:text-white focus:bg-[#43b56c] focus:text-white",
+            "hover:bg-[#5384d4] hover:text-white",
           )}
           onClick={() => {
             router.push(`/checker/${checkerId}/edit`);
