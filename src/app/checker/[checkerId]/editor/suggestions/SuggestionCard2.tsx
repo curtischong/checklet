@@ -62,9 +62,12 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
             {diffResult.map((part, index) => {
               let partClass = "";
               if (part.added) {
-                partClass = "font-bold";
+                partClass = "font-bold text-green-500";
               } else if (part.removed) {
-                partClass = "text-gray-500 line-through";
+                partClass =
+                  part.value === "."
+                    ? "text-red-500" // don't have a line-through for remving periods because it's hard to tell what happened
+                    : "text-red-500 line-through";
               }
               return (
                 <span key={index} className={partClass}>
