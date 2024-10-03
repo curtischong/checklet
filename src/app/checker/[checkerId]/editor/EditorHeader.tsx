@@ -4,20 +4,19 @@ import { type GetCheckerByIdStrictType } from "@/server/api/routers/checker/chec
 import { apiClient, handleErr } from "@/trpc/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { type RefObject, useEffect, useState } from "react";
-import { type RichTextareaHandle } from "rich-textarea";
+import { useEffect, useState } from "react";
 
 interface Props {
   storefront: CheckerStorefront;
   editorState: string;
-  editorRef: RefObject<RichTextareaHandle | null>;
+  onTryWithSampleDoc: () => void;
 }
 
 // we make a request to get the clonedFrom checker here. this is so the rest of the page is loaded faster (doesn't need to wait for this second request)
 export const EditorHeader = ({
   storefront,
   editorState,
-  editorRef,
+  onTryWithSampleDoc,
 }: Props): JSX.Element => {
   const [clonedFromChecker, setClonedFromChecker] =
     useState<GetCheckerByIdStrictType | null>(null);
@@ -50,28 +49,10 @@ export const EditorHeader = ({
           {!pathName.endsWith("/edit") && (
             <Popconfirm
               title="Clear your document with the sample doc?"
-              onConfirm={() => {
-                // DO NOT just call setEditorState so the user can undo this action with ctrl + z
-                if (!editorRef.current) {
-                  return;
-                }
-                // do NOT return early. we want the user's cursor to jump to the end so it feels like clicking the button did something
-                // if (editorState === storefront.sampleDoc) {
-                //   return;
-                // }
-
-                // clear the entire editor and insert the sample doc
-                editorRef.current.focus();
-                editorRef.current.setSelectionRange(
-                  0,
-                  editorRef.current.value.length,
-                );
-                // this is deprecated but it works!
-                document.execCommand("insertText", false, storefront.sampleDoc);
-              }}
               autoConfirmOnPress={
                 editorState === "" || editorState === storefront.sampleDoc
               }
+              onConfirm={onTryWithSampleDoc}
               className="mr-4 cursor-pointer rounded border border-gray-400 px-1 text-center text-gray-600 transition duration-300 hover:bg-[#5384d4] hover:text-white focus:bg-[#43b56c] focus:text-white"
             >
               Try with Sample Doc

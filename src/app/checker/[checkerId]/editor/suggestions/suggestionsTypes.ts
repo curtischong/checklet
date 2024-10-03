@@ -1,3 +1,4 @@
+import { cyrb53 } from "@/utils/strings";
 import { type RefObject } from "react";
 
 export type SuggestionIdToRef = Record<string, RefObject<HTMLSpanElement>>;
@@ -80,4 +81,8 @@ export const isIntersecting = (r1: DocRange, r2: DocRange): boolean => {
 
 export const isWithinRange = (smaller: DocRange, larger: DocRange): boolean => {
   return smaller.start >= larger.start && smaller.end <= larger.end;
+};
+
+export const hashSuggestion = (suggestion: Suggestion) => {
+  return cyrb53(`${suggestion.oldText}old:new${suggestion.newText}`);
 };

@@ -2,15 +2,22 @@
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { EditorHeader } from "@/app/checker/[checkerId]/editor/EditorHeader";
 import { singleEditDistance } from "@/app/checker/[checkerId]/editor/singleEditDistance";
-import { SuggestionsContainer } from "@/app/checker/[checkerId]/editor/suggestions/suggestionscontainer";
 import {
+  Sorters,
+  SortType,
+  SuggestionsContainer,
+} from "@/app/checker/[checkerId]/editor/suggestions/suggestionscontainer";
+import {
+  hashSuggestion,
   isBefore,
   isIntersecting,
   shift,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import { apiClient, handleErr } from "@/trpc/react";
 import { type SetState } from "@/utils/types";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { type RichTextareaHandle } from "rich-textarea";
 import { TextboxContainer } from "./textboxcontainer";
 
@@ -35,6 +42,8 @@ export const Editor = ({
   const [isLoading, setIsLoading] = React.useState(false);
   const editorRef = useRef<RichTextareaHandle | null>(null);
   const acceptedSuggestionIdsRef = useRef(new Set<string>());
+  const dismissedSuggestionHashes = useRef(new Set<number>());
+  const [sortType, setSortType] = useState(SortType.TextOrder);
 
   // so when ppl copy and paste the url, they get a descripton of what the checker is
   useEffect(() => {
@@ -162,6 +171,54 @@ export const Editor = ({
     [],
   );
 
+  const checkDocument = useCallback(
+    (checkerId: string, editorState: string): void => {
+      if (isLoading) {
+        return;
+      }
+      setIsLoading(true);
+      handleErr(
+        apiClient.checker.checkDoc.query({
+          doc: editorState,
+          checkerId: checkerId,
+        }),
+        (response) => {
+          setIsLoading(false);
+          if (!response) {
+            toast.error(
+              "Something went wrong, please let Curtis know on Discord!",
+            );
+            return;
+          }
+          setHasModifiedTextAfterChecking(false);
+
+          const newSuggestions = response.suggestions;
+
+          // only show suggestions the user didn't dismiss. obv if they refresh the page this set isn't persisted. but it's okay!
+          const filteredSuggestions = newSuggestions.filter(
+            (suggestion) =>
+              !dismissedSuggestionHashes.current.has(
+                hashSuggestion(suggestion),
+              ),
+          );
+
+          filteredSuggestions.sort(Sorters[sortType]);
+          setSuggestions(filteredSuggestions);
+        },
+        () => {
+          setIsLoading(false);
+        },
+      );
+    },
+    [
+      isLoading,
+      setHasModifiedTextAfterChecking,
+      setIsLoading,
+      setSuggestions,
+      sortType,
+    ],
+  );
+
   return (
     <div className="mx-auto flex h-full w-full flex-row">
       <div
@@ -183,7 +240,35 @@ export const Editor = ({
           <EditorHeader
             storefront={checkerStorefront}
             editorState={editorState}
-            editorRef={editorRef}
+            onTryWithSampleDoc={() => {
+              // DO NOT just call setEditorState so the user can undo this action with ctrl + z
+              if (!editorRef.current) {
+                return;
+              }
+              // do NOT return early. we want the user's cursor to jump to the end so it feels like clicking the button did something
+              // if (editorState === storefront.sampleDoc) {
+              //   return;
+              // }
+
+              // clear the entire editor and insert the sample doc
+              editorRef.current.focus();
+              editorRef.current.setSelectionRange(
+                0,
+                editorRef.current.value.length,
+              );
+              // this is deprecated but it works!
+              document.execCommand(
+                "insertText",
+                false,
+                checkerStorefront.sampleDoc,
+              );
+
+              // wait for the editor to update
+              checkDocument(
+                checkerStorefront.checkerId,
+                checkerStorefront.sampleDoc,
+              );
+            }}
           />
         </div>
         <div
@@ -211,9 +296,7 @@ export const Editor = ({
       </div>
       {/* don't wrap this container in a div. style it by adding styles to the div inside SuggestionsContainer */}
       <SuggestionsContainer
-        setHasModifiedTextAfterChecking={setHasModifiedTextAfterChecking}
         isLoading={isLoading}
-        setIsLoading={setIsLoading}
         setSuggestions={setSuggestions}
         suggestions={suggestions}
         activeSuggestion={activeSuggestion}
@@ -222,6 +305,10 @@ export const Editor = ({
         acceptSuggestion={acceptSuggestion}
         hasModifiedTextAfterChecking={hasModifiedTextAfterChecking}
         storefront={checkerStorefront}
+        sortType={sortType}
+        setSortType={setSortType}
+        dismissedSuggestionHashes={dismissedSuggestionHashes}
+        checkDocument={checkDocument}
       />
     </div>
   );

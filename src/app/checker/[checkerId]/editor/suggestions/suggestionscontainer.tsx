@@ -10,20 +10,20 @@ import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
-import { apiClient, handleErr } from "@/trpc/react";
 import { scrollToChild } from "@/utils/scroll";
-import { cyrb53, pluralize } from "@/utils/strings";
+import { pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
-import { type Suggestion, type SuggestionIdToRef } from "./suggestionsTypes";
+import {
+  hashSuggestion,
+  type Suggestion,
+  type SuggestionIdToRef,
+} from "./suggestionsTypes";
 
 export type Props = {
-  setIsLoading: SetState<boolean>;
   isLoading: boolean;
-  setHasModifiedTextAfterChecking: SetState<boolean>;
   setSuggestions: SetState<Suggestion[]>;
   suggestions: Suggestion[];
   activeSuggestion: Suggestion | undefined;
@@ -32,6 +32,10 @@ export type Props = {
   acceptSuggestion: (suggestion: Suggestion, acceptedOption: string) => void;
   hasModifiedTextAfterChecking: boolean;
   storefront: CheckerStorefront;
+  sortType: SortType;
+  setSortType: SetState<SortType>;
+  dismissedSuggestionHashes: React.MutableRefObject<Set<number>>;
+  checkDocument: (checkerId: string, doc: string) => void;
 };
 
 export enum SortType {
@@ -53,9 +57,7 @@ export const Sorters = {
 };
 
 export const SuggestionsContainer: React.FC<Props> = ({
-  setIsLoading,
   isLoading,
-  setHasModifiedTextAfterChecking,
   setSuggestions,
   suggestions,
   activeSuggestion,
@@ -64,14 +66,14 @@ export const SuggestionsContainer: React.FC<Props> = ({
   acceptSuggestion,
   hasModifiedTextAfterChecking,
   storefront,
+  sortType,
+  setSortType,
+  dismissedSuggestionHashes,
+  checkDocument,
 }: Props) => {
   const [sortedSuggestions, setSortedSuggestions] = useState<Suggestion[]>([]);
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
-  const [sortType, setSortType] = useState(SortType.TextOrder);
-  const dismissedSuggestionHashes = useRef(new Set<number>());
-
-  const { checkerId } = useParams();
 
   useEffect(() => {
     const sorted = [...suggestions].sort(Sorters[sortType]);
@@ -106,10 +108,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
       }
     }
   }, [activeSuggestion]);
-
-  const hashSuggestion = (suggestion: Suggestion) => {
-    return cyrb53(`${suggestion.oldText}old:new${suggestion.newText}`);
-  };
 
   const dismissSuggestion = useCallback(
     (dismissedSuggestionId: string) => {
@@ -208,57 +206,13 @@ export const SuggestionsContainer: React.FC<Props> = ({
     dismissSuggestion,
   ]);
 
-  const checkDocument = useCallback((): void => {
-    if (isLoading) {
-      return;
-    }
-    setIsLoading(true);
-    handleErr(
-      apiClient.checker.checkDoc.query({
-        doc: editorState,
-        checkerId: checkerId as string,
-      }),
-      (response) => {
-        setIsLoading(false);
-        if (!response) {
-          toast.error(
-            "Something went wrong, please let Curtis know on Discord!",
-          );
-          return;
-        }
-        setHasModifiedTextAfterChecking(false);
-
-        const newSuggestions = response.suggestions;
-
-        // only show suggestions the user didn't dismiss. obv if they refresh the page this set isn't persisted. but it's okay!
-        const filteredSuggestions = newSuggestions.filter(
-          (suggestion) =>
-            !dismissedSuggestionHashes.current.has(hashSuggestion(suggestion)),
-        );
-
-        filteredSuggestions.sort(Sorters[sortType]);
-        setSuggestions(filteredSuggestions);
-      },
-      () => {
-        setIsLoading(false);
-      },
-    );
-  }, [
-    checkerId,
-    editorState,
-    isLoading,
-    setHasModifiedTextAfterChecking,
-    setIsLoading,
-    setSuggestions,
-    sortType,
-  ]);
   const pathName = usePathname();
 
   return (
     <div className="sticky right-10 top-0 flex h-full flex-col pt-[50px]">
       <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
         <LoadingButton
-          onClick={checkDocument}
+          onClick={() => checkDocument(storefront.checkerId, editorState)}
           loading={isLoading}
           className="h-9 w-40"
           disabled={editorState === ""}
