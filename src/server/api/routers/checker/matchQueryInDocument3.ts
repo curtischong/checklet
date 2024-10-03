@@ -4,6 +4,7 @@
 // @ts-nocheck
 // fixes all numm issues^. but it's not that good. I'm only okay with this because this is an ai-generated file
 
+import { levenshteinDistance } from "@/server/api/routers/checker/editDistanceSimple";
 import { fuzzyMatchAroundIndex } from "@/server/api/routers/checker/fuzzyMatch3";
 
 /**
@@ -15,37 +16,7 @@ function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-/**
- * Computes the Levenshtein distance between two strings.
- * @param s - First string.
- * @param t - Second string.
- * @returns The Levenshtein distance.
- */
-export const levenshteinDistance = (s: string, t: string): number => {
-  const m = s.length;
-  const n = t.length;
-  const dp: number[][] = [];
-
-  for (let i = 0; i <= m; i++) {
-    dp[i] = [i];
-  }
-  for (let j = 0; j <= n; j++) {
-    dp[0][j] = j;
-  }
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      dp[i][j] =
-        s[i - 1] === t[j - 1]
-          ? dp[i - 1][j - 1]
-          : Math.min(
-              dp[i - 1][j - 1] + 1, // Substitution
-              dp[i][j - 1] + 1, // Insertion
-              dp[i - 1][j] + 1, // Deletion
-            );
-    }
-  }
-  return dp[m][n];
-};
+export const editDistanceContextRadiusForExactMatch = 50;
 
 /**
  * Finds the best match of a query string within a document around a specific index.
@@ -91,18 +62,26 @@ export function matchQueryInDocument(
     const distancePenalty = distance < 0 ? Math.abs(distance) * 1.5 : distance;
 
     // Compute Levenshtein distance between the surrounding contexts
-    const contextRadius = 50; // Number of characters before and after the match to consider
     const matchStart = matchIndexInDoc;
     const matchEnd = matchIndexInDoc + query.length;
 
     // Extract surrounding context for the match
-    const matchContextStart = Math.max(0, matchStart - contextRadius);
-    const matchContextEnd = Math.min(doc.length, matchEnd + contextRadius);
-    const matchContext = doc.substring(matchContextStart, matchContextEnd);
+    const matchContextStart = Math.max(
+      0,
+      matchStart - editDistanceContextRadiusForExactMatch,
+    );
+    const matchContextEnd = Math.min(
+      doc.length,
+      matchEnd + editDistanceContextRadiusForExactMatch,
+    );
+    const matchContextInDoc1 = doc.substring(
+      matchContextStart,
+      matchContextEnd,
+    );
 
     // Compute Levenshtein distance between the two contexts
     const levenshteinPenalty = levenshteinDistance(
-      matchContext,
+      matchContextInDoc1,
       queryWithContext,
     );
 

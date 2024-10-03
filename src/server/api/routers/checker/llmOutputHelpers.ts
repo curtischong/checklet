@@ -3,7 +3,10 @@ import {
   type Tip,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { levenshteinDistance } from "@/server/api/routers/checker/editDistanceSimple";
-import { matchQueryInDocument } from "@/server/api/routers/checker/matchQueryInDocument3";
+import {
+  editDistanceContextRadiusForExactMatch,
+  matchQueryInDocument,
+} from "@/server/api/routers/checker/matchQueryInDocument3";
 import { createShortId } from "@/utils/strings";
 
 export function extractTips(input: string): Tip[] {
@@ -119,10 +122,17 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
     // Verify that the oldText at indexInDoc1 in doc1 matches the expected oldText
     const oldText = rawOldText ?? "";
 
+    // why do we need to provide oldTextWithContext?
+    // because there may be multiple exact matches in the document
+    // so we use the surrounding context to find the best match (via levenshtein distance)
+    // if we rely on the error between the predictedIndexInDoc1 and the actualIndexInDoc1, we may get a bad match
     const oldTextIdxInDoc3 = match.index - extraneousCharsFromTipTags;
     const oldTextWithContext = doc3WithoutTipTags.substring(
-      Math.max(0, oldTextIdxInDoc3 - 50),
-      Math.min(doc3WithoutTipTags.length, oldTextIdxInDoc3 + 50),
+      Math.max(0, oldTextIdxInDoc3 - editDistanceContextRadiusForExactMatch),
+      Math.min(
+        doc3WithoutTipTags.length,
+        oldTextIdxInDoc3 + editDistanceContextRadiusForExactMatch,
+      ),
     );
 
     const { matchedSubstring, actualIndex } = matchQueryInDocument(
@@ -132,8 +142,8 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
       predIndexInDoc1,
     );
 
-    console.log("predIndexInDoc1", predIndexInDoc1, "actualIndex", actualIndex);
-    console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
+    // console.log("predIndexInDoc1", predIndexInDoc1, "actualIndex", actualIndex);
+    // console.log("matchedSubstring", matchedSubstring, "oldText", oldText);
 
     const realIndexInDoc1 = actualIndex;
 
