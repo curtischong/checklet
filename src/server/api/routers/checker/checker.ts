@@ -337,4 +337,10 @@ export const checkerRouter = createTRPCRouter({
 
       return newChecker;
     }),
+
+  // https://trpc.io/docs/client/links/httpBatchStreamLink#generators
+  improvePrompt: protectedProcedure
+    .input(z.object({ improvementPrompt: z.string() }))
+    .input(z.object({ prompt: z.string() }))
+    .mutation(async ({ input }) => {}),
 });

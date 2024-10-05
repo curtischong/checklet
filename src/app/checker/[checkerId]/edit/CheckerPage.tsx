@@ -8,6 +8,9 @@ import {
   SaveStatusText,
   SubmittingState,
 } from "@/app/checker/[checkerId]/edit/CheckerTypes";
+import ImprovePromptModal, {
+  defaultImprovementPrompt,
+} from "@/app/checker/[checkerId]/edit/ImprovePromptModal";
 import { IsPublicSwitchWithoutState } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
 import { isValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
 import useUnsavedChangesWarning from "@/app/checker/[checkerId]/edit/useUnsavedChangesWarning";
@@ -47,6 +50,9 @@ export const CheckerPage = ({
     React.useState(false);
 
   const [clonedFromId, setClonedFromId] = React.useState<string | null>(null);
+  const [improvementPrompt, setImprovementPrompt] = React.useState(
+    defaultImprovementPrompt,
+  );
 
   useEffect(() => {
     handleErr(
@@ -173,6 +179,15 @@ export const CheckerPage = ({
             maxLength={MAX_CHECKER_DESC_LEN}
           />
           <label className="ml-1 mt-4 text-lg font-bold">Prompt</label>
+          <ImprovePromptModal
+            prompt={prompt}
+            improvementPrompt={improvementPrompt}
+            setImprovementPrompt={setImprovementPrompt}
+            setPrompt={setPrompt}
+          />
+          {/* <NormalButton className="w-80" disabled={prompt.trim() === ""}>
+            Improve Your Prompt
+          </NormalButton> */}
           <NormalTextArea
             placeholder={"what are the tips / tricks you use?"}
             onChange={(e) => {
