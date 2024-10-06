@@ -22,11 +22,6 @@ import debounce from "lodash.debounce";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
 
-export enum Page {
-  Main,
-  CheckCreator,
-}
-
 interface Props {
   // originalChecker: Checker;
   userCtx: UserCtx;
