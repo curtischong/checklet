@@ -129,9 +129,9 @@ const Modal = ({
               Improve Your Prompt with AI
             </h2>
             <p>
-              {/* {`To make your checker work better, it's best to phrase it as a
-              series of: "If you see abc, rephrase it to abc" instructions. `} */}
-              Ask AI to improve your prompt:
+              {`To make your checker work better, it's best to phrase it as a
+              series of: "If you see abc, rephrase it to abc" instructions. If your checker's instructions don't look like this, ask AI to rewrite your tips with these instructions:`}
+              {/* To help the models work better,  */}
             </p>
             <NormalTextArea
               value={improvementPrompt}

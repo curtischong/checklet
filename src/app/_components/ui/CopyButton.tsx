@@ -30,7 +30,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({ textToCopy, className }) => {
       } ${className}`}
       disabled={textToCopy.trim() === ""}
     >
-      {copied ? "Copied!" : "Copy Text"}
+      {copied ? "Copied!" : "Copy improved prompt"}
     </button>
   );
 };

@@ -173,7 +173,12 @@ export const CheckerPage = ({
             minRows={4}
             maxLength={MAX_CHECKER_DESC_LEN}
           />
-          <label className="ml-1 mt-4 text-lg font-bold">Prompt</label>
+          {/* <label className="ml-1 mt-4 text-lg font-bold">Prompt</label> */}
+          <LabelWithHelp
+            className="ml-1 mt-4 text-lg font-bold"
+            label="Prompt"
+            helpText="Write down all of the tips you use for this type of writing! We tell AI to watch for these things when checking documents"
+          ></LabelWithHelp>
           <ImprovePromptModal
             prompt={prompt}
             improvementPrompt={improvementPrompt}
