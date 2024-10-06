@@ -1,9 +1,5 @@
 import classNames from "classnames";
-import { useRef } from "react";
-
-import React from "react";
-
-import { useEffect, type TextareaHTMLAttributes } from "react";
+import { useEffect, useRef, type TextareaHTMLAttributes } from "react";
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   value?: string;
@@ -19,14 +15,13 @@ const TextArea: React.FC<TextAreaProps> = ({
   onChange,
   className = "",
   autoSize = false,
-  maxRows = 300, // Default maxRows (slightly increased from previous)
-  minRows = 4, // Increased default height
+  maxRows = 300,
+  minRows = 4,
   ...rest
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
-    // resize the textarea to fit its content
     if (textAreaRef.current && autoSize) {
       textAreaRef.current.style.height = "auto"; // Reset height to shrink if needed
       textAreaRef.current.style.overflow = "hidden"; // Ensure no scrollbar appears when resizing
@@ -43,7 +38,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         textAreaRef.current.style.height = `${scrollHeight}px`;
       }
     }
-  }, [value]);
+  }, [value, autoSize, maxRows]);
 
   return (
     <textarea
@@ -61,7 +56,6 @@ const TextArea: React.FC<TextAreaProps> = ({
         if (onChange) {
           onChange(e);
         }
-        // resizeTextArea(); // Adjust size dynamically
       }}
       rows={minRows} // Default taller textarea
       {...rest}
@@ -85,7 +79,6 @@ export const NormalTextArea: React.FC<ITextArea> = ({
   maxRows,
   ...rest
 }) => {
-  const { ...otherProps } = rest;
   return (
     <TextArea
       className={classNames(
@@ -95,7 +88,7 @@ export const NormalTextArea: React.FC<ITextArea> = ({
           "cursor-not-allowed bg-[#f1f1f1]": rest.disabled,
         },
       )}
-      {...otherProps}
+      {...rest}
       autoSize={true}
       minRows={minRows}
       maxRows={maxRows}

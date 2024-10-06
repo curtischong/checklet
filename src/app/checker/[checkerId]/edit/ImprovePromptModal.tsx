@@ -117,7 +117,7 @@ const Modal = ({
         >
           <div
             id="modal-content"
-            className={`bg-background flex h-[90%] w-[80%] transform flex-col rounded-lg p-6 shadow-lg transition-transform duration-300 ${
+            className={`bg-background flex h-[90vh] w-[80vw] flex-col rounded-lg p-6 shadow-lg transition-transform duration-300 ${
               isFullyVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
@@ -136,23 +136,34 @@ const Modal = ({
             <p className="mt-4">
               {`To make your checker work better, it's best to phrase it as a
               series of: "If you see abc, rephrase it to abc" instructions. If your checker's instructions don't look like this, ask AI to rewrite your tips with these instructions:`}
-              {/* To help the models work better,  */}
             </p>
-            <NormalTextArea
-              value={improvementPrompt}
-              onChange={(e) => {
-                setImprovementPrompt(e.target.value);
-              }}
-              minRows={4}
-              maxRows={4}
-            />
-            <div className="flex flex-row justify-between">
+
+            {/* Textarea Container */}
+            <div className="mt-4 flex-shrink-0">
+              <NormalTextArea
+                value={improvementPrompt}
+                onChange={(e) => {
+                  setImprovementPrompt(e.target.value);
+                }}
+                minRows={4}
+                maxRows={4}
+                className="h-24 w-full" // Fixed height to prevent shrinking
+              />
+            </div>
+
+            {/* Improved Prompt Display Area */}
+            <div className="relative mt-4 flex-grow overflow-auto whitespace-pre-line rounded-lg border border-zinc-400 p-4">
+              {improvedPrompt || "Your improved prompt will appear here..."}
+            </div>
+
+            {/* Buttons Container */}
+            <div className="mt-4 flex flex-shrink-0 flex-row justify-between">
               <NormalButton
-                className="mt-4 w-[26rem]"
+                className="w-full max-w-[26rem]"
                 onClick={() => {
                   setIsImprovingPrompt(true);
                   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                  improvePrompt(improvedPrompt, prompt);
+                  improvePrompt(improvementPrompt, prompt);
                 }}
                 disabled={
                   isImprovingPrompt ||
@@ -160,15 +171,14 @@ const Modal = ({
                   improvementPrompt.trim() === ""
                 }
               >
-                Ask AI to improve my prompt!
+                {isImprovingPrompt
+                  ? "Improving..."
+                  : "Ask AI to improve my prompt!"}
               </NormalButton>
               <CopyButton
                 textToCopy={improvedPrompt}
-                className="self-end align-bottom"
+                className="ml-4 self-end"
               />
-            </div>
-            <div className="relative mt-4 flex-grow overflow-auto whitespace-pre-line rounded-lg border border-zinc-400 p-4">
-              {improvedPrompt}
             </div>
           </div>
         </div>
