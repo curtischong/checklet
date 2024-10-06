@@ -13,7 +13,7 @@ import {
 } from "@/server/api/trpc";
 import { type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-
+import OpenAI from "openai";
 const MAX_CHECKERS = 10;
 
 export const getCheckerById = async (db: PrismaClient, id: string) => {
@@ -336,5 +336,39 @@ export const checkerRouter = createTRPCRouter({
       });
 
       return newChecker;
+    }),
+
+  // https://trpc.io/docs/client/links/httpBatchStreamLink#generators
+  improvePrompt: protectedProcedure
+    .input(z.object({ improvementPrompt: z.string() }))
+    // eslint-disable-next-line @typescript-eslint/require-await
+    .mutation(async ({ input }) => {
+      const apiKey = process.env.OPENAI_API_KEY;
+      const client = new OpenAI({
+        apiKey,
+        dangerouslyAllowBrowser: false,
+      });
+      console.log("improvemepnt prompt", input.improvementPrompt);
+
+      // Define an async generator function for streaming OpenAI responses
+      async function* streamCompletion() {
+        const completion = await client.chat.completions.create({
+          model: "gpt-4", // or gpt-3.5-turbo
+          messages: [{ role: "user", content: input.improvementPrompt }],
+          stream: true, // Enable streaming
+        });
+
+        // Handle stream data chunk by chunk
+        for await (const chunk of completion) {
+          const content = chunk.choices[0]?.delta?.content ?? "";
+          if (content) {
+            // Yield content back to the client
+            yield content;
+          }
+        }
+      }
+
+      // Return the async generator
+      return streamCompletion();
     }),
 });

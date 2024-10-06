@@ -8,6 +8,8 @@ import {
   SaveStatusText,
   SubmittingState,
 } from "@/app/checker/[checkerId]/edit/CheckerTypes";
+import { defaultImprovementPrompt } from "@/app/checker/[checkerId]/edit/DefaultPrompts";
+import ImprovePromptModal from "@/app/checker/[checkerId]/edit/ImprovePromptModal";
 import { IsPublicSwitchWithoutState } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
 import { isValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
 import useUnsavedChangesWarning from "@/app/checker/[checkerId]/edit/useUnsavedChangesWarning";
@@ -18,11 +20,6 @@ import { api, apiClient, handleErr } from "@/trpc/react";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
-
-export enum Page {
-  Main,
-  CheckCreator,
-}
 
 interface Props {
   // originalChecker: Checker;
@@ -47,6 +44,10 @@ export const CheckerPage = ({
     React.useState(false);
 
   const [clonedFromId, setClonedFromId] = React.useState<string | null>(null);
+  const [improvementPrompt, setImprovementPrompt] = React.useState(
+    defaultImprovementPrompt,
+  );
+  const [improvedPrompt, setImprovedPrompt] = React.useState("");
 
   useEffect(() => {
     handleErr(
@@ -172,7 +173,18 @@ export const CheckerPage = ({
             minRows={4}
             maxLength={MAX_CHECKER_DESC_LEN}
           />
-          <label className="ml-1 mt-4 text-lg font-bold">Prompt</label>
+          <LabelWithHelp
+            className="ml-1 mt-4 text-lg font-bold"
+            label="Prompt"
+            helpText="Write down all of the tips you use for this type of writing! We tell AI to watch for these things when checking documents"
+          ></LabelWithHelp>
+          <ImprovePromptModal
+            prompt={prompt}
+            improvementPrompt={improvementPrompt}
+            setImprovementPrompt={setImprovementPrompt}
+            improvedPrompt={improvedPrompt}
+            setImprovedPrompt={setImprovedPrompt}
+          />
           <NormalTextArea
             placeholder={"what are the tips / tricks you use?"}
             onChange={(e) => {

@@ -74,3 +74,5 @@ First scan over the entire doc and list out all of the possible grammar mistakes
 Then, repeat the entire fixed text, and for each edit, explicitly add <rule:#> </rule:#>tag around the edit. Where # is the rule you followed above. You only want to change words and short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all! Be very careful. Make sure the rule:# corresponds to the correct grammar rule.
 
 Here is the document:`;
+
+export const defaultImprovementPrompt = `Rewrite these tips into a prompt for an AI model. Turn it into a list of tips that go: "if you see xyz, reword it to abc". Also specify the reason for this tip if it was specified. If there is no reason, do not make one up`;
