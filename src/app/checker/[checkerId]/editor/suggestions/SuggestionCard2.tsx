@@ -93,6 +93,12 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
               >
                 Dismiss
               </button>
+              <button
+                className="mt-4 rounded px-2 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+                onClick={() => onDismiss(suggestion.suggestionId)} // Pass true to indicate rejection
+              >
+                Regen Suggestion
+              </button>
             </div>
           </div>
         )}

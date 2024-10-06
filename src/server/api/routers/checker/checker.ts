@@ -6,6 +6,7 @@ import { z } from "zod";
 import { type UserCtx } from "@/firebase/edge_env";
 import { mixpanel } from "@/mixpanel";
 import { CheckerWorker } from "@/server/api/routers/checker/checkDoc";
+import { regenPrompt as regenSuggestion } from "@/server/api/routers/checker/regenPrompt";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -341,8 +342,7 @@ export const checkerRouter = createTRPCRouter({
   // https://trpc.io/docs/client/links/httpBatchStreamLink#generators
   improvePrompt: protectedProcedure
     .input(z.object({ improvementPrompt: z.string() }))
-    // eslint-disable-next-line @typescript-eslint/require-await
-    .mutation(async ({ input }) => {
+    .mutation(({ input }) => {
       const apiKey = process.env.OPENAI_API_KEY;
       const client = new OpenAI({
         apiKey,
@@ -353,7 +353,7 @@ export const checkerRouter = createTRPCRouter({
       // Define an async generator function for streaming OpenAI responses
       async function* streamCompletion() {
         const completion = await client.chat.completions.create({
-          model: "gpt-4", // or gpt-3.5-turbo
+          model: "gpt-4o",
           messages: [{ role: "user", content: input.improvementPrompt }],
           stream: true, // Enable streaming
         });
@@ -370,5 +370,25 @@ export const checkerRouter = createTRPCRouter({
 
       // Return the async generator
       return streamCompletion();
+    }),
+
+  regenPrompt: publicProcedure
+    .input(
+      z.object({
+        oldText: z.string(),
+        newText: z.string(),
+        suggestionName: z.string(),
+        suggestionReason: z.string(),
+        oldDocWithContext: z.string(),
+      }),
+    )
+    .mutation(({ input }) => {
+      return regenSuggestion(
+        input.oldText,
+        input.newText,
+        input.suggestionName,
+        input.suggestionReason,
+        input.oldDocWithContext,
+      );
     }),
 });
