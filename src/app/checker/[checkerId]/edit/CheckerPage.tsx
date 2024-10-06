@@ -183,7 +183,6 @@ export const CheckerPage = ({
             prompt={prompt}
             improvementPrompt={improvementPrompt}
             setImprovementPrompt={setImprovementPrompt}
-            setPrompt={setPrompt}
           />
           {/* <NormalButton className="w-80" disabled={prompt.trim() === ""}>
             Improve Your Prompt

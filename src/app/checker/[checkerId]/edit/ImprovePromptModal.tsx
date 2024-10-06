@@ -1,5 +1,7 @@
+"use client";
 import { NormalButton } from "@/app/_components/ui/Button";
 import { NormalTextArea } from "@/app/_components/ui/TextArea";
+import { apiClient } from "@/trpc/react";
 import { type SetState } from "@/utils/types";
 import { useEffect, useState } from "react";
 
@@ -7,20 +9,18 @@ export const defaultImprovementPrompt = `Rewrite these tips into a prompt for an
 
 interface Props {
   prompt: string;
-  setPrompt: SetState<string>;
   improvementPrompt: string;
   setImprovementPrompt: SetState<string>;
 }
 
-const Modal = ({
-  prompt,
-  setPrompt,
-  improvementPrompt,
-  setImprovementPrompt,
-}: Props) => {
+const Modal = ({ prompt, improvementPrompt, setImprovementPrompt }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [isFullyVisible, setIsFullyVisible] = useState(false);
+  const [improvedPrompt, setImprovedPrompt] = useState("");
+  const [isImprovingPrompt, setIsImprovingPrompt] = useState(false);
+  const [abortController, setAbortController] =
+    useState<AbortController | null>(null);
 
   // Function to open the modal
   const openModal = () => {
@@ -48,10 +48,43 @@ const Modal = ({
     }
   };
 
-  const onImprovePrompt = () => {
-    const iterable = await apiClient.iterable.query();
-    console.log(prompt);
+  const improvePrompt = async (improvementPrompt: string, prompt: string) => {
+    // Create a new AbortController instance for each request
+    const controller = new AbortController();
+    setAbortController(controller); // Store the controller to allow cancellation later
+
+    try {
+      // Send the request with the AbortController's signal
+      const response = await apiClient.checker.improvePrompt.mutate(
+        {
+          improvementPrompt: `${improvementPrompt}\n\nHere is the original prompt:\n${prompt}`,
+        },
+        {
+          signal: controller.signal, // Attach the abort signal
+        },
+      );
+
+      // Handle streaming response
+      for await (const content of response) {
+        // Append each streamed chunk of content
+        setImprovedPrompt((currImprovedPrompt) => currImprovedPrompt + content);
+      }
+    } catch (error) {
+      if (controller.signal.aborted) {
+        console.log("Stream was cancelled");
+      } else {
+        console.error("Error during streaming:", error);
+      }
+    }
+    setIsImprovingPrompt(false);
   };
+
+  // Cancel the stream when needed
+  useEffect(() => {
+    if (!isOpen && abortController) {
+      abortController.abort(); // Trigger the cancellation
+    }
+  }, [isOpen, abortController]);
 
   useEffect(() => {
     if (isOpen) {
@@ -82,7 +115,7 @@ const Modal = ({
         >
           <div
             id="modal-content"
-            className={`w-96 transform rounded-lg bg-white p-6 shadow-lg transition-transform duration-300 ${
+            className={`flex h-[90%] w-[80%] transform flex-col rounded-lg bg-white p-6 shadow-lg transition-transform duration-300 ${
               isFullyVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
@@ -90,8 +123,9 @@ const Modal = ({
               Improve Your Prompt with AI
             </h2>
             <p>
-              {`To make your checker work better, it's best to phrase it as a
-              series of: "If you see abc, rephrase it to abc" instructions. `}
+              {/* {`To make your checker work better, it's best to phrase it as a
+              series of: "If you see abc, rephrase it to abc" instructions. `} */}
+              Ask AI to improve your prompt:
             </p>
             <NormalTextArea
               value={improvementPrompt}
@@ -101,14 +135,25 @@ const Modal = ({
               minRows={4}
             />
             <NormalButton
-              className="mt-4 h-10 w-52"
-              onClick={onImprovePrompt}
-              disabled={prompt.trim() === "" || improvementPrompt.trim() === ""}
+              className="mt-4 w-[26rem]"
+              onClick={() => {
+                setIsImprovingPrompt(true);
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                improvePrompt(improvedPrompt, prompt);
+              }}
+              disabled={
+                isImprovingPrompt ||
+                prompt.trim() === "" ||
+                improvementPrompt.trim() === ""
+              }
             >
-              Tell the AI to improve my prompt!
+              Ask AI to improve my prompt!
             </NormalButton>
+            <div className="flex-grow overflow-auto whitespace-pre-line">
+              {improvedPrompt}
+            </div>
             <button
-              className="mt-4 rounded px-4 py-2 text-zinc-500 transition duration-300 hover:text-zinc-900"
+              className="self-start rounded pt-2 text-zinc-500 transition duration-300 hover:text-zinc-900"
               onClick={closeModal}
             >
               Return
