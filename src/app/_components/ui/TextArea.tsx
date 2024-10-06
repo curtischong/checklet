@@ -72,6 +72,7 @@ const TextArea: React.FC<TextAreaProps> = ({
 export type ITextArea = React.DetailedHTMLProps<
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
     minRows?: number;
+    maxRows?: number;
     value: string;
   },
   HTMLTextAreaElement
@@ -81,9 +82,9 @@ export const NormalTextArea: React.FC<ITextArea> = ({
   className = "",
   children,
   minRows,
+  maxRows,
   ...rest
 }) => {
-  // const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ...otherProps } = rest;
   return (
     <TextArea
@@ -95,9 +96,9 @@ export const NormalTextArea: React.FC<ITextArea> = ({
         },
       )}
       {...otherProps}
-      // ref={textareaRef}
       autoSize={true}
       minRows={minRows}
+      maxRows={maxRows}
     >
       {children}
     </TextArea>
