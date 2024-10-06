@@ -1,8 +1,7 @@
-import { removeInvalidTips } from "@/server/api/routers/checker/docPostProcess";
 import { Llm3 } from "@/server/api/routers/checker/llm3";
-import { extractSuggestions } from "@/server/api/routers/checker/llmOutputHelpers";
-import { regenPrompt1 } from "@/server/api/routers/checker/prompts";
+import { regenPrompt2 } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
+import { TRPCError } from "@trpc/server";
 import path from "path";
 
 const model = "gpt-4o";
@@ -10,6 +9,8 @@ const cache3 = new SimpleCache(
   path.join(process.cwd(), ".chatgpt_history"),
   "/cache3",
 );
+
+const regex = /<new>(.*?)<\/new>/g;
 
 export const regenPrompt = async (
   oldText: string,
@@ -24,7 +25,7 @@ export const regenPrompt = async (
 
   const newChat = await llm.promptMessages(
     [],
-    regenPrompt1(
+    regenPrompt2(
       oldText,
       newText,
       suggestionName,
@@ -35,9 +36,18 @@ export const regenPrompt = async (
   );
   const newDoc = newChat.message.content!;
 
-  const doc3 = removeInvalidTips(newDoc); // removes extraneous whitespace / removals the llm made
+  const matches = [];
+  let match;
 
-  const suggestions = extractSuggestions(doc, doc3);
+  while ((match = regex.exec(newDoc)) !== null) {
+    matches.push(match[1]);
+  }
+  if (matches.length === 0) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: `failed to regenerate suggestion`,
+    });
+  }
 
-  return removeInvalidSuggestions(suggestions);
+  return matches[matches.length - 1];
 };

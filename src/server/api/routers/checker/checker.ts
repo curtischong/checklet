@@ -372,7 +372,7 @@ export const checkerRouter = createTRPCRouter({
       return streamCompletion();
     }),
 
-  regenPrompt: publicProcedure
+  regenSuggestion: publicProcedure
     .input(
       z.object({
         oldText: z.string(),

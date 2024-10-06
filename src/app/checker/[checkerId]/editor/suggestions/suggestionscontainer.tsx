@@ -10,6 +10,7 @@ import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
+import { apiClient, handleErr } from "@/trpc/react";
 import { scrollToChild } from "@/utils/scroll";
 import { pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
@@ -97,6 +98,37 @@ export const SuggestionsContainer: React.FC<Props> = ({
     [activeSuggestion, setActiveSuggestion],
   );
 
+  const onRegenSuggestion = useCallback(
+    (suggestion: Suggestion) => {
+      const start = suggestion.range.start - 100;
+      const end = suggestion.range.end + 100;
+      const oldDocWithContext = editorState.substring(start, end);
+      handleErr(
+        apiClient.checker.regenSuggestion.mutate({
+          oldText: suggestion.oldText,
+          newText: suggestion.newText,
+          suggestionName: suggestion.tipName,
+          suggestionReason: suggestion.reason,
+          oldDocWithContext,
+        }),
+        (newText) => {
+          console.log("newText", newText);
+          setSuggestions((currSuggestions) => {
+            const newSuggestions = [...currSuggestions];
+            const index = newSuggestions.findIndex(
+              (s) => s.suggestionId === suggestion.suggestionId,
+            );
+            if (index !== -1) {
+              newSuggestions[index]!.newText = newText!;
+            }
+            return newSuggestions;
+          });
+        },
+      );
+    },
+    [editorState],
+  );
+
   useEffect(() => {
     if (activeSuggestion) {
       const ref = suggestionsRefs.current[activeSuggestion.suggestionId]!;
@@ -141,6 +173,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
                 acceptSuggestion(s, acceptedOption)
               }
               onDismiss={dismissSuggestion}
+              onRegenSuggestion={onRegenSuggestion}
               ref={ref}
             />
           );

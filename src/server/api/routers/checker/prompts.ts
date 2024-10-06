@@ -371,3 +371,19 @@ export const regenPrompt1 = (
 
 ${oldDocWithContext}`;
 };
+
+export const regenPrompt2 = (
+  oldText: string,
+  newText: string,
+  suggestionName: string,
+  suggestionReason: string,
+  oldDocWithContext: string,
+) => {
+  return `We are changing the oldText=${oldText} to the newText=${newText} because it improves the ${suggestionName} tip. The reason is: ${suggestionReason}. Output alternative newText in this format:
+  
+<new>new text after edit</new>
+
+ Here is the original document with the oldText:
+
+${oldDocWithContext}`;
+};
