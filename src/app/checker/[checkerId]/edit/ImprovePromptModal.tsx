@@ -125,9 +125,17 @@ const Modal = ({
               isFullyVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
-            <h2 className="mb-4 text-xl font-semibold">
-              Improve Your Prompt with AI
-            </h2>
+            <div className="flex flex-row">
+              <h2 className="mb-4 text-xl font-semibold">
+                Improve Your Prompt with AI
+              </h2>
+              <button
+                className="self-start rounded pt-2 text-zinc-500 transition duration-300 hover:text-zinc-900"
+                onClick={closeModal}
+              >
+                Return
+              </button>
+            </div>
             <p>
               {`To make your checker work better, it's best to phrase it as a
               series of: "If you see abc, rephrase it to abc" instructions. If your checker's instructions don't look like this, ask AI to rewrite your tips with these instructions:`}
@@ -139,6 +147,7 @@ const Modal = ({
                 setImprovementPrompt(e.target.value);
               }}
               minRows={4}
+              maxRows={4}
             />
             <div className="flex flex-row">
               <NormalButton
@@ -164,12 +173,6 @@ const Modal = ({
             <div className="relative mt-4 flex-grow overflow-auto whitespace-pre-line rounded-lg border border-zinc-400 p-4">
               {improvedPrompt}
             </div>
-            <button
-              className="self-start rounded pt-2 text-zinc-500 transition duration-300 hover:text-zinc-900"
-              onClick={closeModal}
-            >
-              Return
-            </button>
           </div>
         </div>
       )}
