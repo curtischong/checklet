@@ -24,15 +24,15 @@ const CopyButton: React.FC<CopyButtonProps> = ({ textToCopy, className }) => {
   return (
     <button
       onClick={handleCopy}
-      className={`h-6 rounded px-2 text-zinc-600 transition-colors duration-300 hover:text-zinc-900 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
+      className={`flex h-8 items-center space-x-2 rounded px-3 text-zinc-600 transition-colors duration-300 hover:text-zinc-900 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${
         copied
           ? "bg-green-200 hover:bg-green-300"
           : "bg-zinc-200 hover:bg-zinc-300"
       } ${className}`}
       disabled={textToCopy.trim() === ""}
     >
-      <CopyIcon />
-      {copied ? "Copied!" : "Copy improved prompt"}
+      <CopyIcon className="h-4 w-4" />
+      <span>{copied ? "Copied!" : "Copy improved prompt"}</span>
     </button>
   );
 };
