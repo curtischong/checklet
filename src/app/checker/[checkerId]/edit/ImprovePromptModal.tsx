@@ -106,11 +106,7 @@ const Modal = ({
 
   return (
     <>
-      <NormalButton
-        className="mb-2 mt-2 h-10 w-52"
-        onClick={openModal}
-        // disabled={prompt.trim() === ""}
-      >
+      <NormalButton className="mb-2 mt-2 h-10 w-52" onClick={openModal}>
         Improve Your Prompt
       </NormalButton>
       {isOpen && (

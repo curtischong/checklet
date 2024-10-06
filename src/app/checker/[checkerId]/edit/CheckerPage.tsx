@@ -173,7 +173,6 @@ export const CheckerPage = ({
             minRows={4}
             maxLength={MAX_CHECKER_DESC_LEN}
           />
-          {/* <label className="ml-1 mt-4 text-lg font-bold">Prompt</label> */}
           <LabelWithHelp
             className="ml-1 mt-4 text-lg font-bold"
             label="Prompt"
@@ -186,9 +185,6 @@ export const CheckerPage = ({
             improvedPrompt={improvedPrompt}
             setImprovedPrompt={setImprovedPrompt}
           />
-          {/* <NormalButton className="w-80" disabled={prompt.trim() === ""}>
-            Improve Your Prompt
-          </NormalButton> */}
           <NormalTextArea
             placeholder={"what are the tips / tricks you use?"}
             onChange={(e) => {

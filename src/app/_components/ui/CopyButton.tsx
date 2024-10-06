@@ -1,6 +1,7 @@
 // src/components/CopyButton.tsx
 import { CopyIcon } from "@/app/_components/icons/CopyIcon";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 interface CopyButtonProps {
   textToCopy: string;
@@ -17,7 +18,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({ textToCopy, className }) => {
       setTimeout(() => setCopied(false), 3000); // Reset after 3 seconds
     } catch (error) {
       console.error("Failed to copy text: ", error);
-      // Optionally, you can set an error state here
+      toast.error("Failed to copy text");
     }
   };
 
