@@ -1,4 +1,5 @@
 // src/components/CopyButton.tsx
+import { CopyIcon } from "@/app/_components/icons/CopyIcon";
 import React, { useState } from "react";
 
 interface CopyButtonProps {
@@ -30,6 +31,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({ textToCopy, className }) => {
       } ${className}`}
       disabled={textToCopy.trim() === ""}
     >
+      <CopyIcon />
       {copied ? "Copied!" : "Copy improved prompt"}
     </button>
   );

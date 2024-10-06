@@ -107,7 +107,7 @@ const Modal = ({
   return (
     <>
       <NormalButton
-        className="mt-4 h-10 w-52"
+        className="mb-2 mt-2 h-10 w-52"
         onClick={openModal}
         // disabled={prompt.trim() === ""}
       >
@@ -125,18 +125,19 @@ const Modal = ({
               isFullyVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
-            <div className="flex flex-row">
-              <h2 className="mb-4 text-xl font-semibold">
+            <div className="flex flex-row justify-between">
+              <h2 className="text-xl font-semibold">
                 Improve Your Prompt with AI
               </h2>
               <button
-                className="self-start rounded pt-2 text-zinc-500 transition duration-300 hover:text-zinc-900"
+                className="rounded text-zinc-500 transition duration-300 hover:text-zinc-900"
                 onClick={closeModal}
               >
                 Return
               </button>
             </div>
-            <p>
+
+            <p className="mt-4">
               {`To make your checker work better, it's best to phrase it as a
               series of: "If you see abc, rephrase it to abc" instructions. If your checker's instructions don't look like this, ask AI to rewrite your tips with these instructions:`}
               {/* To help the models work better,  */}
@@ -149,7 +150,7 @@ const Modal = ({
               minRows={4}
               maxRows={4}
             />
-            <div className="flex flex-row">
+            <div className="flex flex-row justify-between">
               <NormalButton
                 className="mt-4 w-[26rem]"
                 onClick={() => {
