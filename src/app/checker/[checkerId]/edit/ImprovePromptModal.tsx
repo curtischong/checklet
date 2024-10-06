@@ -1,5 +1,6 @@
 "use client";
 import { NormalButton } from "@/app/_components/ui/Button";
+import CopyButton from "@/app/_components/ui/CopyButton";
 import { NormalTextArea } from "@/app/_components/ui/TextArea";
 import { apiClient } from "@/trpc/react";
 import { type SetState } from "@/utils/types";
@@ -114,7 +115,7 @@ const Modal = ({
       </NormalButton>
       {isOpen && (
         <div
-          className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ${
+          className={`fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ${
             isFadingOut ? "opacity-0" : "opacity-100"
           }`}
         >
@@ -139,22 +140,28 @@ const Modal = ({
               }}
               minRows={4}
             />
-            <NormalButton
-              className="mt-4 w-[26rem]"
-              onClick={() => {
-                setIsImprovingPrompt(true);
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                improvePrompt(improvedPrompt, prompt);
-              }}
-              disabled={
-                isImprovingPrompt ||
-                prompt.trim() === "" ||
-                improvementPrompt.trim() === ""
-              }
-            >
-              Ask AI to improve my prompt!
-            </NormalButton>
-            <div className="mt-4 flex-grow overflow-auto whitespace-pre-line rounded-lg border-[1px] border-zinc-400 p-4">
+            <div className="flex flex-row">
+              <NormalButton
+                className="mt-4 w-[26rem]"
+                onClick={() => {
+                  setIsImprovingPrompt(true);
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                  improvePrompt(improvedPrompt, prompt);
+                }}
+                disabled={
+                  isImprovingPrompt ||
+                  prompt.trim() === "" ||
+                  improvementPrompt.trim() === ""
+                }
+              >
+                Ask AI to improve my prompt!
+              </NormalButton>
+              <CopyButton
+                textToCopy={improvedPrompt}
+                className="self-end align-bottom"
+              />
+            </div>
+            <div className="relative mt-4 flex-grow overflow-auto whitespace-pre-line rounded-lg border border-zinc-400 p-4">
               {improvedPrompt}
             </div>
             <button
