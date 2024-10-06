@@ -16,6 +16,7 @@ export default {
         nunito: ["var(--font-nunito)"],
       },
       colors: {
+        background: "#fff0f1",
         primary: "#ff7066",
         primary2: "#f05146",
         // primary: "#34A43E",

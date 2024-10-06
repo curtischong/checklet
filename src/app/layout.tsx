@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${mackinac.variable} ${nunito.variable} bg-[#fff0f1] font-nunito tracking-[0.01em]`}
+        className={`${mackinac.variable} ${nunito.variable} bg-background font-nunito tracking-[0.01em]`}
         style={{
           WebkitFontSmoothing: "antialiased",
         }}

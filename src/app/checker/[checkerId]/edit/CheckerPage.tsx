@@ -8,9 +8,8 @@ import {
   SaveStatusText,
   SubmittingState,
 } from "@/app/checker/[checkerId]/edit/CheckerTypes";
-import ImprovePromptModal, {
-  defaultImprovementPrompt,
-} from "@/app/checker/[checkerId]/edit/ImprovePromptModal";
+import { defaultImprovementPrompt } from "@/app/checker/[checkerId]/edit/DefaultPrompts";
+import ImprovePromptModal from "@/app/checker/[checkerId]/edit/ImprovePromptModal";
 import { IsPublicSwitchWithoutState } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
 import { isValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
 import useUnsavedChangesWarning from "@/app/checker/[checkerId]/edit/useUnsavedChangesWarning";
@@ -48,6 +47,7 @@ export const CheckerPage = ({
   const [improvementPrompt, setImprovementPrompt] = React.useState(
     defaultImprovementPrompt,
   );
+  const [improvedPrompt, setImprovedPrompt] = React.useState("");
 
   useEffect(() => {
     handleErr(
@@ -178,6 +178,8 @@ export const CheckerPage = ({
             prompt={prompt}
             improvementPrompt={improvementPrompt}
             setImprovementPrompt={setImprovementPrompt}
+            improvedPrompt={improvedPrompt}
+            setImprovedPrompt={setImprovedPrompt}
           />
           {/* <NormalButton className="w-80" disabled={prompt.trim() === ""}>
             Improve Your Prompt

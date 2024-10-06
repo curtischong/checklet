@@ -5,19 +5,24 @@ import { apiClient } from "@/trpc/react";
 import { type SetState } from "@/utils/types";
 import { useEffect, useState } from "react";
 
-export const defaultImprovementPrompt = `Rewrite these tips into a prompt for an AI model. Turn it into a list of tips that go: "if you see xyz, reword it to abc". Also specify the reason for this tip if it was specified. If there is no reason, do not make one up`;
-
 interface Props {
   prompt: string;
   improvementPrompt: string;
   setImprovementPrompt: SetState<string>;
+  improvedPrompt: string;
+  setImprovedPrompt: SetState<string>;
 }
 
-const Modal = ({ prompt, improvementPrompt, setImprovementPrompt }: Props) => {
+const Modal = ({
+  prompt,
+  improvementPrompt,
+  setImprovementPrompt,
+  improvedPrompt,
+  setImprovedPrompt,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [isFullyVisible, setIsFullyVisible] = useState(false);
-  const [improvedPrompt, setImprovedPrompt] = useState("");
   const [isImprovingPrompt, setIsImprovingPrompt] = useState(false);
   const [abortController, setAbortController] =
     useState<AbortController | null>(null);
@@ -115,7 +120,7 @@ const Modal = ({ prompt, improvementPrompt, setImprovementPrompt }: Props) => {
         >
           <div
             id="modal-content"
-            className={`flex h-[90%] w-[80%] transform flex-col rounded-lg bg-white p-6 shadow-lg transition-transform duration-300 ${
+            className={`bg-background flex h-[90%] w-[80%] transform flex-col rounded-lg p-6 shadow-lg transition-transform duration-300 ${
               isFullyVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
@@ -149,7 +154,7 @@ const Modal = ({ prompt, improvementPrompt, setImprovementPrompt }: Props) => {
             >
               Ask AI to improve my prompt!
             </NormalButton>
-            <div className="flex-grow overflow-auto whitespace-pre-line">
+            <div className="mt-4 flex-grow overflow-auto whitespace-pre-line rounded-lg border-[1px] border-zinc-400 p-4">
               {improvedPrompt}
             </div>
             <button
