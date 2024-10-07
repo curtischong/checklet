@@ -389,3 +389,5 @@ You should return:
 
 <End of Example 2/>`;
 };
+
+export const oneshot5 = () => {};
