@@ -81,11 +81,12 @@ const tipTagPattern =
   // /<tip\|([^|]+)\|([^>]+)>\ *<old>([^<]+)<\/old>\ *<new>([^<]+)<\/new>\ *<\/tip>/g;
 
   // this pattern is the same, except we now match for generic whitespace characters between tags
-  /<tip\|([^|]+)\|([^>]+)>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<\/tip>/g;
+  // /<tip\|([^|]+)\|([^>]+)>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<\/tip>/g;
+  /<tip>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<name>([^<]+)<\/name>\s*<reason>([^<]+)<\/reason>\s*<\/tip>/g;
 
 const getDoc3WithoutTipTags = (doc3: string) => {
   // replace it all with the old text since this is used to help find surrounding context around matches
-  return doc3.replace(tipTagPattern, "$3");
+  return doc3.replace(tipTagPattern, "$1");
 };
 
 // https://chatgpt.com/share/66f0c180-e6a0-800e-a55a-99862d193b2f
@@ -106,7 +107,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   // eslint-disable-next-line @typescript-eslint/prefer-for-of
   for (let i = 0; i < allMatches.length; i++) {
     const match = allMatches[i]!;
-    const [fullMatch, tipName, reason, rawOldText, newText] = match;
+    const [fullMatch, rawOldText, newText, tipName, reason] = match;
     // console.log(`match ${i} ${rawOldText} old|new ${newText}`);
     const tipStartIndexInDoc2 = match.index;
     // NOTE: since there may be chain of thought at the start of doc2, this is a big number^
