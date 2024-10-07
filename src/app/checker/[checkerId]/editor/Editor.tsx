@@ -153,7 +153,7 @@ export const Editor = ({
       // we'll add it to the acceptedSuggestionIdsRef set and manually filter it out inside updateEditorState
       acceptedSuggestionIdsRef.current.add(suggestion.suggestionId);
 
-      editorRef.current.focus();
+      editorRef.current.focus({ preventScroll: true });
       editorRef.current.setSelectionRange(
         suggestion.range.start,
         suggestion.range.end,
