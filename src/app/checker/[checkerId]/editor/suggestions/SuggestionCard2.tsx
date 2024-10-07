@@ -9,7 +9,7 @@ interface Props {
   suggestion: Suggestion;
   activeSuggestion: Suggestion | undefined;
   onClick: () => void;
-  onReplaceClick: (acceptedOption: string) => void;
+  onAccept: (acceptedOption: string) => void;
   onDismiss: (suggestionId: string) => void;
   classNames?: string;
 }
@@ -20,7 +20,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       suggestion,
       activeSuggestion,
       onClick,
-      onReplaceClick,
+      onAccept,
       onDismiss,
       classNames,
     } = props;
@@ -83,7 +83,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
             <div className="flex flex-row space-x-4">
               <button
                 className="mt-4 rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
-                onClick={() => onReplaceClick(suggestion.newText)}
+                onClick={() => onAccept(suggestion.newText)}
               >
                 Accept
               </button>

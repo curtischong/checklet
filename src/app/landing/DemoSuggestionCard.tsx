@@ -20,7 +20,7 @@ export const DemoSuggestionCard = () => {
     <SuggestionCard2
       suggestion={suggestion}
       onClick={() => {}}
-      onReplaceClick={() => {}}
+      onAccept={() => {}}
       onDismiss={() => {}}
       activeSuggestion={suggestion}
     />
