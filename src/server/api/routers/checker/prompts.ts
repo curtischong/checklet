@@ -355,3 +355,37 @@ You should return:
 
 <End of Example 2/>`;
 };
+
+export const addTipTags4Dot3 = () => {
+  return `I want you to merge the edits of your response with the original document.
+  
+For each edit you merge, surround the edit with <tip><old>old text before edit</old><new>new text after edit</new><name>tip name</name><reason>reason for tip</reason></tip>.
+
+I just want the original document but with the edits ported over from your response.
+
+<Example 1>
+
+Original Document:
+I really love rainy Sundays.
+
+Document with edits:
+I love rainy Sundays.
+
+You should return:
+I <tip><old>really </old><new></new><name>Remove Adverbs</name><reason>It improves conciseness</reason></tip>love rainy Sundays.
+
+</End of Example 1>
+
+<Example 2>
+
+Original Document:
+Howdy Sir
+
+Document with edits:
+Hello Sir
+
+You should return:
+<tip><old>Howdy</old><new>Hello</new><name>Be more Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
+
+<End of Example 2/>`;
+};
