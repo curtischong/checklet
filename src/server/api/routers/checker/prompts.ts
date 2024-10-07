@@ -356,10 +356,23 @@ You should return:
 <End of Example 2/>`;
 };
 
+<<<<<<< HEAD
 export const addTipTags4Dot3 = () => {
   return `I want you to merge the edits of your response with the original document.
   
 For each edit you merge, surround the edit with <tip><old>old text before edit</old><new>new text after edit</new><name>tip name</name><reason>reason for tip</reason></tip>.
+=======
+export const inference5Dot1 = (prompt: string, doc: string) => {
+  return `1) Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Spend time thinking and consider if the edit really does improve the error in the sentence. If this edit is appropriate, write down the tip that you used for the edit you’re making.
+
+Only edit short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
+
+2) Repeat the entire fixed text with the edits.
+
+I want you to merge the edits of your response with the original document.
+  
+For each edit you merge, surround the edit with <tip|name of tip|reason for tip><old>old text before edit</old><new>new text after edit</new></tip>.
+>>>>>>> 015284e (wip one shot prompt)
 
 I just want the original document but with the edits ported over from your response.
 
@@ -372,7 +385,11 @@ Document with edits:
 I love rainy Sundays.
 
 You should return:
+<<<<<<< HEAD
 I <tip><old>really </old><new></new><name>Remove Adverbs</name><reason>It improves conciseness</reason></tip>love rainy Sundays.
+=======
+I <tip|Remove Adverbs|it improves conciseness><old>really </old><new></new></tip>love rainy Sundays.
+>>>>>>> 015284e (wip one shot prompt)
 
 </End of Example 1>
 
@@ -385,7 +402,65 @@ Document with edits:
 Hello Sir
 
 You should return:
+<<<<<<< HEAD
 <tip><old>Howdy</old><new>Hello</new><name>Be more Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
 
 <End of Example 2/>`;
+=======
+<tip|Be More Formal|It is better to be more formal when writing to a CEO><old>Howdy</old><new>Hello</new></tip> Sir
+
+<End of Example 2/>
+
+---TIPS---
+${prompt}
+
+---DOCUMENT---
+${doc}`;
+};
+
+export const inference5Dot2 = (prompt: string, doc: string) => {
+  return `1) Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Spend time thinking and consider if the edit really does improve the error in the sentence. If this edit is appropriate, write down the tip that you used for the edit you’re making.
+
+Only edit short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
+
+2) Repeat the entire fixed text with the edits.
+
+I want you to merge the edits of your response with the original document.
+  
+For each edit you merge, surround the edit with <tip|name of tip|reason for tip><old>old text before edit</old><new>new text after edit</new></tip>.
+
+I just want the original document but with the edits ported over from your response.
+
+<Example 1>
+
+Original Document:
+I really love rainy Sundays.
+
+Document with edits:
+I love rainy Sundays.
+
+You should return:
+I <tip|Remove Adverbs|it improves conciseness><old>really </old><new></new></tip>love rainy Sundays.
+
+</End of Example 1>
+
+<Example 2>
+
+Original Document:
+Howdy Sir
+
+Document with edits:
+Hello Sir
+
+You should return:
+<tip|Be More Formal|It is better to be more formal when writing to a CEO><old>Howdy</old><new>Hello</new></tip> Sir
+
+<End of Example 2/>
+
+---TIPS---
+${prompt}
+
+---DOCUMENT---
+${doc}`;
+>>>>>>> 015284e (wip one shot prompt)
 };

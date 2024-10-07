@@ -89,7 +89,8 @@ export class CheckerWorker {
     // const newChecker = await this.updateRefinedPrompt(checker);
 
     // const suggestions = await checkDoc1dot14(this.llm3, newChecker.prompt, doc);
-    const suggestions = await checkDoc4Dot3(this.llm3, checker.prompt, doc);
+    // const suggestions = await checkDoc4Dot2(this.llm3, checker.prompt, doc);
+    const suggestions = await checkDoc5Dot1(this.llm3, checker.prompt, doc);
     console.log("suggestions", suggestions);
     return {
       suggestions: suggestions,
