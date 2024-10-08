@@ -1,5 +1,5 @@
 import { Llm3 } from "@/server/api/routers/checker/llm3";
-import { regenPrompt2 } from "@/server/api/routers/checker/prompts";
+import { regenPrompt3 } from "@/server/api/routers/checker/prompts";
 import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import { TRPCError } from "@trpc/server";
 import path from "path";
@@ -10,7 +10,7 @@ const cache3 = new SimpleCache(
   "/cache3",
 );
 
-const regex = /<new>(.*?)<\/new>/g;
+const regex = /<new2>(.*?)<\/new2>/g;
 
 export const regenSuggestion = async (
   oldText: string,
@@ -32,7 +32,7 @@ export const regenSuggestion = async (
 
   const newChat = await llm.promptMessages(
     [],
-    regenPrompt2(
+    regenPrompt3(
       oldText,
       newText,
       suggestionName,
@@ -43,6 +43,8 @@ export const regenSuggestion = async (
     model,
   );
   const newDoc = newChat.message.content!;
+  console.log("newdoc-------------");
+  console.log(newDoc);
 
   const matches = [];
   let match;
