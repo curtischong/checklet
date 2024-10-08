@@ -1,12 +1,17 @@
+"use client";
+import { apiClient, handleErr } from "@/trpc/react";
 import { type Checker } from "@prisma/client";
 import classNames from "classnames";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-interface Props {
-  checkers: Checker[];
-}
+export const CheckerStore = (): JSX.Element => {
+  const [checkers, setCheckers] = useState<Checker[]>([]);
 
-export const CheckerStore = ({ checkers }: Props): JSX.Element => {
+  useEffect(() => {
+    handleErr(apiClient.checker.getAllCheckers.query(), setCheckers);
+  }, []);
+
   return (
     <div className="mt-10 flex flex-col items-center space-y-6">
       {/* TODO: add a search bar */}

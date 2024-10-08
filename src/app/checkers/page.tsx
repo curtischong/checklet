@@ -7,34 +7,10 @@ import { CheckerStore } from "@/app/checkers/CheckerStore";
 import { CreateOwnChecker } from "@/app/checkers/CreateOwnChecker";
 import { trackPageView } from "@/mixpanel";
 import { parseAuthHeader } from "@/networking_helpers";
-import { db } from "@/server/db";
-import { type Prisma } from "@prisma/client";
 
-const Page = async () => {
-  const targetClauses: Prisma.CheckerWhereInput[] = [
-    {
-      isPublic: {
-        equals: true,
-      },
-      isValid: {
-        equals: true,
-      },
-    },
-  ];
+const Page = () => {
   const user = parseAuthHeader();
   trackPageView(user);
-  if (user) {
-    const yourCheckerClause: Prisma.CheckerWhereInput = {
-      createdById: {
-        equals: user.id,
-      },
-    };
-    targetClauses.push(yourCheckerClause);
-  }
-
-  const checkers = await db.checker.findMany({
-    where: { OR: targetClauses },
-  });
 
   return (
     <>
@@ -58,7 +34,7 @@ const Page = async () => {
           height={200}
           width={200}
         />
-        <CheckerStore checkers={checkers} />
+        <CheckerStore />
       </div>
     </>
   );

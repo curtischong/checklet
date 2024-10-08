@@ -76,14 +76,14 @@ export async function middleware(request: NextRequest) {
         return redirectTo(request, "/signin?redirect-reason=create-checker");
       }
 
-      // console.info("Missing or malformed credentials", { reason });
+      // console.info("Missing or malformed credentials", { reason: _reason });
       const res = NextResponse.next();
       res.headers.set(requestPathHeaderName, pathname);
       return res;
     },
     // eslint-disable-next-line @typescript-eslint/require-await
     handleError: async (_error) => {
-      // console.error("Unhandled authentication error", { error });
+      // console.error("Unhandled authentication error", { error: _error });
       const res = NextResponse.next();
       res.headers.set(requestPathHeaderName, pathname);
       return res;

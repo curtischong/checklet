@@ -12,7 +12,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { type PrismaClient } from "@prisma/client";
+import { type Prisma, type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import OpenAI from "openai";
 const MAX_CHECKERS = 10;
@@ -82,6 +82,32 @@ export const checkerRouter = createTRPCRouter({
       }
       return checker;
     }),
+
+  getAllCheckers: publicProcedure.query(async ({ ctx }) => {
+    console.log("getAllCheckers");
+    const targetClauses: Prisma.CheckerWhereInput[] = [
+      {
+        isPublic: {
+          equals: true,
+        },
+        isValid: {
+          equals: true,
+        },
+      },
+    ];
+    if (ctx.user) {
+      const yourCheckerClause: Prisma.CheckerWhereInput = {
+        createdById: {
+          equals: ctx.user.id,
+        },
+      };
+      targetClauses.push(yourCheckerClause);
+    }
+
+    return await ctx.db.checker.findMany({
+      where: { OR: targetClauses },
+    });
+  }),
 
   create: protectedProcedure.mutation(async ({ ctx }) => {
     const user = await ctx.db.user.findUnique({
