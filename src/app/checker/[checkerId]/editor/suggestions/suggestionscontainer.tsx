@@ -25,6 +25,7 @@ import {
 
 export type Props = {
   isLoading: boolean;
+  setIsLoading: SetState<boolean>;
   setSuggestions: SetState<Suggestion[]>;
   suggestions: Suggestion[];
   activeSuggestion: Suggestion | undefined;
@@ -59,6 +60,7 @@ export const Sorters = {
 
 export const SuggestionsContainer: React.FC<Props> = ({
   isLoading,
+  setIsLoading,
   setSuggestions,
   suggestions,
   activeSuggestion,
@@ -130,6 +132,8 @@ export const SuggestionsContainer: React.FC<Props> = ({
       const start = suggestion.range.start - 100;
       const end = suggestion.range.end + 100;
       const oldDocWithContext = editorState.substring(start, end);
+      setIsLoading(true);
+      console.log("isloading");
       handleErr(
         apiClient.checker.regenSuggestion.mutate({
           oldText: suggestion.oldText,
@@ -140,6 +144,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
           regeneratePrompt,
         }),
         (newText) => {
+          setIsLoading(false);
           console.log("newText", newText);
           setSuggestions((currSuggestions) => {
             const newSuggestions = [...currSuggestions];
@@ -152,9 +157,12 @@ export const SuggestionsContainer: React.FC<Props> = ({
             return newSuggestions;
           });
         },
+        (_err) => {
+          setIsLoading(false);
+        },
       );
     },
-    [editorState],
+    [editorState, setSuggestions],
   );
 
   const renderSuggestions = React.useCallback(() => {
@@ -174,6 +182,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
               onDismiss={dismissSuggestion}
               onRegenerate={onRegenSuggestion}
               ref={ref}
+              isRegenerating={isLoading}
             />
           );
         });
@@ -236,6 +245,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
     onCollapseClick,
     acceptSuggestion,
     dismissSuggestion,
+    isLoading,
   ]);
 
   const pathName = usePathname();
