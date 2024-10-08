@@ -4,6 +4,7 @@ import { type Metadata } from "next";
 
 import { MenuHeader } from "@/app/_components/MenuHeader";
 import { ClientCtxProvider } from "@/app/ClientCtx";
+import { ScrollProvider } from "@/app/ScrollProvider";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,8 +29,10 @@ export default function RootLayout({
       >
         <TRPCReactProvider>
           <ClientCtxProvider>
-            <MenuHeader />
-            {children}
+            <ScrollProvider>
+              <MenuHeader />
+              {children}
+            </ScrollProvider>
           </ClientCtxProvider>
         </TRPCReactProvider>
         <ToastContainer />

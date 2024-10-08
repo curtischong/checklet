@@ -1,3 +1,4 @@
+import { useScroll } from "@/app/ScrollProvider";
 import classNames from "classnames";
 import { useEffect, useRef, type TextareaHTMLAttributes } from "react";
 
@@ -20,13 +21,11 @@ const TextArea: React.FC<TextAreaProps> = ({
   ...rest
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+  const { scrollPositionRef } = useScroll();
 
   useEffect(() => {
     if (textAreaRef.current && autoSize) {
       const textarea = textAreaRef.current;
-
-      // Save the current scroll position
-      const scrollPosition = document.documentElement.scrollTop;
 
       // Reset height to calculate the new height
       textarea.style.height = "auto";
@@ -49,7 +48,7 @@ const TextArea: React.FC<TextAreaProps> = ({
       }
 
       // Restore the scroll position to prevent page scrolling
-      window.scrollTo(0, scrollPosition);
+      window.scrollTo(0, scrollPositionRef.current);
     }
   }, [value, autoSize, maxRows]);
 
