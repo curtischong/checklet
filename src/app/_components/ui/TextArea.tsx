@@ -15,7 +15,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   onChange,
   className = "",
   autoSize = false,
-  maxRows = 300,
+  maxRows = 300, // High maxRows as per requirement
   minRows = 4,
   ...rest
 }) => {
@@ -23,20 +23,33 @@ const TextArea: React.FC<TextAreaProps> = ({
 
   useEffect(() => {
     if (textAreaRef.current && autoSize) {
-      textAreaRef.current.style.height = "auto"; // Reset height to shrink if needed
-      textAreaRef.current.style.overflow = "hidden"; // Ensure no scrollbar appears when resizing
-      const scrollHeight = textAreaRef.current.scrollHeight;
-      const lineHeight = parseFloat(
-        getComputedStyle(textAreaRef.current).lineHeight || "20",
-      );
-      const maxHeight = lineHeight * maxRows;
+      const textarea = textAreaRef.current;
 
-      if (scrollHeight > maxHeight) {
-        textAreaRef.current.style.height = `${maxHeight}px`;
-        textAreaRef.current.style.overflow = "auto"; // Show scrollbar if content exceeds maxHeight
+      // Save the current scroll position
+      const scrollPosition = document.documentElement.scrollTop;
+
+      // Reset height to calculate the new height
+      textarea.style.height = "auto";
+
+      // Calculate the new height based on scrollHeight
+      const scrollHeight = textarea.scrollHeight;
+
+      // Get the line height for accurate maxHeight calculation
+      const lineHeight = parseFloat(
+        getComputedStyle(textarea).lineHeight || "20",
+      );
+      const computedMaxHeight = lineHeight * maxRows;
+
+      if (scrollHeight > computedMaxHeight) {
+        textarea.style.height = `${computedMaxHeight}px`;
+        textarea.style.overflow = "auto"; // Enable internal scrollbar
       } else {
-        textAreaRef.current.style.height = `${scrollHeight}px`;
+        textarea.style.height = `${scrollHeight}px`;
+        textarea.style.overflow = "hidden"; // Hide scrollbar if not needed
       }
+
+      // Restore the scroll position to prevent page scrolling
+      window.scrollTo(0, scrollPosition);
     }
   }, [value, autoSize, maxRows]);
 
@@ -52,12 +65,12 @@ const TextArea: React.FC<TextAreaProps> = ({
         className,
       )}
       value={value}
-      onChange={(e) => {
-        if (onChange) {
-          onChange(e);
-        }
-      }}
+      onChange={onChange}
       rows={minRows} // Default taller textarea
+      style={{
+        boxSizing: "border-box", // Include padding and border in height
+        resize: "none", // Disable manual resizing to control via code
+      }}
       {...rest}
     />
   );
@@ -75,8 +88,8 @@ export type ITextArea = React.DetailedHTMLProps<
 export const NormalTextArea: React.FC<ITextArea> = ({
   className = "",
   children,
-  minRows,
-  maxRows,
+  minRows = 4, // Provide default minRows
+  maxRows = 300, // Provide high default maxRows
   ...rest
 }) => {
   return (
