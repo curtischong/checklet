@@ -21,6 +21,7 @@ import {
   addTipTags4Dot2,
   addTipTags4Dot3,
   addTipTags4Dot4,
+  addTipTags4Dot6,
   inference6,
   inferenceInstructions,
   inferenceInstructions1,
@@ -94,7 +95,7 @@ export class CheckerWorker {
     // const suggestions = await checkDoc1dot14(this.llm3, newChecker.prompt, doc);
     // const suggestions = await checkDoc4Dot3(this.llm3, checker.prompt, doc);
     // const suggestions = await checkDoc5Dot1(this.llm3, checker.prompt, doc);
-    const suggestions = await checkDoc4Dot4(this.llm3, checker.prompt, doc);
+    const suggestions = await checkDoc4Dot6(this.llm3, checker.prompt, doc);
     console.log("suggestions", suggestions);
     return {
       suggestions: suggestions,
@@ -525,6 +526,35 @@ export const checkDoc4Dot4 = async (
   const rawDoc3 = await llm.promptMessagesExtendChain(
     chain,
     addTipTags4Dot4(),
+    llm.model,
+  );
+  const doc3 = removeInvalidTips(
+    rawDoc3[rawDoc3.length - 1]!.content as string,
+  ); // removes extraneous whitespace / removals the llm made
+  console.log("doc3---------------------------------", doc3);
+
+  const suggestions = extractSuggestions(doc, doc3);
+
+  return removeInvalidSuggestions(suggestions);
+};
+
+export const checkDoc4Dot6 = async (
+  llm: Llm3,
+  prompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  const chain = await llm.promptMessagesExtendChain(
+    [],
+    inference6(prompt, doc),
+    llm.model,
+  );
+  console.log(
+    "doc2PlusChainOfThought---------------------------",
+    chain[chain.length - 1]!.content,
+  );
+  const rawDoc3 = await llm.promptMessagesExtendChain(
+    chain,
+    addTipTags4Dot6(),
     llm.model,
   );
   const doc3 = removeInvalidTips(
