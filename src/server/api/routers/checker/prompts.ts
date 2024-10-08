@@ -389,3 +389,97 @@ You should return:
 
 <End of Example 2/>`;
 };
+
+export const addTipTags4Dot4 = () => {
+  return `I want you to merge the edits of your response with the original document. Only merge edits with a score of 7 or higher.
+  
+For each edit you merge, surround the edit with <tip><old>old text before edit</old><new>new text after edit</new><name>tip name</name><reason>reason for tip</reason></tip>.
+
+I just want the original document but with the edits ported over from your response.
+
+<Example 1>
+
+Original Document:
+I really love rainy Sundays.
+
+Document with edits:
+I love rainy Sundays.
+
+You should return:
+I <tip><old>really </old><new></new><name>Remove Adverbs</name><reason>It improves conciseness</reason></tip>love rainy Sundays.
+
+</End of Example 1>
+
+<Example 2>
+
+Original Document:
+Howdy Sir
+
+Document with edits:
+Hello Sir
+
+You should return:
+<tip><old>Howdy</old><new>Hello</new><name>Be more Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
+
+<End of Example 2/>`;
+};
+
+// Sometimes, a tip might not have an appropriate edit (you don't have enough information to change the text). Just don't add <new></new> tags in this case.
+
+export const oneshot5dot1 = (prompt: string, doc: string) => {
+  return `1) Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Base your edits on the provided tips. Use train of throught.
+  
+2) Evaluate each edit and consider if the edit really does improve the error in the sentence. Give each edit a score between 1-10 in terms of relevance to the tips. If this edit has a score of 7 and above, you will edit the original document with this edit. Otherwise, discard this edit.
+
+3) Repeat the entire document with the edits.
+
+Surround each edit with <tip><old>old text before edit</old><new>new text after edit</new><name>tip name</name><reason>reason for tip</reason></tip>.
+
+Only edit short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
+
+
+<Example 1>
+
+Original Document:
+I really love rainy Sundays.
+
+Document with edits:
+I love rainy Sundays.
+
+You should return:
+I <tip><old>really </old><new></new><name>Remove Adverbs</name><reason>It improves conciseness</reason></tip>love rainy Sundays.
+
+</End of Example 1>
+
+<Example 2>
+
+Original Document:
+Howdy Sir
+
+Document with edits:
+Hello Sir
+
+You should return:
+<tip><old>Howdy</old><new>Hello</new><name>Be more Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
+
+<End of Example 2/>
+
+
+---TIPS---
+${prompt}
+
+---DOCUMENT---
+${doc}`;
+};
+
+export const inference6 = (prompt: string, doc: string) => {
+  return `1) Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Base your edits on the provided tips. Use train of throught.
+  
+2) Evaluate each edit and score each one based on how well it follows the tips. Give each edit a score between 1-10 in terms of relevance to the tips.
+
+---TIPS---
+${prompt}
+
+---DOCUMENT---
+${doc}`;
+};
