@@ -16,7 +16,11 @@ import { type SetState } from "@/utils/types";
 import debounce from "lodash.debounce";
 import React, { type RefObject, useCallback, useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
-import { RichTextarea, type RichTextareaHandle } from "rich-textarea";
+import {
+  type CaretPosition,
+  RichTextarea,
+  type RichTextareaHandle,
+} from "rich-textarea";
 
 export type TextboxContainerProps = {
   suggestions: Suggestion[];
@@ -137,6 +141,23 @@ export const TextboxContainer = ({
     scrollPageWhenCursorIsTooCloseToTopOrBottom();
   };
 
+  const onSelectionChange = (pos: CaretPosition) => {
+    if (!editorRef.current) {
+      return;
+    }
+    // 1) update where the cursorTop is
+    const cursorTop = (pos as any).top;
+    if (!cursorTop) {
+      return;
+    }
+    cursorTopRef.current = cursorTop;
+
+    // 2) detect if the user is highlighting text, so we know to reword it
+    if (pos.selectionEnd !== pos.selectionStart) {
+      console.log("cursortop", cursorTop);
+    }
+  };
+
   return (
     <div className="textbox col-span-3">
       <RichTextarea
@@ -144,16 +165,7 @@ export const TextboxContainer = ({
         ref={editorRef as any}
         value={editorState}
         onChange={onTextAreaChange}
-        onSelectionChange={(pos) => {
-          if (!editorRef.current) {
-            return;
-          }
-          const cursorTop = (pos as any).top;
-          if (!cursorTop) {
-            return;
-          }
-          cursorTopRef.current = cursorTop;
-        }}
+        onSelectionChange={onSelectionChange}
         autoHeight={true}
         className="resize-none bg-white pb-32 tracking-[0.01em] outline-none" // tracking increases letter spacing
         // the styling MUST be done via the style prop, not tailwind
