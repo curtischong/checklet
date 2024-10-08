@@ -1,4 +1,5 @@
 import { trackPageView } from "@/mixpanel";
+import Image from "next/image";
 import Link from "next/link";
 
 const About: React.FC = () => {
@@ -11,12 +12,20 @@ const About: React.FC = () => {
             <h1 className="text-center font-mackinac text-3xl font-bold">
               About
             </h1>
+            <Image
+              alt="A photo of me!"
+              src="/about/curtis-chong.webp"
+              width={200}
+              height={500}
+              className="mx-auto mt-10"
+            />
             <p>{`Hello! It's Curtis.`}</p>
             <p className="mt-4">
               This project has been my dream for years. In 2020, when I started{" "}
               <Link
                 href="https://curtischong.me/sleepovers"
                 className="mx-auto mt-4 cursor-pointer border-b-2 border-blue-500 hover:text-blue-600"
+                target="_blank"
               >
                 my newsletter,
               </Link>{" "}
@@ -29,17 +38,25 @@ const About: React.FC = () => {
               if there were tailored Grammarly suggestions for my writing style.
               So, I put together the first version of Checklet:`}
             </p>
-            <p className="mt-4">
+            <Image
+              alt="The first version of Checklet"
+              src="/about/checkletv1.webp"
+              width={700}
+              height={500}
+              className="mx-auto mt-6"
+            />
+            <p className="mt-6">
               Cool demo? Yes. Useful? Not quite. So, I put the idea on the back
-              burner for a few years, improving gradually. My project did bore
-              some fruit. After showing my demo to Grammarly, I was fortunate to
-              land an internship there!
+              burner for a few years, improving it gradually. My project did
+              bore some fruit though. After showing my demo to Grammarly, I was
+              fortunate to land an internship there!
             </p>
             <p className="mt-4">
-              At the company, I presented a few grammar-checking cards to their
-              team (e.g., suggesting idioms to use). Still, the suggestions were
-              too specific for their generic grammar editor. I even pitched
-              Checklet to my manager in 2023 but have yet to hear a response!
+              {`At the company, I presented a few grammar-checking cards to their
+              team (e.g., suggesting idioms to spice up one's writing). Still,
+              the suggestions were too specific for their generic grammar
+              editor. I even pitched Checklet to my manager in 2023 but have yet
+              to hear a response!`}
             </p>
             <p className="mt-4">
               {`Since I really wanted tailored writing suggestions and nobody
