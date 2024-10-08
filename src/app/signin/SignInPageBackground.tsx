@@ -11,7 +11,7 @@ interface Props {
 
 export const SignInPageBackground = ({ children }: Props) => {
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex flex-col">
       <div
         className="container mx-auto mt-20 flex grow flex-col justify-center"
         style={{ flexBasis: 0 }}

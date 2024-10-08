@@ -3,7 +3,7 @@ import { trackPageView } from "@/mixpanel";
 const PrivacyPolicy: React.FC = () => {
   trackPageView();
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex flex-col">
       <div className="container mx-auto mt-20 grow" style={{ flexBasis: 0 }}>
         <div className="flex flex-col justify-center">
           <div className="mx-auto max-w-[700px] p-6">

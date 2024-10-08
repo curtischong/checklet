@@ -33,7 +33,13 @@ export default function RootLayout({
             <ScrollProvider>
               <MenuHeader />
               <>
-                <div className="min-h-[100vh]">{children}</div>
+                <div
+                  style={{
+                    minHeight: "calc(100vh - 30px - 55px)",
+                  }}
+                >
+                  {children}
+                </div>
                 <Footer isAbsolute={false} />
               </>
             </ScrollProvider>
