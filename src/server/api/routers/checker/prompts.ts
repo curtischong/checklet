@@ -462,13 +462,13 @@ You should return:
 <Example 3>
 
 Original Document:
-It is the fucking best.
+At Google, I decreased a neural network loss to 0.4532
 
 Document with edits:
-It is the fucking best.
+At Google, I decreased a neural network loss to 0.4532
 
 You should return:
-It is the <tip><old>fucking</old><name>Profanity Detected</name><reason>This might come off a bit strong in a professional context. Are you sure you want to express this?</reason></tip> best.
+At Google, I decreased a neural network loss to <tip><old>0.4532</old><name>Unclear Metric</name><reason>An outsider might not have the context to understand if a loss of 0.4532 is good or bad.</reason></tip>
 
 </End of Example 3>`;
 };
