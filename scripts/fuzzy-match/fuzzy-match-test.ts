@@ -83,6 +83,27 @@ const assertEqual = (a: any, b: any) => {
   assertEqual(actualIndex, 21);
 }
 
+{
+  console.log(
+    "----------------test when the original document has extra spaces than in the <old> tag, the fuzzymatch we return is the EXACT substring (includes spaces)",
+  );
+  const doc1 =
+    "Data Science Workshop Lead at the STEM Fellowship     \t\t\t\t\t            Mar. 2017 - Present";
+
+  const expectedIndex = 22;
+  const { matchedSubstring, actualIndex } = matchQueryInDocument(
+    doc1,
+    "Data Science Workshop Lead at the STEM Fellowship Mar. 2017 - Present",
+    expectedIndex,
+  );
+
+  assertEqual(
+    matchedSubstring,
+    "Data Science Workshop Lead at the STEM Fellowship     \t\t\t\t\t            Mar. 2017 - Present",
+  );
+  assertEqual(actualIndex, 0);
+}
+
 // {
 //   console.log(
 //     "----------------test the text we're matching had an extra word that is not in the original doc",

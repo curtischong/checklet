@@ -117,6 +117,7 @@ export function matchQueryInDocument(
     };
   }
 
+  // console.log("fuzzy matching", query);
   // If no exact match is found, fall back to fuzzy matching
   return fuzzyMatchAroundIndex(doc, query, expectedIndex);
 }
