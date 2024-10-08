@@ -483,3 +483,16 @@ ${prompt}
 ---DOCUMENT---
 ${doc}`;
 };
+
+export const inference7 = (prompt: string, doc: string) => {
+  // return `1) Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Base your edits on the provided tips. Use train of throught.
+  return `1) For each tip, list out how you can use that tip to fix/edit sections in the document. Only make edits if it corresponds to a tip. Use train of throught.
+  
+2) Evaluate each edit and score each one based on how well it follows the tips. Ask yourself if the edit you proposed improves the text and follows the tip. Give each edit a score between 1-10 in terms of relevance to the tips.
+
+---TIPS---
+${prompt}
+
+---DOCUMENT---
+${doc}`;
+};
