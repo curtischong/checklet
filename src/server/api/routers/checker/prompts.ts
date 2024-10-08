@@ -532,3 +532,49 @@ ${prompt}
 ---DOCUMENT---
 ${doc}`;
 };
+
+export const regenPrompt1 = (
+  oldText: string,
+  newText: string,
+  suggestionName: string,
+  suggestionReason: string,
+  oldDocWithContext: string,
+) => {
+  return `We are changing the oldText=${oldText} to the newText=${newText} because it improves the ${suggestionName} tip. The reason is: ${suggestionReason}. Output alternative newText in this format:
+  
+ <tip|name of tip|reason for tip><old>old text before edit</old><new>new text after edit</new></tip>.
+ Here is the original document with the oldText:
+${oldDocWithContext}`;
+};
+
+export const regenPrompt2 = (
+  oldText: string,
+  newText: string,
+  suggestionName: string,
+  suggestionReason: string,
+  oldDocWithContext: string,
+  regenPrompt: string,
+) => {
+  return `We are changing the oldText=${oldText} to the newText=${newText} because it improves the ${suggestionName} tip. The reason is: ${suggestionReason}. Please generate a new text in this format:
+  
+<new>new text after edit</new>
+
+Your new text should follow these improvements:
+${regenPrompt}
+
+ Here is the original document with the oldText:
+${oldDocWithContext}`;
+};
+
+// export const regenPrompt3 = (
+//   oldText: string,
+//   suggestionName: string,
+//   suggestionReason: string,
+//   oldDocWithContext: string,
+// ) => {
+//   return `In the document, we highlighted oldText=${oldText} because of the ${suggestionName} tip. The reason is: ${suggestionReason}. Please rephrase the oldText in this format:
+
+// <new>new text after edit</new>
+//  Here is the original document with the oldText:
+// ${oldDocWithContext}`;
+// };

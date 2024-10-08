@@ -12,7 +12,7 @@ interface Props {
   onClick: () => void;
   onAccept: (acceptedOption: string) => void;
   onDismiss: (suggestionId: string) => void;
-  onRegenerate: (suggestionId: string, newRegenerate: string) => void; // New handler for regenerateing
+  onRegenerate: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
   classNames?: string;
 }
 
@@ -45,31 +45,31 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       );
     }, [suggestion.oldText, suggestion.newText]);
 
-    // State to manage regenerateing
-    const [isRegenerateing, setIsRegenerateing] = useState(false);
-    const [regenerateText, setRegenerateText] = useState("");
+    // State to manage regenerating
+    const [isRegeneratingUiShown, setIsRegeneratingUiShown] = useState(false);
+    const [regeneratePrompt, setRegeneratePrompt] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Focus the textarea when it becomes visible
     useEffect(() => {
-      if (isRegenerateing && textareaRef.current) {
+      if (isRegeneratingUiShown && textareaRef.current) {
         textareaRef.current.focus();
       }
-    }, [isRegenerateing]);
+    }, [isRegeneratingUiShown]);
 
     const handleRegenerate = () => {
-      setIsRegenerateing(true);
+      setIsRegeneratingUiShown(true);
     };
 
     const handleRegenerateSubmit = () => {
-      onRegenerate(suggestion.suggestionId, regenerateText);
-      setIsRegenerateing(false);
-      setRegenerateText("");
+      onRegenerate(suggestion, regeneratePrompt);
+      setIsRegeneratingUiShown(false);
+      setRegeneratePrompt("");
     };
 
     const handleCancelRegenerate = () => {
-      setIsRegenerateing(false);
-      setRegenerateText("");
+      setIsRegeneratingUiShown(false);
+      setRegeneratePrompt("");
     };
 
     return (
@@ -120,7 +120,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
             <div className="mt-2 text-sm text-gray-500">
               {suggestion.reason}
             </div>
-            {isRegenerateing ? (
+            {isRegeneratingUiShown ? (
               <div className="mt-4">
                 <p className="text-sm text-slate-600">
                   What changes to make when regenerating?
@@ -128,8 +128,8 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                 <NormalTextArea
                   ref={textareaRef}
                   className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2"
-                  value={regenerateText}
-                  onChange={(e) => setRegenerateText(e.target.value)}
+                  value={regeneratePrompt}
+                  onChange={(e) => setRegeneratePrompt(e.target.value)}
                   minRows={3}
                   placeholder="e.g. Use a different verb"
                 />
@@ -151,25 +151,27 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
             ) : (
               <div className="mt-4 flex flex-row space-x-4">
                 {suggestion.newText !== undefined && (
-                  <button
-                    className="rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering the parent onClick
-                      onAccept(suggestion.newText!);
-                    }}
-                  >
-                    Accept
-                  </button>
+                  <>
+                    <button
+                      className="rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the parent onClick
+                        onAccept(suggestion.newText!);
+                      }}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      className="rounded px-2 py-1 text-blue-400 transition-colors duration-300 hover:text-blue-600"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the parent onClick
+                        handleRegenerate();
+                      }}
+                    >
+                      Regenerate
+                    </button>
+                  </>
                 )}
-                <button
-                  className="rounded px-2 py-1 text-blue-400 transition-colors duration-300 hover:text-blue-600"
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent triggering the parent onClick
-                    handleRegenerate();
-                  }}
-                >
-                  Regenerate
-                </button>
                 <button
                   className="rounded px-2 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
                   onClick={(e) => {

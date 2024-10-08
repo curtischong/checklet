@@ -6,6 +6,7 @@ import { z } from "zod";
 import { type UserCtx } from "@/firebase/edge_env";
 import { mixpanel } from "@/mixpanel";
 import { CheckerWorker } from "@/server/api/routers/checker/checkDoc";
+import { regenSuggestion } from "@/server/api/routers/checker/regenSuggestion";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -370,5 +371,26 @@ export const checkerRouter = createTRPCRouter({
 
       // Return the async generator
       return streamCompletion();
+    }),
+  regenSuggestion: publicProcedure
+    .input(
+      z.object({
+        oldText: z.string(),
+        newText: z.string().optional(),
+        suggestionName: z.string(),
+        suggestionReason: z.string(),
+        oldDocWithContext: z.string(),
+        regeneratePrompt: z.string(),
+      }),
+    )
+    .mutation(({ input }) => {
+      return regenSuggestion(
+        input.oldText,
+        input.newText,
+        input.suggestionName,
+        input.suggestionReason,
+        input.oldDocWithContext,
+        input.regeneratePrompt,
+      );
     }),
 });
