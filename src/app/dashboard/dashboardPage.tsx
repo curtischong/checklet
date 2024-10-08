@@ -5,7 +5,6 @@ import {
   MushyChecklet,
   PennyChecklet,
 } from "@/app/_components/checklets/checklets";
-import { Footer } from "@/app/_components/Footer";
 import { NormalButton } from "@/app/_components/ui/Button";
 import { DashboardChecker } from "@/app/dashboard/DashboardChecker";
 import { type UserCtx } from "@/firebase/edge_env";
@@ -37,38 +36,33 @@ export const Dashboard = ({ user }: Props) => {
   }, [router]);
 
   return (
-    <>
-      <div className="flex min-h-[100vh]">
-        <div className="container mx-auto ml-20 mt-20">
-          <p className="font-mackinac text-2xl font-bold">Your Checkers</p>
-          <div className="mx-auto ml-0 mt-4 w-[450px]">
-            {currCheckers.map((checkerBlueprint, idx) => {
-              return (
-                <div key={`checker-${idx}`}>
-                  <DashboardChecker
-                    user={user}
-                    blueprint={checkerBlueprint}
-                    onDeleteChecker={() => {
-                      setCurrCheckers(
-                        currCheckers.filter(
-                          (c) => c.id !== checkerBlueprint.id,
-                        ),
-                      );
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </div>
-          <NormalButton onClick={createChecker}>Create Checker</NormalButton>
-          {/* the div is to provide some buffer */}
-          <div className="h-32" />
-          <PennyChecklet className="absolute bottom-[15rem] right-[40%] h-[7rem]" />
-          <MushyChecklet className="absolute right-[30%] top-[30vh] h-[5rem]" />
-          <DerpChecklet className="absolute bottom-[10rem] right-[10%] h-[5rem]" />
+    <div className="flex">
+      <div className="container mx-auto ml-20 mt-20">
+        <p className="font-mackinac text-2xl font-bold">Your Checkers</p>
+        <div className="mx-auto ml-0 mt-4 w-[450px]">
+          {currCheckers.map((checkerBlueprint, idx) => {
+            return (
+              <div key={`checker-${idx}`}>
+                <DashboardChecker
+                  user={user}
+                  blueprint={checkerBlueprint}
+                  onDeleteChecker={() => {
+                    setCurrCheckers(
+                      currCheckers.filter((c) => c.id !== checkerBlueprint.id),
+                    );
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
+        <NormalButton onClick={createChecker}>Create Checker</NormalButton>
+        {/* the div is to provide some buffer */}
+        <div className="h-32" />
+        <PennyChecklet className="absolute bottom-[15rem] right-[40%] h-[7rem]" />
+        <MushyChecklet className="absolute right-[30%] top-[30vh] h-[5rem]" />
+        <DerpChecklet className="absolute bottom-[10rem] right-[10%] h-[5rem]" />
       </div>
-      <Footer isAbsolute={false} />
-    </>
+    </div>
   );
 };

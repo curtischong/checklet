@@ -1,4 +1,3 @@
-import { Footer } from "@/app/_components/Footer";
 import { trackPageView } from "@/mixpanel";
 
 const PrivacyPolicy: React.FC = () => {
@@ -36,7 +35,6 @@ const PrivacyPolicy: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer isAbsolute={false} />
     </div>
   );
 };

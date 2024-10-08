@@ -1,5 +1,4 @@
 // import { StoreFront } from "@/app/_components/CheckerStore";
-import { Footer } from "@/app/_components/Footer";
 import ThinLine from "@/app/_components/ThinLine";
 import {
   DerpChecklet,
@@ -118,7 +117,6 @@ const HomePage: React.FC = () => {
         </div>
         <LinkButton url={"/checkers"}>Try it out</LinkButton>
       </div>
-      <Footer isAbsolute={false} />
     </div>
   );
 };

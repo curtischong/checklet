@@ -1,4 +1,3 @@
-import { Footer } from "@/app/_components/Footer";
 import { trackPageView } from "@/mixpanel";
 
 const TermsOfService: React.FC = () => {
@@ -29,7 +28,6 @@ const TermsOfService: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer isAbsolute={false} />
     </div>
   );
 };

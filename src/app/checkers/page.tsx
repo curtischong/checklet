@@ -3,7 +3,6 @@ import {
   PennyChecklet,
   SpacyChecklet,
 } from "@/app/_components/checklets/checklets";
-import { Footer } from "@/app/_components/Footer";
 import { CheckerStore } from "@/app/checkers/CheckerStore";
 import { CreateOwnChecker } from "@/app/checkers/CreateOwnChecker";
 import { trackPageView } from "@/mixpanel";
@@ -39,7 +38,7 @@ const Page = async () => {
 
   return (
     <>
-      <div className="container mx-auto flex min-h-[100vh] flex-col">
+      <div className="container mx-auto flex flex-col">
         <div className="mt-20 text-center font-mackinac text-3xl font-bold">
           What do you want to check?
         </div>
@@ -61,7 +60,6 @@ const Page = async () => {
         />
         <CheckerStore checkers={checkers} />
       </div>
-      <Footer isAbsolute={false} />
     </>
   );
 };
