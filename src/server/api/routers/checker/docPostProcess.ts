@@ -1,9 +1,9 @@
 import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { mixpanel } from "@/mixpanel";
 
-// regex to match <tip> tags that do NOT contain both <old> and <name> and <reason>
+// regex to match <tip> tags that do NOT contain both <old> and <reason> and <name>
 const regexFinal =
-  /<tip>(?![\s\S]*?<old>[\s\S]*?<name>[\s\S]*?<reason>).*?<\/tip>/gs;
+  /<tip>(?![\s\S]*?<old>[\s\S]*?<reason>[\s\S]*?<name>).*?<\/tip>/gs;
 
 // Function to remove invalid <tip> tags
 export function removeInvalidTips(text: string): string {

@@ -82,7 +82,7 @@ const tipTagPattern =
 
   // this pattern is the same, except we now match for generic whitespace characters between tags
   // /<tip\|([^|]+)\|([^>]+)>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<\/tip>/g;
-  /<tip>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<name>([^<]+)<\/name>\s*<reason>([^<]+)<\/reason>\s*<\/tip>/g;
+  /<tip>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<reason>([^<]+)<\/reason>\s*<name>([^<]+)<\/name>\s*<\/tip>/g;
 
 const getDoc3WithoutTipTags = (doc3: string) => {
   // replace it all with the old text since this is used to help find surrounding context around matches
@@ -107,7 +107,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
   // eslint-disable-next-line @typescript-eslint/prefer-for-of
   for (let i = 0; i < allMatches.length; i++) {
     const match = allMatches[i]!;
-    const [fullMatch, rawOldText, newText, tipName, reason] = match;
+    const [fullMatch, rawOldText, newText, reason, tipName] = match;
     // console.log(`match ${i} ${rawOldText} old|new ${newText}`);
     const tipStartIndexInDoc2 = match.index;
     // NOTE: since there may be chain of thought at the start of doc2, this is a big number^

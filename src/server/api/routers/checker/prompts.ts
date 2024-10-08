@@ -393,7 +393,7 @@ You should return:
 export const addTipTags4Dot4 = () => {
   return `I want you to merge the edits of your response with the original document. Only merge edits with a score of 7 or higher.
   
-For each edit you merge, surround the edit with <tip><old>old text before edit</old><new>new text after edit</new><name>tip name</name><reason>reason for tip</reason></tip>.
+For each edit you merge, surround the edit with <tip><old>old text before edit</old><new>new text after edit</new><reason>reason for edit in accordance to the tip</reason><name>tip name</name></tip>.
 
 I just want the original document but with the edits ported over from your response.
 
@@ -406,7 +406,7 @@ Document with edits:
 I love rainy Sundays.
 
 You should return:
-I <tip><old>really </old><new></new><name>Remove Adverbs</name><reason>It improves conciseness</reason></tip>love rainy Sundays.
+I <tip><old>really </old><new></new><reason>It improves conciseness</reason><name>Remove Adverbs</name></tip>love rainy Sundays.
 
 </End of Example 1>
 
@@ -419,7 +419,7 @@ Document with edits:
 Hello Sir
 
 You should return:
-<tip><old>Howdy</old><new>Hello</new><name>Be more Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
+<tip><old>Howdy</old><new>Hello</new><reason>It is better to be more formal when writing to a CEO</reason><name>Be more Formal</name></tip> Sir
 
 <End of Example 2/>`;
 };
@@ -433,7 +433,7 @@ export const oneshot5dot1 = (prompt: string, doc: string) => {
 
 3) Repeat the entire document with the edits.
 
-Surround each edit with <tip><old>old text before edit</old><new>new text after edit</new><name>tip name</name><reason>reason for tip</reason></tip>.
+Surround each edit with <tip><old>old text before edit</old><new>new text after edit</new><reason>reason for edit in accordance to the tip</reason><name>tip name</name></tip>.
 
 Only edit short snippets that are objectively wrong. People don’t like it when you rewrite entire sentences. Some sentences don't need edits at all!
 
@@ -447,7 +447,7 @@ Document with edits:
 I love rainy Sundays.
 
 You should return:
-I <tip><old>really </old><new></new><name>Remove Adverbs</name><reason>It improves conciseness</reason></tip>love rainy Sundays.
+I <tip><old>really </old><new></new><reason>It improves conciseness</reason><name>Remove Adverbs</name></tip>love rainy Sundays.
 
 </End of Example 1>
 
@@ -460,7 +460,7 @@ Document with edits:
 Hello Sir
 
 You should return:
-<tip><old>Howdy</old><new>Hello</new><name>Be more Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
+<tip><old>Howdy</old><new>Hello</new><reason>It is better to be more formal when writing to a CEO</reason><name>Be more Formal</name></tip> Sir
 
 <End of Example 2/>
 
