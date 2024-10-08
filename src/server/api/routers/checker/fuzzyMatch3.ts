@@ -1,8 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 // fixes all numm issues^. but it's not that good. I'm only okay with this because this is an ai-generated file
 
+// v1:
 // https://chatgpt.com/share/66f33085-136c-800e-b4eb-03131b8eb3f4
+// v2 - the matchedSubstring that is returned is now the EXACT substring (with whitespace and everything from the original doc):
+// https://chatgpt.com/share/67056cc8-bbb0-800e-ad63-a5c8bef746e1
+
+interface Token {
+  text: string;
+  start: number; // inclusive
+  end: number; // exclusive
+}
+
 /**
  * Finds the best fuzzy match of a query string within a document around a specific index.
  * Uses the Ratcliff-Obershelp algorithm (Gestalt pattern matching) at the token level.
@@ -21,15 +32,17 @@ export function fuzzyMatchAroundIndex(
   matchedSubstring: string;
   actualIndex: number;
 } {
-  // Tokenize the document and query
-  const docTokens = tokenize(doc);
-  const queryTokens = tokenize(query);
+  // Tokenize the document and query, capturing start and end indices
+  const docTokens = tokenizeWithIndices(doc);
+  // const docTokenTexts = docTokens.map((token) => token.text);
 
-  // Map character index to token index
-  const charToTokenIndexMap = createCharToTokenIndexMap(doc, docTokens);
+  const queryTokens = tokenizeWithIndices(query).map((token) => token.text);
 
-  // Estimate the token index corresponding to the expected character index
-  const expectedTokenIndex = charToTokenIndexMap[expectedIndex];
+  // Find token index corresponding to expectedIndex
+  const expectedTokenIndex = findTokenIndexAtCharIndex(
+    docTokens,
+    expectedIndex,
+  );
 
   // Define the token window
   const startTokenIndex = Math.max(0, expectedTokenIndex - windowTokenSize);
@@ -40,11 +53,12 @@ export function fuzzyMatchAroundIndex(
 
   // Extract the token window from the document tokens
   const windowTokens = docTokens.slice(startTokenIndex, endTokenIndex);
+  const windowTokenTexts = windowTokens.map((token) => token.text);
 
   // Perform fuzzy matching using Ratcliff-Obershelp algorithm
   const { bestMatchStart, bestMatchEnd } = findBestTokenSequenceMatch(
     queryTokens,
-    windowTokens,
+    windowTokenTexts,
   );
 
   // If no match is found
@@ -55,90 +69,71 @@ export function fuzzyMatchAroundIndex(
     };
   }
 
-  // Convert the matched tokens back to a substring
+  // Get the matched tokens
   const matchedTokens = windowTokens.slice(bestMatchStart, bestMatchEnd + 1);
-  const matchedSubstring = tokensToString(matchedTokens);
 
-  // Calculate the actual character index in the document
-  const actualTokenIndex = startTokenIndex + bestMatchStart;
-  const actualCharIndex = tokenIndexToCharIndex(
-    doc,
-    docTokens,
-    actualTokenIndex,
+  // Get the start and end character indices from the matched tokens
+  const actualCharStartIndex = matchedTokens[0].start;
+  const actualCharEndIndex = matchedTokens[matchedTokens.length - 1].end;
+
+  // Extract the exact matched substring from the original document
+  const matchedSubstring = doc.substring(
+    actualCharStartIndex,
+    actualCharEndIndex,
   );
 
+  // The actual index is the start index of the matched substring
   return {
     matchedSubstring,
-    actualIndex: actualCharIndex,
+    actualIndex: actualCharStartIndex,
   };
 }
 
 /**
- * Tokenizes a string into an array of words (tokens).
+ * Tokenizes a string into an array of tokens with start and end positions.
  * @param text - The string to tokenize.
- * @returns An array of tokens.
+ * @returns An array of Token objects.
  */
-function tokenize(text: string): string[] {
-  // Simple word tokenizer using regex
-  return text.match(/\S+/g) ?? [];
+function tokenizeWithIndices(text: string): Token[] {
+  const tokens: Token[] = [];
+  const regex = /\S+/g;
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    tokens.push({
+      text: match[0],
+      start: match.index,
+      end: match.index + match[0].length,
+    });
+  }
+  return tokens;
 }
 
 /**
- * Converts an array of tokens back into a string.
+ * Finds the token index corresponding to a character index in the document.
  * @param tokens - The array of tokens.
- * @returns The concatenated string.
+ * @param charIndex - The character index.
+ * @returns The token index.
  */
-function tokensToString(tokens: string[]): string {
-  return tokens.join(" ");
-}
-
-/**
- * Creates a mapping from character indices to token indices.
- * @param text - The original text.
- * @param tokens - The tokens of the text.
- * @returns An array where each index corresponds to a character index in the text, and the value is the token index.
- */
-function createCharToTokenIndexMap(text: string, tokens: string[]): number[] {
-  const map = [];
-  let charIndex = 0;
-  for (let tokenIndex = 0; tokenIndex < tokens.length; tokenIndex++) {
-    const token = tokens[tokenIndex];
-    // Map each character in the token to the current token index
-    // eslint-disable-next-line @typescript-eslint/prefer-for-of
-    for (let i = 0; i < token.length; i++) {
-      map[charIndex] = tokenIndex;
-      charIndex++;
-    }
-    // Account for whitespace between tokens
-    while (charIndex < text.length && /\s/.test(text[charIndex])) {
-      map[charIndex] = tokenIndex;
-      charIndex++;
+function findTokenIndexAtCharIndex(tokens: Token[], charIndex: number): number {
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    if (token.start <= charIndex && charIndex < token.end) {
+      return i;
     }
   }
-  return map;
-}
-
-/**
- * Converts a token index back to a character index in the original text.
- * @param text - The original text.
- * @param tokens - The tokens of the text.
- * @param tokenIndex - The token index to convert.
- * @returns The character index in the original text.
- */
-function tokenIndexToCharIndex(
-  text: string,
-  tokens: string[],
-  tokenIndex: number,
-): number {
-  let charIndex = 0;
-  for (let i = 0; i < tokenIndex; i++) {
-    charIndex += tokens[i].length;
-    // Skip over the whitespace after the token
-    while (charIndex < text.length && /\s/.test(text[charIndex])) {
-      charIndex++;
+  // If the character index is not within any token, find the closest token
+  if (charIndex < tokens[0].start) {
+    return 0;
+  }
+  if (charIndex >= tokens[tokens.length - 1].end) {
+    return tokens.length - 1;
+  }
+  for (let i = 0; i < tokens.length - 1; i++) {
+    if (tokens[i].end <= charIndex && charIndex < tokens[i + 1].start) {
+      return i;
     }
   }
-  return charIndex;
+  return tokens.length - 1; // Default to the last token
 }
 
 /**
@@ -155,16 +150,26 @@ function findBestTokenSequenceMatch(
   let bestMatchStart = -1;
   let bestMatchEnd = -1;
 
-  // Use a sliding window over docTokens
-  for (let i = 0; i < docTokens.length; i++) {
-    for (let j = i; j < docTokens.length; j++) {
-      const windowSlice = docTokens.slice(i, j + 1);
-      const score = ratcliffObershelpSimilarity(queryTokens, windowSlice);
+  const docLength = docTokens.length;
+  const queryLength = queryTokens.length;
+
+  // Optimize by considering windows of length similar to queryTokens length
+  const minLength = Math.max(1, queryLength - 5);
+  const maxLength = queryLength + 5;
+
+  for (let offset = 0; offset <= docLength - minLength; offset++) {
+    for (
+      let length = minLength;
+      length <= maxLength && offset + length <= docLength;
+      length++
+    ) {
+      const docSlice = docTokens.slice(offset, offset + length);
+      const score = ratcliffObershelpSimilarity(queryTokens, docSlice);
 
       if (score > bestMatchScore) {
         bestMatchScore = score;
-        bestMatchStart = i;
-        bestMatchEnd = j;
+        bestMatchStart = offset;
+        bestMatchEnd = offset + length - 1;
       }
     }
   }
@@ -211,7 +216,7 @@ function findMatchingTokens(tokensA: string[], tokensB: string[]): string[] {
     tokensB.slice(indexB + 1),
   );
 
-  return [...leftMatches, ...common, ...rightMatches];
+  return [...leftMatches, common[0], ...rightMatches];
 }
 
 /**
@@ -227,8 +232,7 @@ function longestCommonSubsequence(
   const m = tokensA.length;
   const n = tokensB.length;
   const table: number[][] = Array(m + 1)
-    .fill(0)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    .fill(null)
     .map(() => Array(n + 1).fill(0));
 
   // Build the LCS table
@@ -263,7 +267,7 @@ function longestCommonSubsequence(
 
 // // Example usage
 // const doc =
-//   "This is a sample document where we will perform a fuzzy search to find a matching substring.";
+//   "This is   a sample   document where we will   perform a fuzzy search to find a matching substring.";
 // const query = "sample document where we will perform fuzzy search";
 // const expectedIndex = doc.indexOf("sample"); // Let's assume we expect it around here
 
