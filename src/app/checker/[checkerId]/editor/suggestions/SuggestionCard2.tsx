@@ -98,7 +98,6 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       setIsRegeneratingUiShown(false);
       setRegeneratePrompt("");
     };
-    console.log("isRegenerating", isRegenerating);
 
     return (
       <div

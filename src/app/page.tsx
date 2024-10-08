@@ -40,7 +40,19 @@ const HomePage: React.FC = () => {
           </div>
           <ScrollDownButton />
         </div>
-        <div className="mt-32 font-mackinac text-3xl">How it works</div>
+        <div className="mt-32 font-mackinac text-3xl">What is Checklet?</div>
+        <ThinLine />
+        <div className="mx-auto mt-10 md:max-w-[70%]">
+          Checklet is your own customizable Grammarly. It is different from
+          typical Grammar checkers because it gives suggestions tailored to your
+          writing style - not generic grammar fixes.
+        </div>
+        {/* <br />
+        <div>
+          {`But I always wanted to have a Grammarly that's tailored for my
+          specific writing (for my newsletter). But Grammarly's suggestions were too generic. Checklet deeply integrates with ChatGPT to give you suggestions relevant to your specific writing.`}
+        </div> */}
+        <div className="mt-20 font-mackinac text-3xl">How it works</div>
         <ThinLine />
         <div className="mx-auto flex flex-col justify-center text-left md:max-w-[70%]">
           <div className="relative mt-10 flex flex-col justify-center gap-8 md:flex-row">
