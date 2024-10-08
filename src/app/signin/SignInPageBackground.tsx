@@ -4,7 +4,6 @@ import {
   LoveChecklet,
   SpacyChecklet,
 } from "@/app/_components/checklets/checklets";
-import { Footer } from "@/app/_components/Footer";
 
 interface Props {
   children: React.ReactNode;
@@ -12,7 +11,7 @@ interface Props {
 
 export const SignInPageBackground = ({ children }: Props) => {
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex flex-col">
       <div
         className="container mx-auto mt-20 flex grow flex-col justify-center"
         style={{ flexBasis: 0 }}
@@ -27,7 +26,6 @@ export const SignInPageBackground = ({ children }: Props) => {
         <DockyChecklet className="absolute bottom-[10rem] left-[5%] z-0 h-[6rem] md:left-[20%]" />
         <div className="z-10">{children}</div>
       </div>
-      <Footer isAbsolute={false} />
     </div>
   );
 };

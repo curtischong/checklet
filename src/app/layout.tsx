@@ -2,6 +2,7 @@ import { mackinac, nunito } from "@/app/fonts";
 import "@/styles/globals.css";
 import { type Metadata } from "next";
 
+import { Footer } from "@/app/_components/Footer";
 import { MenuHeader } from "@/app/_components/MenuHeader";
 import { ClientCtxProvider } from "@/app/ClientCtx";
 import { ScrollProvider } from "@/app/ScrollProvider";
@@ -31,7 +32,16 @@ export default function RootLayout({
           <ClientCtxProvider>
             <ScrollProvider>
               <MenuHeader />
-              {children}
+              <>
+                <div
+                  style={{
+                    minHeight: "calc(100vh - 30px - 55px)",
+                  }}
+                >
+                  {children}
+                </div>
+                <Footer isAbsolute={false} />
+              </>
             </ScrollProvider>
           </ClientCtxProvider>
         </TRPCReactProvider>

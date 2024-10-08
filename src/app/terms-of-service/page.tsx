@@ -1,10 +1,9 @@
-import { Footer } from "@/app/_components/Footer";
 import { trackPageView } from "@/mixpanel";
 
 const TermsOfService: React.FC = () => {
   trackPageView();
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex flex-col">
       <div className="container mx-auto mt-20 grow" style={{ flexBasis: 0 }}>
         <div className="flex flex-col justify-center">
           <div className="mx-auto p-6">
@@ -29,7 +28,6 @@ const TermsOfService: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer isAbsolute={false} />
     </div>
   );
 };
