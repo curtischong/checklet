@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { diffWords } from "diff";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 interface Props {
   suggestion: Suggestion;
@@ -11,6 +11,7 @@ interface Props {
   onClick: () => void;
   onAccept: (acceptedOption: string) => void;
   onDismiss: (suggestionId: string) => void;
+  onReword: (suggestionId: string, newReword: string) => void; // New handler for rewording
   classNames?: string;
 }
 
@@ -22,6 +23,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       onClick,
       onAccept,
       onDismiss,
+      onReword, // Destructure the new handler
       classNames,
     } = props;
 
@@ -42,10 +44,42 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       );
     }, [suggestion.oldText, suggestion.newText]);
 
+    // State to manage rewording
+    const [isRewording, setIsRewording] = useState(false);
+    const [rewordText, setRewordText] = useState("");
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Focus the textarea when it becomes visible
+    useEffect(() => {
+      if (isRewording && textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }, [isRewording]);
+
+    const handleReword = () => {
+      setIsRewording(true);
+      setRewordText(suggestion.newText || "");
+    };
+
+    const handleRewordSubmit = () => {
+      onReword(suggestion.suggestionId, rewordText);
+      setIsRewording(false);
+      setRewordText("");
+    };
+
+    const handleCancelReword = () => {
+      setIsRewording(false);
+      setRewordText("");
+    };
+
     return (
       <div
         ref={ref}
-        className={`max-w-[350px] bg-white shadow-around ${isActive ? "mb-8 w-full animate-open rounded-lg p-4" : "mb-5 flex w-full rounded-md p-4 opacity-100"} ${classNames} ${!isActive ? "cursor-pointer" : ""}`}
+        className={`max-w-[350px] bg-white shadow-around ${
+          isActive
+            ? "mb-8 w-full animate-open rounded-lg p-4"
+            : "mb-5 flex w-full rounded-md p-4 opacity-100"
+        } ${classNames} ${!isActive ? "cursor-pointer" : ""}`}
         onClick={() => {
           if (!isActive) {
             onClick();
@@ -86,22 +120,64 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
             <div className="mt-2 text-sm text-gray-500">
               {suggestion.reason}
             </div>
-            <div className="flex flex-row space-x-4">
-              {suggestion.newText !== undefined && (
+            {isRewording ? (
+              <div className="mt-4">
+                <textarea
+                  ref={textareaRef}
+                  className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={rewordText}
+                  onChange={(e) => setRewordText(e.target.value)}
+                  rows={3}
+                  placeholder="Reword your suggestion here..."
+                />
+                <div className="mt-2 flex space-x-2">
+                  <button
+                    className="rounded bg-blue-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-blue-500"
+                    onClick={handleRewordSubmit}
+                  >
+                    Reword Suggestion
+                  </button>
+                  <button
+                    className="rounded bg-gray-300 px-4 py-2 text-gray-700 transition-colors duration-300 hover:bg-gray-400"
+                    onClick={handleCancelReword}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-4 flex flex-row space-x-4">
+                {suggestion.newText !== undefined && (
+                  <button
+                    className="rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering the parent onClick
+                      onAccept(suggestion.newText!);
+                    }}
+                  >
+                    Accept
+                  </button>
+                )}
                 <button
-                  className="mt-4 rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
-                  onClick={() => onAccept(suggestion.newText!)}
+                  className="rounded px-2 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the parent onClick
+                    onDismiss(suggestion.suggestionId);
+                  }}
                 >
-                  Accept
+                  Dismiss
                 </button>
-              )}
-              <button
-                className="mt-4 rounded px-2 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
-                onClick={() => onDismiss(suggestion.suggestionId)} // Pass true to indicate rejection
-              >
-                Dismiss
-              </button>
-            </div>
+                <button
+                  className="rounded px-2 py-1 text-blue-500 transition-colors duration-300 hover:text-blue-700"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the parent onClick
+                    handleReword();
+                  }}
+                >
+                  Reword
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
