@@ -1,4 +1,3 @@
-import { Footer } from "@/app/_components/Footer";
 import { trackPageView } from "@/mixpanel";
 
 export default function NotFound() {
@@ -10,7 +9,6 @@ export default function NotFound() {
           Error 404: Page not found ¯\_(ツ)_/¯
         </h1>
       </div>
-      <Footer isAbsolute={true} />
     </>
   );
 }
