@@ -15,7 +15,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   onChange,
   className = "",
   autoSize = false,
-  maxRows = 300, // High maxRows as per requirement
+  maxRows = 300,
   minRows = 4,
   ...rest
 }) => {
@@ -88,8 +88,8 @@ export type ITextArea = React.DetailedHTMLProps<
 export const NormalTextArea: React.FC<ITextArea> = ({
   className = "",
   children,
-  minRows = 4, // Provide default minRows
-  maxRows = 300, // Provide high default maxRows
+  minRows,
+  maxRows,
   ...rest
 }) => {
   return (
