@@ -33,7 +33,13 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
     }, [suggestion, activeSuggestion]);
 
     const diffResult = useMemo(() => {
-      return diffWords(suggestion.oldText, suggestion.newText);
+      if (!suggestion.newText) {
+        return [];
+      } // if there is no newText, this is a highlight suggestion. so return no diff
+      return diffWords(
+        suggestion.oldText,
+        suggestion.newText ?? suggestion.oldText,
+      );
     }, [suggestion.oldText, suggestion.newText]);
 
     return (
@@ -81,12 +87,14 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
               {suggestion.reason}
             </div>
             <div className="flex flex-row space-x-4">
-              <button
-                className="mt-4 rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
-                onClick={() => onAccept(suggestion.newText)}
-              >
-                Accept
-              </button>
+              {suggestion.newText !== undefined && (
+                <button
+                  className="mt-4 rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
+                  onClick={() => onAccept(suggestion.newText!)}
+                >
+                  Accept
+                </button>
+              )}
               <button
                 className="mt-4 rounded px-2 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
                 onClick={() => onDismiss(suggestion.suggestionId)} // Pass true to indicate rejection

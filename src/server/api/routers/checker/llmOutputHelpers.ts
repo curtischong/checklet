@@ -82,7 +82,10 @@ const tipTagPattern =
 
   // this pattern is the same, except we now match for generic whitespace characters between tags
   // /<tip\|([^|]+)\|([^>]+)>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<\/tip>/g;
-  /<tip>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<name>([^<]+)<\/name>\s*<reason>([^<]+)<\/reason>\s*<\/tip>/g;
+  // /<tip>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<name>([^<]+)<\/name>\s*<reason>([^<]+)<\/reason>\s*<\/tip>/g;
+
+  // the new tag is optional
+  /<tip>\s*<old>([^<]+)<\/old>(?:\s*<new>([^<]+)<\/new>)?\s*<name>([^<]+)<\/name>\s*<reason>([^<]+)<\/reason>\s*<\/tip>/g;
 
 const getDoc3WithoutTipTags = (doc3: string) => {
   // replace it all with the old text since this is used to help find surrounding context around matches
@@ -154,7 +157,7 @@ export function extractSuggestions(doc1: string, doc2: string): Suggestion[] {
         tipName: tipName ?? "",
         reason: reason ?? "",
         oldText: matchedSubstring,
-        newText: newText ?? "",
+        newText: newText,
         range: {
           start: realIndexInDoc1,
           end: realIndexInDoc1 + matchedSubstring.length,

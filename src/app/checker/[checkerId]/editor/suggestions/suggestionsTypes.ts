@@ -31,7 +31,7 @@ export interface Suggestion {
   tipName: string;
   reason: string;
   oldText: string;
-  newText: string;
+  newText?: string;
   range: DocRange; // range of the original text
   suggestionId: SuggestionId;
 }
