@@ -11,11 +11,11 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   minRows?: number;
 }
 
-const TextArea: React.FC<TextAreaProps> = ({
+export const NormalTextArea: React.FC<TextAreaProps> = ({
   value,
   onChange,
   className = "",
-  autoSize = false,
+  autoSize = true,
   maxRows = 300,
   minRows = 4,
   ...rest
@@ -56,7 +56,9 @@ const TextArea: React.FC<TextAreaProps> = ({
     <textarea
       ref={textAreaRef}
       className={classNames(
-        "w-full rounded-md border border-gray-300 p-2",
+        "my-1 w-full resize-none rounded border p-1 px-4 py-2 text-gray-600",
+        rest.disabled ? "cursor-not-allowed bg-[#f1f1f1]" : "bg-white",
+        "border-gray-400",
         "focus-visible:border-blue-300 focus-visible:ring-[1px] focus-visible:ring-blue-300",
         "focus:outline-none", // Remove default outline for clicks
         "focus:ring-[1px] focus:ring-blue-300", // Lighter and thinner outline on click
@@ -72,40 +74,5 @@ const TextArea: React.FC<TextAreaProps> = ({
       }}
       {...rest}
     />
-  );
-};
-
-export type ITextArea = React.DetailedHTMLProps<
-  React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-    minRows?: number;
-    maxRows?: number;
-    value: string;
-  },
-  HTMLTextAreaElement
->;
-
-export const NormalTextArea: React.FC<ITextArea> = ({
-  className = "",
-  children,
-  minRows,
-  maxRows,
-  ...rest
-}) => {
-  return (
-    <TextArea
-      className={classNames(
-        `my-1 resize-none rounded border border-gray-400 bg-white p-1 px-4 py-2 text-gray-600`,
-        className,
-        {
-          "cursor-not-allowed bg-[#f1f1f1]": rest.disabled,
-        },
-      )}
-      {...rest}
-      autoSize={true}
-      minRows={minRows}
-      maxRows={maxRows}
-    >
-      {children}
-    </TextArea>
   );
 };
