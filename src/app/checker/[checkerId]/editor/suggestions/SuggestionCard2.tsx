@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+import { NormalTextArea } from "@/app/_components/ui/TextArea";
 import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { diffWords } from "diff";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -11,7 +12,7 @@ interface Props {
   onClick: () => void;
   onAccept: (acceptedOption: string) => void;
   onDismiss: (suggestionId: string) => void;
-  onReword: (suggestionId: string, newReword: string) => void; // New handler for rewording
+  onRegenerate: (suggestionId: string, newRegenerate: string) => void; // New handler for regenerateing
   classNames?: string;
 }
 
@@ -23,7 +24,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       onClick,
       onAccept,
       onDismiss,
-      onReword, // Destructure the new handler
+      onRegenerate,
       classNames,
     } = props;
 
@@ -44,32 +45,31 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       );
     }, [suggestion.oldText, suggestion.newText]);
 
-    // State to manage rewording
-    const [isRewording, setIsRewording] = useState(false);
-    const [rewordText, setRewordText] = useState("");
+    // State to manage regenerateing
+    const [isRegenerateing, setIsRegenerateing] = useState(false);
+    const [regenerateText, setRegenerateText] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // Focus the textarea when it becomes visible
     useEffect(() => {
-      if (isRewording && textareaRef.current) {
+      if (isRegenerateing && textareaRef.current) {
         textareaRef.current.focus();
       }
-    }, [isRewording]);
+    }, [isRegenerateing]);
 
-    const handleReword = () => {
-      setIsRewording(true);
-      setRewordText(suggestion.newText || "");
+    const handleRegenerate = () => {
+      setIsRegenerateing(true);
     };
 
-    const handleRewordSubmit = () => {
-      onReword(suggestion.suggestionId, rewordText);
-      setIsRewording(false);
-      setRewordText("");
+    const handleRegenerateSubmit = () => {
+      onRegenerate(suggestion.suggestionId, regenerateText);
+      setIsRegenerateing(false);
+      setRegenerateText("");
     };
 
-    const handleCancelReword = () => {
-      setIsRewording(false);
-      setRewordText("");
+    const handleCancelRegenerate = () => {
+      setIsRegenerateing(false);
+      setRegenerateText("");
     };
 
     return (
@@ -120,26 +120,29 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
             <div className="mt-2 text-sm text-gray-500">
               {suggestion.reason}
             </div>
-            {isRewording ? (
+            {isRegenerateing ? (
               <div className="mt-4">
-                <textarea
+                <p className="text-sm text-slate-600">
+                  What changes to make when regenerating?
+                </p>
+                <NormalTextArea
                   ref={textareaRef}
-                  className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={rewordText}
-                  onChange={(e) => setRewordText(e.target.value)}
-                  rows={3}
-                  placeholder="Reword your suggestion here..."
+                  className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2"
+                  value={regenerateText}
+                  onChange={(e) => setRegenerateText(e.target.value)}
+                  minRows={3}
+                  placeholder="e.g. Use a different verb"
                 />
                 <div className="mt-2 flex space-x-2">
                   <button
-                    className="rounded bg-blue-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-blue-500"
-                    onClick={handleRewordSubmit}
+                    className="rounded bg-green-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-green-500"
+                    onClick={handleRegenerateSubmit}
                   >
-                    Reword Suggestion
+                    Regenerate Suggestion
                   </button>
                   <button
-                    className="rounded bg-gray-300 px-4 py-2 text-gray-700 transition-colors duration-300 hover:bg-gray-400"
-                    onClick={handleCancelReword}
+                    className="rounded px-4 py-2 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+                    onClick={handleCancelRegenerate}
                   >
                     Cancel
                   </button>
@@ -159,6 +162,15 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                   </button>
                 )}
                 <button
+                  className="rounded px-2 py-1 text-blue-400 transition-colors duration-300 hover:text-blue-600"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the parent onClick
+                    handleRegenerate();
+                  }}
+                >
+                  Regenerate
+                </button>
+                <button
                   className="rounded px-2 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
                   onClick={(e) => {
                     e.stopPropagation(); // Prevent triggering the parent onClick
@@ -166,15 +178,6 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                   }}
                 >
                   Dismiss
-                </button>
-                <button
-                  className="rounded px-2 py-1 text-blue-500 transition-colors duration-300 hover:text-blue-700"
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent triggering the parent onClick
-                    handleReword();
-                  }}
-                >
-                  Reword
                 </button>
               </div>
             )}
