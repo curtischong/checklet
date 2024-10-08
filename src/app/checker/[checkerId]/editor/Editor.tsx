@@ -298,6 +298,7 @@ export const Editor = ({
       {/* don't wrap this container in a div. style it by adding styles to the div inside SuggestionsContainer */}
       <SuggestionsContainer
         isLoading={isLoading}
+        setIsLoading={setIsLoading}
         setSuggestions={setSuggestions}
         suggestions={suggestions}
         activeSuggestion={activeSuggestion}

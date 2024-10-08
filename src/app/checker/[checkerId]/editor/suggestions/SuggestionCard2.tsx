@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+import { NormalTextArea } from "@/app/_components/ui/TextArea";
 import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { diffWords } from "diff";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 interface Props {
   suggestion: Suggestion;
@@ -11,8 +12,35 @@ interface Props {
   onClick: () => void;
   onAccept: (acceptedOption: string) => void;
   onDismiss: (suggestionId: string) => void;
+  onRegenerate: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
+  isRegenerating: boolean; // New prop to indicate regeneration state
   classNames?: string;
 }
+
+const Spinner: React.FC = () => (
+  <div className="flex items-center justify-center">
+    <svg
+      className="h-5 w-5 animate-spin text-gray-500"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      ></circle>
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v8H4z"
+      ></path>
+    </svg>
+  </div>
+);
 
 const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
   (props, ref) => {
@@ -22,6 +50,8 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       onClick,
       onAccept,
       onDismiss,
+      onRegenerate,
+      isRegenerating,
       classNames,
     } = props;
 
@@ -42,10 +72,42 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       );
     }, [suggestion.oldText, suggestion.newText]);
 
+    // State to manage regenerating UI visibility
+    const [isRegeneratingUiShown, setIsRegeneratingUiShown] = useState(false);
+    const [regeneratePrompt, setRegeneratePrompt] = useState("");
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Focus the textarea when it becomes visible
+    useEffect(() => {
+      if (isRegeneratingUiShown && textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }, [isRegeneratingUiShown]);
+
+    const handleRegenerate = () => {
+      setIsRegeneratingUiShown(true);
+    };
+
+    const handleRegenerateSubmit = () => {
+      onRegenerate(suggestion, regeneratePrompt);
+      setIsRegeneratingUiShown(false);
+      setRegeneratePrompt("");
+    };
+
+    const handleCancelRegenerate = () => {
+      setIsRegeneratingUiShown(false);
+      setRegeneratePrompt("");
+    };
+    console.log("isRegenerating", isRegenerating);
+
     return (
       <div
         ref={ref}
-        className={`max-w-[350px] bg-white shadow-around ${isActive ? "mb-8 w-full animate-open rounded-lg p-4" : "mb-5 flex w-full rounded-md p-4 opacity-100"} ${classNames} ${!isActive ? "cursor-pointer" : ""}`}
+        className={`max-w-[350px] bg-white shadow-around ${
+          isActive
+            ? "mb-8 w-full animate-open rounded-lg p-4"
+            : "mb-5 flex w-full rounded-md p-4 opacity-100"
+        } ${classNames} ${!isActive ? "cursor-pointer" : ""}`}
         onClick={() => {
           if (!isActive) {
             onClick();
@@ -86,22 +148,80 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
             <div className="mt-2 text-sm text-gray-500">
               {suggestion.reason}
             </div>
-            <div className="flex flex-row space-x-4">
-              {suggestion.newText !== undefined && (
-                <button
-                  className="mt-4 rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
-                  onClick={() => onAccept(suggestion.newText!)}
-                >
-                  Accept
-                </button>
-              )}
-              <button
-                className="mt-4 rounded px-2 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
-                onClick={() => onDismiss(suggestion.suggestionId)} // Pass true to indicate rejection
-              >
-                Dismiss
-              </button>
-            </div>
+            {isRegenerating ? (
+              <Spinner />
+            ) : (
+              <>
+                {isRegeneratingUiShown ? (
+                  <div className="mt-4">
+                    <p className="text-sm text-slate-600">
+                      What changes to make when regenerating?
+                    </p>
+                    <NormalTextArea
+                      ref={textareaRef}
+                      className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2"
+                      value={regeneratePrompt}
+                      onChange={(e) => setRegeneratePrompt(e.target.value)}
+                      minRows={3}
+                      placeholder="e.g. Use a different verb"
+                    />
+                    <div className="mt-2 flex items-center space-x-2">
+                      <button
+                        className="rounded bg-green-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-green-500"
+                        onClick={handleRegenerateSubmit}
+                        disabled={isRegenerating} // Optional: Disable button when regenerating
+                      >
+                        Regenerate Suggestion
+                      </button>
+                      <button
+                        className="rounded px-4 py-2 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+                        onClick={handleCancelRegenerate}
+                        disabled={isRegenerating} // Optional: Disable button when regenerating
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-4 flex flex-row space-x-4">
+                    {suggestion.newText !== undefined && (
+                      <>
+                        <button
+                          className="rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering the parent onClick
+                            onAccept(suggestion.newText!);
+                          }}
+                          disabled={isRegenerating} // Optional: Disable button when regenerating
+                        >
+                          Accept
+                        </button>
+                        <button
+                          className="rounded px-2 py-1 text-blue-400 transition-colors duration-300 hover:text-blue-600"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering the parent onClick
+                            handleRegenerate();
+                          }}
+                          disabled={isRegenerating} // Optional: Disable button when regenerating
+                        >
+                          Regenerate
+                        </button>
+                      </>
+                    )}
+                    <button
+                      className="rounded px-2 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the parent onClick
+                        onDismiss(suggestion.suggestionId);
+                      }}
+                      disabled={isRegenerating} // Optional: Disable button when regenerating
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         )}
       </div>

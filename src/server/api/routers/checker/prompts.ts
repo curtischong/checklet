@@ -532,3 +532,71 @@ ${prompt}
 ---DOCUMENT---
 ${doc}`;
 };
+
+export const regenPrompt1 = (
+  oldText: string,
+  newText: string,
+  suggestionName: string,
+  suggestionReason: string,
+  oldDocWithContext: string,
+) => {
+  return `We are changing the oldText=${oldText} to the newText=${newText} because it improves the ${suggestionName} tip. The reason is: ${suggestionReason}. Output alternative newText in this format:
+  
+ <tip|name of tip|reason for tip><old>old text before edit</old><new>new text after edit</new></tip>.
+ Here is the original document with the oldText:
+${oldDocWithContext}`;
+};
+
+export const regenPrompt2 = (
+  oldText: string,
+  newText: string,
+  suggestionName: string,
+  suggestionReason: string,
+  oldDocWithContext: string,
+  regenPrompt: string,
+) => {
+  return `We are changing the oldText=${oldText} to the newText=${newText} because it improves the ${suggestionName} tip. The reason is: ${suggestionReason}. Please generate a new text in this format:
+  
+<new>new text after edit</new>
+
+Your new text should follow these improvements:
+${regenPrompt}
+
+ Here is the original document with the oldText:
+${oldDocWithContext}`;
+};
+
+export const regenPrompt3 = (
+  oldText: string,
+  newText: string,
+  suggestionName: string,
+  suggestionReason: string,
+  oldDocWithContext: string,
+  regenPrompt: string,
+) => {
+  return `You are a text editor. Originally, we suggested to improve the document by changing <old>${oldText}</old> to <new1>${newText}</new1> because it follows this tip:
+  
+ Name: ${suggestionName}
+ Reason: ${suggestionReason}
+ 
+ However, the user didn't like this suggestion. Please generate a suggestion with these improvements:
+
+Suggestion Improvement: ${regenPrompt}
+
+ Please generate the new text in this format: <new2>your new improvements</new2>.
+ 
+<Example>
+
+<old>I like rainy Sundays.</old>
+<new1>I love rainy Sundays.</new1>
+
+Name: Strengthen verbs
+Reason: It makes the writing more bold.
+
+Suggestion Improvement: Love is too strong a word
+
+You should return:
+<new2>I prefer rainy Sundays.</new2>
+
+</End of Example>`;
+};
