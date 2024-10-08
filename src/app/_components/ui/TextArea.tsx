@@ -15,7 +15,7 @@ export const NormalTextArea: React.FC<TextAreaProps> = ({
   value,
   onChange,
   className = "",
-  autoSize = true, // Default to true as in NormalTextArea
+  autoSize = true,
   maxRows = 300,
   minRows = 4,
   ...rest
