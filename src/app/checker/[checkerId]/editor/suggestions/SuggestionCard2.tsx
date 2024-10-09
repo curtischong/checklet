@@ -103,9 +103,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
           onClick={onClick}
         >
           {isActive ? (
-            <>
-              <div className="text-gray-600">{suggestion.tipName}</div>
-            </>
+            <div className="text-gray-600">{suggestion.tipName}</div>
           ) : (
             <>
               <span className="max-w-[40%] overflow-hidden overflow-ellipsis whitespace-nowrap">
