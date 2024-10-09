@@ -179,7 +179,7 @@ export const Editor = ({
       }
       setIsLoading(true);
       handleErr(
-        apiClient.checker.checkDoc.query({
+        apiClient.checker.checkDoc.mutate({
           doc: editorState,
           checkerId: checkerId,
         }),
@@ -298,7 +298,6 @@ export const Editor = ({
       {/* don't wrap this container in a div. style it by adding styles to the div inside SuggestionsContainer */}
       <SuggestionsContainer
         isLoading={isLoading}
-        setIsLoading={setIsLoading}
         setSuggestions={setSuggestions}
         suggestions={suggestions}
         activeSuggestion={activeSuggestion}
