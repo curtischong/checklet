@@ -16,6 +16,8 @@ export function removeInvalidSuggestions(suggestions: Suggestion[]) {
   const newSuggestions = [];
   for (const suggestion of suggestions) {
     if (suggestion.oldText === suggestion.newText) {
+      suggestion.newText = undefined;
+      newSuggestions.push(suggestion);
       continue;
     }
     if (suggestion.range.start === -1) {
