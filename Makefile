@@ -53,3 +53,6 @@ apply-all-migrations-prod:
 
 matching-tests:
 	npx tsx ./scripts/matching-tests/run1.ts
+
+matching-tests2:
+	npx tsx ./scripts/matching-tests/run2.ts
