@@ -572,7 +572,7 @@ Document with edits:
 Hello Sir
 
 You should return:
-<tip><old>Howdy</old><new>Hello</new><name>Be more Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
+<tip><old>Howdy</old><new>Hello</new><name>Be More Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
 
 </End of Example 2>
 
