@@ -151,19 +151,23 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
               <Spinner />
             ) : (
               <>
-                {suggestionState === SuggestionState.Regenerating ? (
+                {suggestionState === SuggestionState.Default ? (
+                  <DefaultSuggestionBody
+                    suggestion={suggestion}
+                    onAccept={onAccept}
+                    onDismiss={onDismiss}
+                    setSuggestionState={setSuggestionState}
+                  />
+                ) : suggestionState === SuggestionState.Regenerating ? (
                   <RegenerateSuggestionBody
                     suggestion={suggestion}
-                    isRegenerating={isRegenerating}
                     onRegenerateSubmit={onRegenerateSubmit}
                     setSuggestionState={setSuggestionState}
                   />
                 ) : (
-                  <DefaultSuggestionBody
+                  <EditSuggestionBody
                     suggestion={suggestion}
-                    isRegenerating={isRegenerating}
-                    onAccept={onAccept}
-                    onDismiss={onDismiss}
+                    onRegenerateSubmit={onRegenerateSubmit}
                     setSuggestionState={setSuggestionState}
                   />
                 )}
@@ -178,7 +182,6 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
 
 interface DefaultSuggestionBodyProps {
   suggestion: Suggestion;
-  isRegenerating: boolean;
   onAccept: (acceptedOption: string) => void;
   onDismiss: (suggestionId: string) => void;
   setSuggestionState: SetState<SuggestionState>;
@@ -186,7 +189,6 @@ interface DefaultSuggestionBodyProps {
 
 const DefaultSuggestionBody = ({
   suggestion,
-  isRegenerating,
   onAccept,
   onDismiss,
   setSuggestionState,
@@ -201,7 +203,6 @@ const DefaultSuggestionBody = ({
               e.stopPropagation(); // Prevent triggering the parent onClick
               onAccept(suggestion.newText!);
             }}
-            disabled={isRegenerating}
           >
             Accept
           </button>
@@ -212,7 +213,6 @@ const DefaultSuggestionBody = ({
                 e.stopPropagation(); // Prevent triggering the parent onClick
                 setSuggestionState(SuggestionState.Editing);
               }}
-              disabled={isRegenerating}
             >
               Edit
             </button>
@@ -224,7 +224,6 @@ const DefaultSuggestionBody = ({
                 e.stopPropagation(); // Prevent triggering the parent onClick
                 setSuggestionState(SuggestionState.Regenerating);
               }}
-              disabled={isRegenerating}
             >
               Regenerate
             </button>
@@ -237,7 +236,6 @@ const DefaultSuggestionBody = ({
           e.stopPropagation(); // Prevent triggering the parent onClick
           onDismiss(suggestion.suggestionId);
         }}
-        disabled={isRegenerating} // Optional: Disable button when regenerating
       >
         Dismiss
       </button>
@@ -247,14 +245,12 @@ const DefaultSuggestionBody = ({
 
 interface RegenerateSuggestionBodyProps {
   suggestion: Suggestion;
-  isRegenerating: boolean;
   onRegenerateSubmit: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
   setSuggestionState: SetState<SuggestionState>;
 }
 
 const RegenerateSuggestionBody = ({
   suggestion,
-  isRegenerating,
   onRegenerateSubmit,
   setSuggestionState,
 }: RegenerateSuggestionBodyProps) => {
@@ -296,14 +292,75 @@ const RegenerateSuggestionBody = ({
         <button
           className="rounded bg-green-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-green-500"
           onClick={handleRegenerateSubmit}
-          disabled={isRegenerating} // Optional: Disable button when regenerating
         >
           Regenerate Suggestion
         </button>
         <button
           className="rounded px-4 py-2 text-gray-400 transition-colors duration-300 hover:text-gray-700"
           onClick={handleCancelRegenerate}
-          disabled={isRegenerating}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+};
+
+interface EditSuggestionBodyProps {
+  suggestion: Suggestion;
+  onRegenerateSubmit: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
+  setSuggestionState: SetState<SuggestionState>;
+}
+
+const EditSuggestionBody = ({
+  suggestion,
+  onRegenerateSubmit,
+  setSuggestionState,
+}: EditSuggestionBodyProps) => {
+  const [regeneratePrompt, setRegeneratePrompt] = useState("");
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // Focus the textarea when it becomes visible
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [textareaRef.current]);
+
+  const handleRegenerateSubmit = () => {
+    onRegenerateSubmit(suggestion, regeneratePrompt);
+    setSuggestionState(SuggestionState.Default);
+    setRegeneratePrompt("");
+  };
+
+  const handleCancelRegenerate = () => {
+    setSuggestionState(SuggestionState.Default);
+    setRegeneratePrompt("");
+  };
+
+  return (
+    <div className="mt-4">
+      <p className="text-sm text-slate-600">
+        What changes to make when regenerating?
+      </p>
+      <NormalTextArea
+        ref={textareaRef}
+        className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2"
+        value={regeneratePrompt}
+        onChange={(e) => setRegeneratePrompt(e.target.value)}
+        minRows={3}
+        placeholder="e.g. Use a different verb"
+      />
+      <div className="mt-2 flex items-center space-x-2">
+        <button
+          className="rounded bg-green-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-green-500"
+          onClick={handleRegenerateSubmit}
+        >
+          Regenerate Suggestion
+        </button>
+        <button
+          className="rounded px-4 py-2 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+          onClick={handleCancelRegenerate}
         >
           Cancel
         </button>
