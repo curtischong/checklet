@@ -8,6 +8,7 @@ import { SortIcon } from "@/app/_components/icons/SortIcon";
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
+import LoadingBar from "@/app/checker/[checkerId]/editor/LoadingBar";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
 import { apiClient, handleErr } from "@/trpc/react";
@@ -271,7 +272,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
         )}
       </div>
       <div className="mt-[5px] h-[13px]">
-        {/* {isLoading && <LoadingBar duration={editorState.length / 100 + 4} />} */}
+        {isLoading && <LoadingBar duration={editorState.length / 100 + 4} />}
         {isLoading && (
           <div>Generating suggestions... This will take a minute!</div>
         )}
