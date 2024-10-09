@@ -12,7 +12,7 @@ interface Props {
   onClick: () => void;
   onAccept: (acceptedOption: string) => void;
   onDismiss: (suggestionId: string) => void;
-  onRegenerate: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
+  onRegenerateSubmit: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
   isRegenerating: boolean; // New prop to indicate regeneration state
   classNames?: string;
 }
@@ -50,7 +50,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       onClick,
       onAccept,
       onDismiss,
-      onRegenerate,
+      onRegenerateSubmit,
       isRegenerating,
       classNames,
     } = props;
@@ -88,7 +88,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
     };
 
     const handleRegenerateSubmit = () => {
-      onRegenerate(suggestion, regeneratePrompt);
+      onRegenerateSubmit(suggestion, regeneratePrompt);
       setIsRegeneratingUiShown(false);
       setRegeneratePrompt("");
     };
@@ -117,7 +117,9 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
           onClick={onClick}
         >
           {isActive ? (
-            <div className="text-gray-600">{suggestion.tipName}</div>
+            <>
+              <div className="text-gray-600">{suggestion.tipName}</div>
+            </>
           ) : (
             <>
               <span className="max-w-[40%] overflow-hidden overflow-ellipsis whitespace-nowrap">
@@ -143,6 +145,14 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                 </span>
               );
             })}
+            {/* <Tooltip title="Edit Suggestion">
+              <EditButton
+                className="px-2"
+                onClick={() => {
+                  console.log("edit checker");
+                }}
+              />
+            </Tooltip> */}
             <div className="mt-2 text-sm text-gray-500">
               {suggestion.reason}
             </div>
@@ -195,7 +205,17 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                           Accept
                         </button>
                         <button
-                          className="rounded px-2 py-1 text-blue-400 transition-colors duration-300 hover:text-blue-600"
+                          className="rounded py-1 text-blue-400 transition-colors duration-300 hover:text-blue-700"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering the parent onClick
+                            onDismiss(suggestion.suggestionId);
+                          }}
+                          disabled={isRegenerating} // Optional: Disable button when regenerating
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="rounded py-1 text-blue-400 transition-colors duration-300 hover:text-blue-600"
                           onClick={(e) => {
                             e.stopPropagation(); // Prevent triggering the parent onClick
                             handleRegenerate();
@@ -207,7 +227,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                       </>
                     )}
                     <button
-                      className="rounded px-2 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+                      className="rounded py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent triggering the parent onClick
                         onDismiss(suggestion.suggestionId);

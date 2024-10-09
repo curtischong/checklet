@@ -22,7 +22,7 @@ export const DemoSuggestionCard = () => {
       onClick={() => {}}
       onAccept={() => {}}
       onDismiss={() => {}}
-      onRegenerate={() => {}}
+      onRegenerateSubmit={() => {}}
       isRegenerating={false}
       activeSuggestion={suggestion}
     />
