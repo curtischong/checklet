@@ -73,6 +73,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
       // cookieSerializeOptions: serverConfig.cookieSerializeOptions,
       // serviceAccount: serverConfig.serviceAccount,
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_err) {
     // console.error("Error getting cookies tokens", _err);
     // there is a high chance this is a InvalidTokenError: MISSING_CREDENTIALS: Missing credentials error
