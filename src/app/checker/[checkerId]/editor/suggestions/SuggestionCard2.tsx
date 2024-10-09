@@ -64,13 +64,11 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
 
     const diffResult = useMemo(() => {
       if (suggestion.newText === undefined) {
+        // if there is no newText, this is a highlight suggestion. so return no diff
         // explicitly check if newText is undefined because newText can be "", which is falsy
         return [];
-      } // if there is no newText, this is a highlight suggestion. so return no diff
-      return diffWords(
-        suggestion.oldText,
-        suggestion.newText ?? suggestion.oldText,
-      );
+      }
+      return diffWords(suggestion.oldText, suggestion.newText);
     }, [suggestion.oldText, suggestion.newText]);
 
     // State to manage regenerating UI visibility
