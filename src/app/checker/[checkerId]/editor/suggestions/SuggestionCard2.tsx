@@ -14,7 +14,7 @@ interface Props {
   onClick: () => void;
   onAccept: (acceptedOption: string) => void;
   onDismiss: (suggestionId: string) => void;
-  onRegenerateSubmit: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
+  onRegenerate: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
   isRegenerating: boolean; // New prop to indicate regeneration state
   classNames?: string;
 }
@@ -58,7 +58,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
       onClick,
       onAccept,
       onDismiss,
-      onRegenerateSubmit,
+      onRegenerate,
       isRegenerating,
       classNames,
     } = props;
@@ -148,7 +148,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                 ) : suggestionState === SuggestionState.Regenerating ? (
                   <RegenerateSuggestionBody
                     suggestion={suggestion}
-                    onRegenerateSubmit={onRegenerateSubmit}
+                    onRegenerate={onRegenerate}
                     setSuggestionState={setSuggestionState}
                   />
                 ) : (
@@ -232,13 +232,13 @@ const DefaultSuggestionBody = ({
 
 interface RegenerateSuggestionBodyProps {
   suggestion: Suggestion;
-  onRegenerateSubmit: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
+  onRegenerate: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
   setSuggestionState: SetState<SuggestionState>;
 }
 
 const RegenerateSuggestionBody = ({
   suggestion,
-  onRegenerateSubmit,
+  onRegenerate,
   setSuggestionState,
 }: RegenerateSuggestionBodyProps) => {
   const [regeneratePrompt, setRegeneratePrompt] = useState("");
@@ -252,7 +252,7 @@ const RegenerateSuggestionBody = ({
   }, [textareaRef.current]);
 
   const handleSubmitRegenerate = () => {
-    onRegenerateSubmit(suggestion, regeneratePrompt);
+    onRegenerate(suggestion, regeneratePrompt);
     setSuggestionState(SuggestionState.Default);
   };
 

@@ -180,7 +180,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
               onClick={() => onCollapseClick(s)}
               onAccept={(acceptedOption) => acceptSuggestion(s, acceptedOption)}
               onDismiss={dismissSuggestion}
-              onRegenerateSubmit={onRegenSuggestion}
+              onRegenerate={onRegenSuggestion}
               ref={ref}
               isRegenerating={isLoading}
             />
