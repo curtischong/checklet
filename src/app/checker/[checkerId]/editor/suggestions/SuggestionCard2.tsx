@@ -63,7 +63,8 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
     }, [suggestion, activeSuggestion]);
 
     const diffResult = useMemo(() => {
-      if (!suggestion.newText) {
+      if (suggestion.newText === undefined) {
+        // explicitly check if newText is undefined because newText can be "", which is falsy
         return [];
       } // if there is no newText, this is a highlight suggestion. so return no diff
       return diffWords(
