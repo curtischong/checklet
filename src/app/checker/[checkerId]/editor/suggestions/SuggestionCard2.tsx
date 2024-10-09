@@ -273,13 +273,13 @@ const RegenerateSuggestionBody = ({
       />
       <div className="mt-2 flex items-center space-x-2">
         <button
-          className="rounded bg-green-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-green-500"
+          className="rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
           onClick={handleSubmitRegenerate}
         >
           Regenerate Suggestion
         </button>
         <button
-          className="rounded px-4 py-2 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+          className="rounded px-4 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
           onClick={handleCancelRegenerate}
         >
           Cancel
@@ -334,13 +334,13 @@ const EditSuggestionBody = ({
       />
       <div className="mt-2 flex items-center space-x-2">
         <button
-          className="rounded bg-green-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-green-500"
+          className="rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
           onClick={handleSubmitEdit}
         >
           Apply Edits
         </button>
         <button
-          className="rounded px-4 py-2 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+          className="rounded px-4 py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
           onClick={handleCancelEdit}
         >
           Cancel
