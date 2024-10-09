@@ -424,6 +424,55 @@ You should return:
 <End of Example 2/>`;
 };
 
+export const addTipTags4Dot6 = () => {
+  return `I want you to merge the edits of your response with the original document. Only merge edits with a score of 7 or higher.
+  
+For each edit you merge, surround the edit with <tip><old>old text before edit</old><new>new text after edit</new><name>tip name</name><reason>reason for tip</reason></tip>.
+
+If you are simply highlighting a flaw in the old text, or do not have enough information to edit the text, omit the new tag.
+
+I just want the original document but with the edits ported over from your response.
+
+<Example 1>
+
+Original Document:
+I really love rainy Sundays.
+
+Document with edits:
+I love rainy Sundays.
+
+You should return:
+I <tip><old>really </old><new></new><name>Remove Adverbs</name><reason>It improves conciseness</reason></tip>love rainy Sundays.
+
+</End of Example 1>
+
+<Example 2>
+
+Original Document:
+Howdy Sir
+
+Document with edits:
+Hello Sir
+
+You should return:
+<tip><old>Howdy</old><new>Hello</new><name>Be More Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
+
+</End of Example 2>
+
+<Example 3>
+
+Original Document:
+At Google, I decreased a neural network loss to 0.4532
+
+Document with edits:
+At Google, I decreased a neural network loss to 0.4532
+
+You should return:
+At Google, I decreased a neural network loss to <tip><old>0.4532</old><name>Unclear Metric</name><reason>An outsider might not have the context to understand if a loss of 0.4532 is good or bad.</reason></tip>
+
+</End of Example 3>`;
+};
+
 export const addTipTags4Dot7 = () => {
   return `I want you to merge the edits of your response with the original document.
   
@@ -492,12 +541,12 @@ You should return:
 <End of Example 2/>`;
 };
 
-export const addTipTags4Dot6 = () => {
-  return `I want you to merge the edits of your response with the original document. Only merge edits with a score of 7 or higher.
+export const addTipTags4Dot9 = () => {
+  return `I want you to merge the edits of your response with the original document. PLEASE PORT OVER ALL OF THE EDITS.
   
 For each edit you merge, surround the edit with <tip><old>old text before edit</old><new>new text after edit</new><name>tip name</name><reason>reason for tip</reason></tip>.
 
-If you are simply highlighting a flaw in the old text, or do not have enough information to edit the text, omit the new tag.
+If you are simply 1) highlighting a flaw in the old text, or 2) do not have enough information to edit the text, or 3) commenting on the old text, then omit the new tag.
 
 I just want the original document but with the edits ported over from your response.
 
@@ -523,22 +572,9 @@ Document with edits:
 Hello Sir
 
 You should return:
-<tip><old>Howdy</old><new>Hello</new><name>Be More Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
+<tip><old>Howdy</old><new>Hello</new><name>Be more Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
 
-</End of Example 2>
-
-<Example 3>
-
-Original Document:
-At Google, I decreased a neural network loss to 0.4532
-
-Document with edits:
-At Google, I decreased a neural network loss to 0.4532
-
-You should return:
-At Google, I decreased a neural network loss to <tip><old>0.4532</old><name>Unclear Metric</name><reason>An outsider might not have the context to understand if a loss of 0.4532 is good or bad.</reason></tip>
-
-</End of Example 3>`;
+<End of Example 2/>`;
 };
 
 // Sometimes, a tip might not have an appropriate edit (you don't have enough information to change the text). Just don't add <new></new> tags in this case.
@@ -590,9 +626,9 @@ ${doc}`;
 };
 
 export const inference6 = (prompt: string, doc: string) => {
-  return `[Instruction 1]: Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Base your edits on the provided tips. Use train of throught.
+  return `1) Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Base your edits on the provided tips. Use train of throught.
   
-[Instruction 2]: Evaluate each edit and score each one based on how well it follows the tips. Give each edit a score between 1-10 in terms of relevance to the tips.
+2) Evaluate each edit and score each one based on how well it follows the tips. Give each edit a score between 1-10 in terms of relevance to the tips.
 
 ---TIPS---
 ${prompt}
