@@ -58,6 +58,7 @@ export async function middleware(request: NextRequest) {
     cookieSignatureKeys: serverConfig.cookieSignatureKeys,
     cookieSerializeOptions: serverConfig.cookieSerializeOptions,
     serviceAccount: serverConfig.serviceAccount as any, // NOTE: serviceAccount may not be typed property. I think it MAY NOT be always known. if you remove the as any, you'll see.
+    debug: process.env.NODE_ENV === "development",
     // eslint-disable-next-line @typescript-eslint/require-await
     handleValidToken: async ({ token: _token, decodedToken }, headers) => {
       // by serializing the auth header, we can pass the user's info to server-side-components
@@ -76,14 +77,12 @@ export async function middleware(request: NextRequest) {
         return redirectTo(request, "/signin?redirect-reason=create-checker");
       }
 
-      // console.info("Missing or malformed credentials", { reason: _reason });
       const res = NextResponse.next();
       res.headers.set(requestPathHeaderName, pathname);
       return res;
     },
     // eslint-disable-next-line @typescript-eslint/require-await
     handleError: async (_error) => {
-      // console.error("Unhandled authentication error", { error: _error });
       const res = NextResponse.next();
       res.headers.set(requestPathHeaderName, pathname);
       return res;

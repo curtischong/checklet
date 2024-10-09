@@ -375,7 +375,7 @@ export const checkerRouter = createTRPCRouter({
         apiKey,
         dangerouslyAllowBrowser: false,
       });
-      console.log("improvemepnt prompt", input.improvementPrompt);
+      console.log("improvement prompt", input.improvementPrompt);
 
       // Define an async generator function for streaming OpenAI responses
       async function* streamCompletion() {

@@ -64,13 +64,26 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   }
 
   // Retrieve tokens using next-firebase-auth-edge
-  const tokens = await getCookiesTokens(parse(cookies), {
-    // apiKey: clientConfig.apiKey,
-    cookieName: serverConfig.cookieName,
-    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
-    // cookieSerializeOptions: serverConfig.cookieSerializeOptions,
-    // serviceAccount: serverConfig.serviceAccount,
-  });
+  let tokens;
+  try {
+    tokens = await getCookiesTokens(parse(cookies), {
+      // apiKey: clientConfig.apiKey,
+      cookieName: serverConfig.cookieName,
+      cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+      // cookieSerializeOptions: serverConfig.cookieSerializeOptions,
+      // serviceAccount: serverConfig.serviceAccount,
+    });
+  } catch (_err) {
+    // console.error("Error getting cookies tokens", _err);
+    // there is a high chance this is a InvalidTokenError: MISSING_CREDENTIALS: Missing credentials error
+    // basically, the user is not logged in. this is fine. we can just return null
+
+    return {
+      db,
+      ...opts,
+      user: null,
+    };
+  }
 
   let user = null;
 
@@ -83,6 +96,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
       console.error("Error verifying ID token:", error);
     }
   }
+  console.log("user", user);
 
   return {
     db,
