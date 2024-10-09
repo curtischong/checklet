@@ -85,7 +85,7 @@ const tipTagPattern =
   // /<tip>\s*<old>([^<]+)<\/old>\s*<new>([^<]+)<\/new>\s*<name>([^<]+)<\/name>\s*<reason>([^<]+)<\/reason>\s*<\/tip>/g;
 
   // the new tag is optional
-  /<tip>\s*<old>([^<]+)<\/old>(?:\s*<new>([^<]+)<\/new>)?\s*<name>([^<]+)<\/name>\s*<reason>([^<]+)<\/reason>\s*<\/tip>/g;
+  /<tip>\s*<old>([^<]+)<\/old>(?:\s*<new>([^<]*)<\/new>)?\s*<name>([^<]+)<\/name>\s*<reason>([^<]+)<\/reason>\s*<\/tip>/g;
 
 const getDoc3WithoutTipTags = (doc3: string) => {
   // replace it all with the old text since this is used to help find surrounding context around matches
