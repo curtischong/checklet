@@ -372,6 +372,8 @@ export const checkerRouter = createTRPCRouter({
     // eslint-disable-next-line @typescript-eslint/require-await
     .mutation(async ({ input }) => {
       const apiKey = process.env.OPENAI_API_KEY;
+
+      // TODO: use the global llm?
       const client = new OpenAI({
         apiKey,
         dangerouslyAllowBrowser: false,

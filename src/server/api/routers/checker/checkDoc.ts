@@ -8,13 +8,14 @@ import {
   removeInvalidTips,
 } from "@/server/api/routers/checker/docPostProcess";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
-import { Llm } from "@/server/api/routers/checker/llm";
+import { type Llm } from "@/server/api/routers/checker/llm";
 import { type Llm2 } from "@/server/api/routers/checker/llm2";
-import { Llm3 } from "@/server/api/routers/checker/llm3";
+import { type Llm3 } from "@/server/api/routers/checker/llm3";
 import {
   extractSuggestions,
   extractTips,
 } from "@/server/api/routers/checker/llmOutputHelpers";
+import { openaiLlm } from "@/server/api/routers/checker/openaiLlm";
 import {
   addTipTags4,
   addTipTags4Dot1,
@@ -38,32 +39,30 @@ import {
   mergeDoc2TipsIntoDoc1Dot2,
   oneshot5dot1,
 } from "@/server/api/routers/checker/prompts";
-import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import { postprocessDoc } from "@/server/api/routers/checker/textAlignment";
 import { type PrismaClient } from "@prisma/client";
 import { type ChatCompletionTool } from "openai/resources/index.mjs";
-import path from "path";
 
 export class CheckerWorker {
   systemPrompt = "";
   smartModel = "gpt-4o";
   cheapModel = "gpt-4o";
-  llm: Llm;
-  llm3: Llm3;
+  // llm: Llm;
+  // llm3: Llm3;
   db: PrismaClient;
 
   constructor(db: PrismaClient) {
-    const cache = new SimpleCache(
-      path.join(process.cwd(), ".chatgpt_history"),
-      "/cache",
-    );
-    const apiKey = process.env.OPENAI_API_KEY;
-    this.llm = new Llm(this.systemPrompt, this.smartModel, cache, apiKey);
-    const cache3 = new SimpleCache(
-      path.join(process.cwd(), ".chatgpt_history"),
-      "/cache3",
-    );
-    this.llm3 = new Llm3(this.smartModel, this.systemPrompt, cache3, apiKey);
+    // const cache = new SimpleCache(
+    //   path.join(process.cwd(), ".chatgpt_history"),
+    //   "/cache",
+    // );
+    // const apiKey = process.env.OPENAI_API_KEY;
+    // this.llm = new Llm(this.systemPrompt, this.smartModel, cache, apiKey);
+    // const cache3 = new SimpleCache(
+    //   path.join(process.cwd(), ".chatgpt_history"),
+    //   "/cache3",
+    // );
+    // this.llm3 = new Llm3(this.smartModel, this.systemPrompt, cache3, apiKey);
     this.db = db;
   }
 
@@ -95,7 +94,7 @@ export class CheckerWorker {
     // const suggestions = await checkDoc1dot14(this.llm3, newChecker.prompt, doc);
     // const suggestions = await checkDoc4Dot3(this.llm3, checker.prompt, doc);
     // const suggestions = await checkDoc5Dot1(this.llm3, checker.prompt, doc);
-    const suggestions = await checkDoc4Dot6(this.llm3, checker.prompt, doc);
+    const suggestions = await checkDoc4Dot6(openaiLlm, checker.prompt, doc);
     console.log("suggestions", suggestions);
     return {
       suggestions: suggestions,

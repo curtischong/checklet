@@ -1,14 +1,12 @@
-import { Llm3 } from "@/server/api/routers/checker/llm3";
+import { openaiLlm } from "@/server/api/routers/checker/openaiLlm";
 import { regenPrompt3 } from "@/server/api/routers/checker/prompts";
-import { SimpleCache } from "@/server/api/routers/checker/simpleCache";
 import { TRPCError } from "@trpc/server";
-import path from "path";
 
 const model = "gpt-4o";
-const cache3 = new SimpleCache(
-  path.join(process.cwd(), ".chatgpt_history"),
-  "/cache3",
-);
+// const cache3 = new SimpleCache(
+//   path.join(process.cwd(), ".chatgpt_history"),
+//   "/cache3",
+// );
 
 const regex = /<new2>(.*?)<\/new2>/g;
 
@@ -26,11 +24,11 @@ export const regenSuggestion = async (
       message: `failed to regenerate suggestion. We do not support regenerating suggestions without a newText`,
     });
   }
-  const apiKey = process.env.OPENAI_API_KEY;
+  // const apiKey = process.env.OPENAI_API_KEY;
 
-  const llm = new Llm3(model, "", cache3, apiKey);
+  // const llm = new Llm3(model, "", cache3, apiKey);
 
-  const newChat = await llm.promptMessages(
+  const newChat = await openaiLlm.promptMessages(
     [],
     regenPrompt3(
       oldText,
