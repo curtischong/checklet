@@ -574,7 +574,20 @@ Hello Sir
 You should return:
 <tip><old>Howdy</old><new>Hello</new><name>Be more Formal</name><reason>It is better to be more formal when writing to a CEO</reason></tip> Sir
 
-<End of Example 2/>`;
+</End of Example 2>
+
+<Example 3>
+
+Original Document:
+At Google, I decreased a neural network loss to 0.4532
+
+Document with edits:
+At Google, I decreased a neural network loss to 0.4532
+
+You should return:
+At Google, I decreased a neural network loss to <tip><old>0.4532</old><name>Unclear Metric</name><reason>An outsider might not have the context to understand if a loss of 0.4532 is good or bad.</reason></tip>
+
+</End of Example 3>`;
 };
 
 // Sometimes, a tip might not have an appropriate edit (you don't have enough information to change the text). Just don't add <new></new> tags in this case.
