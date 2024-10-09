@@ -80,14 +80,9 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
     }, [suggestion.oldText, suggestion.newText]);
 
     // State to manage regenerating UI visibility
-    // const [isRegeneratingUiShown, setIsRegeneratingUiShown] = useState(false);
     const [suggestionState, setSuggestionState] = useState(
       SuggestionState.Default,
     );
-
-    const handleEdit = () => {
-      setSuggestionState(SuggestionState.Editing);
-    };
 
     return (
       <div
@@ -136,14 +131,6 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                 </span>
               );
             })}
-            {/* <Tooltip title="Edit Suggestion">
-              <EditButton
-                className="px-2"
-                onClick={() => {
-                  console.log("edit checker");
-                }}
-              />
-            </Tooltip> */}
             <div className="mt-2 text-sm text-gray-500">
               {suggestion.reason}
             </div>
@@ -167,7 +154,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                 ) : (
                   <EditSuggestionBody
                     suggestion={suggestion}
-                    onRegenerateSubmit={onRegenerateSubmit}
+                    onAccept={onAccept}
                     setSuggestionState={setSuggestionState}
                   />
                 )}
@@ -264,15 +251,13 @@ const RegenerateSuggestionBody = ({
     }
   }, [textareaRef.current]);
 
-  const handleRegenerateSubmit = () => {
+  const handleSubmitRegenerate = () => {
     onRegenerateSubmit(suggestion, regeneratePrompt);
     setSuggestionState(SuggestionState.Default);
-    setRegeneratePrompt("");
   };
 
   const handleCancelRegenerate = () => {
     setSuggestionState(SuggestionState.Default);
-    setRegeneratePrompt("");
   };
 
   return (
@@ -291,7 +276,7 @@ const RegenerateSuggestionBody = ({
       <div className="mt-2 flex items-center space-x-2">
         <button
           className="rounded bg-green-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-green-500"
-          onClick={handleRegenerateSubmit}
+          onClick={handleSubmitRegenerate}
         >
           Regenerate Suggestion
         </button>
@@ -308,16 +293,16 @@ const RegenerateSuggestionBody = ({
 
 interface EditSuggestionBodyProps {
   suggestion: Suggestion;
-  onRegenerateSubmit: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
+  onAccept: (acceptedOption: string) => void;
   setSuggestionState: SetState<SuggestionState>;
 }
 
 const EditSuggestionBody = ({
   suggestion,
-  onRegenerateSubmit,
+  onAccept,
   setSuggestionState,
 }: EditSuggestionBodyProps) => {
-  const [regeneratePrompt, setRegeneratePrompt] = useState("");
+  const [newText, setNewText] = useState(suggestion.newText ?? "");
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   // Focus the textarea when it becomes visible
@@ -327,40 +312,38 @@ const EditSuggestionBody = ({
     }
   }, [textareaRef.current]);
 
-  const handleRegenerateSubmit = () => {
-    onRegenerateSubmit(suggestion, regeneratePrompt);
+  const handleSubmitEdit = () => {
+    onAccept(newText);
     setSuggestionState(SuggestionState.Default);
-    setRegeneratePrompt("");
   };
 
-  const handleCancelRegenerate = () => {
+  const handleCancelEdit = () => {
     setSuggestionState(SuggestionState.Default);
-    setRegeneratePrompt("");
   };
 
   return (
     <div className="mt-4">
-      <p className="text-sm text-slate-600">
-        What changes to make when regenerating?
-      </p>
+      <p className="text-sm text-slate-600">Original Text</p>
+      <p className="mt-1">{suggestion.oldText}</p>
+      <p className="mt-3 text-sm text-slate-600">Change into</p>
       <NormalTextArea
         ref={textareaRef}
-        className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2"
-        value={regeneratePrompt}
-        onChange={(e) => setRegeneratePrompt(e.target.value)}
+        className="mt-1 w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2"
+        value={newText}
+        onChange={(e) => setNewText(e.target.value)}
         minRows={3}
         placeholder="e.g. Use a different verb"
       />
       <div className="mt-2 flex items-center space-x-2">
         <button
           className="rounded bg-green-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-green-500"
-          onClick={handleRegenerateSubmit}
+          onClick={handleSubmitEdit}
         >
-          Regenerate Suggestion
+          Apply Edits
         </button>
         <button
           className="rounded px-4 py-2 text-gray-400 transition-colors duration-300 hover:text-gray-700"
-          onClick={handleCancelRegenerate}
+          onClick={handleCancelEdit}
         >
           Cancel
         </button>
