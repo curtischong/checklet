@@ -639,9 +639,9 @@ ${doc}`;
 };
 
 export const inference6 = (prompt: string, doc: string) => {
-  return `1) Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Base your edits on the provided tips. Use train of throught.
+  return `[Instruction 1]: Scan over the entire doc and list out all of the possible fixes and the edit you intend to use to fix it. Base your edits on the provided tips. Use train of throught.
   
-2) Evaluate each edit and score each one based on how well it follows the tips. Give each edit a score between 1-10 in terms of relevance to the tips.
+[Instruction 2]: Evaluate each edit and score each one based on how well it follows the tips. Give each edit a score between 1-10 in terms of relevance to the tips.
 
 ---TIPS---
 ${prompt}
