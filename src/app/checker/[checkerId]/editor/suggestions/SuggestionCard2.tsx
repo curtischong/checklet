@@ -2,7 +2,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { NormalTextArea } from "@/app/_components/ui/TextArea";
+import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type Suggestion } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import { type SetState } from "@/utils/types";
 import { diffWords } from "diff";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
@@ -42,6 +44,12 @@ const Spinner: React.FC = () => (
   </div>
 );
 
+const enum SuggestionState {
+  Default,
+  Regenerating,
+  Editing,
+}
+
 const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
   (props, ref) => {
     const {
@@ -72,30 +80,13 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
     }, [suggestion.oldText, suggestion.newText]);
 
     // State to manage regenerating UI visibility
-    const [isRegeneratingUiShown, setIsRegeneratingUiShown] = useState(false);
-    const [regeneratePrompt, setRegeneratePrompt] = useState("");
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    // const [isRegeneratingUiShown, setIsRegeneratingUiShown] = useState(false);
+    const [suggestionState, setSuggestionState] = useState(
+      SuggestionState.Default,
+    );
 
-    // Focus the textarea when it becomes visible
-    useEffect(() => {
-      if (isRegeneratingUiShown && textareaRef.current) {
-        textareaRef.current.focus();
-      }
-    }, [isRegeneratingUiShown]);
-
-    const handleRegenerate = () => {
-      setIsRegeneratingUiShown(true);
-    };
-
-    const handleRegenerateSubmit = () => {
-      onRegenerateSubmit(suggestion, regeneratePrompt);
-      setIsRegeneratingUiShown(false);
-      setRegeneratePrompt("");
-    };
-
-    const handleCancelRegenerate = () => {
-      setIsRegeneratingUiShown(false);
-      setRegeneratePrompt("");
+    const handleEdit = () => {
+      setSuggestionState(SuggestionState.Editing);
     };
 
     return (
@@ -160,83 +151,21 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
               <Spinner />
             ) : (
               <>
-                {isRegeneratingUiShown ? (
-                  <div className="mt-4">
-                    <p className="text-sm text-slate-600">
-                      What changes to make when regenerating?
-                    </p>
-                    <NormalTextArea
-                      ref={textareaRef}
-                      className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2"
-                      value={regeneratePrompt}
-                      onChange={(e) => setRegeneratePrompt(e.target.value)}
-                      minRows={3}
-                      placeholder="e.g. Use a different verb"
-                    />
-                    <div className="mt-2 flex items-center space-x-2">
-                      <button
-                        className="rounded bg-green-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-green-500"
-                        onClick={handleRegenerateSubmit}
-                        disabled={isRegenerating} // Optional: Disable button when regenerating
-                      >
-                        Regenerate Suggestion
-                      </button>
-                      <button
-                        className="rounded px-4 py-2 text-gray-400 transition-colors duration-300 hover:text-gray-700"
-                        onClick={handleCancelRegenerate}
-                        disabled={isRegenerating} // Optional: Disable button when regenerating
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
+                {suggestionState === SuggestionState.Regenerating ? (
+                  <RegenerateSuggestionBody
+                    suggestion={suggestion}
+                    isRegenerating={isRegenerating}
+                    onRegenerateSubmit={onRegenerateSubmit}
+                    setSuggestionState={setSuggestionState}
+                  />
                 ) : (
-                  <div className="mt-4 flex flex-row space-x-4">
-                    {suggestion.newText !== undefined && (
-                      <>
-                        <button
-                          className="rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent triggering the parent onClick
-                            onAccept(suggestion.newText!);
-                          }}
-                          disabled={isRegenerating} // Optional: Disable button when regenerating
-                        >
-                          Accept
-                        </button>
-                        <button
-                          className="rounded py-1 text-blue-400 transition-colors duration-300 hover:text-blue-700"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent triggering the parent onClick
-                            onDismiss(suggestion.suggestionId);
-                          }}
-                          disabled={isRegenerating} // Optional: Disable button when regenerating
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="rounded py-1 text-blue-400 transition-colors duration-300 hover:text-blue-600"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent triggering the parent onClick
-                            handleRegenerate();
-                          }}
-                          disabled={isRegenerating} // Optional: Disable button when regenerating
-                        >
-                          Regenerate
-                        </button>
-                      </>
-                    )}
-                    <button
-                      className="rounded py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent triggering the parent onClick
-                        onDismiss(suggestion.suggestionId);
-                      }}
-                      disabled={isRegenerating} // Optional: Disable button when regenerating
-                    >
-                      Dismiss
-                    </button>
-                  </div>
+                  <DefaultSuggestionBody
+                    suggestion={suggestion}
+                    isRegenerating={isRegenerating}
+                    onAccept={onAccept}
+                    onDismiss={onDismiss}
+                    setSuggestionState={setSuggestionState}
+                  />
                 )}
               </>
             )}
@@ -246,6 +175,142 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
     );
   },
 );
+
+interface DefaultSuggestionBodyProps {
+  suggestion: Suggestion;
+  isRegenerating: boolean;
+  onAccept: (acceptedOption: string) => void;
+  onDismiss: (suggestionId: string) => void;
+  setSuggestionState: SetState<SuggestionState>;
+}
+
+const DefaultSuggestionBody = ({
+  suggestion,
+  isRegenerating,
+  onAccept,
+  onDismiss,
+  setSuggestionState,
+}: DefaultSuggestionBodyProps) => {
+  return (
+    <div className="mt-4 flex flex-row space-x-4">
+      {suggestion.newText !== undefined && (
+        <>
+          <button
+            className="rounded bg-green-600 px-4 py-1 text-white transition-colors duration-300 hover:bg-green-500"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent triggering the parent onClick
+              onAccept(suggestion.newText!);
+            }}
+            disabled={isRegenerating}
+          >
+            Accept
+          </button>
+          <Tooltip title={"Edit the suggestion manually"}>
+            <button
+              className="rounded py-1 text-blue-400 transition-colors duration-300 hover:text-blue-700"
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent triggering the parent onClick
+                setSuggestionState(SuggestionState.Editing);
+              }}
+              disabled={isRegenerating}
+            >
+              Edit
+            </button>
+          </Tooltip>
+          <Tooltip title={"Ask AI to regenerate the suggestion"}>
+            <button
+              className="rounded py-1 text-blue-400 transition-colors duration-300 hover:text-blue-600"
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent triggering the parent onClick
+                setSuggestionState(SuggestionState.Regenerating);
+              }}
+              disabled={isRegenerating}
+            >
+              Regenerate
+            </button>
+          </Tooltip>
+        </>
+      )}
+      <button
+        className="rounded py-1 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent triggering the parent onClick
+          onDismiss(suggestion.suggestionId);
+        }}
+        disabled={isRegenerating} // Optional: Disable button when regenerating
+      >
+        Dismiss
+      </button>
+    </div>
+  );
+};
+
+interface RegenerateSuggestionBodyProps {
+  suggestion: Suggestion;
+  isRegenerating: boolean;
+  onRegenerateSubmit: (suggestion: Suggestion, regenPrompt: string) => void; // New handler for regenerating
+  setSuggestionState: SetState<SuggestionState>;
+}
+
+const RegenerateSuggestionBody = ({
+  suggestion,
+  isRegenerating,
+  onRegenerateSubmit,
+  setSuggestionState,
+}: RegenerateSuggestionBodyProps) => {
+  const [regeneratePrompt, setRegeneratePrompt] = useState("");
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // Focus the textarea when it becomes visible
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [textareaRef.current]);
+
+  const handleRegenerateSubmit = () => {
+    onRegenerateSubmit(suggestion, regeneratePrompt);
+    setSuggestionState(SuggestionState.Default);
+    setRegeneratePrompt("");
+  };
+
+  const handleCancelRegenerate = () => {
+    setSuggestionState(SuggestionState.Default);
+    setRegeneratePrompt("");
+  };
+
+  return (
+    <div className="mt-4">
+      <p className="text-sm text-slate-600">
+        What changes to make when regenerating?
+      </p>
+      <NormalTextArea
+        ref={textareaRef}
+        className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2"
+        value={regeneratePrompt}
+        onChange={(e) => setRegeneratePrompt(e.target.value)}
+        minRows={3}
+        placeholder="e.g. Use a different verb"
+      />
+      <div className="mt-2 flex items-center space-x-2">
+        <button
+          className="rounded bg-green-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-green-500"
+          onClick={handleRegenerateSubmit}
+          disabled={isRegenerating} // Optional: Disable button when regenerating
+        >
+          Regenerate Suggestion
+        </button>
+        <button
+          className="rounded px-4 py-2 text-gray-400 transition-colors duration-300 hover:text-gray-700"
+          onClick={handleCancelRegenerate}
+          disabled={isRegenerating}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+};
 
 SuggestionComponent.displayName = "SuggestionComponent";
 
