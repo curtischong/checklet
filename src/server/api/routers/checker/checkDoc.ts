@@ -51,7 +51,10 @@ import {
 import { postprocessDoc } from "@/server/api/routers/checker/textAlignment";
 import { type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { type ChatCompletionTool } from "openai/resources/index.mjs";
+import {
+  type ChatCompletionMessageParam,
+  type ChatCompletionTool,
+} from "openai/resources/index.mjs";
 
 export class CheckerWorker {
   systemPrompt = "";
@@ -756,6 +759,42 @@ export const checkDoc4Dot11 = async (
   return {
     suggestions: removeInvalidSuggestions(suggestions),
     doc2PlusChainOfThought,
+    doc3,
+  };
+};
+
+export const checkDoc4Dot12 = async (
+  llm: AzureLlm,
+  prompt: string,
+  doc: string,
+  thoughtProcess: string,
+) => {
+  const chain: ChatCompletionMessageParam[] = [
+    {
+      role: "user",
+      content: inference6Dot3(prompt, doc),
+    },
+    {
+      role: "assistant",
+      content: thoughtProcess,
+    },
+  ];
+  const rawDoc3 = await llm.promptMessagesExtendChain(chain, addTipTags4Dot9());
+  const rawDoc3Content = rawDoc3[rawDoc3.length - 1]!.content as string;
+
+  if (rawDoc3Content === "I'm sorry, I can't assist with that request.") {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: `ChatGPT's moderation declined the request. Maybe reword it slightly?`,
+    });
+  }
+  const doc3 = removeInvalidTips(rawDoc3Content); // removes extraneous whitespace / removals the llm made
+
+  const suggestions = extractSuggestions(doc, doc3);
+
+  return {
+    suggestions: removeInvalidSuggestions(suggestions),
+    doc2PlusChainOfThought: thoughtProcess,
     doc3,
   };
 };

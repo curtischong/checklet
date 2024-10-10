@@ -6,11 +6,13 @@ import {
 } from "@/app/_components/checklets/checklets";
 import { SortIcon } from "@/app/_components/icons/SortIcon";
 import { LoadingButton } from "@/app/_components/ui/Button";
+import { SlidingRadioButton } from "@/app/_components/ui/SlidingRadioButton";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import LoadingBar from "@/app/checker/[checkerId]/editor/LoadingBar";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
+import { ThoughtProcess } from "@/app/checker/[checkerId]/editor/suggestions/ThoughtProcess";
 import { apiClient, handleErr } from "@/trpc/react";
 import { scrollToChild } from "@/utils/scroll";
 import { pluralize } from "@/utils/strings";
@@ -19,13 +21,18 @@ import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
 import {
+  CheckerState,
   hashSuggestion,
+  SidePanelPageEnum,
   type Suggestion,
   type SuggestionIdToRef,
 } from "./suggestionsTypes";
 
 export type Props = {
-  isLoading: boolean;
+  sidePanelPageEnum: SidePanelPageEnum;
+  setSidePanelPageEnum: SetState<SidePanelPageEnum>;
+  checkerThoughts: string | null;
+  checkerState: CheckerState;
   setSuggestions: SetState<Suggestion[]>;
   suggestions: Suggestion[];
   activeSuggestion: Suggestion | undefined;
@@ -37,7 +44,11 @@ export type Props = {
   sortType: SortType;
   setSortType: SetState<SortType>;
   dismissedSuggestionHashes: React.MutableRefObject<Set<number>>;
-  checkDocument: (checkerId: string, doc: string) => void;
+  checkDocument: (
+    checkerId: string,
+    doc: string,
+    checkerState: CheckerState,
+  ) => void;
 };
 
 export enum SortType {
@@ -59,7 +70,10 @@ export const Sorters = {
 };
 
 export const SuggestionsContainer: React.FC<Props> = ({
-  isLoading,
+  sidePanelPageEnum,
+  setSidePanelPageEnum,
+  checkerThoughts,
+  checkerState,
   setSuggestions,
   suggestions,
   activeSuggestion,
@@ -181,7 +195,9 @@ export const SuggestionsContainer: React.FC<Props> = ({
               onDismiss={dismissSuggestion}
               onRegenerate={onRegenSuggestion}
               ref={ref}
-              isRegenerating={isRegenerating || isLoading}
+              isRegenerating={
+                isRegenerating || checkerState !== CheckerState.Default
+              }
             />
           );
         });
@@ -244,18 +260,20 @@ export const SuggestionsContainer: React.FC<Props> = ({
     onCollapseClick,
     acceptSuggestion,
     dismissSuggestion,
-    isLoading,
+    checkerState,
     isRegenerating,
   ]);
 
   const pathName = usePathname();
 
   return (
-    <div className="sticky right-10 top-0 flex h-full flex-col pt-[50px]">
+    <div className="sticky right-10 top-0 flex h-full w-[400px] flex-col pt-[50px]">
       <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
         <LoadingButton
-          onClick={() => checkDocument(storefront.checkerId, editorState)}
-          loading={isLoading}
+          onClick={() =>
+            checkDocument(storefront.checkerId, editorState, checkerState)
+          }
+          loading={checkerState !== CheckerState.Default}
           className="h-9 w-40"
           disabled={editorState === ""}
         >
@@ -270,35 +288,45 @@ export const SuggestionsContainer: React.FC<Props> = ({
           </div>
         )}
       </div>
-      <div className="mt-[5px] h-[30px]">
-        {isLoading && <LoadingBar duration={editorState.length / 25 + 4} />}
-        {isLoading && (
-          <p className="text-sm">
-            Pro tips: Smaller documents get checked faster
-          </p>
-        )}
-        {isLoading && (
-          <p className="text-sm">{`Keep clicking "Check Document" for new suggestions`}</p>
+      <div className="h-[10px]">
+        {checkerState === CheckerState.Improving && (
+          <LoadingBar duration={editorState.length / 100 + 4} />
         )}
       </div>
-      <div className="mt-[5px] h-[40px]">
-        <SuggestionsHeader
-          suggestions={sortedSuggestions}
-          setSortType={setSortType}
+      {checkerThoughts !== null && (
+        <SlidingRadioButton
+          options={[SidePanelPageEnum.Tips, SidePanelPageEnum.Thoughts]}
+          selected={sidePanelPageEnum}
+          setSelected={setSidePanelPageEnum as any}
         />
-      </div>
-      <div
-        className="px-6 pb-10"
-        style={{
-          // add up all the heights and margin tops of the elements above
-          maxHeight: "calc(100vh - 50px - 40px - 5px - 5px - 40px - 5px)",
-          overflow: "auto",
-          overscrollBehavior: "contain",
-        }}
-        ref={suggestionsContainerRef}
-      >
-        {renderSuggestions()}
-      </div>
+      )}
+      {sidePanelPageEnum === SidePanelPageEnum.Thoughts ? (
+        <div className="mt-[5px] h-[30px]">
+          <ThoughtProcess checkerThoughts={checkerThoughts} />
+        </div>
+      ) : (
+        <>
+          <div className="mt-[5px] h-[40px]">
+            <SuggestionsHeader
+              suggestions={sortedSuggestions}
+              setSortType={setSortType}
+            />
+          </div>
+          <div
+            className="px-6 pb-10"
+            style={{
+              // add up all the heights and margin tops of the elements above
+              maxHeight:
+                "calc(100vh - 50px - 40px - 5px - 5px - 40px - 5px - 40px)",
+              overflow: "auto",
+              overscrollBehavior: "contain",
+            }}
+            ref={suggestionsContainerRef}
+          >
+            {renderSuggestions()}
+          </div>
+        </>
+      )}
     </div>
   );
 };

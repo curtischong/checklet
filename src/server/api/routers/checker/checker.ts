@@ -6,7 +6,10 @@ import { z } from "zod";
 import { type UserCtx } from "@/firebase/edge_env";
 import { mixpanel } from "@/mixpanel";
 import { azureLlmClient } from "@/server/api/routers/checker/azureLlm";
-import { CheckerWorker } from "@/server/api/routers/checker/checkDoc";
+import {
+  checkDoc4Dot12,
+  CheckerWorker,
+} from "@/server/api/routers/checker/checkDoc";
 import { inference6Dot3 } from "@/server/api/routers/checker/prompts";
 import { regenSuggestion } from "@/server/api/routers/checker/regenSuggestion";
 import {
@@ -269,6 +272,39 @@ export const checkerRouter = createTRPCRouter({
       return azureLlmClient.streamCompletion(
         [],
         inference6Dot3(checker.prompt, input.doc),
+      );
+    }),
+
+  checkDocImproving: publicProcedure
+    .input(z.object({ doc: z.string() }))
+    .input(z.object({ checkerId: z.string() }))
+    .input(z.object({ thoughtProcess: z.string() }))
+    // use mutate over query to make this a POST request. This is required since for GET requests, we encode the doc in the URL, which is too big and causes 414 errors
+    .mutation(async ({ ctx, input }) => {
+      // console.log("checkDoc", input);
+      const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
+      if (
+        !checker.isPublic &&
+        (!ctx.user || checker.createdById !== ctx.user.id) // if you are not logged in, or not the creator, you can't use this private checker
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "you are not the creator of this checker",
+        });
+      }
+      if (!checker.isValid) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "This checker is not valid. Does it have a name, description, and prompt?",
+        });
+      }
+
+      return checkDoc4Dot12(
+        azureLlmClient,
+        checker.prompt,
+        input.doc,
+        input.thoughtProcess,
       );
     }),
 
