@@ -6,9 +6,9 @@ import {
 } from "@/app/_components/checklets/checklets";
 import { SortIcon } from "@/app/_components/icons/SortIcon";
 import { LoadingButton } from "@/app/_components/ui/Button";
+import { SlidingRadioButton } from "@/app/_components/ui/SlidingRadioButton";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
-import LoadingBar from "@/app/checker/[checkerId]/editor/LoadingBar";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
 import { apiClient, handleErr } from "@/trpc/react";
@@ -24,7 +24,13 @@ import {
   type SuggestionIdToRef,
 } from "./suggestionsTypes";
 
+enum SidePanelPageEnum {
+  Thoughts = "Thoughts",
+  Tips = "Tips",
+}
+
 export type Props = {
+  checkerThoughts: string | null;
   isLoading: boolean;
   setSuggestions: SetState<Suggestion[]>;
   suggestions: Suggestion[];
@@ -59,6 +65,7 @@ export const Sorters = {
 };
 
 export const SuggestionsContainer: React.FC<Props> = ({
+  checkerThoughts,
   isLoading,
   setSuggestions,
   suggestions,
@@ -77,6 +84,10 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
   const [isRegenerating, setIsRegenerating] = useState(false);
+
+  const [sidePanelPageEnum, setSidePanelPageEnum] = useState<SidePanelPageEnum>(
+    SidePanelPageEnum.Tips,
+  );
 
   useEffect(() => {
     const sorted = [...suggestions].sort(Sorters[sortType]);
@@ -251,7 +262,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const pathName = usePathname();
 
   return (
-    <div className="sticky right-10 top-0 flex h-full flex-col pt-[50px]">
+    <div className="sticky right-10 top-0 flex h-full w-[400px] flex-col pt-[50px]">
       <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
         <LoadingButton
           onClick={() => checkDocument(storefront.checkerId, editorState)}
@@ -270,35 +281,48 @@ export const SuggestionsContainer: React.FC<Props> = ({
           </div>
         )}
       </div>
-      <div className="mt-[5px] h-[30px]">
-        {isLoading && <LoadingBar duration={editorState.length / 25 + 4} />}
-        {isLoading && (
-          <p className="text-sm">
-            Pro tips: Smaller documents get checked faster
-          </p>
-        )}
-        {isLoading && (
-          <p className="text-sm">{`Keep clicking "Check Document" for new suggestions`}</p>
-        )}
-      </div>
-      <div className="mt-[5px] h-[40px]">
-        <SuggestionsHeader
-          suggestions={sortedSuggestions}
-          setSortType={setSortType}
+      <div className="h-[5px]"></div>
+      {checkerThoughts !== null && (
+        <SlidingRadioButton
+          options={[SidePanelPageEnum.Tips, SidePanelPageEnum.Thoughts]}
+          selected={sidePanelPageEnum}
+          setSelected={setSidePanelPageEnum as any}
         />
-      </div>
-      <div
-        className="px-6 pb-10"
-        style={{
-          // add up all the heights and margin tops of the elements above
-          maxHeight: "calc(100vh - 50px - 40px - 5px - 5px - 40px - 5px)",
-          overflow: "auto",
-          overscrollBehavior: "contain",
-        }}
-        ref={suggestionsContainerRef}
-      >
-        {renderSuggestions()}
-      </div>
+      )}
+      {sidePanelPageEnum === SidePanelPageEnum.Thoughts ? (
+        <div className="mt-[5px] h-[30px]">
+          {/* {isLoading && <LoadingBar duration={editorState.length / 25 + 4} />} */}
+          {isLoading && (
+            <p className="text-sm">
+              Pro tips: Smaller documents get checked faster
+            </p>
+          )}
+          {isLoading && (
+            <p className="text-sm">{`Keep clicking "Check Document" for new suggestions`}</p>
+          )}
+        </div>
+      ) : (
+        <>
+          <div className="mt-[5px] h-[40px]">
+            <SuggestionsHeader
+              suggestions={sortedSuggestions}
+              setSortType={setSortType}
+            />
+          </div>
+          <div
+            className="px-6 pb-10"
+            style={{
+              // add up all the heights and margin tops of the elements above
+              maxHeight: "calc(100vh - 50px - 40px - 5px - 5px - 40px - 5px)",
+              overflow: "auto",
+              overscrollBehavior: "contain",
+            }}
+            ref={suggestionsContainerRef}
+          >
+            {renderSuggestions()}
+          </div>
+        </>
+      )}
     </div>
   );
 };
