@@ -76,6 +76,12 @@ export async function middleware(request: NextRequest) {
       if (pathname === "/dashboard") {
         return redirectTo(request, "/signin?redirect-reason=create-checker");
       }
+      if (pathname.endsWith("/edit")) {
+        return redirectTo(
+          request,
+          pathname.substring(0, pathname.length - "/edit".length),
+        );
+      }
 
       const res = NextResponse.next();
       res.headers.set(requestPathHeaderName, pathname);
