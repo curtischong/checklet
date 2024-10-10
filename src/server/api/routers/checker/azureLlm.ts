@@ -103,6 +103,7 @@ export class AzureLlm {
     const response = await this.client.chat.completions.create({
       model: this.model,
       messages: newMessages,
+      temperature: 1,
     });
     const choice = response.choices[0];
     if (!choice) {

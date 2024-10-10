@@ -1,8 +1,8 @@
-import { openaiLlm } from "@/server/api/routers/checker/openaiLlm";
+import { azureLlmClient } from "@/server/api/routers/checker/azureLlm";
 import { regenPrompt3 } from "@/server/api/routers/checker/prompts";
 import { TRPCError } from "@trpc/server";
 
-const model = "gpt-4o";
+// const model = "gpt-4o";
 // const cache3 = new SimpleCache(
 //   path.join(process.cwd(), ".chatgpt_history"),
 //   "/cache3",
@@ -28,7 +28,7 @@ export const regenSuggestion = async (
 
   // const llm = new Llm3(model, "", cache3, apiKey);
 
-  const newChat = await openaiLlm.promptMessages(
+  const newChat = await azureLlmClient.promptMessages(
     [],
     regenPrompt3(
       oldText,
@@ -38,7 +38,6 @@ export const regenSuggestion = async (
       oldDocWithContext,
       regeneratePrompt,
     ),
-    model,
   );
   const newDoc = newChat.message.content!;
   console.log("newdoc-------------");
