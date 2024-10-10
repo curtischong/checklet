@@ -702,7 +702,6 @@ export const checkDoc4Dot11 = async (
   prompt: string,
   doc: string,
 ): Promise<Suggestion[]> => {
-  console.log("before chain of thought");
   const chain = await llm.promptMessagesExtendChain(
     [],
     inference6Dot3(prompt, doc),

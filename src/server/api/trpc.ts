@@ -97,7 +97,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
       console.error("Error verifying ID token:", error);
     }
   }
-  console.log("user", user);
+  // console.log("user", user);
 
   return {
     db,
