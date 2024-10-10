@@ -1,4 +1,5 @@
 "use client";
+import { CheckerDesc } from "@/app/checker/[checkerId]/editor/CheckerDesc";
 import { apiClient, handleErr } from "@/trpc/react";
 import { type Checker } from "@prisma/client";
 import classNames from "classnames";
@@ -51,7 +52,10 @@ export const StoreFront = ({ checker, isDemo }: StorefrontProps) => {
         <div className="mb-1 font-mackinac text-xl font-bold">
           {checker.name === "" ? "Untitled" : checker.name}
         </div>
-        <div>{checker.desc === "" ? "No description" : checker.desc}</div>
+        <CheckerDesc
+          isHeightCapped={true}
+          desc={checker.desc.trim() === "" ? "No description" : checker.desc}
+        />
       </Link>
     </div>
   );
