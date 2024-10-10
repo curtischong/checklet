@@ -33,6 +33,9 @@ unzip standalone.zip
 # Define the session name
 session_name=webapp-session
 
+# leave the current tmux session (if we don't we may crash and the script may not deploy)
+tmux send-keys -t $session_name C-b d
+
 # Kill the existing session if it exists
 tmux kill-session -t $session_name
 
