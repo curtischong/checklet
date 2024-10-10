@@ -45,6 +45,7 @@ export const Editor = ({
   const acceptedSuggestionIdsRef = useRef(new Set<string>());
   const dismissedSuggestionHashes = useRef(new Set<number>());
   const [sortType, setSortType] = useState(SortType.TextOrder);
+  // const [checkerThoughts, setCheckerThoughts] = useState<string | null>(null);
 
   // so when ppl copy and paste the url, they get a descripton of what the checker is
   useEffect(() => {
@@ -298,7 +299,6 @@ export const Editor = ({
       {/* don't wrap this container in a div. style it by adding styles to the div inside SuggestionsContainer */}
       <SuggestionsContainer
         isLoading={isLoading}
-        setIsLoading={setIsLoading}
         setSuggestions={setSuggestions}
         suggestions={suggestions}
         activeSuggestion={activeSuggestion}

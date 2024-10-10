@@ -26,7 +26,6 @@ import {
 
 export type Props = {
   isLoading: boolean;
-  setIsLoading: SetState<boolean>;
   setSuggestions: SetState<Suggestion[]>;
   suggestions: Suggestion[];
   activeSuggestion: Suggestion | undefined;
@@ -61,7 +60,6 @@ export const Sorters = {
 
 export const SuggestionsContainer: React.FC<Props> = ({
   isLoading,
-  setIsLoading,
   setSuggestions,
   suggestions,
   activeSuggestion,
@@ -78,6 +76,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const [sortedSuggestions, setSortedSuggestions] = useState<Suggestion[]>([]);
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   useEffect(() => {
     const sorted = [...suggestions].sort(Sorters[sortType]);
@@ -133,8 +132,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
       const start = suggestion.range.start - 100;
       const end = suggestion.range.end + 100;
       const oldDocWithContext = editorState.substring(start, end);
-      setIsLoading(true);
-      console.log("isloading");
+      setIsRegenerating(true);
       handleErr(
         apiClient.checker.regenSuggestion.mutate({
           oldText: suggestion.oldText,
@@ -145,7 +143,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
           regeneratePrompt,
         }),
         (newText) => {
-          setIsLoading(false);
+          setIsRegenerating(false);
           console.log("newText", newText);
           setSuggestions((currSuggestions) => {
             const newSuggestions = [...currSuggestions];
@@ -159,7 +157,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
           });
         },
         (_err) => {
-          setIsLoading(false);
+          setIsRegenerating(false);
         },
       );
     },
@@ -183,7 +181,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
               onDismiss={dismissSuggestion}
               onRegenerate={onRegenSuggestion}
               ref={ref}
-              isRegenerating={isLoading}
+              isRegenerating={isRegenerating || isLoading}
             />
           );
         });
@@ -247,6 +245,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
     acceptSuggestion,
     dismissSuggestion,
     isLoading,
+    isRegenerating,
   ]);
 
   const pathName = usePathname();
