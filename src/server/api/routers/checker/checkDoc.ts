@@ -3,16 +3,16 @@ import {
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { mixpanel } from "@/mixpanel";
-import {
-  azureLlmClient,
-  type AzureLlm,
-} from "@/server/api/routers/checker/azureLlm";
 import { type GetCheckerByIdStrictType } from "@/server/api/routers/checker/checker";
 import {
   removeInvalidSuggestions,
   removeInvalidTips,
 } from "@/server/api/routers/checker/docPostProcess";
 import { editDistanceOperationsWithClasses } from "@/server/api/routers/checker/editDistance";
+import {
+  type GroqLlm,
+  groqLlmClient,
+} from "@/server/api/routers/checker/groqLlm";
 import { type Llm } from "@/server/api/routers/checker/llm";
 import { type Llm2 } from "@/server/api/routers/checker/llm2";
 import { type Llm3 } from "@/server/api/routers/checker/llm3";
@@ -110,7 +110,7 @@ export class CheckerWorker {
 
     let res;
     try {
-      res = await checkDoc4Dot11(azureLlmClient, checker.prompt, doc);
+      res = await checkDoc4Dot11(groqLlmClient, checker.prompt, doc);
     } catch (err) {
       console.error("checkDoc error", err);
       // console.error("doc", doc);
@@ -726,7 +726,7 @@ export const checkDoc4Dot10 = async (
 };
 
 export const checkDoc4Dot11 = async (
-  llm: AzureLlm,
+  llm: GroqLlm,
   prompt: string,
   doc: string,
 ) => {
