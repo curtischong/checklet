@@ -196,7 +196,7 @@ export const protectedProcedure = t.procedure
     if (!ctx.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
-    console.log("ctx.user", ctx.user);
+    // console.log("ctx.user", ctx.user);
     return next({
       ctx: {
         // infers the `session` as non-nullable
