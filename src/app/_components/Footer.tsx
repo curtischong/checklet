@@ -1,3 +1,4 @@
+import { Tooltip } from "@/app/_components/ui/ToolTip";
 import Discord from "@public/logos/discord.svg";
 import classNames from "classnames";
 import Image from "next/image";
@@ -21,15 +22,17 @@ export const Footer = ({ isAbsolute }: Props) => {
       <Link href="/terms-of-service">Terms of Service</Link>
       <Link href="/about">About</Link>
       <div>curtischong5@gmail.com</div>
-      <Link target="_blank" href="https://discord.gg/Gx9jXq3BaC">
-        <Image
-          src={Discord as string}
-          alt={`Discord logo`}
-          className="mr-4 h-6 w-6"
-          width={40}
-          height={40}
-        />
-      </Link>
+      <Tooltip title="Send feedback on Discord!">
+        <Link target="_blank" href="https://discord.gg/Gx9jXq3BaC">
+          <Image
+            src={Discord as string}
+            alt={`Discord logo`}
+            className="mr-4 h-6 w-6"
+            width={40}
+            height={40}
+          />
+        </Link>
+      </Tooltip>
     </div>
   );
 };
