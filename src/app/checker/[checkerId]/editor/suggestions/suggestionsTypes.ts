@@ -49,6 +49,17 @@ export type CheckDesc = {
   //   heuristicCategory????
 };
 
+export enum SidePanelPageEnum {
+  Thoughts = "Thoughts",
+  Tips = "Tips",
+}
+
+export enum CheckerState {
+  Default = "Default",
+  Thinking = "Thinking",
+  Improving = "Improving",
+}
+
 // this is not a class because when it's serialized to JSON, we can easily deseralize it (and use all the helpful functions below)
 export type DocRange = {
   start: number;

@@ -87,9 +87,15 @@ export const ThoughtProcess = ({ checkerThoughts }: Props) => {
         <div>This will populate when you check your document!</div>
       ) : (
         <>
+          <div className="mx-4">
+            <p className="text-sm">
+              Pro tips: Smaller documents get checked faster
+            </p>
+            <p className="text-sm">{`Keep clicking "Check Document" for new suggestions`}</p>
+          </div>
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            className="markdown space-y-0 px-6 pb-10"
+            className="markdown space-y-0 px-4 pb-10"
             components={{
               a: ({ ...props }) => (
                 <a

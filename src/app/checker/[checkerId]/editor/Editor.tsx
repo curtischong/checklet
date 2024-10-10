@@ -3,17 +3,18 @@ import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTy
 import { EditorHeader } from "@/app/checker/[checkerId]/editor/EditorHeader";
 import { readEditorText } from "@/app/checker/[checkerId]/editor/localstorage";
 import { singleEditDistance } from "@/app/checker/[checkerId]/editor/singleEditDistance";
-import { SidePanelPageEnum } from "@/app/checker/[checkerId]/editor/suggestions/SidePanelPage";
 import {
   Sorters,
   SortType,
   SuggestionsContainer,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionscontainer";
 import {
+  CheckerState,
   hashSuggestion,
   isBefore,
   isIntersecting,
   shift,
+  SidePanelPageEnum,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { apiClient, handleErr } from "@/trpc/react";
@@ -22,12 +23,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { type RichTextareaHandle } from "rich-textarea";
 import { TextboxContainer } from "./textboxcontainer";
-
-enum CheckerState {
-  Default = "Default",
-  Thinking = "Thinking",
-  Improving = "Improving",
-}
 interface Props {
   checkerStorefront: CheckerStorefront;
   editorState: string;
@@ -237,8 +232,12 @@ export const Editor = ({
   );
 
   const checkDocStreaming = useCallback(
-    async (checkerId: string, editorState: string, isLoading: boolean) => {
-      if (isLoading) {
+    async (
+      checkerId: string,
+      editorState: string,
+      checkerState: CheckerState,
+    ) => {
+      if (checkerState !== CheckerState.Default) {
         // we're already checking. do nothing
         return;
       }
@@ -406,7 +405,7 @@ export const Editor = ({
         checkerThoughts={checkerThoughts}
         sidePanelPageEnum={sidePanelPageEnum}
         setSidePanelPageEnum={setSidePanelPageEnum}
-        isLoading={checkerState !== CheckerState.Default}
+        checkerState={checkerState}
         setSuggestions={setSuggestions}
         suggestions={suggestions}
         activeSuggestion={activeSuggestion}
