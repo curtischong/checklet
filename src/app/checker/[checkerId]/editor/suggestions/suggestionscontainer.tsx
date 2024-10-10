@@ -271,9 +271,16 @@ export const SuggestionsContainer: React.FC<Props> = ({
           </div>
         )}
       </div>
-      <div className="mt-[5px] h-[13px]">
+      <div className="mt-[5px] h-[30px]">
         {isLoading && <LoadingBar duration={editorState.length / 43 + 4} />}
-        {isLoading && <div>Pro tip: Smaller documents get checked faster!</div>}
+        {isLoading && (
+          <p className="text-sm">
+            Pro tips: Smaller documents get checked faster!
+          </p>
+        )}
+        {isLoading && (
+          <p className="text-sm">{`Keep clicking "Check Document" for new suggestions!`}</p>
+        )}
       </div>
       <div className="mt-[5px] h-[40px]">
         <SuggestionsHeader
