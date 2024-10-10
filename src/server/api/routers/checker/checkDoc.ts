@@ -2,6 +2,7 @@ import {
   type FeedbackResponse,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import { mixpanel } from "@/mixpanel";
 import {
   azureLlmClient,
   type AzureLlm,
@@ -106,12 +107,38 @@ export class CheckerWorker {
     // const suggestions = await checkDoc4Dot6(openaiLlm, checker.prompt, doc);
     // const suggestions = await checkDoc4Dot7(openaiLlm, checker.prompt, doc);
     // const suggestions = await checkDoc4Dot10(openaiLlm, checker.prompt, doc);
-    const suggestions = await checkDoc4Dot11(
-      azureLlmClient,
-      checker.prompt,
-      doc,
-    );
-    console.log("suggestions", suggestions);
+
+    let res;
+    try {
+      res = await checkDoc4Dot11(azureLlmClient, checker.prompt, doc);
+    } catch (err) {
+      console.error("checkDoc error", err);
+      // console.error("doc", doc);
+      const errMsg = err instanceof Error ? err.message : String(err);
+      mixpanel.track("checkDocError", {
+        doc: doc,
+        checkerId: checker.id,
+        prompt: checker.prompt,
+        error: errMsg,
+      });
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `An error occurred while checking the doc. err=${errMsg}`,
+      });
+    }
+
+    const { suggestions, doc2PlusChainOfThought, doc3 } = res;
+    // console.log("suggestions", suggestions);
+    mixpanel.track("checkDoc", {
+      checkerName: checker.name,
+      checkerId: checker.id,
+      // prompt: checker.prompt,
+      // PERF: remove this train of though later?
+      doc2PlusChainOfThought: doc2PlusChainOfThought.length,
+      doc3: doc3.length,
+      suggestions: suggestions.length,
+    });
+
     return {
       suggestions: suggestions,
     };
@@ -702,7 +729,7 @@ export const checkDoc4Dot11 = async (
   llm: AzureLlm,
   prompt: string,
   doc: string,
-): Promise<Suggestion[]> => {
+) => {
   const chain = await llm.promptMessagesExtendChain(
     [],
     inference6Dot3(prompt, doc),
@@ -711,6 +738,7 @@ export const checkDoc4Dot11 = async (
     "doc2PlusChainOfThought---------------------------",
     chain[chain.length - 1]!.content,
   );
+  const doc2PlusChainOfThought = chain[chain.length - 1]!.content as string;
   const rawDoc3 = await llm.promptMessagesExtendChain(chain, addTipTags4Dot9());
   const rawDoc3Content = rawDoc3[rawDoc3.length - 1]!.content as string;
 
@@ -721,11 +749,15 @@ export const checkDoc4Dot11 = async (
     });
   }
   const doc3 = removeInvalidTips(rawDoc3Content); // removes extraneous whitespace / removals the llm made
-  console.log("doc3---------------------------------", doc3);
+  // console.log("doc3---------------------------------", doc3);
 
   const suggestions = extractSuggestions(doc, doc3);
 
-  return removeInvalidSuggestions(suggestions);
+  return {
+    suggestions: removeInvalidSuggestions(suggestions),
+    doc2PlusChainOfThought,
+    doc3,
+  };
 };
 
 export const checkDoc5Dot1 = async (
