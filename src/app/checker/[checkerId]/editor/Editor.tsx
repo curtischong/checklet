@@ -3,6 +3,7 @@ import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTy
 import { EditorHeader } from "@/app/checker/[checkerId]/editor/EditorHeader";
 import { readEditorText } from "@/app/checker/[checkerId]/editor/localstorage";
 import { singleEditDistance } from "@/app/checker/[checkerId]/editor/singleEditDistance";
+import { SidePanelPageEnum } from "@/app/checker/[checkerId]/editor/suggestions/SidePanelPage";
 import {
   Sorters,
   SortType,
@@ -17,11 +18,16 @@ import {
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { apiClient, handleErr } from "@/trpc/react";
 import { type SetState } from "@/utils/types";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { type RichTextareaHandle } from "rich-textarea";
 import { TextboxContainer } from "./textboxcontainer";
 
+enum CheckerState {
+  Default = "Default",
+  Thinking = "Thinking",
+  Improving = "Improving",
+}
 interface Props {
   checkerStorefront: CheckerStorefront;
   editorState: string;
@@ -40,12 +46,21 @@ export const Editor = ({
   const [activeSuggestion, setActiveSuggestion] = useState<Suggestion>();
   const [hasModifiedTextAfterChecking, setHasModifiedTextAfterChecking] =
     useState(true); // init as true so when ppl first enter the page, they see "ready to check?"
-  const [isLoading, setIsLoading] = React.useState(false);
   const editorRef = useRef<RichTextareaHandle | null>(null);
   const acceptedSuggestionIdsRef = useRef(new Set<string>());
   const dismissedSuggestionHashes = useRef(new Set<number>());
   const [sortType, setSortType] = useState(SortType.TextOrder);
   const [checkerThoughts, setCheckerThoughts] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [abortController, setAbortController] =
+    useState<AbortController | null>(null);
+
+  const [checkerState, setCheckerState] = useState<CheckerState>(
+    CheckerState.Default,
+  );
+  const [sidePanelPageEnum, setSidePanelPageEnum] = useState<SidePanelPageEnum>(
+    SidePanelPageEnum.Tips,
+  );
 
   // so when ppl copy and paste the url, they get a descripton of what the checker is
   useEffect(() => {
@@ -175,17 +190,17 @@ export const Editor = ({
 
   const checkDocument = useCallback(
     (checkerId: string, editorState: string): void => {
-      if (isLoading) {
+      if (checkerState !== CheckerState.Default) {
         return;
       }
-      setIsLoading(true);
+      setCheckerState(CheckerState.Improving);
       handleErr(
         apiClient.checker.checkDoc.mutate({
           doc: editorState,
           checkerId: checkerId,
         }),
         (response) => {
-          setIsLoading(false);
+          setCheckerState(CheckerState.Default);
           if (!response) {
             toast.error(
               "Something went wrong, please let Curtis know on Discord!",
@@ -208,18 +223,108 @@ export const Editor = ({
           setSuggestions(filteredSuggestions);
         },
         () => {
-          setIsLoading(false);
+          setCheckerState(CheckerState.Default);
         },
       );
     },
     [
-      isLoading,
+      checkerState,
       setHasModifiedTextAfterChecking,
-      setIsLoading,
+      setCheckerState,
       setSuggestions,
       sortType,
     ],
   );
+
+  const checkDocStreaming = useCallback(
+    async (checkerId: string, editorState: string, isLoading: boolean) => {
+      if (isLoading) {
+        // we're already checking. do nothing
+        return;
+      }
+      setCheckerThoughts((_prev_thoughts) => ""); // clear out all thoughts
+
+      setCheckerState(CheckerState.Thinking);
+      // Create a new AbortController instance for each request
+      const controller = new AbortController();
+      setAbortController(controller); // Store the controller to allow cancellation later
+      // console.log("streaming");
+      setSidePanelPageEnum(SidePanelPageEnum.Thoughts);
+
+      try {
+        // Send the request with the AbortController's signal
+        const response = await apiClient.checker.checkDocStreaming.mutate(
+          {
+            doc: editorState,
+            checkerId: checkerId,
+          },
+          {
+            signal: controller.signal, // Attach the abort signal
+          },
+        );
+
+        // Handle streaming response
+        for await (const content of response) {
+          // Append each streamed chunk of content
+          setCheckerThoughts((thoughts) => (thoughts ?? "") + content);
+        }
+        setCheckerState(CheckerState.Default);
+      } catch (error) {
+        if (controller.signal.aborted) {
+          console.log("Stream was cancelled");
+        } else {
+          console.error("Error during streaming:", error);
+        }
+        setCheckerState(CheckerState.Default);
+      }
+      setCheckerState(CheckerState.Improving);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (checkerState !== CheckerState.Improving) {
+      return;
+    }
+    if (checkerThoughts === null) {
+      toast.error("The checker didn't suggest any improvements");
+      setCheckerState(CheckerState.Default);
+      return;
+    }
+    handleErr(
+      apiClient.checker.checkDocImproving.mutate({
+        checkerId: checkerStorefront.checkerId,
+        doc: editorState,
+        thoughtProcess: checkerThoughts,
+      }),
+      (response) => {
+        setCheckerState(CheckerState.Default);
+        if (!response) {
+          toast.error(
+            "Something went wrong, please let Curtis know on Discord!",
+          );
+          return;
+        }
+        setHasModifiedTextAfterChecking(false);
+
+        const newSuggestions = response.suggestions;
+
+        // only show suggestions the user didn't dismiss. obv if they refresh the page this set isn't persisted. but it's okay!
+        const filteredSuggestions = newSuggestions.filter(
+          (suggestion) =>
+            !dismissedSuggestionHashes.current.has(hashSuggestion(suggestion)),
+        );
+
+        filteredSuggestions.sort(Sorters[sortType]);
+        setSuggestions(filteredSuggestions);
+        setSidePanelPageEnum(SidePanelPageEnum.Tips);
+      },
+      () => {
+        setCheckerState(CheckerState.Default);
+        setSidePanelPageEnum(SidePanelPageEnum.Tips);
+      },
+    );
+  }, [checkerState]);
 
   return (
     <div className="mx-auto flex h-full w-full flex-row">
@@ -290,7 +395,7 @@ export const Editor = ({
               setHasModifiedTextAfterChecking(newText !== "");
               updateEditorState(editorState, newText, suggestions);
             }}
-            isLoading={isLoading}
+            isLoading={checkerState !== CheckerState.Default}
             editorRef={editorRef}
             isSavingToLocalStorage={isSavingToLocalStorage}
           />
@@ -299,7 +404,9 @@ export const Editor = ({
       {/* don't wrap this container in a div. style it by adding styles to the div inside SuggestionsContainer */}
       <SuggestionsContainer
         checkerThoughts={checkerThoughts}
-        isLoading={isLoading}
+        sidePanelPageEnum={sidePanelPageEnum}
+        setSidePanelPageEnum={setSidePanelPageEnum}
+        isLoading={checkerState !== CheckerState.Default}
         setSuggestions={setSuggestions}
         suggestions={suggestions}
         activeSuggestion={activeSuggestion}
@@ -311,7 +418,7 @@ export const Editor = ({
         sortType={sortType}
         setSortType={setSortType}
         dismissedSuggestionHashes={dismissedSuggestionHashes}
-        checkDocument={checkDocument}
+        checkDocument={checkDocStreaming}
       />
     </div>
   );

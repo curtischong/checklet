@@ -119,11 +119,13 @@ export class AzureLlm {
     newMessage: string,
   ) {
     const newMessages = this.getNewMessages(prevMessages, newMessage);
+    console.log("begin stream completion");
 
     if (this.cache) {
       const cachedValue = this.cacheGet(newMessages);
       if (cachedValue) {
-        return JSON.parse(cachedValue);
+        yield cachedValue;
+        return;
       }
     }
 
@@ -145,7 +147,7 @@ export class AzureLlm {
       }
     }
     this.cacheSet(newMessages, finalText);
-    return finalText;
+    // return finalText;
   }
 }
 

@@ -10,7 +10,9 @@ import { SlidingRadioButton } from "@/app/_components/ui/SlidingRadioButton";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
+import { SidePanelPageEnum } from "@/app/checker/[checkerId]/editor/suggestions/SidePanelPage";
 import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
+import { ThoughtProcess } from "@/app/checker/[checkerId]/editor/suggestions/ThoughtProcess";
 import { apiClient, handleErr } from "@/trpc/react";
 import { scrollToChild } from "@/utils/scroll";
 import { pluralize } from "@/utils/strings";
@@ -24,12 +26,9 @@ import {
   type SuggestionIdToRef,
 } from "./suggestionsTypes";
 
-enum SidePanelPageEnum {
-  Thoughts = "Thoughts",
-  Tips = "Tips",
-}
-
 export type Props = {
+  sidePanelPageEnum: SidePanelPageEnum;
+  setSidePanelPageEnum: SetState<SidePanelPageEnum>;
   checkerThoughts: string | null;
   isLoading: boolean;
   setSuggestions: SetState<Suggestion[]>;
@@ -43,7 +42,7 @@ export type Props = {
   sortType: SortType;
   setSortType: SetState<SortType>;
   dismissedSuggestionHashes: React.MutableRefObject<Set<number>>;
-  checkDocument: (checkerId: string, doc: string) => void;
+  checkDocument: (checkerId: string, doc: string, isLoading: boolean) => void;
 };
 
 export enum SortType {
@@ -65,6 +64,8 @@ export const Sorters = {
 };
 
 export const SuggestionsContainer: React.FC<Props> = ({
+  sidePanelPageEnum,
+  setSidePanelPageEnum,
   checkerThoughts,
   isLoading,
   setSuggestions,
@@ -84,10 +85,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
   const [isRegenerating, setIsRegenerating] = useState(false);
-
-  const [sidePanelPageEnum, setSidePanelPageEnum] = useState<SidePanelPageEnum>(
-    SidePanelPageEnum.Tips,
-  );
 
   useEffect(() => {
     const sorted = [...suggestions].sort(Sorters[sortType]);
@@ -265,7 +262,9 @@ export const SuggestionsContainer: React.FC<Props> = ({
     <div className="sticky right-10 top-0 flex h-full w-[400px] flex-col pt-[50px]">
       <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
         <LoadingButton
-          onClick={() => checkDocument(storefront.checkerId, editorState)}
+          onClick={() =>
+            checkDocument(storefront.checkerId, editorState, isLoading)
+          }
           loading={isLoading}
           className="h-9 w-40"
           disabled={editorState === ""}
@@ -300,6 +299,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
           {isLoading && (
             <p className="text-sm">{`Keep clicking "Check Document" for new suggestions`}</p>
           )}
+          <ThoughtProcess checkerThoughts={checkerThoughts} />
         </div>
       ) : (
         <>
