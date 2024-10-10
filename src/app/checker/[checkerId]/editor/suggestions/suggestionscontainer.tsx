@@ -275,11 +275,11 @@ export const SuggestionsContainer: React.FC<Props> = ({
         {isLoading && <LoadingBar duration={editorState.length / 43 + 4} />}
         {isLoading && (
           <p className="text-sm">
-            Pro tips: Smaller documents get checked faster!
+            Pro tips: Smaller documents get checked faster
           </p>
         )}
         {isLoading && (
-          <p className="text-sm">{`Keep clicking "Check Document" for new suggestions!`}</p>
+          <p className="text-sm">{`Keep clicking "Check Document" for new suggestions`}</p>
         )}
       </div>
       <div className="mt-[5px] h-[40px]">
