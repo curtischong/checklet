@@ -112,6 +112,41 @@ export class AzureLlm {
     this.cacheSet(newMessages, JSON.stringify(choice));
     return choice;
   }
+
+  // Define an async generator function for streaming OpenAI responses
+  async *streamCompletion(
+    prevMessages: ChatCompletionMessageParam[],
+    newMessage: string,
+  ) {
+    const newMessages = this.getNewMessages(prevMessages, newMessage);
+
+    if (this.cache) {
+      const cachedValue = this.cacheGet(newMessages);
+      if (cachedValue) {
+        return JSON.parse(cachedValue);
+      }
+    }
+
+    const completion = await this.client.chat.completions.create({
+      model: this.model,
+      messages: newMessages,
+      stream: true, // Enable streaming
+    });
+
+    let finalText = "";
+
+    // Handle stream data chunk by chunk
+    for await (const chunk of completion) {
+      const content = chunk.choices[0]?.delta?.content ?? "";
+      if (content) {
+        finalText += content;
+        // Yield content back to the client
+        yield content;
+      }
+    }
+    this.cacheSet(newMessages, finalText);
+    return finalText;
+  }
 }
 
 const cache3 = new SimpleCache(

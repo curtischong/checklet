@@ -5,7 +5,9 @@ import { z } from "zod";
 
 import { type UserCtx } from "@/firebase/edge_env";
 import { mixpanel } from "@/mixpanel";
+import { azureLlmClient } from "@/server/api/routers/checker/azureLlm";
 import { CheckerWorker } from "@/server/api/routers/checker/checkDoc";
+import { inference6Dot3 } from "@/server/api/routers/checker/prompts";
 import { regenSuggestion } from "@/server/api/routers/checker/regenSuggestion";
 import {
   createTRPCRouter,
@@ -238,6 +240,38 @@ export const checkerRouter = createTRPCRouter({
       return await checkerWorker.checkDoc(input.doc, checker);
     }),
 
+  checkDocStreaming: publicProcedure
+    .input(z.object({ doc: z.string() }))
+    .input(z.object({ checkerId: z.string() }))
+    // use mutate over query to make this a POST request. This is required since for GET requests, we encode the doc in the URL, which is too big and causes 414 errors
+    .mutation(async ({ ctx, input }) => {
+      // console.log("checkDoc", input);
+      const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
+      if (
+        !checker.isPublic &&
+        (!ctx.user || checker.createdById !== ctx.user.id) // if you are not logged in, or not the creator, you can't use this private checker
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "you are not the creator of this checker",
+        });
+      }
+      if (!checker.isValid) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "This checker is not valid. Does it have a name, description, and prompt?",
+        });
+      }
+
+      // now that we've validated everything, we can actually check the doc
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return azureLlmClient.streamCompletion(
+        [],
+        inference6Dot3(checker.prompt, input.doc),
+      );
+    }),
+
   delete: protectedProcedure
     .input(z.object({ checkerId: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -383,7 +417,7 @@ export const checkerRouter = createTRPCRouter({
       // Define an async generator function for streaming OpenAI responses
       async function* streamCompletion() {
         const completion = await client.chat.completions.create({
-          model: "gpt-4", // or gpt-3.5-turbo
+          model: "gpt-4o", // or gpt-3.5-turbo
           messages: [{ role: "user", content: input.improvementPrompt }],
           stream: true, // Enable streaming
         });
