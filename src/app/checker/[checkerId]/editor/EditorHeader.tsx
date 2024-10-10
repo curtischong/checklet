@@ -1,12 +1,11 @@
 import Popconfirm from "@/app/_components/ui/PopConfirm";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
+import { CheckerDesc } from "@/app/checker/[checkerId]/editor/CheckerDesc";
 import { type GetCheckerByIdStrictType } from "@/server/api/routers/checker/checker";
 import { apiClient, handleErr } from "@/trpc/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 interface Props {
   storefront: CheckerStorefront;
@@ -70,21 +69,7 @@ export const EditorHeader = ({
           </div>
         )}
 
-        {/* we need the markdown class to help us with tailwind css issues: https://stackoverflow.com/questions/74607419/react-markdown-don%C2%B4t-render-markdown */}
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          className="markdown space-y-[0px]"
-          components={{
-            a: ({ ...props }) => (
-              <a
-                className="cursor-pointer border-b-2 border-blue-500 hover:text-blue-600"
-                {...props}
-              />
-            ),
-          }}
-        >
-          {storefront.desc}
-        </ReactMarkdown>
+        <CheckerDesc desc={storefront.desc} isHeightCapped={false} />
       </div>
       <hr className="mb-4 mt-1 h-[1px] w-full border-none bg-black" />
     </div>

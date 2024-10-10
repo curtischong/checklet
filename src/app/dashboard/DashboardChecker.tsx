@@ -6,6 +6,7 @@ import {
 } from "@/app/_components/ui/Button";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { IsPublicSwitch } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
+import { CheckerDesc } from "@/app/checker/[checkerId]/editor/CheckerDesc";
 import { type UserCtx } from "@/firebase/edge_env";
 import { apiClient, handleErr } from "@/trpc/react";
 import { type Checker } from "@prisma/client";
@@ -59,7 +60,7 @@ export const DashboardChecker = ({
           />
         </div>
       </div>
-      <div>{blueprint.desc}</div>
+      <CheckerDesc isHeightCapped={true} desc={blueprint.desc} />
       <div className="mt-2 flex cursor-default flex-row items-start">
         <div className="mt-2 flex-grow">
           <IsPublicSwitch
