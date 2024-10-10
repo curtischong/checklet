@@ -5,6 +5,7 @@ import {
   createTRPCClient,
   loggerLink,
   unstable_httpBatchStreamLink,
+  wsLink,
 } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
@@ -12,6 +13,7 @@ import { useState } from "react";
 import SuperJSON from "superjson";
 
 import { type AppRouter } from "@/server/api/root";
+import { wsClient } from "@/server/api/websocket";
 import { type TRPCError } from "@trpc/server";
 import { toast } from "react-toastify";
 import { createQueryClient } from "./query-client";
@@ -40,14 +42,24 @@ export const apiClient = createTRPCClient<AppRouter>({
     //     return headers;
     //   },
     // }),
-    unstable_httpBatchStreamLink({
+    // unstable_httpBatchStreamLink({
+    //   transformer: SuperJSON,
+    //   url: getBaseUrl() + "/api/trpc",
+    //   headers: () => {
+    //     const headers = new Headers();
+    //     headers.set("x-trpc-source", "nextjs-react");
+    //     return headers;
+    //   },
+    // }),
+    wsLink({
       transformer: SuperJSON,
-      url: getBaseUrl() + "/api/trpc",
-      headers: () => {
-        const headers = new Headers();
-        headers.set("x-trpc-source", "nextjs-react");
-        return headers;
-      },
+      // url: getBaseUrl() + "/api/trpc",
+      // headers: () => {
+      //   const headers = new Headers();
+      //   headers.set("x-trpc-source", "nextjs-react");
+      //   return headers;
+      // },
+      client: wsClient,
     }),
   ],
 });
