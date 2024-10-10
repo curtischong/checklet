@@ -14,6 +14,7 @@ export const CheckerDesc = ({ desc, isHeightCapped }: Props) => {
       components={{
         a: ({ ...props }) => (
           <a
+            target="_blank"
             className="cursor-pointer border-b-2 border-blue-500 hover:text-blue-600"
             {...props}
           />
