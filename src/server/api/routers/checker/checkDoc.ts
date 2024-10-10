@@ -2,6 +2,10 @@ import {
   type FeedbackResponse,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
+import {
+  azureLlmClient,
+  type AzureLlm,
+} from "@/server/api/routers/checker/azureLlm";
 import { type GetCheckerByIdStrictType } from "@/server/api/routers/checker/checker";
 import {
   removeInvalidSuggestions,
@@ -15,7 +19,6 @@ import {
   extractSuggestions,
   extractTips,
 } from "@/server/api/routers/checker/llmOutputHelpers";
-import { openaiLlm } from "@/server/api/routers/checker/openaiLlm";
 import {
   addTipTags4,
   addTipTags4Dot1,
@@ -101,7 +104,12 @@ export class CheckerWorker {
     // const suggestions = await checkDoc5Dot1(this.llm3, checker.prompt, doc);
     // const suggestions = await checkDoc4Dot6(openaiLlm, checker.prompt, doc);
     // const suggestions = await checkDoc4Dot7(openaiLlm, checker.prompt, doc);
-    const suggestions = await checkDoc4Dot10(openaiLlm, checker.prompt, doc);
+    // const suggestions = await checkDoc4Dot10(openaiLlm, checker.prompt, doc);
+    const suggestions = await checkDoc4Dot11(
+      azureLlmClient,
+      checker.prompt,
+      doc,
+    );
     console.log("suggestions", suggestions);
     return {
       suggestions: suggestions,
@@ -679,6 +687,31 @@ export const checkDoc4Dot10 = async (
     addTipTags4Dot9(),
     llm.model,
   );
+  const doc3 = removeInvalidTips(
+    rawDoc3[rawDoc3.length - 1]!.content as string,
+  ); // removes extraneous whitespace / removals the llm made
+  console.log("doc3---------------------------------", doc3);
+
+  const suggestions = extractSuggestions(doc, doc3);
+
+  return removeInvalidSuggestions(suggestions);
+};
+
+export const checkDoc4Dot11 = async (
+  llm: AzureLlm,
+  prompt: string,
+  doc: string,
+): Promise<Suggestion[]> => {
+  console.log("before chain of thought");
+  const chain = await llm.promptMessagesExtendChain(
+    [],
+    inference6Dot3(prompt, doc),
+  );
+  console.log(
+    "doc2PlusChainOfThought---------------------------",
+    chain[chain.length - 1]!.content,
+  );
+  const rawDoc3 = await llm.promptMessagesExtendChain(chain, addTipTags4Dot9());
   const doc3 = removeInvalidTips(
     rawDoc3[rawDoc3.length - 1]!.content as string,
   ); // removes extraneous whitespace / removals the llm made
