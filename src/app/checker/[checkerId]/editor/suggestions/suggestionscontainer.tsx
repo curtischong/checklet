@@ -272,7 +272,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
         )}
       </div>
       <div className="mt-[5px] h-[30px]">
-        {isLoading && <LoadingBar duration={editorState.length / 25 + 4} />}
+        {isLoading && <LoadingBar duration={editorState.length / 25 + 6} />}
         {isLoading && (
           <p className="text-sm">
             Pro tips: Smaller documents get checked faster
