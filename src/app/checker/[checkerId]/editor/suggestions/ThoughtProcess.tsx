@@ -1,3 +1,4 @@
+import ThinLine from "@/app/_components/ThinLine";
 import { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -78,34 +79,39 @@ export const ThoughtProcess = ({ checkerThoughts }: Props) => {
     <div
       ref={markdownContainerRef}
       style={{
-        maxHeight: "calc(100vh - 225px)",
+        maxHeight: "calc(100vh - 50px - 40px - 10px - 30px - 5px)",
         overflow: "auto",
         overscrollBehavior: "contain",
       }}
+      // className="relative z-10"
     >
       {checkerThoughts === null ? (
         <div>This will populate when you check your document!</div>
       ) : (
         <>
           <div className="mx-4">
-            <p className="text-sm">
-              Pro tips: Smaller documents get checked faster
-            </p>
-            <p className="text-sm">{`Keep clicking "Check Document" for new suggestions`}</p>
+            <p className="text-sm font-bold">Pro tips:</p>
+            <ul className="ml-4 list-disc">
+              <li className="text-sm text-zinc-600">
+                Smaller documents get checked faster
+              </li>
+              <li className="text-sm text-zinc-600">{`Keep clicking "Check Document" for new suggestions`}</li>
+            </ul>
           </div>
+          <ThinLine />
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            className="markdown space-y-0 px-4 pb-10"
-            components={{
-              a: ({ ...props }) => (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="cursor-pointer border-b-2 border-blue-500 hover:text-blue-600"
-                  {...props}
-                />
-              ),
-            }}
+            className="markdown space-y-0 px-4 pb-32"
+            // components={{
+            //   a: ({ ...props }) => (
+            //     <a
+            //       target="_blank"
+            //       rel="noopener noreferrer"
+            //       className="cursor-pointer border-b-2 border-blue-500 hover:text-blue-600"
+            //       {...props}
+            //     />
+            //   ),
+            // }}
           >
             {checkerThoughts}
           </ReactMarkdown>

@@ -4,18 +4,11 @@ import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 
-interface Props {
-  isAbsolute: boolean;
-}
-
-export const Footer = ({ isAbsolute }: Props) => {
+export const Footer = () => {
   return (
     <div
       className={classNames(
-        "bottom-0 mt-[30px] flex min-h-[55px] w-full flex-row flex-wrap justify-center gap-x-8 gap-y-3 bg-[#f7b7b8] py-4",
-        {
-          absolute: isAbsolute,
-        },
+        "relative bottom-0 z-50 mt-[30px] flex min-h-[55px] w-full flex-row flex-wrap justify-center gap-x-8 gap-y-3 bg-[#f7b7b8] py-4",
       )}
     >
       <Link href="/privacy-policy">Privacy Policy</Link>
