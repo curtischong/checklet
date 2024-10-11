@@ -37,20 +37,23 @@ export class AzureLlm {
     this.model = "gpt-4o";
   }
 
-  private getKey(messages: any): number {
+  private getKey(messages: any, isStream: boolean): number {
+    const isStreamKey = isStream ? "stream" : "";
     return cyrb53(
-      `${this.deploymentName}-${this.systemPromptMessage.content?.toString()}-${JSON.stringify(
+      `${isStreamKey}-${this.deploymentName}-${this.systemPromptMessage.content?.toString()}-${JSON.stringify(
         messages,
       )}`,
     );
   }
 
-  private cacheGet(messages: any): string | undefined {
-    return this.cache?.get(this.getKey(messages)) as string | undefined;
+  private cacheGet(messages: any, isStream: boolean): string | undefined {
+    return this.cache?.get(this.getKey(messages, isStream)) as
+      | string
+      | undefined;
   }
 
-  private cacheSet(messages: any, value: string): void {
-    this.cache?.set(this.getKey(messages), value);
+  private cacheSet(messages: any, value: string, isStream: boolean): void {
+    this.cache?.set(this.getKey(messages, isStream), value);
   }
 
   async prompt(message: string): Promise<string> {
@@ -94,7 +97,7 @@ export class AzureLlm {
     const newMessages = this.getNewMessages(prevMessages, newMessage);
 
     if (this.cache) {
-      const cachedValue = this.cacheGet(newMessages);
+      const cachedValue = this.cacheGet(newMessages, false);
       if (cachedValue) {
         return JSON.parse(cachedValue);
       }
@@ -109,7 +112,7 @@ export class AzureLlm {
     if (!choice) {
       throw new Error("No choice returned. Couldn't generate response.");
     }
-    this.cacheSet(newMessages, JSON.stringify(choice));
+    this.cacheSet(newMessages, JSON.stringify(choice), false);
     return choice;
   }
 
@@ -122,7 +125,7 @@ export class AzureLlm {
     console.log("begin stream completion");
 
     if (this.cache) {
-      const cachedValue = this.cacheGet(newMessages);
+      const cachedValue = this.cacheGet(newMessages, true);
       if (cachedValue) {
         yield cachedValue;
         return;
@@ -146,7 +149,7 @@ export class AzureLlm {
         yield content;
       }
     }
-    this.cacheSet(newMessages, finalText);
+    this.cacheSet(newMessages, finalText, true);
     // return finalText;
   }
 }
