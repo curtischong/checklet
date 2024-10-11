@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -51,11 +52,20 @@ const convertToUserCtx = (user: admin.auth.DecodedIdToken): UserCtx => {
   };
 };
 
-export const createTRPCContext = async (opts: {
+export const createTRPCContextWs = async (opts: {
   headers: IncomingHttpHeaders;
 }) => {
+  const cookies = opts.headers.cookie ?? null;
+  return await createTRPCContext(opts, cookies);
+};
+
+export const createTRPCContextFetch = async (opts: { headers: Headers }) => {
+  const cookies = opts.headers.get("cookie");
+  return await createTRPCContext(opts, cookies);
+};
+
+const createTRPCContext = async (opts: any, cookies: string | null) => {
   // const firebaseApp = initializeApp(clientConfig);
-  const cookies = opts.headers.cookie;
   if (!cookies) {
     // there are no cookies. incognito mode? or maybe they're not logged in.
     // it's fine. user will just be null
