@@ -17,7 +17,7 @@ import {
   SidePanelPageEnum,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-import { apiClient, handleErr } from "@/trpc/react";
+import { apiClient, apiClientWs, handleErr } from "@/trpc/react";
 import { type SetState } from "@/utils/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -200,7 +200,7 @@ export const Editor = ({
 
       try {
         // Send the request with the AbortController's signal
-        apiClient.checker.checkDocStreaming.subscribe(
+        apiClientWs.checker.checkDocStreaming.subscribe(
           {
             doc: editorState,
             checkerId: checkerId,

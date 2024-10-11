@@ -19,6 +19,7 @@ import {
 } from "@/server/api/trpc";
 import { type Prisma, type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { observable } from "@trpc/server/observable";
 import OpenAI from "openai";
 const MAX_CHECKERS = 10;
 
@@ -248,7 +249,7 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ checkerId: z.string() }))
     // use mutate over query to make this a POST request. This is required since for GET requests, we encode the doc in the URL, which is too big and causes 414 errors
     .subscription(async ({ ctx, input }) => {
-      // console.log("checkDoc", input);
+      console.log("checkDocstreaming", input);
       const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (
         !checker.isPublic &&
@@ -266,13 +267,41 @@ export const checkerRouter = createTRPCRouter({
             "This checker is not valid. Does it have a name, description, and prompt?",
         });
       }
+      console.log("hiaskdasldjkasljdaksjd");
 
-      // now that we've validated everything, we can actually check the doc
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return azureLlmClient.streamCompletion(
-        [],
-        inference6Dot3(checker.prompt, input.doc),
-      );
+      return observable<string>((emit) => {
+        // now that we've validated everything, we can actually check the doc
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        // return azureLlmClient.streamCompletion(
+        //   [],
+        //   inference6Dot3(checker.prompt, input.doc),
+        // );
+        // Start the async generator and send chunks to the client
+        const stream = azureLlmClient.streamCompletion(
+          [],
+          inference6Dot3(checker.prompt, input.doc),
+        );
+
+        const startStream = async () => {
+          try {
+            for await (const content of stream) {
+              console.log("content", content);
+              emit.next(content); // Send each chunk to the client
+            }
+            emit.complete(); // Mark the stream as complete
+          } catch (error) {
+            emit.error(error); // Handle any errors during streaming
+          }
+        };
+
+        // Start the streaming process
+        void startStream();
+
+        // Clean-up logic when subscription is closed
+        return () => {
+          console.log("Subscription ended");
+        };
+      });
     }),
 
   checkDocImproving: publicProcedure

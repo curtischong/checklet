@@ -56,6 +56,11 @@ export const apiClient = createTRPCClient<AppRouter>({
         return headers;
       },
     }),
+  ],
+});
+
+export const apiClientWs = createTRPCClient<AppRouter>({
+  links: [
     wsLink({
       transformer: SuperJSON,
       client: wsClient,
