@@ -1,3 +1,4 @@
+import ThinLine from "@/app/_components/ThinLine";
 import { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -89,11 +90,15 @@ export const ThoughtProcess = ({ checkerThoughts }: Props) => {
       ) : (
         <>
           <div className="mx-4">
-            <p className="text-sm">
-              Pro tips: Smaller documents get checked faster
-            </p>
-            <p className="text-sm">{`Keep clicking "Check Document" for new suggestions`}</p>
+            <p className="text-sm font-bold">Pro tips:</p>
+            <ul className="ml-4 list-disc">
+              <li className="text-sm text-zinc-600">
+                Smaller documents get checked faster
+              </li>
+              <li className="text-sm text-zinc-600">{`Keep clicking "Check Document" for new suggestions`}</li>
+            </ul>
           </div>
+          <ThinLine />
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             className="markdown space-y-0 px-4 pb-32"
