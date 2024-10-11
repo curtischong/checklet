@@ -20,6 +20,7 @@ import { type UserCtx } from "@/firebase/edge_env";
 import { db } from "@/server/db";
 import { parse } from "cookie";
 import admin, { type ServiceAccount } from "firebase-admin";
+import { type IncomingHttpHeaders } from "http";
 import { getCookiesTokens } from "next-firebase-auth-edge/lib/next/tokens";
 
 /**
@@ -50,9 +51,11 @@ const convertToUserCtx = (user: admin.auth.DecodedIdToken): UserCtx => {
   };
 };
 
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+export const createTRPCContext = async (opts: {
+  headers: IncomingHttpHeaders;
+}) => {
   // const firebaseApp = initializeApp(clientConfig);
-  const cookies = opts.headers.get("cookie")!;
+  const cookies = opts.headers.cookie;
   if (!cookies) {
     // there are no cookies. incognito mode? or maybe they're not logged in.
     // it's fine. user will just be null

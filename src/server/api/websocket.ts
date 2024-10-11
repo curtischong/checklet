@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { appRouter } from "@/server/api/root";
+import { createTRPCContext } from "@/server/api/trpc";
 import { createWSClient } from "@trpc/client";
 import {
   applyWSSHandler,
@@ -13,14 +14,19 @@ const wss = new ws.Server({
 });
 
 export const createContext = async (opts: CreateWSSContextFnOptions) => {
-  const token = opts.info.connectionParams?.token;
-
-  const token: string | undefined;
-
-  // [... authenticate]
-
-  return {};
+  // const token = opts.info.connectionParams?.token;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return createTRPCContext({
+    headers: opts.req.headers,
+  });
+  // return {};
 };
+
+// const createContext = async (req: NextRequest) => {
+//   return createTRPCContext({
+//     headers: req.headers,
+//   });
+// };
 
 export type Context = Awaited<ReturnType<typeof createContext>>;
 
