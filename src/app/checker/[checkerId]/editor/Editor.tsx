@@ -183,54 +183,6 @@ export const Editor = ({
     [],
   );
 
-  const checkDocument = useCallback(
-    (checkerId: string, editorState: string): void => {
-      if (checkerState !== CheckerState.Default) {
-        return;
-      }
-      setCheckerState(CheckerState.Improving);
-      handleErr(
-        apiClient.checker.checkDoc.mutate({
-          doc: editorState,
-          checkerId: checkerId,
-        }),
-        (response) => {
-          setCheckerState(CheckerState.Default);
-          if (!response) {
-            toast.error(
-              "Something went wrong, please let Curtis know on Discord!",
-            );
-            return;
-          }
-          setHasModifiedTextAfterChecking(false);
-
-          const newSuggestions = response.suggestions;
-
-          // only show suggestions the user didn't dismiss. obv if they refresh the page this set isn't persisted. but it's okay!
-          const filteredSuggestions = newSuggestions.filter(
-            (suggestion) =>
-              !dismissedSuggestionHashes.current.has(
-                hashSuggestion(suggestion),
-              ),
-          );
-
-          filteredSuggestions.sort(Sorters[sortType]);
-          setSuggestions(filteredSuggestions);
-        },
-        () => {
-          setCheckerState(CheckerState.Default);
-        },
-      );
-    },
-    [
-      checkerState,
-      setHasModifiedTextAfterChecking,
-      setCheckerState,
-      setSuggestions,
-      sortType,
-    ],
-  );
-
   const checkDocStreaming = useCallback(
     async (
       checkerId: string,
@@ -267,7 +219,7 @@ export const Editor = ({
           // Append each streamed chunk of content
           setCheckerThoughts((thoughts) => (thoughts ?? "") + content);
         }
-        setCheckerState(CheckerState.Default);
+        setCheckerState(CheckerState.Improving);
       } catch (error) {
         if (controller.signal.aborted) {
           console.log("Stream was cancelled");
@@ -276,7 +228,6 @@ export const Editor = ({
         }
         setCheckerState(CheckerState.Default);
       }
-      setCheckerState(CheckerState.Improving);
     },
     [],
   );
@@ -346,7 +297,7 @@ export const Editor = ({
           <EditorHeader
             storefront={checkerStorefront}
             editorState={editorState}
-            onTryWithSampleDoc={() => {
+            onTryWithSampleDoc={async () => {
               // DO NOT just call setEditorState so the user can undo this action with ctrl + z
               if (!editorRef.current) {
                 return;
@@ -370,9 +321,10 @@ export const Editor = ({
               );
 
               // wait for the editor to update
-              checkDocument(
+              await checkDocStreaming(
                 checkerStorefront.checkerId,
                 checkerStorefront.sampleDoc, // we're doing something really smart here. since we know what the doc is, we can just pass it in (don't need for state to update)
+                checkerState,
               );
             }}
           />
