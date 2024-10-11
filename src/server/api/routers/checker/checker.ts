@@ -247,7 +247,7 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ doc: z.string() }))
     .input(z.object({ checkerId: z.string() }))
     // use mutate over query to make this a POST request. This is required since for GET requests, we encode the doc in the URL, which is too big and causes 414 errors
-    .mutation(async ({ ctx, input }) => {
+    .subscription(async ({ ctx, input }) => {
       // console.log("checkDoc", input);
       const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (

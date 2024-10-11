@@ -184,11 +184,7 @@ export const Editor = ({
   );
 
   const checkDocStreaming = useCallback(
-    async (
-      checkerId: string,
-      editorState: string,
-      checkerState: CheckerState,
-    ) => {
+    (checkerId: string, editorState: string, checkerState: CheckerState) => {
       if (checkerState !== CheckerState.Default) {
         // we're already checking. do nothing
         return;
@@ -204,22 +200,27 @@ export const Editor = ({
 
       try {
         // Send the request with the AbortController's signal
-        const response = await apiClient.checker.checkDocStreaming.mutate(
+        apiClient.checker.checkDocStreaming.subscribe(
           {
             doc: editorState,
             checkerId: checkerId,
           },
           {
             signal: controller.signal, // Attach the abort signal
+            onData(data) {
+              // Append each streamed chunk of content
+              setCheckerThoughts((thoughts) => (thoughts ?? "") + data);
+            },
+            onError(error) {
+              console.error("Error in subscription", error);
+              toast.error("Error generating suggestions", error);
+              setCheckerState(CheckerState.Default);
+            },
+            onComplete() {
+              setCheckerState(CheckerState.Improving);
+            },
           },
         );
-
-        // Handle streaming response
-        for await (const content of response) {
-          // Append each streamed chunk of content
-          setCheckerThoughts((thoughts) => (thoughts ?? "") + content);
-        }
-        setCheckerState(CheckerState.Improving);
       } catch (error) {
         if (controller.signal.aborted) {
           console.log("Stream was cancelled");
