@@ -42,7 +42,7 @@ if (!admin.apps.length) {
   });
 }
 
-const convertToUserCtx = (user: admin.auth.DecodedIdToken): UserCtx => {
+export const convertToUserCtx = (user: admin.auth.DecodedIdToken): UserCtx => {
   return {
     id: user.uid,
     email: user.email!,
