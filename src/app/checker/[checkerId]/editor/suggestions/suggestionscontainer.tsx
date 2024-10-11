@@ -267,7 +267,12 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const pathName = usePathname();
 
   return (
-    <div className="sticky right-10 top-0 flex h-full w-[400px] flex-col pt-[50px]">
+    <div
+      className="sticky right-10 top-0 flex h-full w-[400px] flex-col pt-[50px]"
+      style={{
+        zIndex: 30,
+      }}
+    >
       <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
         <LoadingButton
           onClick={() =>
@@ -294,11 +299,13 @@ export const SuggestionsContainer: React.FC<Props> = ({
         )}
       </div>
       {checkerThoughts !== null && (
-        <SlidingRadioButton
-          options={[SidePanelPageEnum.Tips, SidePanelPageEnum.Thoughts]}
-          selected={sidePanelPageEnum}
-          setSelected={setSidePanelPageEnum as any}
-        />
+        <div className="mx-auto h-[30px]">
+          <SlidingRadioButton
+            options={[SidePanelPageEnum.Tips, SidePanelPageEnum.Thoughts]}
+            selected={sidePanelPageEnum}
+            setSelected={setSidePanelPageEnum as any}
+          />
+        </div>
       )}
       {sidePanelPageEnum === SidePanelPageEnum.Thoughts ? (
         <div className="mt-[5px] h-[30px]">
@@ -316,8 +323,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
             className="px-6 pb-10"
             style={{
               // add up all the heights and margin tops of the elements above
-              maxHeight:
-                "calc(100vh - 50px - 40px - 5px - 5px - 40px - 5px - 40px)",
+              maxHeight: "calc(100vh - 50px - 40px - 10px - 30px -40px)",
               overflow: "auto",
               overscrollBehavior: "contain",
             }}

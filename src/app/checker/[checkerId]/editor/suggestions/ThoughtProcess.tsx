@@ -78,10 +78,11 @@ export const ThoughtProcess = ({ checkerThoughts }: Props) => {
     <div
       ref={markdownContainerRef}
       style={{
-        maxHeight: "calc(100vh - 225px)",
+        maxHeight: "calc(100vh - 50px - 40px - 10px - 30px - 5px)",
         overflow: "auto",
         overscrollBehavior: "contain",
       }}
+      // className="relative z-10"
     >
       {checkerThoughts === null ? (
         <div>This will populate when you check your document!</div>
@@ -95,17 +96,17 @@ export const ThoughtProcess = ({ checkerThoughts }: Props) => {
           </div>
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            className="markdown space-y-0 px-4 pb-10"
-            components={{
-              a: ({ ...props }) => (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="cursor-pointer border-b-2 border-blue-500 hover:text-blue-600"
-                  {...props}
-                />
-              ),
-            }}
+            className="markdown space-y-0 px-4 pb-32"
+            // components={{
+            //   a: ({ ...props }) => (
+            //     <a
+            //       target="_blank"
+            //       rel="noopener noreferrer"
+            //       className="cursor-pointer border-b-2 border-blue-500 hover:text-blue-600"
+            //       {...props}
+            //     />
+            //   ),
+            // }}
           >
             {checkerThoughts}
           </ReactMarkdown>
