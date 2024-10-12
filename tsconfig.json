@@ -40,8 +40,5 @@
     "**/*.js",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-    // "scripts" // exclude scripts from being compiled
-  ]
+  "exclude": ["node_modules"]
 }
