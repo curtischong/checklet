@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "websocket": "dotenv -e ../.env -- tsx --tsconfig tsconfig.websocket.json ws_server.ts",
+    "websocket": "dotenv -e ../.env -- nodemon --watch ../src --watch ./ --watch ../public --watch ../scripts --watch ../prisma --exec tsx --tsconfig tsconfig.websocket.json ws_server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -14,5 +14,8 @@
     "dotenv-cli": "^7.4.2",
     "tsx": "^4.19.1",
     "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
   }
 }
