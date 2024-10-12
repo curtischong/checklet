@@ -247,8 +247,7 @@ export const checkerRouter = createTRPCRouter({
       }
     }),
 
-  // checkDocImproving: publicProcedure
-  checkDocImproving: protectedProcedure
+  checkDocImproving: publicProcedure
     .input(z.object({ doc: z.string() }))
     .input(z.object({ checkerId: z.string() }))
     .input(z.object({ thoughtProcess: z.string() }))
