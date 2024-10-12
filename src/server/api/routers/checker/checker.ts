@@ -7,6 +7,7 @@ import { type UserCtx } from "@/firebase/edge_env";
 import { mixpanel } from "@/mixpanel";
 import { azureLlmClient } from "@/server/api/routers/checker/azureLlm";
 import { checkDoc4Dot12 } from "@/server/api/routers/checker/checkDoc";
+import { logStream } from "@/server/api/routers/checker/logStream";
 import { inference6Dot3 } from "@/server/api/routers/checker/prompts";
 import { regenSuggestion } from "@/server/api/routers/checker/regenSuggestion";
 import {
@@ -241,7 +242,7 @@ export const checkerRouter = createTRPCRouter({
         [],
         inference6Dot3(checker.prompt, input.doc),
       );
-      for await (const res of iterator) {
+      for await (const res of logStream(iterator)) {
         yield res;
       }
     }),
