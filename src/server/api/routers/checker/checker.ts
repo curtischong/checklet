@@ -237,10 +237,13 @@ export const checkerRouter = createTRPCRouter({
         });
       }
       console.log("checkDocStreaming");
-      return azureLlmClient.streamCompletion(
+      const iterator = azureLlmClient.streamCompletion(
         [],
         inference6Dot3(checker.prompt, input.doc),
       );
+      for await (const res of iterator) {
+        yield res;
+      }
     }),
 
   checkDocImproving: publicProcedure

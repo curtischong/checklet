@@ -208,7 +208,6 @@ export const Editor = ({
           {
             signal: controller.signal, // Attach the abort signal
             onData(thoughtChunk: string) {
-              console.log("checkDocStreamingdata", thoughtChunk);
               // Append each streamed chunk of content
               setCheckerThoughts((thoughts) => (thoughts ?? "") + thoughtChunk);
             },
