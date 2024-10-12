@@ -4,6 +4,7 @@ import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import {
   createTRPCClient,
   createWSClient,
+  httpBatchLink,
   loggerLink,
   unstable_httpBatchStreamLink,
   wsLink,
@@ -28,11 +29,6 @@ const getQueryClient = () => {
   // Browser: use singleton pattern to keep the same query client
   return (clientQueryClientSingleton ??= createQueryClient());
 };
-
-// create persistent WebSocket connection
-// const wsClient = createWSClient({
-//   url: `ws://localhost:3001`,
-// });
 
 export const api = createTRPCReact<AppRouter>();
 
@@ -68,7 +64,7 @@ export const apiClient = createTRPCClient<AppRouter>({
 
 function getEndingLink(): TRPCLink<AppRouter> {
   if (typeof window === "undefined") {
-    return unstable_httpBatchStreamLink({
+    httpBatchLink({
       transformer: SuperJSON,
       url: getBaseUrl() + "/api/trpc",
       headers: () => {
@@ -90,15 +86,6 @@ function getEndingLink(): TRPCLink<AppRouter> {
     transformer: SuperJSON,
   });
 }
-
-// export const apiClientWs = createTRPCClient<AppRouter>({
-//   links: [
-//     wsLink({
-//       transformer: SuperJSON,
-//       client: wsClient,
-//     }),
-//   ],
-// });
 
 export function handleErr<T>(
   promise: Promise<T>,
