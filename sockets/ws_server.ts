@@ -2,9 +2,6 @@ import { appRouter } from "@/server/api/root";
 import { createContext } from "@/server/sockets/context";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 import { WebSocketServer } from "ws";
-// dotenv.config({ path: "../.env" });
-// dotenv.config();
-// console.log(process.env);
 
 const wss = new WebSocketServer({
   port: 3001,
