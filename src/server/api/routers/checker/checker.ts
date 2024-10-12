@@ -17,7 +17,6 @@ import {
 } from "@/server/api/trpc";
 import { type Prisma, type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import OpenAI from "openai";
 const MAX_CHECKERS = 10;
 
 export const getCheckerById = async (db: PrismaClient, id: string) => {
@@ -217,8 +216,7 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ doc: z.string() }))
     .input(z.object({ checkerId: z.string() }))
     // use mutate over query to make this a POST request. This is required since for GET requests, we encode the doc in the URL, which is too big and causes 414 errors
-    .subscription(async function* (opts) {
-      const { ctx, input } = opts;
+    .subscription(async function* ({ ctx, input }) {
       // listen for new events
       const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (
@@ -412,36 +410,14 @@ export const checkerRouter = createTRPCRouter({
   improvePrompt: protectedProcedure
     .input(z.object({ improvementPrompt: z.string() }))
     // eslint-disable-next-line @typescript-eslint/require-await
-    .mutation(async ({ input }) => {
-      const apiKey = process.env.OPENAI_API_KEY;
-
-      // TODO: use the global llm?
-      const client = new OpenAI({
-        apiKey,
-        dangerouslyAllowBrowser: false,
-      });
-      console.log("improvement prompt", input.improvementPrompt);
-
-      // Define an async generator function for streaming OpenAI responses
-      async function* streamCompletion() {
-        const completion = await client.chat.completions.create({
-          model: "gpt-4o", // or gpt-3.5-turbo
-          messages: [{ role: "user", content: input.improvementPrompt }],
-          stream: true, // Enable streaming
-        });
-
-        // Handle stream data chunk by chunk
-        for await (const chunk of completion) {
-          const content = chunk.choices[0]?.delta?.content ?? "";
-          if (content) {
-            // Yield content back to the client
-            yield content;
-          }
-        }
+    .subscription(async function* ({ input }) {
+      const iterator = azureLlmClient.streamCompletion(
+        [],
+        input.improvementPrompt,
+      );
+      for await (const res of logStream(iterator)) {
+        yield res;
       }
-
-      // Return the async generator
-      return streamCompletion();
     }),
   regenSuggestion: publicProcedure
     .input(
