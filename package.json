@@ -12,7 +12,7 @@
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
-    "websocket": "tsx --tsconfig tsconfig.websocket.json src/server/sockets/ws_server.ts",
+    "websocket": "cp .env sockets/.env && cd sockets && npm run websocket",
     "dev": "npm run setup-dev && concurrently \"next dev\" \"npm run websocket\"",
     "postinstall": "prisma generate",
     "lint": "next lint",
