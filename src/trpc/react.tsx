@@ -7,6 +7,7 @@ import {
   loggerLink,
   unstable_httpBatchStreamLink,
   wsLink,
+  type TRPCLink,
 } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
@@ -29,15 +30,16 @@ const getQueryClient = () => {
 };
 
 // create persistent WebSocket connection
-const wsClient = createWSClient({
-  url: `ws://localhost:3001`,
-});
+// const wsClient = createWSClient({
+//   url: `ws://localhost:3001`,
+// });
 
 export const api = createTRPCReact<AppRouter>();
 
 // this is the non-react version of the client
 export const apiClient = createTRPCClient<AppRouter>({
   links: [
+    getEndingLink(),
     // httpBatchLink({
     //   transformer: SuperJSON,
     //   url: getBaseUrl() + "/api/trpc",
@@ -47,7 +49,21 @@ export const apiClient = createTRPCClient<AppRouter>({
     //     return headers;
     //   },
     // }),
-    unstable_httpBatchStreamLink({
+    // unstable_httpBatchStreamLink({
+    //   transformer: SuperJSON,
+    //   url: getBaseUrl() + "/api/trpc",
+    //   headers: () => {
+    //     const headers = new Headers();
+    //     headers.set("x-trpc-source", "nextjs-react");
+    //     return headers;
+    //   },
+    // }),
+  ],
+});
+
+function getEndingLink(): TRPCLink<AppRouter> {
+  if (typeof window === "undefined") {
+    return unstable_httpBatchStreamLink({
       transformer: SuperJSON,
       url: getBaseUrl() + "/api/trpc",
       headers: () => {
@@ -55,18 +71,29 @@ export const apiClient = createTRPCClient<AppRouter>({
         headers.set("x-trpc-source", "nextjs-react");
         return headers;
       },
-    }),
-  ],
-});
+    });
+  }
 
-export const apiClientWs = createTRPCClient<AppRouter>({
-  links: [
-    wsLink({
-      transformer: SuperJSON,
-      client: wsClient,
-    }),
-  ],
-});
+  const client = createWSClient({
+    url: `ws://localhost:3001`,
+  });
+  return wsLink({
+    client,
+    /**
+     * @see https://trpc.io/docs/v11/data-transformers
+     */
+    transformer: SuperJSON,
+  });
+}
+
+// export const apiClientWs = createTRPCClient<AppRouter>({
+//   links: [
+//     wsLink({
+//       transformer: SuperJSON,
+//       client: wsClient,
+//     }),
+//   ],
+// });
 
 export function handleErr<T>(
   promise: Promise<T>,

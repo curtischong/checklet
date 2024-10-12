@@ -17,7 +17,7 @@ import {
   SidePanelPageEnum,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-import { apiClient, apiClientWs, handleErr } from "@/trpc/react";
+import { apiClient, handleErr } from "@/trpc/react";
 import { type SetState } from "@/utils/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -200,14 +200,14 @@ export const Editor = ({
 
       try {
         // Send the request with the AbortController's signal
-        apiClientWs.checker.checkDocStreaming.subscribe(
+        apiClient.checker.checkDocStreaming.subscribe(
           {
             doc: editorState,
             checkerId: checkerId,
           },
           {
             signal: controller.signal, // Attach the abort signal
-            onData(data) {
+            onData(data: string) {
               // Append each streamed chunk of content
               setCheckerThoughts((thoughts) => (thoughts ?? "") + data);
             },
@@ -322,7 +322,7 @@ export const Editor = ({
               );
 
               // wait for the editor to update
-              await checkDocStreaming(
+              checkDocStreaming(
                 checkerStorefront.checkerId,
                 checkerStorefront.sampleDoc, // we're doing something really smart here. since we know what the doc is, we can just pass it in (don't need for state to update)
                 checkerState,

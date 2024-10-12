@@ -12,7 +12,8 @@
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
-    "dev": "npm run setup-dev && next dev",
+    "websocket": "tsx src/server/sockets/wsServer.ts",
+    "dev": "npm run setup-dev && concurrently \"next dev\" \"npm run websocket\"",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start"
@@ -61,6 +62,7 @@
     "@types/ws": "^8.5.12",
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
+    "concurrently": "^9.0.1",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.4",
     "postcss": "^8.4.39",
