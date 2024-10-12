@@ -184,11 +184,7 @@ export const Editor = ({
   );
 
   const checkDocStreaming = useCallback(
-    async (
-      checkerId: string,
-      editorState: string,
-      checkerState: CheckerState,
-    ) => {
+    (checkerId: string, editorState: string, checkerState: CheckerState) => {
       if (checkerState !== CheckerState.Default) {
         // we're already checking. do nothing
         return;
@@ -204,22 +200,28 @@ export const Editor = ({
 
       try {
         // Send the request with the AbortController's signal
-        const response = await apiClient.checker.checkDocStreaming.mutate(
+        apiClient.checker.checkDocStreaming.subscribe(
           {
             doc: editorState,
             checkerId: checkerId,
           },
           {
             signal: controller.signal, // Attach the abort signal
+            onData(thoughtChunk: string) {
+              // Append each streamed chunk of content
+              setCheckerThoughts((thoughts) => (thoughts ?? "") + thoughtChunk);
+            },
+            onError(error) {
+              console.error("Error in subscription", error);
+              toast.error("Error generating suggestions", error);
+              setCheckerState(CheckerState.Default);
+            },
+            onComplete() {
+              console.log("checkDocStreamingcmplete");
+              setCheckerState(CheckerState.Improving);
+            },
           },
         );
-
-        // Handle streaming response
-        for await (const content of response) {
-          // Append each streamed chunk of content
-          setCheckerThoughts((thoughts) => (thoughts ?? "") + content);
-        }
-        setCheckerState(CheckerState.Improving);
       } catch (error) {
         if (controller.signal.aborted) {
           console.log("Stream was cancelled");
@@ -258,6 +260,7 @@ export const Editor = ({
         setHasModifiedTextAfterChecking(false);
 
         const newSuggestions = response.suggestions;
+        console.log("newSuggestions", newSuggestions);
 
         // only show suggestions the user didn't dismiss. obv if they refresh the page this set isn't persisted. but it's okay!
         const filteredSuggestions = newSuggestions.filter(
@@ -321,7 +324,7 @@ export const Editor = ({
               );
 
               // wait for the editor to update
-              await checkDocStreaming(
+              checkDocStreaming(
                 checkerStorefront.checkerId,
                 checkerStorefront.sampleDoc, // we're doing something really smart here. since we know what the doc is, we can just pass it in (don't need for state to update)
                 checkerState,

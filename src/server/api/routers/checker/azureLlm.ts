@@ -122,7 +122,6 @@ export class AzureLlm {
     newMessage: string,
   ) {
     const newMessages = this.getNewMessages(prevMessages, newMessage);
-    console.log("begin stream completion");
 
     if (this.cache) {
       const cachedValue = this.cacheGet(newMessages, true);

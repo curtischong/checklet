@@ -5,6 +5,7 @@ import { NormalTextArea } from "@/app/_components/ui/TextArea";
 import { apiClient } from "@/trpc/react";
 import { type SetState } from "@/utils/types";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
   prompt: string;
@@ -61,28 +62,35 @@ const Modal = ({
 
     try {
       // Send the request with the AbortController's signal
-      const response = await apiClient.checker.improvePrompt.mutate(
+      apiClient.checker.improvePrompt.subscribe(
         {
           improvementPrompt: `${improvementPrompt}\n\nHere is the original prompt:\n${prompt}`,
         },
         {
           signal: controller.signal, // Attach the abort signal
+          onData(thoughtChunk: string) {
+            setImprovedPrompt(
+              (currImprovedPrompt) => currImprovedPrompt + thoughtChunk,
+            );
+          },
+          onError(error) {
+            console.error("Error in subscription", error);
+            toast.error("Error improving prompt", error);
+            setIsImprovingPrompt(false);
+          },
+          onComplete() {
+            setIsImprovingPrompt(false);
+          },
         },
       );
-
-      // Handle streaming response
-      for await (const content of response) {
-        // Append each streamed chunk of content
-        setImprovedPrompt((currImprovedPrompt) => currImprovedPrompt + content);
-      }
     } catch (error) {
       if (controller.signal.aborted) {
         console.log("Stream was cancelled");
       } else {
         console.error("Error during streaming:", error);
       }
+      setIsImprovingPrompt(false);
     }
-    setIsImprovingPrompt(false);
   };
 
   // Cancel the stream when needed
@@ -117,7 +125,7 @@ const Modal = ({
         >
           <div
             id="modal-content"
-            className={`bg-background flex h-[90vh] w-[80vw] flex-col rounded-lg p-6 shadow-lg transition-transform duration-300 ${
+            className={`flex h-[90vh] w-[80vw] flex-col rounded-lg bg-background p-6 shadow-lg transition-transform duration-300 ${
               isFullyVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >

@@ -1,0 +1,1 @@
+you should NOT run npm run websocket directly inside the sockets folder. run it in the root folder so the .env file is loaded correctly

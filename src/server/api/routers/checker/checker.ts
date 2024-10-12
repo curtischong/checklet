@@ -6,10 +6,8 @@ import { z } from "zod";
 import { type UserCtx } from "@/firebase/edge_env";
 import { mixpanel } from "@/mixpanel";
 import { azureLlmClient } from "@/server/api/routers/checker/azureLlm";
-import {
-  checkDoc4Dot12,
-  CheckerWorker,
-} from "@/server/api/routers/checker/checkDoc";
+import { checkDoc4Dot12 } from "@/server/api/routers/checker/checkDoc";
+import { logStream } from "@/server/api/routers/checker/logStream";
 import { inference6Dot3 } from "@/server/api/routers/checker/prompts";
 import { regenSuggestion } from "@/server/api/routers/checker/regenSuggestion";
 import {
@@ -19,7 +17,6 @@ import {
 } from "@/server/api/trpc";
 import { type Prisma, type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import OpenAI from "openai";
 const MAX_CHECKERS = 10;
 
 export const getCheckerById = async (db: PrismaClient, id: string) => {
@@ -214,41 +211,13 @@ export const checkerRouter = createTRPCRouter({
         },
       });
     }),
-  checkDoc: publicProcedure
-    .input(z.object({ doc: z.string() }))
-    .input(z.object({ checkerId: z.string() }))
-    // use mutate over query to make this a POST request. This is required since for GET requests, we encode the doc in the URL, which is too big and causes 414 errors
-    .mutation(async ({ ctx, input }) => {
-      // console.log("checkDoc", input);
-      const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
-      if (
-        !checker.isPublic &&
-        (!ctx.user || checker.createdById !== ctx.user.id) // if you are not logged in, or not the creator, you can't use this private checker
-      ) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "you are not the creator of this checker",
-        });
-      }
-      if (!checker.isValid) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message:
-            "This checker is not valid. Does it have a name, description, and prompt?",
-        });
-      }
-
-      // now that we've validated everything, we can actually check the doc
-      const checkerWorker = new CheckerWorker(ctx.db);
-      return await checkerWorker.checkDoc(input.doc, checker);
-    }),
 
   checkDocStreaming: publicProcedure
     .input(z.object({ doc: z.string() }))
     .input(z.object({ checkerId: z.string() }))
     // use mutate over query to make this a POST request. This is required since for GET requests, we encode the doc in the URL, which is too big and causes 414 errors
-    .mutation(async ({ ctx, input }) => {
-      // console.log("checkDoc", input);
+    .subscription(async function* ({ ctx, input }) {
+      // listen for new events
       const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (
         !checker.isPublic &&
@@ -266,13 +235,13 @@ export const checkerRouter = createTRPCRouter({
             "This checker is not valid. Does it have a name, description, and prompt?",
         });
       }
-
-      // now that we've validated everything, we can actually check the doc
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return azureLlmClient.streamCompletion(
+      const iterator = azureLlmClient.streamCompletion(
         [],
         inference6Dot3(checker.prompt, input.doc),
       );
+      for await (const res of logStream(iterator)) {
+        yield res;
+      }
     }),
 
   checkDocImproving: publicProcedure
@@ -281,7 +250,7 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ thoughtProcess: z.string() }))
     // use mutate over query to make this a POST request. This is required since for GET requests, we encode the doc in the URL, which is too big and causes 414 errors
     .mutation(async ({ ctx, input }) => {
-      // console.log("checkDoc", input);
+      // console.log("checkDocimproving", input);
       const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (
         !checker.isPublic &&
@@ -440,36 +409,14 @@ export const checkerRouter = createTRPCRouter({
   improvePrompt: protectedProcedure
     .input(z.object({ improvementPrompt: z.string() }))
     // eslint-disable-next-line @typescript-eslint/require-await
-    .mutation(async ({ input }) => {
-      const apiKey = process.env.OPENAI_API_KEY;
-
-      // TODO: use the global llm?
-      const client = new OpenAI({
-        apiKey,
-        dangerouslyAllowBrowser: false,
-      });
-      console.log("improvement prompt", input.improvementPrompt);
-
-      // Define an async generator function for streaming OpenAI responses
-      async function* streamCompletion() {
-        const completion = await client.chat.completions.create({
-          model: "gpt-4o", // or gpt-3.5-turbo
-          messages: [{ role: "user", content: input.improvementPrompt }],
-          stream: true, // Enable streaming
-        });
-
-        // Handle stream data chunk by chunk
-        for await (const chunk of completion) {
-          const content = chunk.choices[0]?.delta?.content ?? "";
-          if (content) {
-            // Yield content back to the client
-            yield content;
-          }
-        }
+    .subscription(async function* ({ input }) {
+      const iterator = azureLlmClient.streamCompletion(
+        [],
+        input.improvementPrompt,
+      );
+      for await (const res of logStream(iterator)) {
+        yield res;
       }
-
-      // Return the async generator
-      return streamCompletion();
     }),
   regenSuggestion: publicProcedure
     .input(
