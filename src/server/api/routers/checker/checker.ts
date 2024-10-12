@@ -235,7 +235,6 @@ export const checkerRouter = createTRPCRouter({
             "This checker is not valid. Does it have a name, description, and prompt?",
         });
       }
-      console.log("checkDocStreaming");
       const iterator = azureLlmClient.streamCompletion(
         [],
         inference6Dot3(checker.prompt, input.doc),
@@ -251,7 +250,7 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ thoughtProcess: z.string() }))
     // use mutate over query to make this a POST request. This is required since for GET requests, we encode the doc in the URL, which is too big and causes 414 errors
     .mutation(async ({ ctx, input }) => {
-      console.log("checkDocimproving", input);
+      // console.log("checkDocimproving", input);
       const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (
         !checker.isPublic &&

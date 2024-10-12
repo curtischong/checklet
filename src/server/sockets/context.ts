@@ -1,10 +1,18 @@
 import { serverConfig } from "@/firebase/config";
-import { convertToUserCtx } from "@/server/api/trpc";
+import { type UserCtx } from "@/firebase/edge_env";
 import { db } from "@/server/db";
 import { type CreateWSSContextFnOptions } from "@trpc/server/adapters/ws";
 import { parse } from "cookie";
 import admin from "firebase-admin";
 import { getCookiesTokens } from "next-firebase-auth-edge/lib/next/tokens";
+
+const convertToUserCtx = (user: admin.auth.DecodedIdToken): UserCtx => {
+  return {
+    id: user.uid,
+    email: user.email!,
+    email_verified: user.email_verified!,
+  };
+};
 
 const getFetchAPIHeaders = (opts: CreateWSSContextFnOptions) => {
   const headers = new Headers();
@@ -20,9 +28,19 @@ const getFetchAPIHeaders = (opts: CreateWSSContextFnOptions) => {
   return headers;
 };
 
-export const createContext = async (opts: CreateWSSContextFnOptions) => {
+export const createTRPCContext = async (opts: { headers: Headers }) => {
+  return await createContext(opts);
+};
+
+export const createTRPCStreamingContext = async (
+  opts: CreateWSSContextFnOptions,
+) => {
   const headers = getFetchAPIHeaders(opts);
-  // const cookies = headers.cookie;
+  return await createContext({ headers });
+};
+
+const createContext = async (opts: { headers: Headers }) => {
+  const headers = opts.headers;
   const cookies = headers.get("cookie")!;
   if (!cookies) {
     // there are no cookies. incognito mode? or maybe they're not logged in.

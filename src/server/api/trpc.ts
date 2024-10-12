@@ -15,12 +15,8 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import serviceAccount from "@/firebase/checkletapp-firebase-adminsdk-25jmk-cd91baf75e.json";
-import { serverConfig } from "@/firebase/config";
-import { type UserCtx } from "@/firebase/edge_env";
-import { db } from "@/server/db";
-import { parse } from "cookie";
+import { type createTRPCContext } from "@/server/sockets/context";
 import admin, { type ServiceAccount } from "firebase-admin";
-import { getCookiesTokens } from "next-firebase-auth-edge/lib/next/tokens";
 
 /**
  * 1. CONTEXT
@@ -41,72 +37,6 @@ if (!admin.apps.length) {
     credential: admin.credential.cert(serviceAccount as ServiceAccount),
   });
 }
-
-export const convertToUserCtx = (user: admin.auth.DecodedIdToken): UserCtx => {
-  return {
-    id: user.uid,
-    email: user.email!,
-    email_verified: user.email_verified!,
-  };
-};
-
-export const createTRPCContext = async (opts: { headers: Headers }) => {
-  // const firebaseApp = initializeApp(clientConfig);
-  const cookies = opts.headers.get("cookie")!;
-  if (!cookies) {
-    // there are no cookies. incognito mode? or maybe they're not logged in.
-    // it's fine. user will just be null
-    return {
-      db,
-      ...opts,
-      user: null,
-    };
-  }
-
-  // Retrieve tokens using next-firebase-auth-edge
-  let tokens;
-  try {
-    tokens = await getCookiesTokens(parse(cookies), {
-      // apiKey: clientConfig.apiKey,
-      cookieName: serverConfig.cookieName,
-      cookieSignatureKeys: serverConfig.cookieSignatureKeys,
-      // cookieSerializeOptions: serverConfig.cookieSerializeOptions,
-      // serviceAccount: serverConfig.serviceAccount,
-    });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (_err) {
-    // console.error("Error getting cookies tokens", _err);
-    // there is a high chance this is a InvalidTokenError: MISSING_CREDENTIALS: Missing credentials error
-    // basically, the user is not logged in. this is fine. we can just return null
-
-    return {
-      db,
-      ...opts,
-      user: null,
-    };
-  }
-
-  let user = null;
-
-  // Verify the ID token if it exists
-  if (tokens.idToken) {
-    try {
-      // const firebaseAuth = getAuth(firebaseApp);
-      user = convertToUserCtx(await admin.auth().verifyIdToken(tokens.idToken));
-    } catch (error) {
-      console.error("Error verifying ID token:", error);
-    }
-  }
-  // console.log("user", user);
-
-  return {
-    db,
-    ...opts,
-    user,
-    // req,
-    // res,
-  };
-};
 
 /**
  * 2. INITIALIZATION
