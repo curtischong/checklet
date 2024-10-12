@@ -207,9 +207,10 @@ export const Editor = ({
           },
           {
             signal: controller.signal, // Attach the abort signal
-            onData(data: string) {
+            onData(thoughtChunk: string) {
+              console.log("checkDocStreamingdata", thoughtChunk);
               // Append each streamed chunk of content
-              setCheckerThoughts((thoughts) => (thoughts ?? "") + data);
+              setCheckerThoughts((thoughts) => (thoughts ?? "") + thoughtChunk);
             },
             onError(error) {
               console.error("Error in subscription", error);
@@ -217,6 +218,7 @@ export const Editor = ({
               setCheckerState(CheckerState.Default);
             },
             onComplete() {
+              console.log("checkDocStreamingcmplete");
               setCheckerState(CheckerState.Improving);
             },
           },
@@ -259,6 +261,7 @@ export const Editor = ({
         setHasModifiedTextAfterChecking(false);
 
         const newSuggestions = response.suggestions;
+        console.log("newSuggestions", newSuggestions);
 
         // only show suggestions the user didn't dismiss. obv if they refresh the page this set isn't persisted. but it's okay!
         const filteredSuggestions = newSuggestions.filter(
