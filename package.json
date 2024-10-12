@@ -13,7 +13,7 @@
     "db:studio": "prisma studio",
     "db:reset": "prisma migrate reset",
     "websocket": "cp .env sockets/.env && cd sockets && npm run websocket",
-    "dev": "npm run setup-dev && concurrently \"next dev\" \"npm run websocket\"",
+    "dev": "npm run setup-dev && concurrently -n \"Next.js,Websocket\" -c \"green,magenta\" \"next dev\" \"npm run websocket\"",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start"
