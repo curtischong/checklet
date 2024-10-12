@@ -51,3 +51,4 @@ yarn-error.log*
 /src/firebase/checkletapp-firebase-adminsdk-25jmk-cd91baf75e.json
 .chatgpt_history
 standalone.zip
+/sockets/dist

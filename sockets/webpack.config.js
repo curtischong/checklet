@@ -36,7 +36,7 @@ module.exports = {
             configFile: "tsconfig.websocket.json", // Specify your tsconfig file here
           },
         },
-        exclude: /node_modules/,
+        exclude: [/node_modules/, /\.d\.ts$/],
       },
     ],
   },
