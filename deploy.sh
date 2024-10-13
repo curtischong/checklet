@@ -45,7 +45,8 @@ tmux kill-session -t $session_name
 tmux new-session -d -s $session_name -n server
 
 # Run the server in the first window
-tmux send-keys -t $session_name 'export OPENAI_API_KEY=${OPENAI_KEY} && node /home/ubuntu/standalone/server.js' C-m
+# export next sharp path to fix error: https://nextjs.org/docs/messages/sharp-missing-in-production
+tmux send-keys -t $session_name 'export OPENAI_API_KEY=${OPENAI_KEY} && export NEXT_SHARP_PATH=/tmp/node_modules/sharp && node /home/ubuntu/standalone/server.js' C-m
 
 # Create a new window for the socket server
 tmux new-window -t $session_name -n socket-server
