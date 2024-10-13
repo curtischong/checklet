@@ -10,20 +10,18 @@ module.exports = {
     filename: "bundle.mjs",
     path: path.resolve(__dirname, "dist"),
     library: {
-      type: "module", // Set the output library type to 'module'
+      type: "module",
     },
-    chunkFormat: "module", // Specify the chunk format directly
+    chunkFormat: "module",
   },
   experiments: {
-    outputModule: true, // Enable output as an ES module
+    outputModule: true,
   },
   resolve: {
     extensions: [".ts", ".js"],
     alias: {
       "@": path.resolve(__dirname, "../src"),
       "@/*": path.resolve(__dirname, "../src/*"),
-      //   "@/env": path.resolve(__dirname, "../env.js"),
-      //   "@public/*": path.resolve(__dirname, "../public"),
     },
   },
   module: {
@@ -33,19 +31,30 @@ module.exports = {
         use: {
           loader: "ts-loader",
           options: {
-            configFile: "tsconfig.websocket.json", // Specify your tsconfig file here
+            configFile: "tsconfig.websocket.json",
           },
         },
         exclude: [/node_modules/, /\.d\.ts$/],
       },
     ],
   },
+  optimization: {
+    minimize: false, // Disable minification for debugging purposes
+  },
   plugins: [
     new webpack.ContextReplacementPlugin(
       /express[\/\\]lib/,
       path.resolve(__dirname, "node_modules"),
     ),
+    // // Add DefinePlugin to handle read-only property workarounds
+    // new webpack.DefinePlugin({
+    //   "process.env": JSON.stringify(process.env),
+    // }),
+    // new webpack.NormalModuleReplacementPlugin(
+    //   /difflib/,
+    //   path.resolve(__dirname, "path-to-custom-patched-difflib"),
+    // ), // Optional if you want to replace difflib with a patched version
   ],
-  target: "node18", // Ensure the target is set to a Node.js environment that supports ES modules
-  mode: "production", // or 'development' depending on your needs
+  target: "node18",
+  mode: "production", // Use development for debugging
 };
