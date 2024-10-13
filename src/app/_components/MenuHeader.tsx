@@ -33,7 +33,7 @@ export const MenuHeader = () => {
   }, []);
 
   return (
-    <div className="fixed left-0 top-0 z-10 w-full">
+    <div className="fixed left-0 top-0 z-40 w-full">
       <Link className="absolute left-4 mt-4 font-mackinac" href="/">
         Checklet
       </Link>

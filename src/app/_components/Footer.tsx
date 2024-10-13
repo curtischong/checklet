@@ -8,7 +8,7 @@ export const Footer = () => {
   return (
     <div
       className={classNames(
-        "relative bottom-0 z-50 mt-[30px] flex min-h-[55px] w-full flex-row flex-wrap justify-center gap-x-8 gap-y-3 bg-[#f7b7b8] py-4",
+        "relative bottom-0 z-40 mt-[30px] flex min-h-[55px] w-full flex-row flex-wrap justify-center gap-x-8 gap-y-3 bg-[#f7b7b8] py-4",
       )}
     >
       <Link href="/privacy-policy">Privacy Policy</Link>
