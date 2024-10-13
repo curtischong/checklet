@@ -76,7 +76,7 @@ function getEndingLink(): TRPCLink<AppRouter> {
   }
 
   const client = createWSClient({
-    url: `ws://localhost:3001`,
+    url: `ws://localhost:${process.env.NEXT_PUBLIC_SOCKET_SERVER_EXPOSED_PORT}`,
   });
   return wsLink({
     client,

@@ -11,7 +11,7 @@ cp -r .next/static .next/standalone/.next/
 cp -r public .next/standalone/
 cp node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node .next/standalone/.next/server
 
-cp sockets/dist/bundle.js .next/standalone/websocket_server.js
+cp sockets/dist/bundle.js .next/standalone/websocket_server.cjs
 
 rm standalone.zip
 cd .next
@@ -52,5 +52,5 @@ tmux new-window -t $session_name -n socket-server
 
 # Run the server in the first window
 # cd to standalone so it can see the .env file
-tmux send-keys -t $session_name:socket-server 'cd /home/ubuntu/standalone && node websocket_server.js' C-m
+tmux send-keys -t $session_name:socket-server 'cd /home/ubuntu/standalone && node websocket_server.cjs' C-m
 EOF
