@@ -4,7 +4,6 @@ import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import {
   createTRPCClient,
   createWSClient,
-  httpBatchLink,
   loggerLink,
   wsLink,
   type TRPCLink,
@@ -66,17 +65,17 @@ console.log(
 );
 
 function getEndingLink(): TRPCLink<AppRouter> {
-  if (typeof window === "undefined") {
-    httpBatchLink({
-      transformer: SuperJSON,
-      url: getBaseUrl() + "/api/trpc",
-      headers: () => {
-        const headers = new Headers();
-        headers.set("x-trpc-source", "nextjs-react");
-        return headers;
-      },
-    });
-  }
+  // if (typeof window === "undefined") {
+  //   httpBatchLink({
+  //     transformer: SuperJSON,
+  //     url: getBaseUrl() + "/api/trpc",
+  //     headers: () => {
+  //       const headers = new Headers();
+  //       headers.set("x-trpc-source", "nextjs-react");
+  //       return headers;
+  //     },
+  //   });
+  // }
 
   const client = createWSClient({
     url: `${process.env.NEXT_PUBLIC_SOCKET_HOST}:${process.env.NEXT_PUBLIC_SOCKET_SERVER_EXPOSED_PORT}`,
@@ -141,6 +140,6 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
   );
 }
 
-function getBaseUrl() {
-  return `${process.env.NEXT_PUBLIC_URL}`;
-}
+// function getBaseUrl() {
+//   return `${process.env.NEXT_PUBLIC_URL}`;
+// }
