@@ -300,7 +300,7 @@ export const Editor = ({
           <EditorHeader
             storefront={checkerStorefront}
             editorState={editorState}
-            onTryWithSampleDoc={async () => {
+            onTryWithSampleDoc={() => {
               // DO NOT just call setEditorState so the user can undo this action with ctrl + z
               if (!editorRef.current) {
                 return;

@@ -2,7 +2,7 @@
 
 rm -rf .next
 
-npm run build || { echo "npm run build failed"; exit 1; }
+npm run build && cd sockets && npm run build && cd ../ || { echo "npm run build failed"; exit 1; }
 
  # https://github.com/vercel/next.js/issues/49283
  # the static files are NOT copied to the .next directory under standalone because
@@ -10,6 +10,8 @@ npm run build || { echo "npm run build failed"; exit 1; }
 cp -r .next/static .next/standalone/.next/
 cp -r public .next/standalone/
 cp node_modules/.prisma/client/libquery_engine-debian-openssl-3.0.x.so.node .next/standalone/.next/server
+
+cp ../socket-server/dist/bundle.mjs .next/standalone/websocket_server.mjs
 
 rm standalone.zip
 cd .next
@@ -44,4 +46,11 @@ tmux new-session -d -s $session_name -n server
 
 # Run the server in the first window
 tmux send-keys -t $session_name 'export OPENAI_API_KEY=${OPENAI_KEY} && node /home/ubuntu/standalone/server.js' C-m
+
+# Create a new window for the socket server
+tmux new-window -t $session_name -n socket-server
+
+# Run the server in the first window
+# cd to standalone so it can see the .env file
+tmux send-keys -t $session_name:socket-server 'cd /home/azureuser/standalone && node websocket_server.mjs' C-m
 EOF
