@@ -30,7 +30,7 @@ wss.on("connection", (ws) => {
     console.log(`➖➖ Connection (${wss.clients.size})`);
   });
 });
-console.log(`✅ WebSocket Server listening on ws://localhost:${port}`);
+console.log(`✅ WebSocket Server listening on http://localhost:${port}`);
 process.on("SIGTERM", () => {
   console.log("SIGTERM");
   handler.broadcastReconnectNotification();
