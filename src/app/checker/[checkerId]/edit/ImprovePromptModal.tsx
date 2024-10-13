@@ -55,7 +55,7 @@ const Modal = ({
     }
   };
 
-  const improvePrompt = async (improvementPrompt: string, prompt: string) => {
+  const improvePrompt = (improvementPrompt: string, prompt: string) => {
     // Create a new AbortController instance for each request
     const controller = new AbortController();
     setAbortController(controller); // Store the controller to allow cancellation later

@@ -4,18 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "websocket": "dotenv -e ../.env -- nodemon -e '*' --watch ../src --watch ./ --watch ../public --watch ../scripts --watch ../prisma --exec tsx --tsconfig tsconfig.websocket.json ws_server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "websocket": "nodemon -e '*' --watch ../src --watch ./ --watch ../public --watch ../scripts --watch ../prisma --exec tsx --tsconfig tsconfig.websocket.json websocket_server.ts",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bufferutil": "^4.0.8",
     "dotenv": "^16.4.5",
     "dotenv-cli": "^7.4.2",
+    "openai": "^4.67.3",
     "tsx": "^4.19.1",
+    "utf-8-validate": "^6.0.4",
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.6.3",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
   }
 }

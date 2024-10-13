@@ -4,9 +4,7 @@ import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import {
   createTRPCClient,
   createWSClient,
-  httpBatchLink,
   loggerLink,
-  unstable_httpBatchStreamLink,
   wsLink,
   type TRPCLink,
 } from "@trpc/client";
@@ -62,21 +60,25 @@ export const apiClient = createTRPCClient<AppRouter>({
   ],
 });
 
+console.log(
+  `crate ws client url: ${process.env.NEXT_PUBLIC_SOCKET_HOST}:${process.env.NEXT_PUBLIC_SOCKET_SERVER_EXPOSED_PORT}`,
+);
+
 function getEndingLink(): TRPCLink<AppRouter> {
-  if (typeof window === "undefined") {
-    httpBatchLink({
-      transformer: SuperJSON,
-      url: getBaseUrl() + "/api/trpc",
-      headers: () => {
-        const headers = new Headers();
-        headers.set("x-trpc-source", "nextjs-react");
-        return headers;
-      },
-    });
-  }
+  // if (typeof window === "undefined") {
+  //   httpBatchLink({
+  //     transformer: SuperJSON,
+  //     url: getBaseUrl() + "/api/trpc",
+  //     headers: () => {
+  //       const headers = new Headers();
+  //       headers.set("x-trpc-source", "nextjs-react");
+  //       return headers;
+  //     },
+  //   });
+  // }
 
   const client = createWSClient({
-    url: `ws://localhost:3001`,
+    url: `${process.env.NEXT_PUBLIC_SOCKET_HOST}:${process.env.NEXT_PUBLIC_SOCKET_SERVER_EXPOSED_PORT}`,
   });
   return wsLink({
     client,
@@ -124,15 +126,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
             process.env.NODE_ENV === "development" ||
             (op.direction === "down" && op.result instanceof Error),
         }),
-        unstable_httpBatchStreamLink({
-          transformer: SuperJSON,
-          url: getBaseUrl() + "/api/trpc",
-          headers: () => {
-            const headers = new Headers();
-            headers.set("x-trpc-source", "nextjs-react");
-            return headers;
-          },
-        }),
+        getEndingLink(),
       ],
     }),
   );
@@ -146,8 +140,6 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
   );
 }
 
-function getBaseUrl() {
-  if (typeof window !== "undefined") return window.location.origin;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return `http://localhost:${process.env.PORT ?? 3000}`;
-}
+// function getBaseUrl() {
+//   return `${process.env.NEXT_PUBLIC_URL}`;
+// }

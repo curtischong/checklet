@@ -8,7 +8,10 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "isolatedModules": true,
-    // "strictNullChecks": false,
+    "strictNullChecks": false,
+    "resolveJsonModule": true,
+    "checkJs": false,
+    "noImplicitAny": false,
     "paths": {
       "@/*": ["../src/*"],
       "@public/*": ["../public/*"]

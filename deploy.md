@@ -18,3 +18,6 @@ docker run -d --name postgres-container -p 5432:5432 -e POSTGRES_PASSWORD=<passw
 ```
 
 Then run make apply-all-migrations-prod to apply the migrations
+
+add port 2053 to the firewall, so we can talk to the socket server
+sudo ufw allow 2053/tcp
