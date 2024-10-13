@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "websocket": "dotenv -e ../.env -- nodemon -e '*' --watch ../src --watch ./ --watch ../public --watch ../scripts --watch ../prisma --exec tsx --tsconfig tsconfig.websocket.json websocket_server.ts",
+    "websocket": "nodemon -e '*' --watch ../src --watch ./ --watch ../public --watch ../scripts --watch ../prisma --exec tsx --tsconfig tsconfig.websocket.json websocket_server.ts",
     "build": "webpack"
   },
   "author": "",

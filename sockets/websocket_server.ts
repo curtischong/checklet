@@ -1,10 +1,14 @@
+import dotenvLoad from "./load_dotenv";
+console.log("is env loaded?", dotenvLoad);
+
 import { appRouter } from "@/server/api/root";
 import { createTRPCStreamingContext } from "@/server/sockets/context";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 import { WebSocketServer } from "ws";
 
+const port = 3001;
 const wss = new WebSocketServer({
-  port: 3001,
+  port,
 });
 
 const handler = applyWSSHandler({
@@ -26,7 +30,7 @@ wss.on("connection", (ws) => {
     console.log(`➖➖ Connection (${wss.clients.size})`);
   });
 });
-console.log("✅ WebSocket Server listening on ws://localhost:3001");
+console.log(`✅ WebSocket Server listening on ws://localhost:${port}`);
 process.on("SIGTERM", () => {
   console.log("SIGTERM");
   handler.broadcastReconnectNotification();
