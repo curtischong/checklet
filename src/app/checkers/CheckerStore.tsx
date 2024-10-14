@@ -16,9 +16,9 @@ export const CheckerStore = (): JSX.Element => {
   return (
     <div className="mt-10 flex flex-col items-center space-y-6">
       {/* TODO: add a search bar */}
-      {checkers.map((checker, idx) => {
+      {checkers.map((checker) => {
         return (
-          <div key={`storefront-${idx}`}>
+          <div key={checker.id}>
             <StoreFront checker={checker} />
           </div>
         );

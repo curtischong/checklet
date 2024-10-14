@@ -20,7 +20,7 @@ export const NavigationPath = ({ sections }: Props): JSX.Element => {
       {sections.map((section, index) => {
         const isLastSection = index === sections.length - 1;
         return (
-          <React.Fragment key={index}>
+          <React.Fragment key={`${section.name}${index}`}>
             <p
               className={classNames({
                 "cursor-pointer text-gray-400 transition duration-300 hover:text-gray-600":
