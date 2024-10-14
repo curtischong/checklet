@@ -40,9 +40,9 @@ export const Dashboard = ({ user }: Props) => {
       <div className="container mx-auto ml-20 mt-20">
         <p className="font-mackinac text-2xl font-bold">Your Checkers</p>
         <div className="mx-auto ml-0 mt-4 w-[450px]">
-          {currCheckers.map((checkerBlueprint, idx) => {
+          {currCheckers.map((checkerBlueprint) => {
             return (
-              <div key={`checker-${idx}`}>
+              <div key={`checker-${checkerBlueprint.id}`}>
                 <DashboardChecker
                   user={user}
                   blueprint={checkerBlueprint}
