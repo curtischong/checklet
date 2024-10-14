@@ -279,6 +279,12 @@ export const Editor = ({
     );
   }, [checkerState]);
 
+  const onStop = useCallback(() => {
+    abortController?.abort();
+    setCheckerState(CheckerState.Default);
+    setSidePanelPageEnum(SidePanelPageEnum.Tips);
+  }, [setCheckerState, setSidePanelPageEnum, abortController]);
+
   return (
     <div className="mx-auto flex h-full w-full flex-row">
       <div
@@ -373,6 +379,7 @@ export const Editor = ({
         setSortType={setSortType}
         dismissedSuggestionHashes={dismissedSuggestionHashes}
         checkDocument={checkDocStreaming}
+        onStop={onStop}
       />
     </div>
   );

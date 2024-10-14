@@ -13,6 +13,7 @@ interface Props {
     checkerState: CheckerState,
   ) => void;
   storefront: CheckerStorefront;
+  onStop: () => void;
 }
 
 export const SuggestionContainerMetabuttons = ({
@@ -20,11 +21,12 @@ export const SuggestionContainerMetabuttons = ({
   checkerState,
   checkDocument,
   storefront,
+  onStop,
 }: Props) => {
   const [showStopButton, setShowStopButton] = useState(false);
 
   useEffect(() => {
-    if (checkerState !== CheckerState.Default) {
+    if (checkerState === CheckerState.Default) {
       setShowStopButton(false);
     } else {
       setShowStopButton(true);
@@ -48,12 +50,12 @@ export const SuggestionContainerMetabuttons = ({
       {showStopButton && (
         <div
           className={`flex cursor-pointer flex-row self-center text-gray-500 transition-all duration-300 hover:text-gray-800 ${
-            checkerState === CheckerState.Default
-              ? "animate-fadeInRight"
-              : "animate-fadeOutLeft"
+            showStopButton ? "animate-fadeInRight" : "animate-fadeOutLeft"
           }`}
         >
-          <div className="ml-2 text-sm">Stop</div>
+          <div className="ml-2 text-sm" onClick={onStop}>
+            Stop
+          </div>
           {/* the color of the stop button follows the text color */}
           <StopIcon className="bg-red ml-2 h-4 w-4 self-center fill-current" />
         </div>

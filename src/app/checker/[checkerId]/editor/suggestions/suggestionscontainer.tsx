@@ -47,6 +47,7 @@ export type Props = {
     doc: string,
     checkerState: CheckerState,
   ) => void;
+  onStop: () => void;
 };
 
 export enum SortType {
@@ -84,6 +85,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   setSortType,
   dismissedSuggestionHashes,
   checkDocument,
+  onStop,
 }: Props) => {
   const [sortedSuggestions, setSortedSuggestions] = useState<Suggestion[]>([]);
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
@@ -269,6 +271,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
         checkerState={checkerState}
         checkDocument={checkDocument}
         storefront={storefront}
+        onStop={onStop}
       />
       <div className="h-[10px]">
         {checkerState === CheckerState.Improving && (
