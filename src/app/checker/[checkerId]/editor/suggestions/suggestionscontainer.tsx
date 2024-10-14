@@ -10,14 +10,12 @@ import { SlidingRadioButton } from "@/app/_components/ui/SlidingRadioButton";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import LoadingBar from "@/app/checker/[checkerId]/editor/LoadingBar";
-import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
 import { ThoughtProcess } from "@/app/checker/[checkerId]/editor/suggestions/ThoughtProcess";
 import { apiClient, handleErr } from "@/trpc/react";
 import { scrollToChild } from "@/utils/scroll";
 import { pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
-import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { NoSuggestionMessage } from "./nosuggestionmessage";
 import {
@@ -264,8 +262,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
     isRegenerating,
   ]);
 
-  const pathName = usePathname();
-
   return (
     <div className="sticky right-10 top-0 z-30 flex h-full w-[400px] flex-col pt-[50px]">
       <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
@@ -279,14 +275,6 @@ export const SuggestionsContainer: React.FC<Props> = ({
         >
           Check Document
         </LoadingButton>
-        {!pathName.endsWith("/edit") && (
-          <div className="flex flex-row space-x-3">
-            <CheckerMetaButtons
-              checkerId={storefront.checkerId}
-              checkerCreatorId={storefront.creatorId}
-            />
-          </div>
-        )}
       </div>
       <div className="h-[10px]">
         {checkerState === CheckerState.Improving && (

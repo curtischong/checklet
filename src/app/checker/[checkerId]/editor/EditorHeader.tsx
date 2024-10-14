@@ -1,6 +1,6 @@
-import Popconfirm from "@/app/_components/ui/PopConfirm";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { CheckerDesc } from "@/app/checker/[checkerId]/editor/CheckerDesc";
+import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
 import { type GetCheckerByIdStrictType } from "@/server/api/routers/checker/checker";
 import { apiClient, handleErr } from "@/trpc/react";
 import Link from "next/link";
@@ -48,16 +48,16 @@ export const EditorHeader = ({
 
           {/* only show this in the editor page. Since the sampledoc is the same doc in the create checker page! */}
           {!pathName.endsWith("/edit") && (
-            <Popconfirm
-              title="Clear your document with the sample doc?"
-              autoConfirmOnPress={
-                editorState === "" || editorState === storefront.sampleDoc
-              }
-              onConfirm={onTryWithSampleDoc}
-              className="mr-4 cursor-pointer rounded border border-gray-400 px-1 text-center text-gray-600 transition duration-300 hover:bg-[#5384d4] hover:text-white focus:bg-[#43b56c] focus:text-white"
-            >
-              Try with Sample Doc
-            </Popconfirm>
+            <>
+              <div className="flex flex-row space-x-3">
+                <CheckerMetaButtons
+                  editorState={editorState}
+                  onTryWithSampleDoc={onTryWithSampleDoc}
+                  storefront={storefront}
+                  checkerCreatorId={storefront.creatorId}
+                />
+              </div>
+            </>
           )}
         </div>
         {clonedFromChecker && (
