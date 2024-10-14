@@ -87,7 +87,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
     return (
       <div
         ref={ref}
-        className={`max-w-[350px] bg-white shadow-around ${
+        className={`bg-white shadow-around ${
           isActive
             ? "mb-8 w-full animate-open rounded-lg p-4"
             : "mb-5 flex w-full rounded-md p-4 opacity-100"

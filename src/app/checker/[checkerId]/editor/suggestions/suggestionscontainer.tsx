@@ -263,7 +263,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   ]);
 
   return (
-    <div className="sticky right-10 top-0 z-30 flex h-full w-[400px] flex-col pt-[50px]">
+    <div className="sticky right-10 top-0 z-30 flex h-full max-w-[400px] flex-col pt-[50px]">
       <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
         <LoadingButton
           onClick={() =>
