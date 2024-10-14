@@ -275,6 +275,9 @@ export const SuggestionsContainer: React.FC<Props> = ({
         >
           Check Document
         </LoadingButton>
+        {checkerState !== CheckerState.Default && (
+          <div className="ml-2 text-sm text-gray-500">Stop</div>
+        )}
       </div>
       <div className="h-[10px]">
         {checkerState === CheckerState.Improving && (
