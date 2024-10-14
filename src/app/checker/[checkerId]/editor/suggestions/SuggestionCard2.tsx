@@ -124,7 +124,7 @@ const SuggestionComponent = React.forwardRef<HTMLDivElement, Props>(
                 partClass = "text-red-500 line-through";
               }
               return (
-                <span key={index} className={partClass}>
+                <span key={`${part.value}${index}`} className={partClass}>
                   {part.value}
                 </span>
               );

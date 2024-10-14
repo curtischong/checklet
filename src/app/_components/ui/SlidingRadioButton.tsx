@@ -20,10 +20,10 @@ export const SlidingRadioButton = ({
         className,
       )}
     >
-      {options.map((option, idx) => {
+      {options.map((option) => {
         return (
           <div
-            key={`sliding-radio-${idx}`}
+            key={`sliding-radio-${option}`}
             onClick={() => setSelected(option)}
             className={classNames(
               "cursor-pointer select-none rounded-md px-2 py-[1px] text-sm transition duration-300",

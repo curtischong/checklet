@@ -180,12 +180,12 @@ export const SuggestionsContainer: React.FC<Props> = ({
     suggestionsRefs.current = {}; // reset refs
     if (editorState !== "") {
       if (sortedSuggestions.length > 0) {
-        return sortedSuggestions.map((s: Suggestion, index: number) => {
+        return sortedSuggestions.map((s: Suggestion) => {
           const ref = React.createRef<HTMLDivElement>();
           suggestionsRefs.current[s.suggestionId] = ref;
           return (
             <SuggestionCard2
-              key={index}
+              key={s.suggestionId}
               suggestion={s}
               activeSuggestion={activeSuggestion}
               onClick={() => onCollapseClick(s)}
