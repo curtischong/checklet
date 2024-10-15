@@ -47,8 +47,7 @@ export const Editor = ({
   const [sortType, setSortType] = useState(SortType.TextOrder);
   const [checkerThoughts, setCheckerThoughts] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [abortController, setAbortController] =
-    useState<AbortController | null>(null);
+  const abortController = useRef<AbortController | null>(null);
 
   const [checkerState, setCheckerState] = useState<CheckerState>(
     CheckerState.Default,
@@ -194,7 +193,7 @@ export const Editor = ({
       setCheckerState(CheckerState.Thinking);
       // Create a new AbortController instance for each request
       const controller = new AbortController();
-      setAbortController(controller); // Store the controller to allow cancellation later
+      abortController.current = controller; // Store the controller to allow cancellation later
       // console.log("streaming");
       setSidePanelPageEnum(SidePanelPageEnum.Thoughts);
 
@@ -278,6 +277,12 @@ export const Editor = ({
       },
     );
   }, [checkerState]);
+
+  const onStop = useCallback(() => {
+    abortController.current?.abort();
+    setCheckerState(CheckerState.Default);
+    setSidePanelPageEnum(SidePanelPageEnum.Tips);
+  }, [setCheckerState, setSidePanelPageEnum, abortController]);
 
   return (
     <div className="mx-auto flex h-full w-full flex-row">
@@ -373,6 +378,7 @@ export const Editor = ({
         setSortType={setSortType}
         dismissedSuggestionHashes={dismissedSuggestionHashes}
         checkDocument={checkDocStreaming}
+        onStop={onStop}
       />
     </div>
   );

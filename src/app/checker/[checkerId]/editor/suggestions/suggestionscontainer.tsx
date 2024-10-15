@@ -5,12 +5,12 @@ import {
   YayChecklet,
 } from "@/app/_components/checklets/checklets";
 import { SortIcon } from "@/app/_components/icons/SortIcon";
-import { LoadingButton } from "@/app/_components/ui/Button";
 import { SlidingRadioButton } from "@/app/_components/ui/SlidingRadioButton";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import LoadingBar from "@/app/checker/[checkerId]/editor/LoadingBar";
 import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
+import { SuggestionContainerMetabuttons } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionContainerMetabuttons";
 import { ThoughtProcess } from "@/app/checker/[checkerId]/editor/suggestions/ThoughtProcess";
 import { apiClient, handleErr } from "@/trpc/react";
 import { scrollToChild } from "@/utils/scroll";
@@ -47,6 +47,7 @@ export type Props = {
     doc: string,
     checkerState: CheckerState,
   ) => void;
+  onStop: () => void;
 };
 
 export enum SortType {
@@ -84,6 +85,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   setSortType,
   dismissedSuggestionHashes,
   checkDocument,
+  onStop,
 }: Props) => {
   const [sortedSuggestions, setSortedSuggestions] = useState<Suggestion[]>([]);
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
@@ -264,18 +266,13 @@ export const SuggestionsContainer: React.FC<Props> = ({
 
   return (
     <div className="sticky right-10 top-0 z-30 flex h-full max-w-[400px] flex-col pt-[50px]">
-      <div className="mx-auto flex h-[40px] flex-row items-center justify-normal space-x-8">
-        <LoadingButton
-          onClick={() =>
-            checkDocument(storefront.checkerId, editorState, checkerState)
-          }
-          loading={checkerState !== CheckerState.Default}
-          className="h-9 w-40"
-          disabled={editorState === ""}
-        >
-          Check Document
-        </LoadingButton>
-      </div>
+      <SuggestionContainerMetabuttons
+        editorState={editorState}
+        checkerState={checkerState}
+        checkDocument={checkDocument}
+        storefront={storefront}
+        onStop={onStop}
+      />
       <div className="h-[10px]">
         {checkerState === CheckerState.Improving && (
           <LoadingBar duration={editorState.length / 100 + 4} />

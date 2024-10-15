@@ -40,10 +40,20 @@ export default {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        fadeInRight: {
+          "0%": { opacity: "0", transform: "translateX(-20px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        fadeOutLeft: {
+          "0%": { opacity: "1", transform: "translateX(0)" },
+          "100%": { opacity: "0", transform: "translateX(-20px)" },
+        },
       },
       animation: {
         open: "open 0.3s linear forwards",
         close: "close 0.3s linear forwards",
+        fadeInRight: "fadeInRight 0.5s ease forwards",
+        fadeOutLeft: "fadeOutLeft 0.5s ease forwards",
       },
     },
   },
