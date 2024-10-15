@@ -52,10 +52,9 @@ export const SuggestionContainerMetabuttons = ({
           className={`flex cursor-pointer flex-row self-center text-gray-500 transition-all duration-300 hover:text-gray-800 ${
             showStopButton ? "animate-fadeInRight" : "animate-fadeOutLeft"
           }`}
+          onClick={onStop}
         >
-          <div className="ml-2 text-sm" onClick={onStop}>
-            Stop
-          </div>
+          <div className="ml-2 text-sm">Stop</div>
           {/* the color of the stop button follows the text color */}
           <StopIcon className="bg-red ml-2 h-4 w-4 self-center fill-current" />
         </div>
