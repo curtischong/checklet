@@ -101,7 +101,7 @@ export const ThoughtProcess = ({ checkerThoughts }: Props) => {
           <ThinLine />
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            className="markdown space-y-0 px-4 pb-32"
+            className="markdown space-y-0 px-4 pb-10"
             // components={{
             //   a: ({ ...props }) => (
             //     <a
