@@ -1,6 +1,7 @@
 import { serverConfig } from "@/firebase/config";
 import { type UserCtx } from "@/firebase/edge_env";
 import { db } from "@/server/db";
+import { TRPCError } from "@trpc/server";
 import { type CreateWSSContextFnOptions } from "@trpc/server/adapters/ws";
 import { parse } from "cookie";
 import admin from "firebase-admin";
@@ -85,7 +86,14 @@ const createContext = async (opts: { headers: Headers }) => {
       // const firebaseAuth = getAuth(firebaseApp);
       user = convertToUserCtx(await admin.auth().verifyIdToken(tokens.idToken));
     } catch (error) {
-      console.error("Error verifying ID token:", error);
+      if (String(error).startsWith("Firebase ID token has expired.")) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message:
+            "Your auth token has expired. Refresh and you should be good to go!",
+        });
+      }
+      // console.error("Error verifying ID token:", error);
     }
   }
   // console.log("user", user);
