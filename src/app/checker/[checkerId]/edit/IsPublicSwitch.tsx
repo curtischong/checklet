@@ -1,7 +1,8 @@
 import { LabelWithSwitch } from "@/app/_components/ui/Switch";
-import { api } from "@/trpc/react";
+import { useTrpcCtx } from "@/app/TrpcCtx";
+import { handleErr } from "@/trpc/react";
 import { type SetState } from "@/utils/types";
-import React from "react";
+import React, { useCallback } from "react";
 import { toast } from "react-toastify";
 
 interface Props {
@@ -35,33 +36,35 @@ export const IsPublicSwitchWithoutState = ({
   isPublic,
   setIsPublic,
 }: IsPublicSwitchWithoutStateProps): JSX.Element => {
-  const updateIsPublic = api.checker.updateIsPublic.useMutation({
-    onMutate: () => {
-      setIsPublic(!isPublic); // optimistically update the UI
-    },
-    onSuccess: (data) => {
-      if (data.isPublic) {
-        toast.success("Your checker is now public!");
-      } else {
-        toast.success("Your checker is now private");
-      }
-      setIsPublic(data.isPublic);
-    },
-    onError: (data) => {
-      const errMsg = "Failed to update isPublic. Error: " + data.message;
-      toast.error(errMsg);
-      console.warn(errMsg);
-    },
-  });
+  const { trpcClient } = useTrpcCtx();
+
+  const onSwitchToggle = useCallback((newIsPublic: boolean) => {
+    setIsPublic(newIsPublic); // optimistically update the UI
+    handleErr(
+      trpcClient.checker.updateIsPublic.mutate({
+        id: checkerId,
+        isPublic: newIsPublic,
+      }),
+      (data) => {
+        if (data.isPublic) {
+          toast.success("Your checker is now public!");
+        } else {
+          toast.success("Your checker is now private");
+        }
+        setIsPublic(data.isPublic);
+      },
+      () => {
+        setIsPublic(!newIsPublic);
+      },
+    );
+  }, []);
 
   return (
     <LabelWithSwitch
       text="Is Public:"
       helpText="Share your Checker with friends by making it public!"
       isChecked={isPublic}
-      setChecked={(newIsPublic: boolean) => {
-        updateIsPublic.mutate({ id: checkerId, isPublic: newIsPublic });
-      }}
+      setChecked={onSwitchToggle}
     />
   );
 };

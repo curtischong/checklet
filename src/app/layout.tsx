@@ -7,7 +7,6 @@ import { MenuHeader } from "@/app/_components/MenuHeader";
 import { ClientCtxProvider } from "@/app/ClientCtx";
 import { ScrollProvider } from "@/app/ScrollProvider";
 import { TrpcCtxProvider } from "@/app/TrpcCtx";
-import { TRPCReactProvider } from "@/trpc/react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -29,25 +28,25 @@ export default function RootLayout({
           WebkitFontSmoothing: "antialiased",
         }}
       >
-        <TRPCReactProvider>
-          <TrpcCtxProvider>
-            <ClientCtxProvider>
-              <ScrollProvider>
-                <MenuHeader />
-                <>
-                  <div
-                    style={{
-                      minHeight: "calc(100vh - 30px - 55px)",
-                    }}
-                  >
-                    {children}
-                  </div>
-                  <Footer />
-                </>
-              </ScrollProvider>
-            </ClientCtxProvider>
-          </TrpcCtxProvider>
-        </TRPCReactProvider>
+        {/* <TRPCReactProvider> */}
+        <TrpcCtxProvider>
+          <ClientCtxProvider>
+            <ScrollProvider>
+              <MenuHeader />
+              <>
+                <div
+                  style={{
+                    minHeight: "calc(100vh - 30px - 55px)",
+                  }}
+                >
+                  {children}
+                </div>
+                <Footer />
+              </>
+            </ScrollProvider>
+          </ClientCtxProvider>
+        </TrpcCtxProvider>
+        {/* </TRPCReactProvider> */}
         <ToastContainer />
       </body>
     </html>
