@@ -1,10 +1,9 @@
 "use client";
 import { clientConfig } from "@/firebase/config";
 import { type UserCtx } from "@/firebase/edge_env";
-import { useFirebaseTokenRefresher } from "@/FirebaseTokenRefresher";
 import { initializeApp, type FirebaseApp } from "firebase/app";
 import { getAuth, type Auth, type User } from "firebase/auth";
-import React from "react";
+import React, { useEffect } from "react";
 
 export interface ClientCtx {
   firebaseApp: FirebaseApp;
@@ -40,7 +39,42 @@ export const ClientCtxProvider = ({
 }): JSX.Element => {
   const [value, setValue] = React.useState<ClientCtxReact | undefined>();
 
-  useFirebaseTokenRefresher(); // we are putting this token refresher here (rather than in the layout) since hte layout is a server-side component
+  // https://chatgpt.com/share/670f2792-7db4-800e-8730-c2d32211fc51
+  // it seems like you need to manually refresh the token in firebase auth edge: https://github.com/awinogrodzki/next-firebase-auth-edge/issues/14
+  const refreshInterval = 30 * 60 * 1000;
+  useEffect(() => {
+    // this if statement is very important! we must depend on firebaseAuth since we know that firebaseApp has been initialized
+    if (!value?.ClientCtx?.firebaseAuth) {
+      return;
+    }
+
+    const refreshToken = async () => {
+      const user = value.ClientCtx?.firebaseAuth.currentUser;
+
+      if (user) {
+        // Get the new token
+        const idToken = await user.getIdToken(true);
+
+        // Update your API login endpoint with the new token
+        await fetch("/api/login", {
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
+        });
+      }
+    };
+
+    // TODO: do we need to refresh the token initially? I think we do? I'll enable it if ppl complain
+    // refreshToken();
+
+    // Set up periodic refresh
+    const interval = setInterval(() => {
+      void refreshToken();
+    }, refreshInterval);
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(interval);
+  }, [refreshInterval, value]);
 
   React.useEffect(() => {
     const firebaseApp = initializeApp(clientConfig);
