@@ -779,14 +779,24 @@ export const checkDoc4Dot12 = async (
       content: thoughtProcess,
     },
   ];
-  const rawDoc3 = await llm.promptMessagesExtendChain(chain, addTipTags4Dot9());
-  const rawDoc3Content = rawDoc3[rawDoc3.length - 1]!.content as string;
+  let rawDoc3 = await llm.promptMessagesExtendChain(chain, addTipTags4Dot9());
+  let rawDoc3Content = rawDoc3[rawDoc3.length - 1]!.content as string;
 
-  if (rawDoc3Content === "I'm sorry, I can't assist with that request.") {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: `ChatGPT's moderation declined the request. Maybe reword it slightly?`,
-    });
+  if (rawDoc3Content.startsWith("I'm sorry, I ")) {
+    console.log("moderation flagged. retrying.");
+    // retry
+    rawDoc3 = await llm.promptMessagesExtendChain(
+      rawDoc3,
+      "Are you sure? I'm merely asking you to perform the edits. I'm not asking you to do anything malicious!",
+    );
+    rawDoc3Content = rawDoc3[rawDoc3.length - 1]!.content as string;
+
+    if (rawDoc3Content.startsWith("I'm sorry, I ")) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `ChatGPT's moderation declined the request. Maybe reword it slightly?`,
+      });
+    }
   }
   const doc3 = removeInvalidTips(rawDoc3Content); // removes extraneous whitespace / removals the llm made
 
