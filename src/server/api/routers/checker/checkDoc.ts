@@ -782,7 +782,7 @@ export const checkDoc4Dot12 = async (
   const rawDoc3 = await llm.promptMessagesExtendChain(chain, addTipTags4Dot9());
   const rawDoc3Content = rawDoc3[rawDoc3.length - 1]!.content as string;
 
-  if (rawDoc3Content === "I'm sorry, I can't assist with that request.") {
+  if (rawDoc3Content.startsWith("I'm sorry, I ")) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message: `ChatGPT's moderation declined the request. Maybe reword it slightly?`,
