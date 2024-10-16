@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
-import { type FirebaseApp, initializeApp } from "firebase/app";
-import { getAuth, type Auth, type User } from "firebase/auth";
 import { clientConfig } from "@/firebase/config";
 import { type UserCtx } from "@/firebase/edge_env";
+import { useFirebaseTokenRefresher } from "@/FirebaseTokenRefresher";
+import { initializeApp, type FirebaseApp } from "firebase/app";
+import { getAuth, type Auth, type User } from "firebase/auth";
+import React from "react";
 
 export interface ClientCtx {
   firebaseApp: FirebaseApp;
@@ -38,6 +39,8 @@ export const ClientCtxProvider = ({
   children: React.ReactNode | React.ReactNode[];
 }): JSX.Element => {
   const [value, setValue] = React.useState<ClientCtxReact | undefined>();
+
+  useFirebaseTokenRefresher(); // we are putting this token refresher here (rather than in the layout) since hte layout is a server-side component
 
   React.useEffect(() => {
     const firebaseApp = initializeApp(clientConfig);
