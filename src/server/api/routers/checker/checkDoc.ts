@@ -791,6 +791,9 @@ export const checkDoc4Dot12 = async (
   const doc3 = removeInvalidTips(rawDoc3Content); // removes extraneous whitespace / removals the llm made
 
   const suggestions = extractSuggestions(doc, doc3);
+  if (suggestions.length === 0) {
+    console.log("no suggestions found. rawDoc3 is", rawDoc3Content);
+  }
 
   return {
     suggestions: removeInvalidSuggestions(suggestions),
