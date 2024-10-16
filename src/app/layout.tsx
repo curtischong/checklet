@@ -28,7 +28,6 @@ export default function RootLayout({
           WebkitFontSmoothing: "antialiased",
         }}
       >
-        {/* <TRPCReactProvider> */}
         <TrpcCtxProvider>
           <ClientCtxProvider>
             <ScrollProvider>
@@ -46,7 +45,6 @@ export default function RootLayout({
             </ScrollProvider>
           </ClientCtxProvider>
         </TrpcCtxProvider>
-        {/* </TRPCReactProvider> */}
         <ToastContainer />
       </body>
     </html>

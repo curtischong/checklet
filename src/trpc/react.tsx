@@ -7,7 +7,6 @@ import {
   wsLink,
   type TRPCLink,
 } from "@trpc/client";
-import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import SuperJSON from "superjson";
 
@@ -15,18 +14,7 @@ import { type AppRouter } from "@/server/api/root";
 import { type TRPCError } from "@trpc/server";
 import { toast } from "react-toastify";
 
-// let clientQueryClientSingleton: QueryClient | undefined = undefined;
-// const getQueryClient = () => {
-//   if (typeof window === "undefined") {
-//     // Server: always make a new query client
-//     return createQueryClient();
-//   }
-//   // Browser: use singleton pattern to keep the same query client
-//   return (clientQueryClientSingleton ??= createQueryClient());
-// };
-
 export const getTrpcClient = () => {
-  console.log("getTrpcClient");
   return createTRPCClient<AppRouter>({
     links: [
       // loggerLink({
@@ -112,36 +100,3 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  * @example type HelloOutput = RouterOutputs['example']['hello']
  */
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
-
-export const getApiClient = () => {
-  return createTRPCReact<AppRouter>();
-};
-
-// export function TRPCReactProvider(props: { children: React.ReactNode }) {
-//   // const queryClient = getQueryClient();
-
-//   // const [trpcClient] = useState(() =>
-//   //   getApiClient().createClient({
-//   //     links: [
-//   //       // loggerLink({
-//   //       //   enabled: (op) =>
-//   //       //     process.env.NODE_ENV === "development" ||
-//   //       //     (op.direction === "down" && op.result instanceof Error),
-//   //       // }),
-//   //       getEndingLink(),
-//   //     ],
-//   //   }),
-//   // );
-
-//   return (
-//     // <QueryClientProvider client={queryClient}>
-//       {/* <api.Provider client={trpcClient} queryClient={queryClient}> */}
-//       {props.children}
-//       {/* </api.Provider> */}
-//     // </QueryClientProvider>
-//   );
-// }
-
-// function getBaseUrl() {
-//   return `${process.env.NEXT_PUBLIC_URL}`;
-// }
