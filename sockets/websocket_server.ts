@@ -28,16 +28,17 @@ const handler = applyWSSHandler({
 wss.on("connection", (ws) => {
   console.log(`➕➕ Connection (${wss.clients.size})`);
 
+  // Curtis: I commented this out since I realized that the server also makes a ws connection
   // Set a timeout to close the connection after 12 hours
-  const twelveHoursInMs = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
-  const maxConnectionDuration = setTimeout(() => {
-    ws.close(1000, "Connection closed after maximum duration of 12 hours");
-    console.log("🔒 Connection closed after 12 hours");
-  }, twelveHoursInMs);
+  // const twelveHoursInMs = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+  // const maxConnectionDuration = setTimeout(() => {
+  //   ws.close(1000, "Connection closed after maximum duration of 12 hours");
+  //   console.log("🔒 Connection closed after 12 hours");
+  // }, twelveHoursInMs);
 
   ws.once("close", () => {
     console.log(`➖➖ Connection (${wss.clients.size})`);
-    clearTimeout(maxConnectionDuration); // Clear the timeout when the connection is closed
+    // clearTimeout(maxConnectionDuration); // Clear the timeout when the connection is closed
   });
 });
 
