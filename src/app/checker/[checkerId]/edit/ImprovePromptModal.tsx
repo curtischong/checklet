@@ -2,7 +2,7 @@
 import { NormalButton } from "@/app/_components/ui/Button";
 import CopyButton from "@/app/_components/ui/CopyButton";
 import { NormalTextArea } from "@/app/_components/ui/TextArea";
-import { apiClient } from "@/trpc/react";
+import { useTrpcCtx } from "@/app/TrpcCtx";
 import { type SetState } from "@/utils/types";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -28,6 +28,8 @@ const Modal = ({
   const [isImprovingPrompt, setIsImprovingPrompt] = useState(false);
   const [abortController, setAbortController] =
     useState<AbortController | null>(null);
+
+  const { trpcClient } = useTrpcCtx();
 
   // Function to open the modal
   const openModal = () => {
@@ -62,7 +64,7 @@ const Modal = ({
 
     try {
       // Send the request with the AbortController's signal
-      apiClient.checker.improvePrompt.subscribe(
+      trpcClient.checker.improvePrompt.subscribe(
         {
           improvementPrompt: `${improvementPrompt}\n\nHere is the original prompt:\n${prompt}`,
         },

@@ -12,7 +12,8 @@ import LoadingBar from "@/app/checker/[checkerId]/editor/LoadingBar";
 import SuggestionCard2 from "@/app/checker/[checkerId]/editor/suggestions/SuggestionCard2";
 import { SuggestionContainerMetabuttons } from "@/app/checker/[checkerId]/editor/suggestions/SuggestionContainerMetabuttons";
 import { ThoughtProcess } from "@/app/checker/[checkerId]/editor/suggestions/ThoughtProcess";
-import { apiClient, handleErr } from "@/trpc/react";
+import { useTrpcCtx } from "@/app/TrpcCtx";
+import { handleErr } from "@/trpc/react";
 import { scrollToChild } from "@/utils/scroll";
 import { pluralize } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
@@ -91,6 +92,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
   const suggestionsRefs = useRef<SuggestionIdToRef>({});
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const { trpcClient } = useTrpcCtx();
 
   useEffect(() => {
     const sorted = [...suggestions].sort(Sorters[sortType]);
@@ -148,7 +150,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
       const oldDocWithContext = editorState.substring(start, end);
       setIsRegenerating(true);
       handleErr(
-        apiClient.checker.regenSuggestion.mutate({
+        trpcClient.checker.regenSuggestion.mutate({
           oldText: suggestion.oldText,
           newText: suggestion.newText,
           suggestionName: suggestion.tipName,

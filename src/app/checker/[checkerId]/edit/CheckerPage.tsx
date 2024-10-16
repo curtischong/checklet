@@ -14,9 +14,10 @@ import { IsPublicSwitchWithoutState } from "@/app/checker/[checkerId]/edit/IsPub
 import { isValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
 import useUnsavedChangesWarning from "@/app/checker/[checkerId]/edit/useUnsavedChangesWarning";
 import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
+import { useTrpcCtx } from "@/app/TrpcCtx";
 import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
 import { type UserCtx } from "@/firebase/edge_env";
-import { api, apiClient, handleErr } from "@/trpc/react";
+import { handleErr } from "@/trpc/react";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
@@ -49,9 +50,11 @@ export const CheckerPage = ({
   );
   const [improvedPrompt, setImprovedPrompt] = React.useState("");
 
+  const { trpcClient } = useTrpcCtx();
+
   useEffect(() => {
     handleErr(
-      apiClient.checker.getUserChecker.query({ checkerId }),
+      trpcClient.checker.getUserChecker.query({ checkerId }),
       (checker) => {
         setName(checker.name);
         setDesc(checker.desc);
@@ -66,18 +69,6 @@ export const CheckerPage = ({
 
   const router = useRouter();
 
-  const updateChecker = api.checker.update.useMutation({
-    onMutate: () => {
-      setSubmittingState(SubmittingState.Submitting);
-    },
-    onSuccess: () => {
-      setSubmittingState(SubmittingState.NotSubmitting);
-    },
-    onError: () => {
-      setSubmittingState(SubmittingState.ChangesDetected);
-    },
-  });
-
   const saveChecker = useCallback(
     debounce(
       (
@@ -90,14 +81,24 @@ export const CheckerPage = ({
         if (!isInitialCheckerFetched) {
           return;
         }
+
         // PERF: this sends an extra mutate command when we first start up the checker.
-        updateChecker.mutate({
-          id: checkerId,
-          name: newName,
-          desc: newDesc,
-          prompt: newPrompt,
-          sampleDoc: newSampleDoc,
-        });
+        setSubmittingState(SubmittingState.Submitting);
+        handleErr(
+          trpcClient.checker.update.mutate({
+            id: checkerId,
+            name: newName,
+            desc: newDesc,
+            prompt: newPrompt,
+            sampleDoc: newSampleDoc,
+          }),
+          () => {
+            setSubmittingState(SubmittingState.NotSubmitting);
+          },
+          () => {
+            setSubmittingState(SubmittingState.ChangesDetected);
+          },
+        );
       },
       1000,
     ),

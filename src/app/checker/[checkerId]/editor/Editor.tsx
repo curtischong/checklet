@@ -17,7 +17,8 @@ import {
   SidePanelPageEnum,
   type Suggestion,
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
-import { apiClient, handleErr } from "@/trpc/react";
+import { useTrpcCtx } from "@/app/TrpcCtx";
+import { handleErr } from "@/trpc/react";
 import { type SetState } from "@/utils/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -55,6 +56,8 @@ export const Editor = ({
   const [sidePanelPageEnum, setSidePanelPageEnum] = useState<SidePanelPageEnum>(
     SidePanelPageEnum.Tips,
   );
+
+  const { trpcClient } = useTrpcCtx();
 
   // so when ppl copy and paste the url, they get a descripton of what the checker is
   useEffect(() => {
@@ -199,7 +202,7 @@ export const Editor = ({
 
       try {
         // Send the request with the AbortController's signal
-        apiClient.checker.checkDocStreaming.subscribe(
+        trpcClient.checker.checkDocStreaming.subscribe(
           {
             doc: editorState,
             checkerId: checkerId,
@@ -243,7 +246,7 @@ export const Editor = ({
       return;
     }
     handleErr(
-      apiClient.checker.checkDocImproving.mutate({
+      trpcClient.checker.checkDocImproving.mutate({
         checkerId: checkerStorefront.checkerId,
         doc: editorState,
         thoughtProcess: checkerThoughts,

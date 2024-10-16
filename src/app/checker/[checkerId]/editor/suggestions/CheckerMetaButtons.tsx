@@ -3,7 +3,8 @@ import { HelpIcon } from "@/app/_components/icons/HelpIcon";
 import Popconfirm from "@/app/_components/ui/PopConfirm";
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { useClientCtx } from "@/app/ClientCtx";
-import { apiClient, handleErr } from "@/trpc/react";
+import { useTrpcCtx } from "@/app/TrpcCtx";
+import { handleErr } from "@/trpc/react";
 import classNames from "classnames";
 import { useRouter } from "next/navigation";
 interface Props {
@@ -24,6 +25,8 @@ export const CheckerMetaButtons = ({
   const userId = user?.id;
   const isUserCreatorOfChecker = userId === checkerCreatorId;
   const checkerId = storefront.checkerId;
+  const { trpcClient } = useTrpcCtx();
+
   return (
     <>
       <Popconfirm
@@ -57,7 +60,7 @@ export const CheckerMetaButtons = ({
               router.push(`/signin?redirect-reason=clone-checker`);
             } else {
               handleErr(
-                apiClient.checker.clone.mutate({
+                trpcClient.checker.clone.mutate({
                   checkerId,
                 }),
                 (newChecker) => {

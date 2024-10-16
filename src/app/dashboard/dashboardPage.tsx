@@ -7,9 +7,10 @@ import {
 } from "@/app/_components/checklets/checklets";
 import { NormalButton } from "@/app/_components/ui/Button";
 import { DashboardChecker } from "@/app/dashboard/DashboardChecker";
+import { useTrpcCtx } from "@/app/TrpcCtx";
 import { type UserCtx } from "@/firebase/edge_env";
 import { type GetUserCheckersType } from "@/server/api/routers/checker/checker";
-import { apiClient, handleErr } from "@/trpc/react";
+import { handleErr } from "@/trpc/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -21,16 +22,17 @@ interface Props {
 // used to show you your checkers.
 export const Dashboard = ({ user }: Props) => {
   const [currCheckers, setCurrCheckers] = useState<GetUserCheckersType>([]);
+  const { trpcClient } = useTrpcCtx();
 
   useEffect(() => {
-    handleErr(apiClient.checker.getUserCheckers.query(), (checkers) => {
+    handleErr(trpcClient.checker.getUserCheckers.query(), (checkers) => {
       setCurrCheckers(checkers);
     });
   }, []);
   const router = useRouter();
 
   const createChecker = useCallback(() => {
-    handleErr(apiClient.checker.create.mutate(), (checker) => {
+    handleErr(trpcClient.checker.create.mutate(), (checker) => {
       router.push(`/checker/${checker.id}/edit`);
     });
   }, [router]);
