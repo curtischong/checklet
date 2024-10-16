@@ -290,7 +290,7 @@ export const SuggestionsContainer: React.FC<Props> = ({
         </div>
       )}
       {sidePanelPageEnum === SidePanelPageEnum.Thoughts ? (
-        <div className="mt-[5px] h-[30px]">
+        <div className="mt-[5px]">
           <ThoughtProcess checkerThoughts={checkerThoughts} />
         </div>
       ) : (
