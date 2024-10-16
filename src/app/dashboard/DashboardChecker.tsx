@@ -7,8 +7,9 @@ import {
 import { Tooltip } from "@/app/_components/ui/ToolTip";
 import { IsPublicSwitch } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
 import { CheckerDesc } from "@/app/checker/[checkerId]/editor/CheckerDesc";
+import { useTrpcCtx } from "@/app/TrpcCtx";
 import { type UserCtx } from "@/firebase/edge_env";
-import { apiClient, handleErr } from "@/trpc/react";
+import { handleErr } from "@/trpc/react";
 import { type Checker } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -26,6 +27,7 @@ export const DashboardChecker = ({
   onDeleteChecker,
 }: Props): JSX.Element => {
   const router = useRouter();
+  const { trpcClient } = useTrpcCtx();
 
   return (
     <div className="mb-10 flex flex-col rounded-md bg-white px-6 pb-3 pt-4 shadow-around">
@@ -51,7 +53,7 @@ export const DashboardChecker = ({
               }
               // call trpc to delete the checker
               handleErr(
-                apiClient.checker.delete.mutate({
+                trpcClient.checker.delete.mutate({
                   checkerId: blueprint.id,
                 }),
                 onDeleteChecker,

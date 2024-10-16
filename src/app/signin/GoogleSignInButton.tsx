@@ -1,6 +1,7 @@
 "use client";
 import { useClientCtx } from "@/app/ClientCtx";
-import { apiClient, handleErr } from "@/trpc/react";
+import { useTrpcCtx } from "@/app/TrpcCtx";
+import { handleErr } from "@/trpc/react";
 import Google from "@public/logos/google.svg";
 import {
   getAdditionalUserInfo,
@@ -18,6 +19,7 @@ const provider = new GoogleAuthProvider();
 export const GoogleSignInButton = () => {
   const router = useRouter();
   const { firebaseAuth } = useClientCtx();
+  const { trpcClient } = useTrpcCtx();
 
   const signInWithGoogle = useCallback(() => {
     signInWithPopup(firebaseAuth, provider)
@@ -39,7 +41,7 @@ export const GoogleSignInButton = () => {
         } else {
           // if (additionalUserInfo.isNewUser) {
           // honestly, just always try to signup. cause when developing, I always clear the db
-          handleErr(apiClient.user.onSignup.mutate());
+          handleErr(trpcClient.user.onSignup.mutate());
           // }
         }
         router.push("/checkers");

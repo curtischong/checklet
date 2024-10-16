@@ -1,8 +1,9 @@
 import { type CheckerStorefront } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { CheckerDesc } from "@/app/checker/[checkerId]/editor/CheckerDesc";
 import { CheckerMetaButtons } from "@/app/checker/[checkerId]/editor/suggestions/CheckerMetaButtons";
+import { useTrpcCtx } from "@/app/TrpcCtx";
 import { type GetCheckerByIdStrictType } from "@/server/api/routers/checker/checker";
-import { apiClient, handleErr } from "@/trpc/react";
+import { handleErr } from "@/trpc/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,6 +23,7 @@ export const EditorHeader = ({
   const [clonedFromChecker, setClonedFromChecker] =
     useState<GetCheckerByIdStrictType | null>(null);
   const pathName = usePathname();
+  const { trpcClient } = useTrpcCtx();
 
   useEffect(() => {
     if (storefront.clonedFromId === null) {
@@ -29,7 +31,7 @@ export const EditorHeader = ({
     }
 
     handleErr(
-      apiClient.checker.getCheckerById.query({
+      trpcClient.checker.getCheckerById.query({
         checkerId: storefront.clonedFromId,
       }),
       (checker) => {

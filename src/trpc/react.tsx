@@ -4,6 +4,7 @@ import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import {
   createTRPCClient,
   createWSClient,
+  httpBatchLink,
   wsLink,
   type TRPCLink,
 } from "@trpc/client";
@@ -29,52 +30,55 @@ const getQueryClient = () => {
 
 export const api = createTRPCReact<AppRouter>();
 
-// this is the non-react version of the client
-export const apiClient = createTRPCClient<AppRouter>({
-  links: [
-    // loggerLink({
-    //   enabled: (op) =>
-    //     process.env.NODE_ENV === "development" ||
-    //     (op.direction === "down" && op.result instanceof Error),
-    // }),
-    getEndingLink(),
-    // httpBatchLink({
-    //   transformer: SuperJSON,
-    //   url: getBaseUrl() + "/api/trpc",
-    //   headers: () => {
-    //     const headers = new Headers();
-    //     headers.set("x-trpc-source", "nextjs-react");
-    //     return headers;
-    //   },
-    // }),
-    // unstable_httpBatchStreamLink({
-    //   transformer: SuperJSON,
-    //   url: getBaseUrl() + "/api/trpc",
-    //   headers: () => {
-    //     const headers = new Headers();
-    //     headers.set("x-trpc-source", "nextjs-react");
-    //     return headers;
-    //   },
-    // }),
-  ],
-});
+export const getTrpcClient = () => {
+  console.log("getTrpcClient");
+  return createTRPCClient<AppRouter>({
+    links: [
+      // loggerLink({
+      //   enabled: (op) =>
+      //     process.env.NODE_ENV === "development" ||
+      //     (op.direction === "down" && op.result instanceof Error),
+      // }),
+      getEndingLink(),
+      // httpBatchLink({
+      //   transformer: SuperJSON,
+      //   url: getBaseUrl() + "/api/trpc",
+      //   headers: () => {
+      //     const headers = new Headers();
+      //     headers.set("x-trpc-source", "nextjs-react");
+      //     return headers;
+      //   },
+      // }),
+      // unstable_httpBatchStreamLink({
+      //   transformer: SuperJSON,
+      //   url: getBaseUrl() + "/api/trpc",
+      //   headers: () => {
+      //     const headers = new Headers();
+      //     headers.set("x-trpc-source", "nextjs-react");
+      //     return headers;
+      //   },
+      // }),
+    ],
+  });
+};
+export type GetTrpcClientType = ReturnType<typeof getTrpcClient>;
 
 console.log(
-  `crate ws client url: ${process.env.NEXT_PUBLIC_SOCKET_HOST}:${process.env.NEXT_PUBLIC_SOCKET_SERVER_EXPOSED_PORT}`,
+  `created websocket client for: ${process.env.NEXT_PUBLIC_SOCKET_HOST}:${process.env.NEXT_PUBLIC_SOCKET_SERVER_EXPOSED_PORT}`,
 );
 
 function getEndingLink(): TRPCLink<AppRouter> {
-  // if (typeof window === "undefined") {
-  //   httpBatchLink({
-  //     transformer: SuperJSON,
-  //     url: getBaseUrl() + "/api/trpc",
-  //     headers: () => {
-  //       const headers = new Headers();
-  //       headers.set("x-trpc-source", "nextjs-react");
-  //       return headers;
-  //     },
-  //   });
-  // }
+  if (typeof window === "undefined") {
+    httpBatchLink({
+      transformer: SuperJSON,
+      url: process.env.NEXT_PUBLIC_URL + "/api/trpc",
+      headers: () => {
+        const headers = new Headers();
+        headers.set("x-trpc-source", "nextjs-react");
+        return headers;
+      },
+    });
+  }
 
   const client = createWSClient({
     url: `${process.env.NEXT_PUBLIC_SOCKET_HOST}:${process.env.NEXT_PUBLIC_SOCKET_SERVER_EXPOSED_PORT}`,

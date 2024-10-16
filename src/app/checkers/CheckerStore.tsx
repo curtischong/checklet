@@ -1,6 +1,7 @@
 "use client";
 import { CheckerDesc } from "@/app/checker/[checkerId]/editor/CheckerDesc";
-import { apiClient, handleErr } from "@/trpc/react";
+import { useTrpcCtx } from "@/app/TrpcCtx";
+import { handleErr } from "@/trpc/react";
 import { type Checker } from "@prisma/client";
 import classNames from "classnames";
 import Link from "next/link";
@@ -8,9 +9,10 @@ import { useEffect, useState } from "react";
 
 export const CheckerStore = (): JSX.Element => {
   const [checkers, setCheckers] = useState<Checker[]>([]);
+  const { trpcClient } = useTrpcCtx();
 
   useEffect(() => {
-    handleErr(apiClient.checker.getAllCheckers.query(), setCheckers);
+    handleErr(trpcClient.checker.getAllCheckers.query(), setCheckers);
   }, []);
 
   return (

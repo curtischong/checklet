@@ -2,7 +2,8 @@
 
 import { LoadingButton } from "@/app/_components/ui/Button";
 import { useClientCtx } from "@/app/ClientCtx";
-import { apiClient, handleErr } from "@/trpc/react";
+import { useTrpcCtx } from "@/app/TrpcCtx";
+import { handleErr } from "@/trpc/react";
 import {
   createUserWithEmailAndPassword,
   getAdditionalUserInfo,
@@ -20,6 +21,7 @@ export const RegisterBox = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { firebaseAuth } = useClientCtx();
+  const { trpcClient } = useTrpcCtx();
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -56,7 +58,7 @@ export const RegisterBox = () => {
           console.warn("additionalUserInfo is null");
         } else {
           if (additionalUserInfo.isNewUser) {
-            handleErr(apiClient.user.onSignup.mutate());
+            handleErr(trpcClient.user.onSignup.mutate());
           }
         }
 

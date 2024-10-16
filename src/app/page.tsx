@@ -90,19 +90,17 @@ const HomePage: React.FC = () => {
                   Rizzume
                 </div>
                 <div className="text-md text-gray-400">
-                  Rizz up your resume to dazzle...
+                  Dazzle recruiters by ...
                 </div>
                 <hr className="h-[2px] w-full bg-black" />
-                <div>Grammarly • January 2021 - Present</div>
-                <div>
-                  • Expedited DynamoDB queries from 68 ms to 41 ms by optimizing
-                  the schema for reads
+                <div className="mt-2">
+                  Amazon &nbsp;&nbsp;|&nbsp;&nbsp; January 2021 - Present
                 </div>
-                <div>...</div>
+                <div>• Expedited DynamoDB queries...</div>
               </div>
             </div>
           </div>
-          <div className="relative h-32 justify-center">
+          <div className="relative mt-2 h-32 justify-center">
             <PennyChecklet className="absolute right-[30%] top-[0px] md:top-[1rem]" />
           </div>
           <div className="flex flex-col justify-center gap-8 md:flex-row">

@@ -14,9 +14,10 @@ import { IsPublicSwitchWithoutState } from "@/app/checker/[checkerId]/edit/IsPub
 import { isValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
 import useUnsavedChangesWarning from "@/app/checker/[checkerId]/edit/useUnsavedChangesWarning";
 import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
+import { useTrpcCtx } from "@/app/TrpcCtx";
 import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
 import { type UserCtx } from "@/firebase/edge_env";
-import { api, apiClient, handleErr } from "@/trpc/react";
+import { api, handleErr } from "@/trpc/react";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
@@ -49,9 +50,11 @@ export const CheckerPage = ({
   );
   const [improvedPrompt, setImprovedPrompt] = React.useState("");
 
+  const { trpcClient } = useTrpcCtx();
+
   useEffect(() => {
     handleErr(
-      apiClient.checker.getUserChecker.query({ checkerId }),
+      trpcClient.checker.getUserChecker.query({ checkerId }),
       (checker) => {
         setName(checker.name);
         setDesc(checker.desc);
