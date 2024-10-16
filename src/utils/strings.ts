@@ -54,3 +54,7 @@ export const isUuid = (s: string): boolean => {
     s,
   );
 };
+
+export const removeNonAlphanumericExceptSpaces = (input: string): string => {
+  return input.replace(/[^\w\s]/g, "");
+};
