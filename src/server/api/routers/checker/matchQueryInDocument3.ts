@@ -106,7 +106,7 @@ export function matchQueryInDocument(
   }
 
   if (matches.length > 0) {
-    console.log("matches.length", matches.length);
+    // console.log("matches.length", matches.length);
     // Sort matches by total penalty (lower penalty is better)
     matches.sort((a, b) => a.penalty - b.penalty);
 
