@@ -2,7 +2,7 @@
 // basically, streaming from openAI via azure happens in chunks, which doesn't look good on the client. so we artificially smooth it out
 // PERF: we do this in the client, so when we receive all chunks, we can immediately ask the server for the second prompt (while the first text is streaming to the client)
 
-const MIN_TIME_BETWEEN_TOKENS_MS = 9;
+const MIN_TIME_BETWEEN_TOKENS_MS = 5;
 
 export async function* logStream(
   originalStreamOrGenerator: ReadableStream | AsyncIterable<any>,
