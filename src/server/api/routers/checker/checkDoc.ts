@@ -812,6 +812,60 @@ export const checkDoc4Dot12 = async (
   };
 };
 
+export const checkDoc4Dot12OpenAi = async (
+  llm: Llm3,
+  prompt: string,
+  doc: string,
+  thoughtProcess: string,
+) => {
+  const chain: ChatCompletionMessageParam[] = [
+    {
+      role: "user",
+      content: inference6Dot3(prompt, doc),
+    },
+    {
+      role: "assistant",
+      content: thoughtProcess,
+    },
+  ];
+  let rawDoc3 = await llm.promptMessagesExtendChain(
+    chain,
+    addTipTags4Dot9(),
+    llm.model,
+  );
+  let rawDoc3Content = rawDoc3[rawDoc3.length - 1]!.content as string;
+
+  if (rawDoc3Content.startsWith("I'm sorry, I ")) {
+    console.log("moderation flagged. retrying.");
+    // retry
+    rawDoc3 = await llm.promptMessagesExtendChain(
+      rawDoc3,
+      "Are you sure? I'm merely asking you to perform the edits. I'm not asking you to do anything malicious!",
+      llm.model,
+    );
+    rawDoc3Content = rawDoc3[rawDoc3.length - 1]!.content as string;
+
+    if (rawDoc3Content.startsWith("I'm sorry, I ")) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `ChatGPT's moderation declined the request. Maybe reword it slightly?`,
+      });
+    }
+  }
+  const doc3 = removeInvalidTips(rawDoc3Content); // removes extraneous whitespace / removals the llm made
+
+  const suggestions = extractSuggestions(doc, doc3);
+  if (suggestions.length === 0) {
+    console.log("no suggestions found. rawDoc3 is", rawDoc3Content);
+  }
+
+  return {
+    suggestions: removeInvalidSuggestions(suggestions),
+    doc2PlusChainOfThought: thoughtProcess,
+    doc3,
+  };
+};
+
 export const checkDoc5Dot1 = async (
   llm: Llm3,
   prompt: string,

@@ -5,9 +5,8 @@ import { z } from "zod";
 
 import { type UserCtx } from "@/firebase/edge_env";
 import { mixpanel } from "@/mixpanel";
-import { azureLlmClient } from "@/server/api/routers/checker/azureLlm";
-import { checkDoc4Dot12 } from "@/server/api/routers/checker/checkDoc";
-import { logStream } from "@/server/api/routers/checker/logStream";
+import { checkDoc4Dot12OpenAi } from "@/server/api/routers/checker/checkDoc";
+import { openaiLlm } from "@/server/api/routers/checker/openaiLlm";
 import { inference6Dot3 } from "@/server/api/routers/checker/prompts";
 import { regenSuggestion } from "@/server/api/routers/checker/regenSuggestion";
 import {
@@ -235,11 +234,12 @@ export const checkerRouter = createTRPCRouter({
             "This checker is not valid. Does it have a name, description, and prompt?",
         });
       }
-      const iterator = azureLlmClient.streamCompletion(
+      const iterator = openaiLlm.streamCompletion(
         [],
         inference6Dot3(checker.prompt, input.doc),
       );
-      for await (const res of logStream(iterator)) {
+      // for await (const res of logStream(iterator)) {
+      for await (const res of iterator) {
         yield res;
       }
     }),
@@ -269,8 +269,8 @@ export const checkerRouter = createTRPCRouter({
         });
       }
 
-      return checkDoc4Dot12(
-        azureLlmClient,
+      return checkDoc4Dot12OpenAi(
+        openaiLlm,
         checker.prompt,
         input.doc,
         input.thoughtProcess,
@@ -410,11 +410,9 @@ export const checkerRouter = createTRPCRouter({
     .input(z.object({ improvementPrompt: z.string() }))
     // eslint-disable-next-line @typescript-eslint/require-await
     .subscription(async function* ({ input }) {
-      const iterator = azureLlmClient.streamCompletion(
-        [],
-        input.improvementPrompt,
-      );
-      for await (const res of logStream(iterator)) {
+      const iterator = openaiLlm.streamCompletion([], input.improvementPrompt);
+      // for await (const res of logStream(iterator)) {
+      for await (const res of iterator) {
         yield res;
       }
     }),
