@@ -53,5 +53,5 @@ tmux new-window -t $session_name -n socket-server
 
 # Run the server in the first window
 # cd to standalone so it can see the .env file
-tmux send-keys -t $session_name:socket-server 'cd /home/ubuntu/standalone && node websocket_server.cjs' C-m
+tmux send-keys -t $session_name:socket-server 'cd /home/ubuntu/standalone && export OPENAI_API_KEY=${OPENAI_KEY} && node websocket_server.cjs' C-m
 EOF
