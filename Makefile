@@ -1,13 +1,11 @@
 .PHONY: deploy
 
-# Assuming that set_env.sh exports necessary environment variables
 include_env = source .env-dev && echo "DB CREDS IS $$DATABASE_URL"
 include_env_prod = source .env-prod && echo "DB CREDS IS $$DATABASE_URL ------------------ PRODUCTION---------------"
 
 run:
 	npm run dev
 
-# this generates both typescript and python types
 generate:
 	$(include_env) && \
 	npx prisma generate --schema prisma/schema.prisma
