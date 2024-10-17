@@ -219,7 +219,7 @@ export const checkerRouter = createTRPCRouter({
       // listen for new events
       const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (
-        !checker.isPublic &&
+        checker.accessType === AccessType.PRIVATE &&
         (!ctx.user || checker.createdById !== ctx.user.id) // if you are not logged in, or not the creator, you can't use this private checker
       ) {
         throw new TRPCError({
@@ -253,12 +253,12 @@ export const checkerRouter = createTRPCRouter({
       // console.log("checkDocimproving", input);
       const checker = await getCheckerByIdStrict(ctx.db, input.checkerId);
       if (
-        !checker.isPublic &&
+        checker.accessType === AccessType.PRIVATE &&
         (!ctx.user || checker.createdById !== ctx.user.id) // if you are not logged in, or not the creator, you can't use this private checker
       ) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "you are not the creator of this checker",
+          message: "You are not the creator of this checker",
         });
       }
       if (!checker.isValid) {

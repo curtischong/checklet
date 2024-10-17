@@ -66,7 +66,7 @@ const HomePage: React.FC = () => {
                   desc: "Dazzle recruiters with a stronger resume!",
                   prompt: "fake prompt",
                   sampleDoc: "fake doc",
-                  isPublic: true,
+                  accessType: "PUBLIC",
                   isValid: true,
                   clonedFromId: null,
                   createdAt: new Date(),
