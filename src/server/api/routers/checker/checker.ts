@@ -14,7 +14,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { type Prisma, type PrismaClient } from "@prisma/client";
+import { AccessType, type Prisma, type PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 const MAX_CHECKERS = 10;
 
@@ -88,8 +88,8 @@ export const checkerRouter = createTRPCRouter({
     console.log("getAllCheckers");
     const targetClauses: Prisma.CheckerWhereInput[] = [
       {
-        isPublic: {
-          equals: true,
+        accessType: {
+          equals: AccessType.PUBLIC,
         },
         isValid: {
           equals: true,
@@ -197,16 +197,16 @@ export const checkerRouter = createTRPCRouter({
       });
     }),
 
-  updateIsPublic: protectedProcedure
+  updateAccessType: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .input(z.object({ isPublic: z.boolean() }))
+    .input(z.object({ accessType: z.nativeEnum(AccessType) }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.checker.update({
         where: {
           id: input.id,
         },
         data: {
-          isPublic: input.isPublic,
+          accessType: input.accessType,
         },
       });
     }),
