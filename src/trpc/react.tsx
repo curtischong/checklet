@@ -48,7 +48,7 @@ export type GetTrpcClientType = ReturnType<typeof getTrpcClient>;
 
 function getEndingLink(): TRPCLink<AppRouter> {
   if (typeof window === "undefined") {
-    httpBatchLink({
+    return httpBatchLink({
       transformer: SuperJSON,
       url: process.env.NEXT_PUBLIC_URL + "/api/trpc",
       headers: () => {
