@@ -4,14 +4,11 @@ import { LoadingButton } from "@/app/_components/ui/Button";
 import { useClientCtx } from "@/app/ClientCtx";
 import { useTrpcCtx } from "@/app/TrpcCtx";
 import { handleErr } from "@/trpc/react";
-import {
-  createUserWithEmailAndPassword,
-  getAdditionalUserInfo,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const RegisterBox = () => {
   const [email, setEmail] = useState("");
@@ -20,8 +17,17 @@ export const RegisterBox = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { firebaseAuth } = useClientCtx();
+  const { firebaseAuth, user } = useClientCtx();
   const { trpcClient } = useTrpcCtx();
+
+  useEffect(() => {
+    // upon refresh (after the login), if the user is logged in, we need to trigger onSignup and redirect to /checkers
+    if (user) {
+      handleErr(trpcClient.user.onSignup.mutate(), () => {
+        router.push("/checkers");
+      });
+    }
+  }, []);
 
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
@@ -52,17 +58,20 @@ export const RegisterBox = () => {
           },
         });
 
-        // now that we've updated our credentials, we create a new user
-        const additionalUserInfo = getAdditionalUserInfo(userCredential);
-        if (!additionalUserInfo) {
-          console.warn("additionalUserInfo is null");
-        } else {
-          if (additionalUserInfo.isNewUser) {
-            handleErr(trpcClient.user.onSignup.mutate());
-          }
-        }
+        // refresh page so we can create a new trpc websocket client with the new cookies
+        location.reload(); // using router.refresh() doesn't trigger a full reload I think
 
-        router.push("/checkers");
+        // // now that we've updated our credentials, we create a new user
+        // const additionalUserInfo = getAdditionalUserInfo(userCredential);
+        // if (!additionalUserInfo) {
+        //   console.warn("additionalUserInfo is null");
+        // } else {
+        //   if (additionalUserInfo.isNewUser) {
+        //     handleErr(trpcClient.user.onSignup.mutate());
+        //   }
+        // }
+
+        // router.push("/checkers");
       } catch (e) {
         const message = (e as Error).message;
         console.error(message); // TODO: log error in logging app
