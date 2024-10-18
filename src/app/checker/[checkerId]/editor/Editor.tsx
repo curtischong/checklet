@@ -19,6 +19,7 @@ import {
 } from "@/app/checker/[checkerId]/editor/suggestions/suggestionsTypes";
 import { useTrpcCtx } from "@/app/TrpcCtx";
 import { handleErr } from "@/trpc/react";
+import { removeNonAlphanumericExceptSpaces } from "@/utils/strings";
 import { type SetState } from "@/utils/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -64,7 +65,7 @@ export const Editor = ({
     // do NOT use router.push because it'll reload the page. Also. Chrome will try to find the "Checker" word in the page and
     // center the page to that location - meaning the page won't start at the top of the page
     // https://stackoverflow.com/questions/2305069/can-you-use-hash-navigation-without-affecting-history
-    const url = `${window.location.pathname}${window.location.search}#${checkerStorefront.name.replaceAll(" ", "-")}`;
+    const url = `${window.location.pathname}${window.location.search}#${removeNonAlphanumericExceptSpaces(checkerStorefront.name).trim().replaceAll(" ", "-")}`;
     window.history.replaceState(null, "", url);
   }, [checkerStorefront]);
 
