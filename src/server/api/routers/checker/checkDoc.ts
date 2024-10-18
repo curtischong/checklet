@@ -828,6 +828,7 @@ export const checkDoc4Dot12OpenAi = async (
       content: thoughtProcess,
     },
   ];
+  console.log("prompt", prompt);
   let rawDoc3 = await llm.promptMessagesExtendChain(
     chain,
     addTipTags4Dot9(),

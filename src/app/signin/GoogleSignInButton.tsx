@@ -41,10 +41,11 @@ export const GoogleSignInButton = () => {
         } else {
           // if (additionalUserInfo.isNewUser) {
           // honestly, just always try to signup. cause when developing, I always clear the db
-          handleErr(trpcClient.user.onSignup.mutate());
+          handleErr(trpcClient.user.onSignup.mutate(), () => {
+            router.push("/checkers");
+          });
           // }
         }
-        router.push("/checkers");
       })
       .catch((error) => {
         console.log(error);
