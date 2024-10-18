@@ -3,11 +3,7 @@ import { useClientCtx } from "@/app/ClientCtx";
 import { useTrpcCtx } from "@/app/TrpcCtx";
 import { handleErr } from "@/trpc/react";
 import Google from "@public/logos/google.svg";
-import {
-  getAdditionalUserInfo,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -35,16 +31,18 @@ export const GoogleSignInButton = () => {
         });
 
         // now that we've updated our credentials, we create a new user
-        const additionalUserInfo = getAdditionalUserInfo(userCredential);
-        if (!additionalUserInfo) {
-          console.warn("additionalUserInfo is null");
-        } else {
-          // if (additionalUserInfo.isNewUser) {
-          // honestly, just always try to signup. cause when developing, I always clear the db
-          handleErr(trpcClient.user.onSignup.mutate());
-          // }
-        }
-        router.push("/checkers");
+        // const additionalUserInfo = getAdditionalUserInfo(userCredential);
+        // if (!additionalUserInfo) {
+        //   console.warn("additionalUserInfo is null");
+        //   router.push("/checkers");
+        // } else {
+        // if (additionalUserInfo.isNewUser) {
+        // honestly, just always try to signup. cause when developing, I always clear the db
+        handleErr(trpcClient.user.onSignup.mutate(), () => {
+          router.push("/checkers");
+        });
+        // }
+        // }
       })
       .catch((error) => {
         console.log(error);
