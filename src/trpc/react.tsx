@@ -46,10 +46,6 @@ export const getTrpcClient = () => {
 };
 export type GetTrpcClientType = ReturnType<typeof getTrpcClient>;
 
-console.log(
-  `created websocket client for: ${process.env.NEXT_PUBLIC_SOCKET_HOST}:${process.env.NEXT_PUBLIC_SOCKET_SERVER_EXPOSED_PORT}`,
-);
-
 function getEndingLink(): TRPCLink<AppRouter> {
   if (typeof window === "undefined") {
     httpBatchLink({
@@ -63,9 +59,11 @@ function getEndingLink(): TRPCLink<AppRouter> {
     });
   }
 
+  const websocketUrl = `${process.env.NEXT_PUBLIC_SOCKET_HOST}:${process.env.NEXT_PUBLIC_SOCKET_SERVER_EXPOSED_PORT}`;
   const client = createWSClient({
-    url: `${process.env.NEXT_PUBLIC_SOCKET_HOST}:${process.env.NEXT_PUBLIC_SOCKET_SERVER_EXPOSED_PORT}`,
+    url: websocketUrl,
   });
+  console.log(`created websocket client for: ${websocketUrl}`);
   return wsLink({
     client,
     /**

@@ -9,6 +9,7 @@ export interface ClientCtx {
   firebaseApp: FirebaseApp;
   firebaseAuth: Auth;
   user: UserCtx | null;
+  firebaseUser: User | null;
 }
 
 export interface ClientCtxReact {
@@ -82,12 +83,14 @@ export const ClientCtxProvider = ({
     // const analytics = getAnalytics(firebaseApp);
 
     const unsubscribe = firebaseAuth.onAuthStateChanged((firebaseUser) => {
+      console.log("firebaseUser", firebaseUser);
       // only set the value after the user's login status is known, so we render the page knowing
       setValue({
         ClientCtx: {
           firebaseApp: firebaseApp,
           firebaseAuth: firebaseAuth,
           user: firebaseUserToUserCtx(firebaseUser),
+          firebaseUser: firebaseUser,
         },
       });
     });

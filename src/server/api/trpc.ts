@@ -124,7 +124,10 @@ export const protectedProcedure = t.procedure
   .use(timingMiddleware)
   .use(({ ctx, next }) => {
     if (!ctx.user) {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "unauthorized. blocked by middleware",
+      });
     }
     // console.log("ctx.user", ctx.user);
     return next({

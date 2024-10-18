@@ -6,9 +6,8 @@ include_env_prod = source venv/bin/activate && source set_db_in_env.sh ../config
 
 # this generates both typescript and python types
 generate:
-	# $(include_env) && \
 	PRISMA_VERSION=5.17.0 && \
-	npx prisma@5.17.0 generate --schema schema.prisma
+	npx prisma generate --schema prisma/schema.prisma
 
 create-migration:
 	# $(include_env) && \

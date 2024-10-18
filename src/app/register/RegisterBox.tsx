@@ -57,9 +57,9 @@ export const RegisterBox = () => {
         if (!additionalUserInfo) {
           console.warn("additionalUserInfo is null");
         } else {
-          if (additionalUserInfo.isNewUser) {
-            handleErr(trpcClient.user.onSignup.mutate());
-          }
+          // if (additionalUserInfo.isNewUser) {
+          handleErr(trpcClient.user.onSignup.mutate());
+          // }
         }
 
         router.push("/checkers");
