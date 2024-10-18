@@ -2,8 +2,14 @@
 import { clientConfig } from "@/firebase/config";
 import { type UserCtx } from "@/firebase/edge_env";
 import { initializeApp, type FirebaseApp } from "firebase/app";
-import { getAuth, type Auth, type User } from "firebase/auth";
+import {
+  getAuth,
+  getRedirectResult,
+  type Auth,
+  type User,
+} from "firebase/auth";
 import React, { useEffect } from "react";
+import { toast } from "react-toastify";
 
 export interface ClientCtx {
   firebaseApp: FirebaseApp;
@@ -80,6 +86,7 @@ export const ClientCtxProvider = ({
   React.useEffect(() => {
     const firebaseApp = initializeApp(clientConfig);
     const firebaseAuth = getAuth(firebaseApp);
+    console.log("got firebase auth", firebaseAuth);
     // const analytics = getAnalytics(firebaseApp);
 
     const unsubscribe = firebaseAuth.onAuthStateChanged((firebaseUser) => {
@@ -96,6 +103,55 @@ export const ClientCtxProvider = ({
     });
     return unsubscribe;
   }, []);
+
+  // handle when the user returns
+  useEffect(() => {
+    if (!value?.ClientCtx?.firebaseAuth) {
+      return;
+    }
+    getRedirectResult(value.ClientCtx.firebaseAuth)
+      .then((result) => {
+        console.log("result", result);
+      })
+      .catch((error) => {
+        console.error("Error during redirect result:", error);
+        toast.error("Something went wrong during login.");
+      });
+    // void (async () => {
+    //   try {
+    //     if (!firebaseUser) {
+    //       console.warn(
+    //         "firebaseUser is null. the user is not logged in. this is only an error if the user came back from loginWithRedirect",
+    //       );
+    //       return;
+    //     }
+    //     // the user is logged in. so make the additional calls
+    //     const idToken = await firebaseUser.getIdToken();
+
+    //     // Then, we call /api/login endpoint exposed by the middleware.
+    //     const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/login`, {
+    //       headers: {
+    //         Authorization: `Bearer ${idToken}`,
+    //       },
+    //     });
+    //     console.log("res", res);
+
+    //     // Create a new user or handle post-login actions
+    //     // const additionalUserInfo = getAdditionalUserInfo(firebaseUser);
+    //     // if (!additionalUserInfo) {
+    //     //   console.warn("additionalUserInfo is null");
+    //     // } else {
+    //     // Always try to signup during development
+    //     handleErr(trpcClient.user.onSignup.mutate(), () => {
+    //       void router.push("/checkers");
+    //     });
+    //     // }
+    //   } catch (error) {
+    //     console.error("Error during redirect result:", error);
+    //     toast.error("Something went wrong during login.");
+    //   }
+    // })();
+  }, [value]);
 
   if (value) {
     return (
