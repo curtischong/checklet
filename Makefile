@@ -1,27 +1,30 @@
 .PHONY: deploy
 
 # Assuming that set_env.sh exports necessary environment variables
-include_env = source venv/bin/activate && source set_db_in_env.sh ../config/dist/config.dev.json
-include_env_prod = source venv/bin/activate && source set_db_in_env.sh ../config/dist/config.prod.json
+include_env = source .env-dev && echo "DB CREDS IS $$DATABASE_URL"
+include_env_prod = source .env-prod && echo "DB CREDS IS $$DATABASE_URL ------------------ PRODUCTION---------------"
+
+run:
+	npm run dev
 
 # this generates both typescript and python types
 generate:
-	# $(include_env) && \
-	PRISMA_VERSION=5.17.0 && \
-	npx prisma@5.17.0 generate --schema schema.prisma
+	$(include_env) && \
+	npx prisma generate --schema prisma/schema.prisma
 
 create-migration:
-	# $(include_env) && \
+	$(include_env) && \
 	npx prisma migrate dev && \
 	$(MAKE) generate
 
 reset-db:
-	# $(include_env) && \
-	# npx prisma migrate reset --skip-generate && \
-	# $(MAKE) generate
-	npm run db:reset
-	npx prisma migrate dev
-	npm run db:push
+	$(include_env) && \
+	npx prisma migrate reset --skip-generate && \
+	$(MAKE) generate
+
+apply-all-migrations-prod:
+	$(include_env_prod) && \
+	npx prisma migrate deploy
 
 studio:
 	npm run db:studio
@@ -46,10 +49,6 @@ test-fuzzy-match:
 
 deploy:
 	bash deploy.sh
-
-apply-all-migrations-prod:
-	source load-prod-var.sh 'DATABASE_URL' && \
-	env DATABASE_URL=$$DATABASE_URL npx prisma migrate deploy
 
 matching-tests:
 	npx tsx ./scripts/matching-tests/run1.ts
