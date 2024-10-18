@@ -29,33 +29,31 @@ export const GoogleSignInButton = () => {
   const signInWithGoogle = useCallback(() => {
     signInWithPopup(firebaseAuth, provider)
       .then((userCredential) => {
-        setTimeout(() => {
-          void (async () => {
-            const idToken = await userCredential.user.getIdToken();
+        void (async () => {
+          const idToken = await userCredential.user.getIdToken();
 
-            // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
-            // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
-            await fetch("/api/login", {
-              headers: {
-                Authorization: `Bearer ${idToken}`,
-              },
-            });
+          // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
+          // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
+          await fetch("/api/login", {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          });
 
-            // refresh page so we can create a new trpc websocket client with the new cookies
-            location.reload(); // using router.refresh() doesn't trigger a full reload I think
+          // refresh page so we can create a new trpc websocket client with the new cookies
+          location.reload(); // using router.refresh() doesn't trigger a full reload I think
 
-            // now that we've updated our credentials, we create a new user
-            // const additionalUserInfo = getAdditionalUserInfo(userCredential);
-            // if (!additionalUserInfo) {
-            //   console.warn("additionalUserInfo is null");
-            //   router.push("/checkers");
-            // } else {
-            // if (additionalUserInfo.isNewUser) {
-            // honestly, just always try to signup. cause when developing, I always clear the db
-            // }
-            // }
-          })();
-        }, 1000);
+          // now that we've updated our credentials, we create a new user
+          // const additionalUserInfo = getAdditionalUserInfo(userCredential);
+          // if (!additionalUserInfo) {
+          //   console.warn("additionalUserInfo is null");
+          //   router.push("/checkers");
+          // } else {
+          // if (additionalUserInfo.isNewUser) {
+          // honestly, just always try to signup. cause when developing, I always clear the db
+          // }
+          // }
+        })();
       })
       .catch((error) => {
         console.log(error);
