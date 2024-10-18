@@ -52,3 +52,4 @@ yarn-error.log*
 .chatgpt_history
 standalone.zip
 /sockets/dist
+/backups/
