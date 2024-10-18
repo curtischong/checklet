@@ -126,7 +126,7 @@ export const protectedProcedure = t.procedure
     if (!ctx.user) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "unauthorized. blocked my middleware :/",
+        message: "unauthorized. blocked by middleware :/",
       });
     }
     // console.log("ctx.user", ctx.user);

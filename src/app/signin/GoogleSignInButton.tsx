@@ -6,7 +6,7 @@ import Google from "@public/logos/google.svg";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 
 // https://firebase.google.com/docs/auth/web/google-signin
@@ -14,35 +14,48 @@ const provider = new GoogleAuthProvider();
 
 export const GoogleSignInButton = () => {
   const router = useRouter();
-  const { firebaseAuth } = useClientCtx();
+  const { firebaseAuth, user } = useClientCtx();
   const { trpcClient } = useTrpcCtx();
+
+  useEffect(() => {
+    // upon refresh (after the login), if the user is logged in, we need to trigger onSignup and redirect to /checkers
+    if (user) {
+      handleErr(trpcClient.user.onSignup.mutate(), () => {
+        router.push("/checkers");
+      });
+    }
+  }, []);
 
   const signInWithGoogle = useCallback(() => {
     signInWithPopup(firebaseAuth, provider)
-      .then(async (userCredential) => {
-        const idToken = await userCredential.user.getIdToken();
+      .then((userCredential) => {
+        setTimeout(() => {
+          void (async () => {
+            const idToken = await userCredential.user.getIdToken();
 
-        // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
-        // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
-        await fetch("/api/login", {
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
+            // Then, we call /api/login endpoint exposed by the middleware. This endpoint updates our browser cookies with user credentials.
+            // https://hackernoon.com/using-firebase-authentication-with-the-latest-nextjs-features
+            await fetch("/api/login", {
+              headers: {
+                Authorization: `Bearer ${idToken}`,
+              },
+            });
 
-        // now that we've updated our credentials, we create a new user
-        // const additionalUserInfo = getAdditionalUserInfo(userCredential);
-        // if (!additionalUserInfo) {
-        //   console.warn("additionalUserInfo is null");
-        //   router.push("/checkers");
-        // } else {
-        // if (additionalUserInfo.isNewUser) {
-        // honestly, just always try to signup. cause when developing, I always clear the db
-        handleErr(trpcClient.user.onSignup.mutate(), () => {
-          router.push("/checkers");
-        });
-        // }
-        // }
+            // refresh page so we can create a new trpc websocket client with the new cookies
+            location.reload(); // using router.refresh() doesn't trigger a full reload I think
+
+            // now that we've updated our credentials, we create a new user
+            // const additionalUserInfo = getAdditionalUserInfo(userCredential);
+            // if (!additionalUserInfo) {
+            //   console.warn("additionalUserInfo is null");
+            //   router.push("/checkers");
+            // } else {
+            // if (additionalUserInfo.isNewUser) {
+            // honestly, just always try to signup. cause when developing, I always clear the db
+            // }
+            // }
+          })();
+        }, 1000);
       })
       .catch((error) => {
         console.log(error);
