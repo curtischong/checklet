@@ -1,4 +1,4 @@
-import { AccessType } from "@prisma/client";
+import { type AccessType } from "@prisma/client";
 
 export type ObjInfo = {
   name: string;

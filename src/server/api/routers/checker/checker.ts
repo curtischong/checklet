@@ -85,7 +85,6 @@ export const checkerRouter = createTRPCRouter({
     }),
 
   getAllCheckers: publicProcedure.query(async ({ ctx }) => {
-    console.log("getAllCheckers");
     const targetClauses: Prisma.CheckerWhereInput[] = [
       {
         accessType: {
