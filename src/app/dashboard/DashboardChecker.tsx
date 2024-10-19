@@ -5,7 +5,7 @@ import {
   TextButton,
 } from "@/app/_components/ui/Button";
 import { Tooltip } from "@/app/_components/ui/ToolTip";
-import { IsPublicSwitch } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
+import { AccessTypeSelector } from "@/app/checker/[checkerId]/edit/AccessTypeSelector";
 import { CheckerDesc } from "@/app/checker/[checkerId]/editor/CheckerDesc";
 import { useTrpcCtx } from "@/app/TrpcCtx";
 import { type UserCtx } from "@/firebase/edge_env";
@@ -65,9 +65,9 @@ export const DashboardChecker = ({
       <CheckerDesc isHeightCapped={true} desc={blueprint.desc} />
       <div className="mt-2 flex cursor-default flex-row items-start">
         <div className="mt-2 flex-grow">
-          <IsPublicSwitch
+          <AccessTypeSelector
             checkerId={blueprint.id}
-            isInitiallyPublic={blueprint.isPublic}
+            initialAccessType={blueprint.accessType}
           />
         </div>
         <TextButton

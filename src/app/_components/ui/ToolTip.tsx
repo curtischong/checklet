@@ -91,6 +91,18 @@ export const Tooltip: React.FC<TooltipProps> = ({
     }
   };
 
+  const renderTitle = () => {
+    if (typeof title === "string") {
+      return title.split("\n").map((line, index) => (
+        <span key={index}>
+          {line}
+          <br />
+        </span>
+      ));
+    }
+    return title;
+  };
+
   return (
     <div className="relative inline-block select-none">
       {childWithProps}
@@ -102,7 +114,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
           visible ? "opacity-100" : "pointer-events-none opacity-0"
         } ${getTooltipPositionClasses()}`}
       >
-        {title}
+        {renderTitle()}
         <div
           className={`border-6 absolute h-0 w-0 border-transparent bg-transparent ${
             placement === "top"

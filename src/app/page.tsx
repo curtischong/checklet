@@ -18,6 +18,7 @@ import { StoreFront } from "@/app/checkers/CheckerStore";
 import { DemoSuggestionCard } from "@/app/landing/DemoSuggestionCard";
 import { trackPageView } from "@/mixpanel";
 import { createShortId } from "@/utils/strings";
+import { AccessType } from "@prisma/client";
 
 const HomePage: React.FC = () => {
   trackPageView();
@@ -66,7 +67,7 @@ const HomePage: React.FC = () => {
                   desc: "Dazzle recruiters with a stronger resume!",
                   prompt: "fake prompt",
                   sampleDoc: "fake doc",
-                  isPublic: true,
+                  accessType: AccessType.PUBLIC,
                   isValid: true,
                   clonedFromId: null,
                   createdAt: new Date(),

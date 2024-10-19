@@ -15,14 +15,21 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum AccessType {
+    PRIVATE
+    HIDDEN // anyone can see the checker, but it won't show up in public checker lists
+    PUBLIC
+}
+
 model Checker {
     // id        String      @id  @db.Uuid @default(uuid())
-    id           String  @id @default(uuid()) @db.Uuid
-    name         String  @default("")
-    desc         String  @default("")
-    prompt       String  @default("")
-    sampleDoc    String  @default("") // ppl will use this when developing their checkers. I thihnk I'l also auto-populate the checker with this sample doc when ppl go to the checker?
-    isPublic     Boolean @default(false)
+    id         String     @id @default(uuid()) @db.Uuid
+    name       String     @default("")
+    desc       String     @default("")
+    prompt     String     @default("")
+    sampleDoc  String     @default("") // ppl will use this when developing their checkers. I thihnk I'l also auto-populate the checker with this sample doc when ppl go to the checker?
+    accessType AccessType @default(PRIVATE)
+
     isValid      Boolean @default(false) // has all of the required fields been filled out? if it's not valid, it cannot be public even if they want it to be
     clonedFromId String? @db.Uuid // if this checker was cloned from another checker, this is the id of the original checker
     // promptHashThatDerivedRefinedPrompt Int     @default(0)
