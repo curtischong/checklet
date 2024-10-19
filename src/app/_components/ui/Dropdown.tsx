@@ -1,10 +1,12 @@
 import { RightArrowIcon } from "@/app/_components/icons/RightArrowIcon";
+import { LabelWithHelp } from "@/app/_components/ui/LabelWithHelp";
 import { useState } from "react";
 
 interface Props<T> {
   label: string;
   options: T[];
   className?: string;
+  helpText?: string;
 }
 
 interface Dropdown<T> extends Props<T> {
@@ -33,6 +35,7 @@ export const DropdownWithoutState = <T,>({
   selected,
   setSelected,
   className = "",
+  helpText,
 }: DropdownWithoutStateProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -43,7 +46,15 @@ export const DropdownWithoutState = <T,>({
 
   return (
     <div className={`flex flex-row space-x-2`}>
-      <p className="self-center">{label}</p>
+      {helpText ? (
+        <LabelWithHelp
+          className={"mr-2 self-center"}
+          helpText={helpText}
+          label={label}
+        />
+      ) : (
+        <p className="self-center">{label}</p>
+      )}
       <div className={`relative ${className}`}>
         <button
           type="button"
