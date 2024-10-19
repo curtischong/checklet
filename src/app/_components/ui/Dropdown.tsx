@@ -1,9 +1,8 @@
-import { SetState } from "@/utils/types";
+import { RightArrowIcon } from "@/app/_components/icons/RightArrowIcon";
 import { useState } from "react";
 
 interface Props<T> {
   options: T[];
-  onChange: (selected: T) => void;
   className?: string;
 }
 
@@ -23,13 +22,12 @@ export const Dropdown = <T,>(props: Dropdown<T>) => {
 };
 
 interface DropdownWithoutStateProps<T> extends Props<T> {
-  setSelected: SetState<T>;
+  setSelected: (selected: T) => void;
   selected: T;
 }
 
 export const DropdownWithoutState = <T,>({
   options = [],
-  onChange,
   selected,
   setSelected,
   className = "",
@@ -39,7 +37,6 @@ export const DropdownWithoutState = <T,>({
   const handleSelect = (option: T) => {
     setSelected(option);
     setIsOpen(false);
-    onChange?.(option);
   };
 
   return (
@@ -52,11 +49,9 @@ export const DropdownWithoutState = <T,>({
         <span className="text-gray-700">
           {String(selected) ?? "select an option"}
         </span>
-        <span
-          className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
-        >
-          ⌄
-        </span>
+        <RightArrowIcon
+          className={`h-6 w-6 text-slate-400 transition-transform ${isOpen ? "-rotate-90" : "rotate-90"}`}
+        />
       </button>
 
       {isOpen && options.length > 0 && (

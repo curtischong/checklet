@@ -11,14 +11,14 @@ interface Props {
 }
 
 interface AccessTypeSelectorProps extends Props {
-  defaultAccessType: AccessType;
+  initialAccessType: AccessType;
 }
 
 export const AccessTypeSelector = ({
-  defaultAccessType,
+  initialAccessType,
   checkerId,
 }: AccessTypeSelectorProps) => {
-  const [accessType, setAccessType] = useState<AccessType>(defaultAccessType);
+  const [accessType, setAccessType] = useState<AccessType>(initialAccessType);
   return (
     <AccessTypeSelectorWithoutState
       checkerId={checkerId}
@@ -32,6 +32,19 @@ interface IsPublicSwitchWithoutStateProps extends Props {
   accessType: AccessType;
   setAccessType: SetState<AccessType>;
 }
+
+const textToAccessType = {
+  Private: AccessType.PRIVATE,
+  Hidden: AccessType.HIDDEN,
+  Public: AccessType.PUBLIC,
+};
+type AccessTypeText = keyof typeof textToAccessType;
+
+const accessTypeToText: Record<AccessType, AccessTypeText> = {
+  [AccessType.PRIVATE]: "Private",
+  [AccessType.HIDDEN]: "Hidden",
+  [AccessType.PUBLIC]: "Public",
+};
 
 // use this when you need access to setIsPublic or isPublic above this component
 export const AccessTypeSelectorWithoutState = ({
@@ -51,11 +64,9 @@ export const AccessTypeSelectorWithoutState = ({
           accessType: newAccessType,
         }),
         (data) => {
-          if (data.accessType) {
-            toast.success("Your checker is now public!");
-          } else {
-            toast.success("Your checker is now private");
-          }
+          toast.success(
+            `Your checker is now ${accessTypeToText[data.accessType]}!`,
+          );
           setAccessType(data.accessType);
         },
         () => {
@@ -67,12 +78,15 @@ export const AccessTypeSelectorWithoutState = ({
   );
 
   return (
-    <DropdownWithoutState<AccessType>
+    <DropdownWithoutState<AccessTypeText>
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      options={[AccessType.PRIVATE, AccessType.HIDDEN, AccessType.PUBLIC]}
-      onChange={onChange}
-      setSelected={setAccessType}
-      selected={accessType}
+      options={[AccessType.PRIVATE, AccessType.HIDDEN, AccessType.PUBLIC].map(
+        (x) => accessTypeToText[x],
+      )}
+      setSelected={(newAccessType: AccessTypeText) =>
+        onChange(textToAccessType[newAccessType])
+      }
+      selected={accessTypeToText[accessType]}
     />
   );
 };

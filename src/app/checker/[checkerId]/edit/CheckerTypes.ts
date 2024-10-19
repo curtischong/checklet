@@ -1,3 +1,5 @@
+import { AccessType } from "@prisma/client";
+
 export type ObjInfo = {
   name: string;
   desc: string;
@@ -32,7 +34,7 @@ export type CheckBlueprint = {
 
 export type CheckerBlueprint = {
   objInfo: ObjInfo;
-  isPublic: boolean;
+  accessType: AccessType;
   placeholder: string; // the placeholder text the user sees when they are faced with a blank editor
 };
 

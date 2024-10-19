@@ -4,13 +4,13 @@ import { Input } from "@/app/_components/ui/Input";
 import { LabelWithHelp } from "@/app/_components/ui/LabelWithHelp";
 import { NavigationPath } from "@/app/_components/ui/NavigationPath";
 import { NormalTextArea } from "@/app/_components/ui/TextArea";
+import { AccessTypeSelectorWithoutState } from "@/app/checker/[checkerId]/edit/AccessTypeSelector";
 import {
   SaveStatusText,
   SubmittingState,
 } from "@/app/checker/[checkerId]/edit/CheckerTypes";
 import { defaultImprovementPrompt } from "@/app/checker/[checkerId]/edit/DefaultPrompts";
 import ImprovePromptModal from "@/app/checker/[checkerId]/edit/ImprovePromptModal";
-import { IsPublicSwitchWithoutState } from "@/app/checker/[checkerId]/edit/IsPublicSwitch";
 import { isValidWarning } from "@/app/checker/[checkerId]/edit/IsValidWarning";
 import useUnsavedChangesWarning from "@/app/checker/[checkerId]/edit/useUnsavedChangesWarning";
 import { Editor } from "@/app/checker/[checkerId]/editor/Editor";
@@ -18,6 +18,7 @@ import { useTrpcCtx } from "@/app/TrpcCtx";
 import { MAX_CHECKER_DESC_LEN, MAX_CHECKER_NAME_LEN } from "@/constants";
 import { type UserCtx } from "@/firebase/edge_env";
 import { handleErr } from "@/trpc/react";
+import { AccessType } from "@prisma/client";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
@@ -40,7 +41,9 @@ export const CheckerPage = ({
   const [submittingState, setSubmittingState] = React.useState(
     SubmittingState.NotSubmitting,
   );
-  const [isPublic, setIsPublic] = React.useState(false);
+  const [accessType, setAccessType] = React.useState<AccessType>(
+    AccessType.PRIVATE,
+  );
   const [isInitialCheckerFetched, setIsInitialCheckerFetched] =
     React.useState(false);
 
@@ -60,7 +63,7 @@ export const CheckerPage = ({
         setDesc(checker.desc);
         setPrompt(checker.prompt);
         setEditorState(checker.sampleDoc);
-        setIsPublic(checker.isPublic);
+        setAccessType(checker.accessType);
         setIsInitialCheckerFetched(true);
         setClonedFromId(checker.clonedFromId);
       },
@@ -140,10 +143,10 @@ export const CheckerPage = ({
           </h1>
 
           <div className="mt-4 flex flex-row space-x-8">
-            <IsPublicSwitchWithoutState
+            <AccessTypeSelectorWithoutState
               checkerId={checkerId}
-              isPublic={isPublic}
-              setIsPublic={setIsPublic}
+              accessType={accessType}
+              setAccessType={setAccessType}
             />
             <div className="ml-4">{SaveStatusText[submittingState]}</div>
           </div>
