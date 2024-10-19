@@ -78,15 +78,19 @@ export const AccessTypeSelectorWithoutState = ({
   );
 
   return (
-    <DropdownWithoutState<AccessTypeText>
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      options={[AccessType.PRIVATE, AccessType.HIDDEN, AccessType.PUBLIC].map(
-        (x) => accessTypeToText[x],
-      )}
-      setSelected={(newAccessType: AccessTypeText) =>
-        onChange(textToAccessType[newAccessType])
-      }
-      selected={accessTypeToText[accessType]}
-    />
+    <div className="">
+      <DropdownWithoutState<AccessTypeText>
+        label="Access Type:"
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        options={[AccessType.PRIVATE, AccessType.HIDDEN, AccessType.PUBLIC].map(
+          (x) => accessTypeToText[x],
+        )}
+        setSelected={(newAccessType: AccessTypeText) =>
+          onChange(textToAccessType[newAccessType])
+        }
+        selected={accessTypeToText[accessType]}
+        className="w-[5.7rem]"
+      />
+    </div>
   );
 };
