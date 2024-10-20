@@ -33,12 +33,13 @@ export const MenuHeader = () => {
   }, []);
 
   return (
-    <div className="fixed left-0 top-0 z-40 w-full bg-background">
+    <div className="fixed left-0 top-0 z-40 h-12 w-full bg-background">
+      {/*  <div className="fixed left-0 top-0 z-40 h-40 w-full bg-gradient-to-b from-background to-transparent"> */}
       <Link className="absolute left-4 mt-4 font-mackinac" href="/">
         Checklet
       </Link>
       {!isMobile && (
-        <div className="absolute right-4 mt-4 flex flex-row space-x-8 font-mackinac">
+        <div className="absolute right-4 mt-4 flex flex-row space-x-8">
           <Link
             href="/checkers"
             className={
