@@ -33,18 +33,32 @@ export const MenuHeader = () => {
   }, []);
 
   return (
-    <div className="fixed left-0 top-0 z-40 w-full">
+    <div className="fixed left-0 top-0 z-40 w-full bg-background">
       <Link className="absolute left-4 mt-4 font-mackinac" href="/">
         Checklet
       </Link>
       {!isMobile && (
         <div className="absolute right-4 mt-4 flex flex-row space-x-8 font-mackinac">
-          {!pathname.startsWith("/checkers") && (
-            <Link href="/checkers">Checkers</Link>
-          )}
-          {!pathname.startsWith("/dashboard") && (
-            <Link href="/dashboard">Dashboard</Link>
-          )}
+          <Link
+            href="/checkers"
+            className={
+              pathname.startsWith("/checkers")
+                ? `underline underline-offset-4`
+                : ""
+            }
+          >
+            Checkers
+          </Link>
+          <Link
+            href="/dashboard"
+            className={
+              pathname.startsWith("/dashboard")
+                ? `underline underline-offset-4`
+                : ""
+            }
+          >
+            Dashboard
+          </Link>
           {pathname !== "/signin" &&
             (!user ? (
               <Link href="/signin">Sign in</Link>
