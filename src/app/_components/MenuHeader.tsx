@@ -36,7 +36,10 @@ export const MenuHeader = () => {
     <div className="fixed left-0 top-0 z-40 h-12 w-full bg-background">
       {/*  <div className="fixed left-0 top-0 z-40 h-40 w-full bg-gradient-to-b from-background to-transparent"> */}
       <Link
-        className="absolute left-4 mt-[10px] font-mackinac text-xl"
+        className="absolute left-4 mt-[12px] font-mackinac"
+        style={{
+          fontSize: 18,
+        }}
         href="/"
       >
         Checklet
