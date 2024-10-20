@@ -30,30 +30,16 @@ export const CheckerStore = (): JSX.Element => {
     });
   }, []);
 
-  if (!user) {
-    return (
-      <div className="mt-10 flex flex-col items-center space-y-6">
-        {checkers.map((checker) => {
-          return (
-            <div key={checker.id}>
-              <StoreFront checker={checker} />
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
   return (
-    <div className="mt-10 flex flex-col items-center space-y-6">
+    <div className="mt-10 flex flex-col items-center">
       {/* TODO: add a search bar */}
-      {user && (
+      {
         <h2 className="text-center font-mackinac text-2xl font-bold">
           Your Checkers
         </h2>
-      )}
-      {userCheckers ? (
-        <div className="flex flex-col space-y-4">
+      }
+      {userCheckers.length > 0 ? (
+        <div className="mb-12 mt-2 flex flex-col space-y-4">
           {userCheckers.map((checker) => {
             return (
               <div key={checker.id}>
@@ -63,18 +49,20 @@ export const CheckerStore = (): JSX.Element => {
           })}
         </div>
       ) : (
-        <h2>You have no checkers</h2>
+        <p className="mb-12 mt-2">You have no checkers</p>
       )}
       <h2 className="text-center font-mackinac text-2xl font-bold">
         Public Checkers
       </h2>
-      {checkers.map((checker) => {
-        return (
-          <div key={checker.id}>
-            <StoreFront checker={checker} />
-          </div>
-        );
-      })}
+      <div className="mt-2 flex flex-col items-center space-y-6">
+        {checkers.map((checker) => {
+          return (
+            <div key={checker.id}>
+              <StoreFront checker={checker} />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
