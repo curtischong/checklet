@@ -1,4 +1,4 @@
-import { azureLlmClient } from "@/server/api/routers/checker/azureLlm";
+import { openaiLlm } from "@/server/api/routers/checker/openaiLlm";
 import { regenPrompt3 } from "@/server/api/routers/checker/prompts";
 import { TRPCError } from "@trpc/server";
 
@@ -28,7 +28,7 @@ export const regenSuggestion = async (
 
   // const llm = new Llm3(model, "", cache3, apiKey);
 
-  const newChat = await azureLlmClient.promptMessages(
+  const newChat = await openaiLlm.promptMessages(
     [],
     regenPrompt3(
       oldText,
@@ -38,6 +38,7 @@ export const regenSuggestion = async (
       oldDocWithContext,
       regeneratePrompt,
     ),
+    openaiLlm.model,
   );
   const newDoc = newChat.message.content!;
   console.log("newdoc-------------");
