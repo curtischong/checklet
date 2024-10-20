@@ -138,7 +138,7 @@ export const TextboxContainer = ({
   };
 
   return (
-    <div className="textbox col-span-3">
+    <div className="textbox col-span-3 rounded-xl bg-white">
       <RichTextarea
         placeholder={storefront.placeholder || "Write your document here!"}
         ref={editorRef as any}
@@ -155,7 +155,7 @@ export const TextboxContainer = ({
           cursorTopRef.current = cursorTop;
         }}
         autoHeight={true}
-        className="resize-none bg-white pb-32 tracking-[0.01em] outline-none" // tracking increases letter spacing
+        className="resize-none p-5 pb-40 tracking-[0.01em] outline-none" // tracking increases letter spacing
         // the styling MUST be done via the style prop, not tailwind
         style={{
           width: "100%",
