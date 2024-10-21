@@ -9,11 +9,9 @@ import {
 export class Llm3 {
   client: OpenAI;
   model: string;
-  systemPromptMessage: OpenAI.ChatCompletionMessageParam;
 
   constructor(
     model: string,
-    systemPrompt: string,
     private cache: SimpleCache | undefined,
     apiKey: string | undefined,
   ) {
@@ -22,19 +20,11 @@ export class Llm3 {
       apiKey,
       dangerouslyAllowBrowser: false,
     });
-    this.systemPromptMessage = {
-      role: "system",
-      content: systemPrompt,
-    };
   }
 
   private getKey(messages: any, isStream: boolean): number {
     const isStreamKey = isStream ? "stream" : "";
-    return cyrb53(
-      `${isStreamKey}-${this.model}-${this.systemPromptMessage.content?.toString()}-${JSON.stringify(
-        messages,
-      )}`,
-    );
+    return cyrb53(`${isStreamKey}-${this.model}-${JSON.stringify(messages)}`);
   }
 
   private cacheGet(messages: any, isStream: boolean): string | undefined {
@@ -77,7 +67,6 @@ export class Llm3 {
     newMessage: string,
   ): ChatCompletionMessageParam[] {
     return [
-      this.systemPromptMessage,
       ...prevMessages,
       {
         role: "user",
