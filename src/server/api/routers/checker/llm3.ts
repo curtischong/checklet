@@ -157,20 +157,21 @@ export class Llm3 {
     const completion = await this.client.chat.completions.create({
       model: this.model,
       messages: newMessages,
-      stream: true, // Enable streaming
+      // stream: true, // Enable streaming
+      stream: false, // Enable streaming
     });
 
     let finalText = "";
 
     // Handle stream data chunk by chunk
-    for await (const chunk of completion) {
-      const content = chunk.choices[0]?.delta?.content ?? "";
-      if (content) {
-        finalText += content;
-        // Yield content back to the client
-        yield content;
-      }
+    // for await (const chunk of completion) {
+    const content = completion.choices[0]?.message.content ?? "";
+    if (content) {
+      finalText += content;
+      // Yield content back to the client
+      yield content;
     }
+    // }
     this.cacheSet(newMessages, finalText, true);
     // return finalText;
   }
