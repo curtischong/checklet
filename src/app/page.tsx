@@ -29,10 +29,10 @@ const HomePage: React.FC = () => {
     <div>
       <div className="container mx-auto px-6 text-center">
         <div className="ml-0 flex h-[100vh] flex-col justify-center">
-          <SpacyChecklet className="absolute left-[5%] top-[10%] md:left-[20%] md:top-[20%]" />
+          <SpacyChecklet className="absolute left-[5%] top-[12%] md:left-[20%] md:top-[20%]" />
           <LoveChecklet className="absolute bottom-[5%] right-[2%] md:bottom-[25%] md:right-[20%]" />
           <DockyChecklet className="absolute bottom-[10%] left-[2%] md:left-[30%]" />
-          <DerpChecklet className="absolute right-[5%] top-[5%] md:right-[30%]" />
+          <DerpChecklet className="absolute right-[5%] top-[8%] md:right-[30%] md:top-[7%]" />
           <p className="font-mackinac text-5xl">Checklet</p>
           <p className="text-md z-10 mt-4">
             Expert-written checkers to polish jokes, edit resumes, revise
