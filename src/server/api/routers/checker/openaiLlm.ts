@@ -7,4 +7,4 @@ const cache3 = new SimpleCache(
   "/cache3",
 );
 const apiKey = process.env.OPENAI_API_KEY;
-export const openaiLlm = new Llm3("o1-mini", cache3, apiKey);
+export const openaiLlm = new Llm3("gpt-4o", cache3, apiKey);
