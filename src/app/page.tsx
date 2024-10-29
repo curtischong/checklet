@@ -34,22 +34,32 @@ const HomePage: React.FC = () => {
           <DockyChecklet className="absolute bottom-[10%] left-[2%] md:left-[30%]" />
           <DerpChecklet className="absolute right-[5%] top-[8%] md:right-[30%] md:top-[7%]" />
           <p className="font-mackinac text-5xl">Checklet</p>
-          <p className="text-md z-10 mt-4">
-            Expert-written checkers to polish jokes, edit resumes, revise
-            emails... and check anything!
-          </p>
-          <div className="mx-auto mt-4 w-[200px]">
+          <div className="mx-auto max-w-screen-md">
+            <p className="text-md z-10 mt-4">
+              Checklet is your own customizable Grammarly.
+            </p>
+            <p className="text-md z-10 mx-auto mt-8">
+              Receive suggestions tailored to your writing style - unlike
+              traditional Grammar checkers which provide generic grammar fixes.
+            </p>
+
+            <p className="text-md z-10 mt-4">
+              Use it to polish jokes, edit resumes, revise emails... and check
+              anything!
+            </p>
+          </div>
+          <div className="mx-auto mt-8 w-[200px]">
             <LinkButton url={"/checkers"}>Try it out</LinkButton>
           </div>
           <ScrollDownButton />
         </div>
-        <div className="mt-32 font-mackinac text-3xl">What is Checklet?</div>
+        {/* <div className="mt-32 font-mackinac text-3xl">What is Checklet?</div>
         <ThinLine />
         <div className="text-md mx-auto mt-10 md:max-w-[70%]">
           Checklet is your own customizable Grammarly. It is different from
           typical Grammar checkers because it gives suggestions tailored to your
           writing style - not generic grammar fixes.
-        </div>
+        </div> */}
         {/* <br />
         <div>
           {`But I always wanted to have a Grammarly that's tailored for my
